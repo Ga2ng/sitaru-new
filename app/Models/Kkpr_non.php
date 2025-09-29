@@ -4,6 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\User;
+use App\Models\Desa;
+use App\Models\Kecamatan;
+use App\Models\Kabupaten;
+use App\Models\BerkasKkpr_non;
+
 
 class Kkpr_non extends Model
 {
@@ -15,83 +21,34 @@ class Kkpr_non extends Model
     ,'foto_utara','foto_selatan','foto_timur','foto_barat','tgl_terima','jam_terima','penerima', 'ket_terima','tgl_kembali','jam_kembali','penerima_kembali','proses','deleted'];
 
 
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
-    
-    protected function casts(): array
-    {
-        return [
-            'created_at' => 'datetime',
-            'updated_at' => 'datetime',
-        ];
-    }
-
     }
 
     public function kelurahan()
     {
         return $this->belongsTo(Desa::class, 'kelurahan_id');
-    
-    protected function casts(): array
-    {
-        return [
-            'created_at' => 'datetime',
-            'updated_at' => 'datetime',
-        ];
-    }
-
     }
 
     public function kecamatan()
     {
         return $this->belongsTo(Kecamatan::class, 'kecamatan_id');
-    
-    protected function casts(): array
-    {
-        return [
-            'created_at' => 'datetime',
-            'updated_at' => 'datetime',
-        ];
-    }
-
     }
 
     public function kabupaten()
     {
         return $this->belongsTo(Kabupaten::class, 'kabupaten_id');
-    
-    protected function casts(): array
-    {
-        return [
-            'created_at' => 'datetime',
-            'updated_at' => 'datetime',
-        ];
-    }
-
     }
 
     public function berkas()
     {
         return $this->hasMany(BerkasKkpr_non::class, 'kkpr_non_id');
-    
-    protected function casts(): array
-    {
-        return [
-            'created_at' => 'datetime',
-            'updated_at' => 'datetime',
-        ];
-    }
-
-    }
-
-
-    protected function casts(): array
-    {
-        return [
-            'created_at' => 'datetime',
-            'updated_at' => 'datetime',
-        ];
     }
 
 

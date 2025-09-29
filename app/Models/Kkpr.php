@@ -4,6 +4,19 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\User;
+use App\Models\Desa;
+use App\Models\Kecamatan;
+use App\Models\Kabupaten;
+use App\Models\BerkasKkpr;
+use App\Models\Sertifikat;
+use App\Models\Kkpr_syarat_pelaksanaan;
+use App\Models\Kkpr_pertimbangan;
+use App\Models\Kkpr_ketentuan_lain;
+use App\Models\Kkpr_terbit;
+use App\Models\Kkpr_gsb;
+use App\Models\Kbli;
+use App\Models\Koordinat_kkpr;
 
 class Kkpr extends Model
 {
@@ -42,224 +55,84 @@ class Kkpr extends Model
 ];
 
     protected $casts = [
-        'luas_lantai' => 'array'
+        'luas_lantai' => 'array',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
-    
-    protected function casts(): array
-    {
-        return [
-            'created_at' => 'datetime',
-            'updated_at' => 'datetime',
-        ];
-    }
-
     }
 
     public function kelurahan()
     {
         return $this->belongsTo(Desa::class, 'kelurahan_id');
-    
-    protected function casts(): array
-    {
-        return [
-            'created_at' => 'datetime',
-            'updated_at' => 'datetime',
-        ];
-    }
-
     }
 
     public function kecamatan()
     {
         return $this->belongsTo(Kecamatan::class, 'kecamatan_id');
-    
-    protected function casts(): array
-    {
-        return [
-            'created_at' => 'datetime',
-            'updated_at' => 'datetime',
-        ];
-    }
-
     }
 
     public function kabupaten()
     {
         return $this->belongsTo(Kabupaten::class, 'kabupaten_id');
-    
-    protected function casts(): array
-    {
-        return [
-            'created_at' => 'datetime',
-            'updated_at' => 'datetime',
-        ];
-    }
-
     }
 
     public function berkas()
     {
         return $this->hasMany(BerkasKkpr::class, 'kkpr_id');
-    
-    protected function casts(): array
-    {
-        return [
-            'created_at' => 'datetime',
-            'updated_at' => 'datetime',
-        ];
-    }
-
     }
 
     public function sertifikat()
     {
         return $this->hasMany(Sertifikat::class, 'kkpr_id');
-    
-    protected function casts(): array
-    {
-        return [
-            'created_at' => 'datetime',
-            'updated_at' => 'datetime',
-        ];
     }
 
-    }
     public function sertifikat_non()
     {
         return $this->hasMany(Sertifikat::class, 'kkpr_non_id');
-    
-    protected function casts(): array
-    {
-        return [
-            'created_at' => 'datetime',
-            'updated_at' => 'datetime',
-        ];
-    }
-
     }
 
     public function syarat()
     {
         return $this->hasMany(Kkpr_syarat_pelaksanaan::class, 'kkpr_id');
-    
-    protected function casts(): array
-    {
-        return [
-            'created_at' => 'datetime',
-            'updated_at' => 'datetime',
-        ];
-    }
-
     }
 
     public function pertimbangan()
     {
         return $this->hasMany(Kkpr_pertimbangan::class, 'kkpr_id');
-    
-    protected function casts(): array
-    {
-        return [
-            'created_at' => 'datetime',
-            'updated_at' => 'datetime',
-        ];
-    }
-
     }
 
     public function ketentuan()
     {
         return $this->hasMany(Kkpr_ketentuan_lain::class, 'kkpr_id');
-    
-    protected function casts(): array
-    {
-        return [
-            'created_at' => 'datetime',
-            'updated_at' => 'datetime',
-        ];
-    }
-
     }
 
     public function kkpr_terbit()
     {
         return $this->hasMany(Kkpr_terbit::class, 'id_kkpr');
-    
-    protected function casts(): array
-    {
-        return [
-            'created_at' => 'datetime',
-            'updated_at' => 'datetime',
-        ];
-    }
-
     }
     
     public function kkpr_gsb()
     {
         return $this->hasMany(Kkpr_gsb::class, 'kkpr_id');
-    
-    protected function casts(): array
-    {
-        return [
-            'created_at' => 'datetime',
-            'updated_at' => 'datetime',
-        ];
-    }
-
     }
 
     public function kkpr_kbli()
     {
         return $this->hasMany(Kbli::class, 'id_kkpr');
-    
-    protected function casts(): array
-    {
-        return [
-            'created_at' => 'datetime',
-            'updated_at' => 'datetime',
-        ];
-    }
-
     }
 
     public function kkpr_koordinat()
     {
         return $this->hasMany(Koordinat_kkpr::class, 'id_kkpr');
-    
-    protected function casts(): array
-    {
-        return [
-            'created_at' => 'datetime',
-            'updated_at' => 'datetime',
-        ];
-    }
-
     }
 
     public function pteknis()
     {
         return $this->belongsTo(User::class, 'pemeriksa_teknis');
-    
-    protected function casts(): array
-    {
-        return [
-            'created_at' => 'datetime',
-            'updated_at' => 'datetime',
-        ];
-    }
-
-    }
-
-    protected function casts(): array
-    {
-        return [
-            'created_at' => 'datetime',
-            'updated_at' => 'datetime',
-        ];
     }
 
 }

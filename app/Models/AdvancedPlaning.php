@@ -4,6 +4,21 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\User;
+use App\Models\Koordinat;
+use App\Models\Tinjauan;
+use App\Models\Arahan;
+use App\Models\Tambahan;
+use App\Models\Tembusan;
+use App\Models\Gambar;
+use App\Models\Berkas;
+use App\Models\StatusTanah;
+use App\Models\Desa;
+use App\Models\Kecamatan;
+use App\Models\Kabupaten;
+use App\Models\Tracker;
+use App\Models\KategoriKrk;
+
 
 class AdvancedPlaning extends Model
 {
