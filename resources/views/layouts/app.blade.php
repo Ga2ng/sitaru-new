@@ -305,7 +305,7 @@
                     <div class="nav-section-title">ACCOUNT</div>
                     
                     <div class="space-y-1">
-                        <a href="/profile" class="nav-item flex items-center space-x-3 px-3 py-2.5 text-sm font-medium {{ request()->is('profile*') ? 'active' : '' }}">
+                        <a href="{{ route('profile.edit') }}" class="nav-item flex items-center space-x-3 px-3 py-2.5 text-sm font-medium {{ request()->is('profile*') ? 'active' : '' }}">
                             <i class="fas fa-user w-4 h-4"></i>
                             <span>Profile</span>
                         </a>
@@ -410,18 +410,18 @@
                                     </div>
                                     
                                     <div class="py-1">
-                                        <a href="/profile" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                                        <a href="{{ route('profile.edit') }}" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
                                             <i class="fas fa-user w-4 h-4 mr-3 text-gray-400"></i>
                                             Profile Settings
                                         </a>
-                                        <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                                        {{-- <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
                                             <i class="fas fa-cog w-4 h-4 mr-3 text-gray-400"></i>
                                             Account Settings
                                         </a>
                                         <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
                                             <i class="fas fa-question-circle w-4 h-4 mr-3 text-gray-400"></i>
                                             Help & Support
-                                        </a>
+                                        </a> --}}
                                         <hr class="my-1">
                                         <form method="POST" action="{{ route('logout') }}">
                                             @csrf
