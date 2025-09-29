@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\AdminKontakController;
 use App\Http\Controllers\Admin\AdminSliderController;
 use App\Http\Controllers\Admin\AdminBeritaController;
 use App\Http\Controllers\Admin\AdminInformasiController;
+use App\Http\Controllers\Admin\AdminSettingsController;
 use Illuminate\Support\Facades\Route;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
@@ -30,6 +31,10 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'permission:User'])-
     // Informasi Management Routes
     Route::resource('informasi', AdminInformasiController::class);
     Route::post('informasi/{informasi}/toggle-status', [AdminInformasiController::class, 'toggleStatus'])->name('informasi.toggle-status');
+
+    // Settings Management Routes
+    Route::get('settings', [AdminSettingsController::class, 'index'])->name('settings.index')->middleware('permission:Setting');
+    Route::put('settings', [AdminSettingsController::class, 'update'])->name('settings.update')->middleware('permission:Setting');
 
     // API Routes for roles and permissions
     Route::get('roles', function() {

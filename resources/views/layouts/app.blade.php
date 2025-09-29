@@ -315,14 +315,14 @@
                             <button @click="settingsOpen = !settingsOpen" class="nav-item flex items-center justify-between w-full space-x-3 px-3 py-2.5 text-sm font-medium text-gray-600 hover:text-gray-900">
                                 <div class="flex items-center space-x-3">
                                     <i class="fas fa-cog w-4 h-4"></i>
-                                    <span>Settings</span>
+                                    <span>Pengaturan</span>
                                 </div>
                                 <i class="fas fa-chevron-down text-xs transition-transform duration-200" :class="{ 'rotate-180': settingsOpen }"></i>
                             </button>
                             
                             <!-- Dropdown Menu -->
                             <div x-show="settingsOpen" @click.away="settingsOpen = false" x-transition class="settings-dropdown p-2 space-y-1">
-                                <a href="/settings" class="nav-item flex items-center space-x-3 px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 {{ request()->is('settings*') ? 'active' : '' }}">
+                                <a href="{{ route('admin.settings.index') }}" class="nav-item flex items-center space-x-3 px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 {{ request()->is('admin/settings*') ? 'active' : '' }}">
                                     <i class="fas fa-cog w-3 h-3"></i>
                                     <span>Settings</span>
                                 </a>
