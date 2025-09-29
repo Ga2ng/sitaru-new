@@ -49,3 +49,4 @@ Route::get('/clear-rate-limit', function () {
     return 'Rate limit cleared for jimbon@sitaru.test';
 });
 require __DIR__.'/auth.php';
+require __DIR__.'/admin.php';

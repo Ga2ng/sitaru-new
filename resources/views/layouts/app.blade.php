@@ -12,6 +12,7 @@
     
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     
     <style>
         .sidebar-gradient { 
@@ -156,6 +157,34 @@
         .content-scroll::-webkit-scrollbar-thumb:hover {
             background: #94A3B8;
         }
+        
+        /* Settings Dropdown Styles */
+        .settings-dropdown {
+            background: white;
+            border: 1px solid #E5E7EB;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin-left: 32px;
+            margin-top: 4px;
+        }
+        
+        .settings-dropdown .nav-item {
+            margin: 0;
+            border-radius: 6px;
+        }
+        
+        .settings-dropdown .nav-item:hover {
+            background: #F1F5F9;
+        }
+        
+        .settings-dropdown .nav-item.active {
+            background: #185B3C;
+            color: white;
+        }
+        
+        .settings-dropdown .nav-item.active i {
+            color: white;
+        }
     </style>
 </head>
 <body class="font-sans antialiased bg-gray-50" x-data="{ sidebarOpen: false, userDropdownOpen: false }">
@@ -250,6 +279,30 @@
                             <i class="fas fa-user w-4 h-4"></i>
                             <span>Profile</span>
                         </a>
+
+                        <!-- Settings Dropdown -->
+                        <div class="relative" x-data="{ settingsOpen: false }">
+                            <button @click="settingsOpen = !settingsOpen" class="nav-item flex items-center justify-between w-full space-x-3 px-3 py-2.5 text-sm font-medium text-gray-600 hover:text-gray-900">
+                                <div class="flex items-center space-x-3">
+                                    <i class="fas fa-cog w-4 h-4"></i>
+                                    <span>Settings</span>
+                                </div>
+                                <i class="fas fa-chevron-down text-xs transition-transform duration-200" :class="{ 'rotate-180': settingsOpen }"></i>
+                            </button>
+                            
+                            <!-- Dropdown Menu -->
+                            <div x-show="settingsOpen" @click.away="settingsOpen = false" x-transition class="settings-dropdown p-2 space-y-1">
+                                <a href="/settings" class="nav-item flex items-center space-x-3 px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 {{ request()->is('settings*') ? 'active' : '' }}">
+                                    <i class="fas fa-cog w-3 h-3"></i>
+                                    <span>Settings</span>
+                                </a>
+                                
+                                <a href="/admin/users" class="nav-item flex items-center space-x-3 px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 {{ request()->is('admin/users*') ? 'active' : '' }}">
+                                    <i class="fas fa-users w-3 h-3"></i>
+                                    <span>User Management</span>
+                                </a>
+                            </div>
+                        </div>
 
                         <form method="POST" action="{{ route('logout') }}" class="mt-2">
                             @csrf
@@ -354,6 +407,25 @@
                     </div>
                 </div>
             </header>
+
+            <!-- Flash Messages -->
+            @if(session('success'))
+                <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mx-6 mt-4" role="alert">
+                    <span class="block sm:inline">{{ session('success') }}</span>
+                    <span class="absolute top-0 bottom-0 right-0 px-4 py-3" onclick="this.parentElement.style.display='none'">
+                        <i class="fas fa-times cursor-pointer"></i>
+                    </span>
+                </div>
+            @endif
+
+            @if(session('error'))
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mx-6 mt-4" role="alert">
+                    <span class="block sm:inline">{{ session('error') }}</span>
+                    <span class="absolute top-0 bottom-0 right-0 px-4 py-3" onclick="this.parentElement.style.display='none'">
+                        <i class="fas fa-times cursor-pointer"></i>
+                    </span>
+                </div>
+            @endif
 
             <!-- Scrollable Page Content -->
             <main class="content-scroll p-6">
