@@ -271,6 +271,36 @@
                         </a>
                     </div>
 
+                    <!-- INFORMASI Section -->
+                    <div class="nav-section-title">INFORMASI</div>
+                    
+                    <div class="space-y-1">
+                        <a href="#" class="nav-item flex items-center space-x-3 px-3 py-2.5 text-sm font-medium text-gray-600">
+                            <i class="fas fa-map-marked-alt w-4 h-4"></i>
+                            <span>Peta Persebaran</span>
+                        </a>
+
+                        <a href="{{ route('admin.informasi.index') }}" class="nav-item flex items-center space-x-3 px-3 py-2.5 text-sm font-medium {{ request()->is('admin/informasi*') ? 'active' : '' }}">
+                            <i class="fas fa-info-circle w-4 h-4"></i>
+                            <span>Informasi</span>
+                        </a>
+
+                        <a href="{{ route('admin.berita.index') }}" class="nav-item flex items-center space-x-3 px-3 py-2.5 text-sm font-medium {{ request()->is('admin/berita*') ? 'active' : '' }}">
+                            <i class="fas fa-newspaper w-4 h-4"></i>
+                            <span>Berita</span>
+                        </a>
+
+                        <a href="{{ route('admin.slider.index') }}" class="nav-item flex items-center space-x-3 px-3 py-2.5 text-sm font-medium {{ request()->is('admin/slider*') ? 'active' : '' }}">
+                            <i class="fas fa-images w-4 h-4"></i>
+                            <span>Slider</span>
+                        </a>
+
+                        <a href="{{ route('admin.kontak.index') }}" class="nav-item flex items-center space-x-3 px-3 py-2.5 text-sm font-medium {{ request()->is('admin/kontak*') ? 'active' : '' }}">
+                            <i class="fas fa-phone w-4 h-4"></i>
+                            <span>Kontak Pengaduan</span>
+                        </a>
+                    </div>
+
                     <!-- ACCOUNT Section -->
                     <div class="nav-section-title">ACCOUNT</div>
                     
