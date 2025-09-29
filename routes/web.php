@@ -2,7 +2,11 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Layanan\KkprController;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Str;
 
 Route::get('/', function () {
     return view('welcome');
@@ -23,4 +27,25 @@ Route::middleware('auth')->group(function () {
     });
 });
 
+
+
+// Route::get('/debug-login', function () {
+//     $credentials = [
+//         'email' => 'jimbon@sitaru.test',
+//         'password' => 'jimbon123',
+//     ];
+
+//     if (Auth::attempt($credentials)) {
+//         return '✅ Login berhasil';
+//     } else {
+//         return '❌ Login gagal';
+//     }
+// });
+
+Route::get('/clear-rate-limit', function () {
+    $key = Str::transliterate(Str::lower('jimbon@sitaru.test').'|127.0.0.1');
+    RateLimiter::clear($key);
+    
+    return 'Rate limit cleared for jimbon@sitaru.test';
+});
 require __DIR__.'/auth.php';
