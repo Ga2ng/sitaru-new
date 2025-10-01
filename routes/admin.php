@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\AdminSliderController;
 use App\Http\Controllers\Admin\AdminBeritaController;
 use App\Http\Controllers\Admin\AdminInformasiController;
 use App\Http\Controllers\Admin\AdminSettingsController;
+use App\Http\Controllers\Admin\AdminKkprController;
 use Illuminate\Support\Facades\Route;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
@@ -32,9 +33,19 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'permission:User'])-
     Route::resource('informasi', AdminInformasiController::class);
     Route::post('informasi/{informasi}/toggle-status', [AdminInformasiController::class, 'toggleStatus'])->name('informasi.toggle-status');
 
-    // Settings Management Routes
-    Route::get('settings', [AdminSettingsController::class, 'index'])->name('settings.index')->middleware('permission:Setting');
-    Route::put('settings', [AdminSettingsController::class, 'update'])->name('settings.update')->middleware('permission:Setting');
+            // Settings Management Routes
+            Route::get('settings', [AdminSettingsController::class, 'index'])->name('settings.index')->middleware('permission:Setting');
+            Route::put('settings', [AdminSettingsController::class, 'update'])->name('settings.update')->middleware('permission:Setting');
+
+            // KKPR Management Routes
+            Route::resource('kkpr', AdminKkprController::class);
+            Route::post('kkpr/{kkpr}/toggle-status', [AdminKkprController::class, 'toggleStatus'])->name('kkpr.toggle-status');
+            Route::get('kkpr/{kkpr}/riwayat', [AdminKkprController::class, 'riwayat'])->name('kkpr.riwayat');
+            Route::get('kkpr/{kkpr}/koordinat', [AdminKkprController::class, 'koordinat'])->name('kkpr.koordinat');
+            Route::get('kkpr/{kkpr}/peta', [AdminKkprController::class, 'peta'])->name('kkpr.peta');
+            Route::get('kkpr/{kkpr}/validasi', [AdminKkprController::class, 'validasi'])->name('kkpr.validasi');
+            Route::post('kkpr/validasi', [AdminKkprController::class, 'validasiStore'])->name('kkpr.validasi.store');
+            Route::post('kkpr/revisi', [AdminKkprController::class, 'validasiRevisi'])->name('kkpr.revisi');
 
     // API Routes for roles and permissions
     Route::get('roles', function() {

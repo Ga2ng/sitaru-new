@@ -240,7 +240,11 @@
                     <div class="nav-section-title">LAYANAN</div>
                     
                     <div class="space-y-1">
-                        <a href="/layanan/kkpr" class="nav-item flex items-center space-x-3 px-3 py-2.5 text-sm font-medium {{ request()->is('layanan/kkpr*') ? 'active' : '' }}">
+                        {{-- <a href="/layanan/kkpr" class="nav-item flex items-center space-x-3 px-3 py-2.5 text-sm font-medium {{ request()->is('layanan/kkpr*') ? 'active' : '' }}">
+                            <i class="fas fa-file-alt w-4 h-4"></i>
+                            <span>KKPR</span>
+                        </a> --}}
+                        <a href="{{ route('admin.kkpr.index') }}" class="nav-item flex items-center space-x-3 px-3 py-2.5 text-sm font-medium {{ request()->is('admin/kkpr*') ? 'active' : '' }}">
                             <i class="fas fa-file-alt w-4 h-4"></i>
                             <span>KKPR</span>
                         </a>
