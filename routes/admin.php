@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\AdminSettingsController;
 use App\Http\Controllers\Admin\AdminKkprController;
 use App\Http\Controllers\Admin\AdminKkprNonController;
 use App\Http\Controllers\Admin\AdminPengaduanController;
+use App\Http\Controllers\Admin\AdminPetaController;
 use Illuminate\Support\Facades\Route;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
@@ -59,12 +60,15 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'permission:User'])-
             Route::post('kkprnon/revisi', [AdminKkprNonController::class, 'validasiRevisi'])->name('kkprnon.revisi');
             Route::post('kkprnon/upload-draft', [AdminKkprNonController::class, 'uploadDraft'])->name('kkprnon.upload.draft');
 
-            // Pengaduan Management Routes
-            Route::resource('pengaduan', AdminPengaduanController::class);
-            Route::get('pengaduan/{pengaduan}/riwayat', [AdminPengaduanController::class, 'riwayat'])->name('pengaduan.riwayat');
-            Route::post('pengaduan/tolak', [AdminPengaduanController::class, 'tolakPengaduan'])->name('pengaduan.tolak');
-            Route::post('pengaduan/penanganan', [AdminPengaduanController::class, 'penangananPengaduan'])->name('pengaduan.penanganan');
-            Route::post('pengaduan/proses', [AdminPengaduanController::class, 'pengaduanProses'])->name('pengaduan.proses');
+    // Pengaduan Management Routes
+    Route::resource('pengaduan', AdminPengaduanController::class);
+    Route::get('pengaduan/{pengaduan}/riwayat', [AdminPengaduanController::class, 'riwayat'])->name('pengaduan.riwayat');
+    Route::post('pengaduan/tolak', [AdminPengaduanController::class, 'tolakPengaduan'])->name('pengaduan.tolak');
+    Route::post('pengaduan/penanganan', [AdminPengaduanController::class, 'penangananPengaduan'])->name('pengaduan.penanganan');
+    Route::post('pengaduan/proses', [AdminPengaduanController::class, 'pengaduanProses'])->name('pengaduan.proses');
+
+    // Peta Persebaran Routes
+    Route::get('peta', [AdminPetaController::class, 'index'])->name('peta.index')->middleware('permission:Peta');
 
     // API Routes for roles and permissions
     Route::get('roles', function() {

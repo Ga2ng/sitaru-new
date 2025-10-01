@@ -1,0 +1,23 @@
+<kml xmlns="http://www.opengis.net/kml/2.2"><Document>
+<Placemark>
+<ExtendedData>
+  <Data name="fill-opacity"><value>0</value></Data>
+  <Data name="stroke-opacity"><value>1</value></Data>
+  <Data name="stroke"><value>#ff0000</value></Data>
+  <Data name="ID"><value>0</value></Data></ExtendedData>
+  <Polygon>
+<outerBoundaryIs>
+  <LinearRing><coordinates>1.36249070276972,708109.286777687
+1.36249070276972,708122.122760985
+-5.69274834400858,708122.259313999
+-5.87481902906438,708109.423330701
+1.36249070276972,708109.286777687</coordinates></LinearRing></outerBoundaryIs></Polygon></Placemark>
+<Placemark>
+<ExtendedData></ExtendedData>
+  <Polygon>
+<outerBoundaryIs>
+  <LinearRing><coordinates>114.37069592054536,-8.210318293329408
+114.37069592054536,-8.218837464420147
+114.37773269633493,-8.218837464420147
+114.37773269633493,-8.210318293329408
+114.37069592054536,-8.210318293329408</coordinates></LinearRing></outerBoundaryIs></Polygon></Placemark></Document></kml>

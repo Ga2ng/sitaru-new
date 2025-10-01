@@ -1,0 +1,19 @@
+
+ionic cordova build --prod --release android
+
+/opt/jdk/jdk1.8.0_202/bin/jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore my-release-key.keystore app-release-unsigned.apk alias_name
+
+
+pass : 123456
+
+
+/home/devel-android/androidsdk/build-tools/27.0.3/zipalign -v 4 app-release-unsigned.apk bilaperdu_v2.apk 
+
+
+
+
+
+
+
+
+

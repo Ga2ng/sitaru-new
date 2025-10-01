@@ -215,7 +215,7 @@
                             <span>Dashboard</span>
                         </a>
 
-                        <a href="#" class="nav-item flex items-center space-x-3 px-3 py-2.5 text-sm font-medium text-gray-600">
+                        {{-- <a href="#" class="nav-item flex items-center space-x-3 px-3 py-2.5 text-sm font-medium text-gray-600">
                             <i class="fas fa-tasks w-4 h-4"></i>
                             <span>Tasks</span>
                         </a>
@@ -233,7 +233,7 @@
                         <a href="#" class="nav-item flex items-center space-x-3 px-3 py-2.5 text-sm font-medium text-gray-600">
                             <i class="fas fa-users w-4 h-4"></i>
                             <span>Team</span>
-                        </a>
+                        </a> --}}
                     </div>
 
                     <!-- LAYANAN Section -->
@@ -289,7 +289,7 @@
                     <div class="nav-section-title">INFORMASI</div>
                     
                     <div class="space-y-1">
-                        <a href="#" class="nav-item flex items-center space-x-3 px-3 py-2.5 text-sm font-medium text-gray-600">
+                        <a href="{{ route('admin.peta.index') }}" class="nav-item flex items-center space-x-3 px-3 py-2.5 text-sm font-medium {{ request()->is('admin/peta*') ? 'active' : '' }}">
                             <i class="fas fa-map-marked-alt w-4 h-4"></i>
                             <span>Peta Persebaran</span>
                         </a>
