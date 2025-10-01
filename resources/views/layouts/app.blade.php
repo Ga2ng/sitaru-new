@@ -244,12 +244,22 @@
                             <i class="fas fa-file-alt w-4 h-4"></i>
                             <span>KKPR</span>
                         </a> --}}
-                        <a href="{{ route('admin.kkpr.index') }}" class="nav-item flex items-center space-x-3 px-3 py-2.5 text-sm font-medium {{ request()->is('admin/kkpr*') ? 'active' : '' }}">
+                        <a href="{{ route('admin.kkpr.index') }}" class="nav-item flex items-center space-x-3 px-3 py-2.5 text-sm font-medium {{ request()->is('admin/kkpr') || request()->is('admin/kkpr/*') ? 'active' : '' }}">
                             <i class="fas fa-file-alt w-4 h-4"></i>
-                            <span>KKPR</span>
+                            <span>Persetujuan Bagi UMK</span>
                         </a>
 
-                        <a href="#" class="nav-item flex items-center space-x-3 px-3 py-2.5 text-sm font-medium text-gray-600">
+                        <a href="{{ route('admin.kkprnon.index') }}" class="nav-item flex items-center space-x-3 px-3 py-2.5 text-sm font-medium {{ request()->is('admin/kkprnon*') ? 'active' : '' }}">
+                            <i class="fas fa-file-contract w-4 h-4"></i>
+                            <span>Penilaian KKPR Terbit Otomatis</span>
+                        </a>
+
+                        <a href="{{ route('admin.pengaduan.index') }}" class="nav-item flex items-center space-x-3 px-3 py-2.5 text-sm font-medium {{ request()->is('admin/pengaduan*') ? 'active' : '' }}">
+                            <i class="fas fa-bullhorn w-4 h-4"></i>
+                            <span>Pengaduan</span>
+                        </a>
+
+                        {{-- <a href="#" class="nav-item flex items-center space-x-3 px-3 py-2.5 text-sm font-medium text-gray-600">
                             <i class="fas fa-id-card w-4 h-4"></i>
                             <span>KTP</span>
                         </a>
@@ -272,7 +282,7 @@
                         <a href="#" class="nav-item flex items-center space-x-3 px-3 py-2.5 text-sm font-medium text-gray-600">
                             <i class="fas fa-cross w-4 h-4"></i>
                             <span>Akta Kematian</span>
-                        </a>
+                        </a> --}}
                     </div>
 
                     <!-- INFORMASI Section -->

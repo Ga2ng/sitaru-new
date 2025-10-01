@@ -7,6 +7,8 @@ use App\Http\Controllers\Admin\AdminBeritaController;
 use App\Http\Controllers\Admin\AdminInformasiController;
 use App\Http\Controllers\Admin\AdminSettingsController;
 use App\Http\Controllers\Admin\AdminKkprController;
+use App\Http\Controllers\Admin\AdminKkprNonController;
+use App\Http\Controllers\Admin\AdminPengaduanController;
 use Illuminate\Support\Facades\Route;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
@@ -46,6 +48,23 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'permission:User'])-
             Route::get('kkpr/{kkpr}/validasi', [AdminKkprController::class, 'validasi'])->name('kkpr.validasi');
             Route::post('kkpr/validasi', [AdminKkprController::class, 'validasiStore'])->name('kkpr.validasi.store');
             Route::post('kkpr/revisi', [AdminKkprController::class, 'validasiRevisi'])->name('kkpr.revisi');
+
+            // KKPR Non Berusaha Management Routes
+            Route::resource('kkprnon', AdminKkprNonController::class);
+            Route::get('kkprnon/{kkprnon}/riwayat', [AdminKkprNonController::class, 'riwayat'])->name('kkprnon.riwayat');
+            Route::get('kkprnon/{kkprnon}/koordinat', [AdminKkprNonController::class, 'koordinat'])->name('kkprnon.koordinat');
+            Route::get('kkprnon/{kkprnon}/peta', [AdminKkprNonController::class, 'peta'])->name('kkprnon.peta');
+            Route::get('kkprnon/{kkprnon}/validasi', [AdminKkprNonController::class, 'validasi'])->name('kkprnon.validasi');
+            Route::post('kkprnon/validasi', [AdminKkprNonController::class, 'validasiStore'])->name('kkprnon.validasi.store');
+            Route::post('kkprnon/revisi', [AdminKkprNonController::class, 'validasiRevisi'])->name('kkprnon.revisi');
+            Route::post('kkprnon/upload-draft', [AdminKkprNonController::class, 'uploadDraft'])->name('kkprnon.upload.draft');
+
+            // Pengaduan Management Routes
+            Route::resource('pengaduan', AdminPengaduanController::class);
+            Route::get('pengaduan/{pengaduan}/riwayat', [AdminPengaduanController::class, 'riwayat'])->name('pengaduan.riwayat');
+            Route::post('pengaduan/tolak', [AdminPengaduanController::class, 'tolakPengaduan'])->name('pengaduan.tolak');
+            Route::post('pengaduan/penanganan', [AdminPengaduanController::class, 'penangananPengaduan'])->name('pengaduan.penanganan');
+            Route::post('pengaduan/proses', [AdminPengaduanController::class, 'pengaduanProses'])->name('pengaduan.proses');
 
     // API Routes for roles and permissions
     Route::get('roles', function() {

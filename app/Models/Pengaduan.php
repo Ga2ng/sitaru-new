@@ -4,7 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\DB;
 use App\Models\User;
+use App\Models\Kecamatan;
+use App\Models\Desa;
 
 class Pengaduan extends Model
 {
@@ -36,4 +39,13 @@ class Pengaduan extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
+    public function kecamatan()
+    {
+        return $this->belongsTo(Kecamatan::class, 'kecamatan_id', 'id');
+    }
+
+    public function desa()
+    {
+        return $this->belongsTo(Desa::class, 'desa_id', 'id');
+    }
 }
