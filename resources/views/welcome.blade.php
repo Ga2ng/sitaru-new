@@ -162,7 +162,7 @@
                     <p class="text-lg text-gray-600 max-w-2xl mx-auto font-body">Akses berbagai layanan digital dengan mudah dan aman melalui platform terintegrasi</p>
                                 </div>
 
-                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
                     <div class="feature-card bg-white p-8 rounded-xl card-shadow">
                         <div class="w-16 h-16 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center mb-6 relative">
                             <div class="absolute inset-0 bg-gradient-to-br from-accent/20 to-transparent rounded-lg"></div>
@@ -176,19 +176,35 @@
                             Akses Layanan 
                             <span class="inline-block transform group-hover:translate-x-1 transition-transform">→</span>
                         </a>
-                                        </div>
+                    </div>
 
                     <div class="feature-card bg-white p-8 rounded-xl card-shadow">
                         <div class="w-16 h-16 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center mb-6 relative">
                             <div class="absolute inset-0 bg-gradient-to-br from-accent/20 to-transparent rounded-lg"></div>
                             <svg class="w-8 h-8 text-[#DAAF49] relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path>
                             </svg>
                         </div>
-                        <h3 class="text-xl font-semibold text-primary mb-4 font-heading">Keamanan Data</h3>
-                        <p class="text-gray-600 mb-4 font-body">Data Anda terlindungi dengan enkripsi tingkat tinggi dan sistem keamanan berlapis.</p>
-                        <a href="#" class="text-primary font-medium hover:text-accent transition-colors relative group">
-                            Pelajari Lebih Lanjut 
+                        <h3 class="text-xl font-semibold text-primary mb-4 font-heading">Peta Bumi ATR</h3>
+                        <p class="text-gray-600 mb-4 font-body">Akses peta bumi dan informasi geospasial dari Badan Pertanahan Nasional untuk referensi data tanah.</p>
+                        <a href="https://bhumi.atrbpn.go.id/peta" target="_blank" class="text-primary font-medium hover:text-accent transition-colors relative group">
+                            Kunjungi Peta 
+                            <span class="inline-block transform group-hover:translate-x-1 transition-transform">→</span>
+                        </a>
+                    </div>
+
+                    <div class="feature-card bg-white p-8 rounded-xl card-shadow">
+                        <div class="w-16 h-16 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center mb-6 relative">
+                            <div class="absolute inset-0 bg-gradient-to-br from-accent/20 to-transparent rounded-lg"></div>
+                            <svg class="w-8 h-8 text-[#DAAF49] relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-semibold text-primary mb-4 font-heading">Peta Tata Ruang</h3>
+                        <p class="text-gray-600 mb-4 font-body">Visualisasi peta tata ruang wilayah untuk perencanaan dan pengembangan kawasan yang terintegrasi.</p>
+                        <a href="{{ url('/peta') }}" class="text-primary font-medium hover:text-accent transition-colors relative group">
+                            Lihat Peta 
                             <span class="inline-block transform group-hover:translate-x-1 transition-transform">→</span>
                         </a>
                     </div>

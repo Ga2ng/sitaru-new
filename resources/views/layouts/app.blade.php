@@ -206,7 +206,8 @@
 
                 <!-- Navigation Menu -->
                 <div class="px-4 py-6">
-                    <!-- MENU Section -->
+                    @role('admin|superadmin')
+                    <!-- MENU Section - Admin -->
                     <div class="nav-section-title">MENU</div>
                     
                     <div class="space-y-1">
@@ -214,36 +215,12 @@
                             <i class="fas fa-tachometer-alt w-4 h-4"></i>
                             <span>Dashboard</span>
                         </a>
-
-                        {{-- <a href="#" class="nav-item flex items-center space-x-3 px-3 py-2.5 text-sm font-medium text-gray-600">
-                            <i class="fas fa-tasks w-4 h-4"></i>
-                            <span>Tasks</span>
-                        </a>
-
-                        <a href="#" class="nav-item flex items-center space-x-3 px-3 py-2.5 text-sm font-medium text-gray-600">
-                            <i class="fas fa-calendar w-4 h-4"></i>
-                            <span>Calendar</span>
-                        </a>
-
-                        <a href="#" class="nav-item flex items-center space-x-3 px-3 py-2.5 text-sm font-medium text-gray-600">
-                            <i class="fas fa-chart-line w-4 h-4"></i>
-                            <span>Analytics</span>
-                        </a>
-
-                        <a href="#" class="nav-item flex items-center space-x-3 px-3 py-2.5 text-sm font-medium text-gray-600">
-                            <i class="fas fa-users w-4 h-4"></i>
-                            <span>Team</span>
-                        </a> --}}
                     </div>
 
-                    <!-- LAYANAN Section -->
+                    <!-- LAYANAN Section - Admin -->
                     <div class="nav-section-title">LAYANAN</div>
                     
                     <div class="space-y-1">
-                        {{-- <a href="/layanan/kkpr" class="nav-item flex items-center space-x-3 px-3 py-2.5 text-sm font-medium {{ request()->is('layanan/kkpr*') ? 'active' : '' }}">
-                            <i class="fas fa-file-alt w-4 h-4"></i>
-                            <span>KKPR</span>
-                        </a> --}}
                         <a href="{{ route('admin.kkpr.index') }}" class="nav-item flex items-center space-x-3 px-3 py-2.5 text-sm font-medium {{ request()->is('admin/kkpr') || request()->is('admin/kkpr/*') ? 'active' : '' }}">
                             <i class="fas fa-file-alt w-4 h-4"></i>
                             <span>Persetujuan Bagi UMK</span>
@@ -258,34 +235,9 @@
                             <i class="fas fa-bullhorn w-4 h-4"></i>
                             <span>Pengaduan</span>
                         </a>
-
-                        {{-- <a href="#" class="nav-item flex items-center space-x-3 px-3 py-2.5 text-sm font-medium text-gray-600">
-                            <i class="fas fa-id-card w-4 h-4"></i>
-                            <span>KTP</span>
-                        </a>
-
-                        <a href="#" class="nav-item flex items-center space-x-3 px-3 py-2.5 text-sm font-medium text-gray-600">
-                            <i class="fas fa-users w-4 h-4"></i>
-                            <span>KK</span>
-                        </a>
-
-                        <a href="#" class="nav-item flex items-center space-x-3 px-3 py-2.5 text-sm font-medium text-gray-600">
-                            <i class="fas fa-baby w-4 h-4"></i>
-                            <span>Akta Kelahiran</span>
-                        </a>
-
-                        <a href="#" class="nav-item flex items-center space-x-3 px-3 py-2.5 text-sm font-medium text-gray-600">
-                            <i class="fas fa-heart w-4 h-4"></i>
-                            <span>Akta Nikah</span>
-                        </a>
-
-                        <a href="#" class="nav-item flex items-center space-x-3 px-3 py-2.5 text-sm font-medium text-gray-600">
-                            <i class="fas fa-cross w-4 h-4"></i>
-                            <span>Akta Kematian</span>
-                        </a> --}}
                     </div>
 
-                    <!-- INFORMASI Section -->
+                    <!-- INFORMASI Section - Admin -->
                     <div class="nav-section-title">INFORMASI</div>
                     
                     <div class="space-y-1">
@@ -315,7 +267,7 @@
                         </a>
                     </div>
 
-                    <!-- ACCOUNT Section -->
+                    <!-- ACCOUNT Section - Admin -->
                     <div class="nav-section-title">ACCOUNT</div>
                     
                     <div class="space-y-1">
@@ -324,7 +276,7 @@
                             <span>Profile</span>
                         </a>
 
-                        <!-- Settings Dropdown -->
+                        <!-- Settings Dropdown - Admin Only -->
                         <div class="relative" x-data="{ settingsOpen: false }">
                             <button @click="settingsOpen = !settingsOpen" class="nav-item flex items-center justify-between w-full space-x-3 px-3 py-2.5 text-sm font-medium text-gray-600 hover:text-gray-900">
                                 <div class="flex items-center space-x-3">
@@ -356,10 +308,91 @@
                             </button>
                         </form>
                     </div>
+                    @endrole
+
+                    @role('member')
+                    <!-- MENU Section - Member -->
+                    <div class="nav-section-title">MENU</div>
+                    
+                    <div class="space-y-1">
+                        <a href="{{ url('/dashboard') }}" class="nav-item flex items-center space-x-3 px-3 py-2.5 text-sm font-medium {{ request()->is('dashboard') ? 'active' : '' }}">
+                            <i class="fas fa-home w-4 h-4"></i>
+                            <span>Beranda</span>
+                        </a>
+                    </div>
+
+                    <!-- LAYANAN Section - Member -->
+                    <div class="nav-section-title">LAYANAN SAYA</div>
+                    
+                    <div class="space-y-1">
+                        <a href="{{ route('layanan.kkpr.index') }}" class="nav-item flex items-center space-x-3 px-3 py-2.5 text-sm font-medium {{ request()->is('layanan/kkpr*') ? 'active' : '' }}">
+                            <i class="fas fa-file-alt w-4 h-4"></i>
+                            <span>Pengajuan UMK</span>
+                        </a>
+
+                        <a href="#" class="nav-item flex items-center space-x-3 px-3 py-2.5 text-sm font-medium text-gray-600">
+                            <i class="fas fa-file-contract w-4 h-4"></i>
+                            <span>Pengajuan KKPR</span>
+                        </a>
+
+                        <a href="#" class="nav-item flex items-center space-x-3 px-3 py-2.5 text-sm font-medium text-gray-600">
+                            <i class="fas fa-bullhorn w-4 h-4"></i>
+                            <span>Pengaduan Saya</span>
+                        </a>
+
+                        <a href="#" class="nav-item flex items-center space-x-3 px-3 py-2.5 text-sm font-medium text-gray-600">
+                            <i class="fas fa-history w-4 h-4"></i>
+                            <span>Riwayat Pengajuan</span>
+                        </a>
+                    </div>
+
+                    <!-- INFORMASI Section - Member -->
+                    {{-- <div class="nav-section-title">INFORMASI</div>
+                    
+                    <div class="space-y-1">
+                        <a href="#" class="nav-item flex items-center space-x-3 px-3 py-2.5 text-sm font-medium text-gray-600">
+                            <i class="fas fa-info-circle w-4 h-4"></i>
+                            <span>Informasi</span>
+                        </a>
+
+                        <a href="#" class="nav-item flex items-center space-x-3 px-3 py-2.5 text-sm font-medium text-gray-600">
+                            <i class="fas fa-newspaper w-4 h-4"></i>
+                            <span>Berita</span>
+                        </a>
+
+                        <a href="#" class="nav-item flex items-center space-x-3 px-3 py-2.5 text-sm font-medium text-gray-600">
+                            <i class="fas fa-book w-4 h-4"></i>
+                            <span>Panduan</span>
+                        </a>
+                    </div> --}}
+
+                    <!-- ACCOUNT Section - Member -->
+                    <div class="nav-section-title">AKUN SAYA</div>
+                    
+                    <div class="space-y-1">
+                        <a href="{{ route('profile.edit') }}" class="nav-item flex items-center space-x-3 px-3 py-2.5 text-sm font-medium {{ request()->is('profile*') ? 'active' : '' }}">
+                            <i class="fas fa-user w-4 h-4"></i>
+                            <span>Profile</span>
+                        </a>
+
+                        {{-- <a href="#" class="nav-item flex items-center space-x-3 px-3 py-2.5 text-sm font-medium text-gray-600">
+                            <i class="fas fa-bell w-4 h-4"></i>
+                            <span>Notifikasi</span>
+                        </a> --}}
+
+                        <form method="POST" action="{{ route('logout') }}" class="mt-2">
+                            @csrf
+                            <button type="submit" class="nav-item flex items-center w-full space-x-3 px-3 py-2.5 text-sm font-medium text-gray-600 hover:text-red-600">
+                                <i class="fas fa-sign-out-alt w-4 h-4"></i>
+                                <span>Logout</span>
+                            </button>
+                        </form>
+                    </div>
+                    @endrole
                 </div>
 
                 <!-- Mobile App Download Card -->
-                <div class="mobile-app-card">
+                {{-- <div class="mobile-app-card">
                     <div class="flex items-start space-x-3">
                         <div class="w-10 h-10 primary-bg rounded-lg flex items-center justify-center flex-shrink-0">
                             <i class="fas fa-mobile-alt text-white"></i>
@@ -372,7 +405,7 @@
                             </button>
                         </div>
                     </div>
-                </div>
+                </div> --}}
             </div>
         </div>
 
