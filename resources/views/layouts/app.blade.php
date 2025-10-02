@@ -325,17 +325,17 @@
                     <div class="nav-section-title">LAYANAN SAYA</div>
                     
                     <div class="space-y-1">
-                        <a href="{{ route('layanan.kkpr.index') }}" class="nav-item flex items-center space-x-3 px-3 py-2.5 text-sm font-medium {{ request()->is('layanan/kkpr*') ? 'active' : '' }}">
+                        <a href="{{ route('member.kkpr.index') }}" class="nav-item flex items-center space-x-3 px-3 py-2.5 text-sm font-medium {{ request()->is('member/kkpr*') ? 'active' : '' }}">
                             <i class="fas fa-file-alt w-4 h-4"></i>
-                            <span>Pengajuan UMK</span>
+                            <span>Persetujuan Bagi UMK</span>
                         </a>
 
                         <a href="#" class="nav-item flex items-center space-x-3 px-3 py-2.5 text-sm font-medium text-gray-600">
                             <i class="fas fa-file-contract w-4 h-4"></i>
-                            <span>Pengajuan KKPR</span>
+                            <span>KKPR Terbit Otomatis</span>
                         </a>
 
-                        <a href="#" class="nav-item flex items-center space-x-3 px-3 py-2.5 text-sm font-medium text-gray-600">
+                        {{-- <a href="#" class="nav-item flex items-center space-x-3 px-3 py-2.5 text-sm font-medium text-gray-600">
                             <i class="fas fa-bullhorn w-4 h-4"></i>
                             <span>Pengaduan Saya</span>
                         </a>
@@ -343,7 +343,7 @@
                         <a href="#" class="nav-item flex items-center space-x-3 px-3 py-2.5 text-sm font-medium text-gray-600">
                             <i class="fas fa-history w-4 h-4"></i>
                             <span>Riwayat Pengajuan</span>
-                        </a>
+                        </a> --}}
                     </div>
 
                     <!-- INFORMASI Section - Member -->

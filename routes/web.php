@@ -54,3 +54,4 @@ Route::get('/clear-rate-limit', function () {
 });
 require __DIR__.'/auth.php';
 require __DIR__.'/admin.php';
+require __DIR__.'/member.php';
