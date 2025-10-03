@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Member\MemberKkprController;
+use App\Http\Controllers\Member\MemberKkprNonController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth'])->group(function () {
@@ -17,5 +18,18 @@ Route::middleware(['auth'])->group(function () {
         // PDF Routes
         Route::get('/kkpr/{id}/cetak', [MemberKkprController::class, 'cetakDetail'])->name('kkpr.cetak.detail');
         Route::get('/kkpr/cetak/daftar', [MemberKkprController::class, 'cetakDaftar'])->name('kkpr.cetak.daftar');
+        
+        // Member KKPR Non Routes
+        Route::get('/kkprnon', [MemberKkprNonController::class, 'index'])->name('kkprnon.index');
+        Route::get('/kkprnon/create', [MemberKkprNonController::class, 'create'])->name('kkprnon.create');
+        Route::post('/kkprnon', [MemberKkprNonController::class, 'store'])->name('kkprnon.store');
+        Route::get('/kkprnon/{id}', [MemberKkprNonController::class, 'show'])->name('kkprnon.show');
+        Route::get('/kkprnon/{id}/edit', [MemberKkprNonController::class, 'edit'])->name('kkprnon.edit');
+        Route::put('/kkprnon/{id}', [MemberKkprNonController::class, 'update'])->name('kkprnon.update');
+        Route::delete('/kkprnon/{id}', [MemberKkprNonController::class, 'destroy'])->name('kkprnon.destroy');
+        
+        // PDF Routes for KKPR Non
+        Route::get('/kkprnon/{id}/cetak', [MemberKkprNonController::class, 'cetakDetail'])->name('kkprnon.cetak.detail');
+        Route::get('/kkprnon/cetak/daftar', [MemberKkprNonController::class, 'cetakDaftar'])->name('kkprnon.cetak.daftar');
     });
 });

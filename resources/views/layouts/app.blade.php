@@ -325,13 +325,13 @@
                     <div class="nav-section-title">LAYANAN SAYA</div>
                     
                     <div class="space-y-1">
-                        <a href="{{ route('member.kkpr.index') }}" class="nav-item flex items-center space-x-3 px-3 py-2.5 text-sm font-medium {{ request()->is('member/kkpr*') ? 'active' : '' }}">
+                        <a href="{{ route('member.kkpr.index') }}" class="nav-item flex items-center space-x-3 px-3 py-2.5 text-sm font-medium {{ request()->routeIs('member.kkpr.index') || request()->routeIs('member.kkpr.create') || request()->routeIs('member.kkpr.show') || request()->routeIs('member.kkpr.edit') || request()->routeIs('member.kkpr.cetak.*') ? 'active' : '' }}">
                             <i class="fas fa-file-alt w-4 h-4"></i>
                             <span>Persetujuan Bagi UMK</span>
                         </a>
 
-                        <a href="#" class="nav-item flex items-center space-x-3 px-3 py-2.5 text-sm font-medium text-gray-600">
-                            <i class="fas fa-file-contract w-4 h-4"></i>
+                        <a href="{{ route('member.kkprnon.index') }}" class="nav-item flex items-center space-x-3 px-3 py-2.5 text-sm font-medium {{ request()->routeIs('member.kkprnon.index') || request()->routeIs('member.kkprnon.create') || request()->routeIs('member.kkprnon.show') || request()->routeIs('member.kkprnon.edit') || request()->routeIs('member.kkprnon.cetak.*') ? 'active' : '' }}">
+                            <i class="fas fa-home w-4 h-4"></i>
                             <span>KKPR Terbit Otomatis</span>
                         </a>
 
