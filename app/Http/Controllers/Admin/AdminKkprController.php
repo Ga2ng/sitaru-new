@@ -136,32 +136,37 @@ class AdminKkprController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'nama_pemohon' => 'required|string|max:255',
-            'nik_pemohon' => 'required|string|max:16',
-            'no_telp' => 'required|string|max:20',
-            'pekerjaan_pemohon' => 'required|string|max:255',
-            'alamat_pemohon' => 'required|string|max:500',
-            'alamat_tanah' => 'required|string|max:500',
-            'kabupaten_id' => 'required|integer',
-            'kecamatan_id' => 'required|integer',
-            'kelurahan_id' => 'required|integer',
-            'luas' => 'required|numeric',
-            'fungsi' => 'required|string|max:255',
+        // Custom validation untuk NIK
+        $request->merge([
+            'nik_pemohon' => preg_replace('/[^0-9]/', '', $request->nik_pemohon)
+        ]);
+
+        // Debug: Log request data
+        \Illuminate\Support\Facades\Log::info('KKPR Store Request', [
+            'nik_pemohon' => $request->nik_pemohon,
+            'nama_pemohon' => $request->nama_pemohon,
+            'has_kml_geojson' => $request->has('kml_geojson'),
+            'kml_geojson_length' => strlen($request->kml_geojson ?? ''),
+            'has_kode_kbli' => $request->has('kode_kbli'),
+            'kode_kbli_count' => count($request->kode_kbli ?? []),
         ]);
 
         try {
             DB::beginTransaction();
 
-            // Cari atau buat user
+            // Cari atau buat user (sesuai logic lama)
             $no_ktp = $request->get('nik_pemohon');
-            $alamat_email = $request->has('email') ? $request->get('email') : $no_ktp . '@email.com';
+            $alamat_email = $no_ktp . '@email.com';
+
+            if ($request->has('email')) {
+                $alamat_email = $request->get('email');
+            }
 
             $user = User::where('username', $no_ktp)
                 ->orWhere('nik', $no_ktp)
                 ->first();
 
-            if ($user) {
+            if (isset($user)) {
                 $user->update([
                     'name' => $request->get('nama_pemohon'),
                     'nik' => $no_ktp,
@@ -185,76 +190,223 @@ class AdminKkprController extends Controller
                 $user->assignRole('member');
             }
 
-            // Buat KKPR
-            $kkprData = $request->only([
-                'alamat_tanah', 'kabupaten_id', 'kecamatan_id', 'kelurahan_id', 
-                'luas', 'jns_sertifikat', 'thn_sertifikat', 'no_sertifikat', 
-                'an_sertifikat', 'luas_sertifikat', 'penggunaan_awal', 
-                'penggunaan_baru', 'longitude', 'lattitude', 'kepimilikan', 
-                'rt', 'rw', 'status_penggunaan_tanah', 'jenis_kegiatan', 
-                'jenis_kegiatan_lainnya', 'nib', 'alamat_kegiatan', 'NO_KEC', 
-                'NO_KEL', 'luas_dimohon', 'luas_tanah', 'status_lahan', 
-                'status_tanah', 'penggunaan_sekarang', 'jumlah_lantai', 
-                'tinggi_bangunan', 'fungsi', 'no_nib', 'tgl_terbit', 'tgl_surat'
-            ]);
+            // Buat KKPR (sesuai logic lama)
+            $req = $request->only('alamat_tanah', 'kabupaten_id', 'kecamatan_id', 'kelurahan_id', 'luas', 'jns_sertifikat', 'thn_sertifikat', 'no_sertifikat', 'an_sertifikat', 'luas_sertifikat', 'penggunaan_awal', 'penggunaan_baru', 'longitude', 'lattitude', 'kepimilikan', 'rt', 'rw');
 
-            $kkprData['user_id'] = $user->id;
-            $kkprData['jenis'] = 'usaha';
-            $kkprData['luas_lantai'] = $request->get('luas_lantai');
+            $req['user_id'] = $user->id;
+            $req['jenis'] = 'usaha';
+            $req['status_penggunaan_tanah'] = $request->get('status_penggunaan_tanah');
+            $req['jenis_kegiatan'] = $request->get('jenis_kegiatan');
+            $req['jenis_kegiatan_lainnya'] = $request->get('jenis_kegiatan_lainnya');
 
-            $kkpr = Kkpr::create($kkprData);
+            $req['nib'] = $request->get('nib');
+            $req['alamat_kegiatan'] = $request->get('alamat_kegiatan');
+            $req['NO_KEC'] = $request->get('NO_KEC');
+            $req['NO_KEL'] = $request->get('NO_KEL');
+            $req['luas_dimohon'] = $request->get('luas_dimohon');
+            $req['luas_tanah'] = $request->get('luas_tanah');
+            $req['status_lahan'] = $request->get('status_lahan');
+            $req['status_tanah'] = $request->get('status_tanah');
+            $req['penggunaan_sekarang'] = $request->get('penggunaan_sekarang');
+            $req['jumlah_lantai'] = $request->get('jumlah_lantai');
+            $req['tinggi_bangunan'] = $request->get('tinggi_bangunan');
 
-            // Simpan KBLI
-            if ($request->has('kode_kbli') && $request->has('judul_kbli')) {
-                $kode_kbli = $request->get('kode_kbli');
-                $judul_kbli = $request->get('judul_kbli');
+            // Simpan luas_lantai langsung tanpa json_encode tambahan
+            $req['luas_lantai'] = $request->get('luas_lantai');
 
-                foreach ($kode_kbli as $key => $kode) {
+            $req['fungsi'] = $request->get('fungsi');
+            $req['no_nib'] = $request->get('no_nib');
+            $req['tgl_terbit'] = $request->get('tgl_terbit');
+            $req['tgl_surat'] = $request->get('tgl_surat');
+
+            $model = Kkpr::create($req);
+
+            // Simpan KBLI (sesuai logic lama)
+            $kbli = $request->only('kode_kbli', 'judul_kbli');
+            if (isset($kbli)) {
+                $kbli_cek = $model->kkpr_kbli;
+                if ($kbli_cek->count()) {
+                    foreach ($kbli_cek as $ada) {
+                        $ada->delete();
+                    }
+                }
+
+                $kode = $kbli['kode_kbli'];
+                $judul = $kbli['judul_kbli'];
+
+                foreach ($kode as $key => $n) {
                     Kbli::create([
                         'jenis' => 'UMK',
-                        'id_kkpr' => $kkpr->id,
-                        'kode_kbli' => $kode,
-                        'judul_kbli' => $judul_kbli[$key],
+                        'id_kkpr' => $model->id,
+                        'kode_kbli' => $kode[$key],
+                        'judul_kbli' => $judul[$key],
                     ]);
                 }
             }
 
-            // Simpan Koordinat
-            if ($request->has('longi') && $request->has('lati')) {
-                $longitude = $request->get('longi');
-                $lattitude = $request->get('lati');
+            // Simpan Koordinat (sesuai logic lama)
+            $reqkor = $request->only('longi', 'lati');
+            if (isset($reqkor)) {
+                $koordinat = $model->kkpr_koordinat;
+                if ($koordinat->count()) {
+                    foreach ($koordinat as $kor) {
+                        $kor->delete();
+                    }
+                }
 
-                foreach ($longitude as $key => $longi) {
+                $longitude = $reqkor['longi'];
+                $lattitude = $reqkor['lati'];
+
+                foreach ($longitude as $key => $n) {
                     Koordinat_kkpr::create([
                         'jenis' => 'UMK',
-                        'id_kkpr' => $kkpr->id,
-                        'longi' => $longi,
+                        'id_kkpr' => $model->id,
+                        'longi' => $longitude[$key],
                         'lati' => $lattitude[$key],
                     ]);
                 }
             }
 
-            // Handle file uploads
-            $this->handleFileUploads($request, $kkpr);
+            // Handle file uploads (sesuai logic lama)
+            $folder = 'uploads/berkas/umk/' . $model->id;
+            if (!file_exists($folder)) {
+                mkdir($folder, 0755, true);
+            }
 
-            // Buat riwayat
-            Kkpr_riwayat::create([
-                'kkpr_id' => $kkpr->id,
-                'status_id' => '1',
-                'status' => 'Pengajuan',
-                'keterangan' => 'Pengajuan dilakukan oleh Pemohon'
-            ]);
+            if ($request->hasFile('dok_kepemilikan')) {
+                if (!file_exists($folder . '/dokumen_kepemilikan')) {
+                    mkdir($folder . '/dokumen_kepemilikan', 0755, true);
+                }
+                $fDok = $request->file('dok_kepemilikan');
+                $filename = 'dok_kepemilikan.' . $fDok->guessClientExtension();
+                $fDok->move($folder . '/dokumen_kepemilikan', $filename);
+
+                $model->update(['dok_kepemilikan' => $filename]);
+            }
+
+            if ($request->hasFile('dok_taru')) {
+                if (!file_exists($folder . '/dok_taru')) {
+                    mkdir($folder . '/dok_taru', 0755, true);
+                }
+                $fTaru = $request->file('dok_taru');
+                $filename = 'dok_taru.' . $fTaru->guessClientExtension();
+                $fTaru->move($folder . '/dok_taru', $filename);
+
+                $model->update(['dok_taru' => $filename]);
+            }
+
+            if ($request->hasFile('sp_mandiri')) {
+                if (!file_exists($folder . '/sp_mandiri')) {
+                    mkdir($folder . '/sp_mandiri', 0755, true);
+                }
+                $fMandiri = $request->file('sp_mandiri');
+                $filename = 'sp_mandiri.' . $fMandiri->guessClientExtension();
+                $fMandiri->move($folder . '/sp_mandiri', $filename);
+
+                $model->update(['sp_mandiri' => $filename]);
+            }
+
+            if ($request->hasFile('f_nib')) {
+                if (!file_exists($folder . '/f_nib')) {
+                    mkdir($folder . '/f_nib', 0755, true);
+                }
+                $fNib = $request->file('f_nib');
+                $filename = 'f_nib.' . $fNib->guessClientExtension();
+                $fNib->move($folder . '/f_nib', $filename);
+
+                $model->update(['f_nib' => $filename]);
+            }
+
+            if ($request->hasFile('f_kml')) {
+                if (!file_exists($folder . '/kml')) {
+                    mkdir($folder . '/kml', 0755, true);
+                }
+                $fKml = $request->file('f_kml');
+                $filename = 'kml.' . $fKml->getClientOriginalExtension();
+                $fKml->move($folder . '/kml', $filename);
+
+                $model->update(['f_kml' => $filename]);
+            }
+
+            $kml_geo = $request->get('kml_geojson');
+            if ($kml_geo != null) {
+                $dir_to_save = $folder . '/kml/';
+                if (!is_dir($dir_to_save)) {
+                    mkdir($folder . '/kml/', 0755, true);
+                }
+                file_put_contents($dir_to_save . 'geojson.geojson', $kml_geo);
+                $model->update(['f_geojson' => 'geojson.geojson']);
+            }
+
+            if ($request->hasFile('f_ktp')) {
+                if (!file_exists($folder . '/f_ktp')) {
+                    mkdir($folder . '/f_ktp', 0755, true);
+                }
+                $fKtp = $request->file('f_ktp');
+                $filename = 'f_ktp.' . $fKtp->guessClientExtension();
+                $fKtp->move($folder . '/f_ktp', $filename);
+
+                $model->update(['f_ktp' => $filename]);
+            }
+
+            if ($request->hasFile('f_sertifikat')) {
+                if (!file_exists($folder . '/f_sertifikat')) {
+                    mkdir($folder . '/f_sertifikat', 0755, true);
+                }
+                $fSertifikat = $request->file('f_sertifikat');
+                $filename = 'f_sertifikat.' . $fSertifikat->guessClientExtension();
+                $fSertifikat->move($folder . '/f_sertifikat', $filename);
+
+                $model->update(['f_sertifikat' => $filename]);
+            }
+
+            if ($request->hasFile('f_siteplan')) {
+                if (!file_exists($folder . '/f_siteplan')) {
+                    mkdir($folder . '/f_siteplan', 0755, true);
+                }
+                $fSiteplan = $request->file('f_siteplan');
+                $filename = 'f_siteplan.' . $fSiteplan->guessClientExtension();
+                $fSiteplan->move($folder . '/f_siteplan', $filename);
+
+                $model->update(['f_siteplan' => $filename]);
+            }
+
+            if ($request->hasFile('f_akta')) {
+                if (!file_exists($folder . '/f_akta')) {
+                    mkdir($folder . '/f_akta', 0755, true);
+                }
+                $fAkta = $request->file('f_akta');
+                $filename = 'f_akta.' . $fAkta->guessClientExtension();
+                $fAkta->move($folder . '/f_akta', $filename);
+
+                $model->update(['f_akta' => $filename]);
+            }
+
+            // Buat riwayat (sesuai logic lama)
+            $riwayat = Kkpr_riwayat::where('kkpr_id', $model->id)->where('status_id', 1)->first();
+            if (!$riwayat) {
+                Kkpr_riwayat::create(['kkpr_id' => $model->id, 'status_id' => '1', 'status' => 'Pengajuan', 'keterangan' => 'Pengajuan dilakukan oleh Pemohon']);
+            } else {
+                Kkpr_riwayat::where('id', $riwayat->id)->update(array('keterangan' => 'Pengajuan dilakukan oleh Pemohon'));
+            }
 
             DB::commit();
 
-            return redirect()->route($this->path . '.index')
-                ->with('success', 'Data berhasil disimpan kedalam sistem');
+            return redirect()->route($this->path . '.index')->withSuccess('Data berhasil disimpan kedalam sistem');
 
         } catch (\Exception $e) {
             DB::rollback();
+            
+            // Log error untuk debugging
+            \Illuminate\Support\Facades\Log::error('KKPR Store Error: ' . $e->getMessage(), [
+                'request_data' => $request->except(['f_ktp', 'f_nib', 'sp_mandiri', 'dok_kepemilikan', 'f_sertifikat', 'f_siteplan', 'f_akta', 'f_kml']),
+                'user_id' => null,
+                'trace' => $e->getTraceAsString()
+            ]);
+            
             return redirect()->back()
                 ->withInput()
-                ->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+                ->with('error', 'Terjadi kesalahan saat menyimpan data: ' . $e->getMessage());
         }
     }
 
@@ -384,8 +536,6 @@ class AdminKkprController extends Controller
                 }
             }
 
-            // Handle file uploads
-            $this->handleFileUploads($request, $kkpr);
 
             DB::commit();
 
@@ -533,49 +683,4 @@ class AdminKkprController extends Controller
         }
     }
 
-    private function handleFileUploads(Request $request, Kkpr $kkpr)
-    {
-        $folder = 'uploads/berkas/umk/' . $kkpr->id;
-        if (!file_exists($folder)) {
-            mkdir($folder, 0755, true);
-        }
-
-        $fileFields = [
-            'dok_kepemilikan' => 'dokumen_kepemilikan',
-            'dok_taru' => 'dok_taru',
-            'sp_mandiri' => 'sp_mandiri',
-            'f_nib' => 'f_nib',
-            'f_kml' => 'kml',
-            'f_ktp' => 'f_ktp',
-            'f_sertifikat' => 'f_sertifikat',
-            'f_siteplan' => 'f_siteplan',
-            'f_akta' => 'f_akta',
-        ];
-
-        foreach ($fileFields as $field => $subfolder) {
-            if ($request->hasFile($field)) {
-                $subfolderPath = $folder . '/' . $subfolder;
-                if (!file_exists($subfolderPath)) {
-                    mkdir($subfolderPath, 0755, true);
-                }
-
-                $file = $request->file($field);
-                $filename = $field . '.' . $file->guessClientExtension();
-                $file->move($subfolderPath, $filename);
-
-                $kkpr->update([$field => $filename]);
-            }
-        }
-
-        // Handle GeoJSON
-        $kml_geo = $request->get('kml_geojson');
-        if ($kml_geo != null) {
-            $dir_to_save = $folder . '/kml/';
-            if (!is_dir($dir_to_save)) {
-                mkdir($dir_to_save, 0755, true);
-            }
-            file_put_contents($dir_to_save . 'geojson.geojson', $kml_geo);
-            $kkpr->update(['f_geojson' => 'geojson.geojson']);
-        }
-    }
 }
