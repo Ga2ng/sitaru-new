@@ -50,6 +50,10 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'permission:User'])-
             Route::get('kkpr/{kkpr}/validasi', [AdminKkprController::class, 'validasi'])->name('kkpr.validasi');
             Route::post('kkpr/validasi', [AdminKkprController::class, 'validasiStore'])->name('kkpr.validasi.store');
             Route::post('kkpr/revisi', [AdminKkprController::class, 'validasiRevisi'])->name('kkpr.revisi');
+            Route::get('kkpr/{kkpr}/analisa', [AdminKkprController::class, 'analisa'])->name('kkpr.analisa');
+            Route::post('kkpr/analisa/store', [AdminKkprController::class, 'analisaStore'])->name('kkpr.analisa.store');
+            Route::post('kkpr/hapus-dokumen', [AdminKkprController::class, 'hapusDokumen'])->name('kkpr.hapus.dokumen');
+            Route::post('kkpr/survey/{id}', [AdminKkprController::class, 'survey'])->name('kkpr.survey');
 
             // KKPR Non Berusaha Management Routes
             Route::resource('kkprnon', AdminKkprNonController::class);

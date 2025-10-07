@@ -695,4 +695,192 @@ class AdminKkprController extends Controller
         }
     }
 
+    public function analisa($id)
+    {
+        $model = Kkpr::with(['user', 'kkpr_kbli'])->findOrFail($id);
+        $kbli = Kbli::where('id_kkpr', $id)->where('jenis', 'UMK')->get();
+        
+        $data = [
+            'model' => $model,
+            'kbli' => $kbli,
+            'title' => 'Form Analisa UMK',
+            'isEdit' => $model->status_rencana != null ? true : false,
+            'analis' => User::permission('Analis')->get(),
+        ];
+
+        return view($this->base_view . 'form_analisa', $data);
+    }
+
+    public function analisaStore(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+
+            $model = Kkpr::findOrFail($request->id);
+
+            // Update data analisa
+            $updateData = [
+                'status_rencana' => $request->status_rencana,
+                'rencana_manfaat' => $request->rencana_manfaat,
+                'status_lsd' => $request->status_lsd,
+                'kdb' => $request->kdb,
+                'klb' => $request->klb,
+                'kdh' => $request->kdh,
+                'gsb' => $request->gsb,
+                'tinggi_bangunan' => $request->tinggi_bangunan,
+                'pertimbangan' => $request->pertimbangan,
+                'pemeriksa_teknis' => $request->pemeriksa_teknis,
+            ];
+
+            $model->update($updateData);
+
+            // Update KBLI jika ada
+            if ($request->has('kode_kbli') && $request->has('judul_kbli')) {
+                Kbli::where('id_kkpr', $model->id)->where('jenis', 'UMK')->delete();
+
+                $kode_kbli = $request->get('kode_kbli');
+                $judul_kbli = $request->get('judul_kbli');
+
+                foreach ($kode_kbli as $key => $kode) {
+                    Kbli::create([
+                        'jenis' => 'UMK',
+                        'id_kkpr' => $model->id,
+                        'kode_kbli' => $kode,
+                        'judul_kbli' => $judul_kbli[$key],
+                    ]);
+                }
+            }
+
+            // Handle file uploads
+            $folder = 'uploads/berkas/umk/' . $model->id;
+            if (!file_exists($folder)) {
+                mkdir($folder, 0755, true);
+            }
+
+            // Upload KML
+            if ($request->hasFile('f_kml')) {
+                if (!file_exists($folder . '/kml')) {
+                    mkdir($folder . '/kml', 0755, true);
+                }
+                $fKml = $request->file('f_kml');
+                $filename = 'kml.' . $fKml->getClientOriginalExtension();
+                $fKml->move($folder . '/kml', $filename);
+
+                $model->update(['f_kml' => $filename]);
+            }
+
+            // Save GeoJSON
+            $kml_geo = $request->get('kml_geojson');
+            if ($kml_geo != null) {
+                $dir_to_save = $folder . '/kml/';
+                if (!is_dir($dir_to_save)) {
+                    mkdir($folder . '/kml/', 0755, true);
+                }
+                file_put_contents($dir_to_save . 'geojson.geojson', $kml_geo);
+                $model->update(['f_geojson' => 'geojson.geojson']);
+            }
+
+            // Upload Foto Peta
+            if ($request->hasFile('foto_peta')) {
+                if (!file_exists($folder . '/peta')) {
+                    mkdir($folder . '/peta', 0755, true);
+                }
+                $fPeta = $request->file('foto_peta');
+                $filename = 'peta.' . $fPeta->guessClientExtension();
+                $fPeta->move($folder . '/peta', $filename);
+
+                $model->update(['foto_peta' => $filename]);
+            }
+
+            // Update riwayat
+            $riwayat = Kkpr_riwayat::where('kkpr_id', $model->id)->where('status_id', 7)->first();
+            if (!$riwayat) {
+                Kkpr_riwayat::create([
+                    'kkpr_id' => $model->id,
+                    'status_id' => '7',
+                    'status' => 'Analisa',
+                    'keterangan' => 'Data UMK telah dianalisa oleh analis'
+                ]);
+            } else {
+                $riwayat->update(['keterangan' => 'Data UMK telah dianalisa oleh analis']);
+            }
+
+            // Update proses status
+            $model->update(['proses' => 7]);
+
+            DB::commit();
+
+            return redirect()->route($this->path . '.index')
+                ->with('success', 'Data analisa berhasil disimpan');
+
+        } catch (\Exception $e) {
+            DB::rollback();
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
+    }
+
+    public function hapusDokumen(Request $request)
+    {
+        try {
+            $model = Kkpr::findOrFail($request->id);
+            $field = $request->field;
+            
+            $folder = 'uploads/berkas/umk/' . $model->id;
+            
+            // Hapus file sesuai field
+            if ($field == 'f_kml' && $model->f_kml) {
+                $filePath = $folder . '/kml/' . $model->f_kml;
+                if (file_exists($filePath)) {
+                    unlink($filePath);
+                }
+                $model->update(['f_kml' => null]);
+            } elseif ($field == 'foto_peta' && $model->foto_peta) {
+                $filePath = $folder . '/peta/' . $model->foto_peta;
+                if (file_exists($filePath)) {
+                    unlink($filePath);
+                }
+                $model->update(['foto_peta' => null]);
+            }
+
+            return response()->json(['success' => true, 'message' => 'Dokumen berhasil dihapus']);
+
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()]);
+        }
+    }
+
+    public function survey($id)
+    {
+        try {
+            $model = Kkpr::findOrFail($id);
+
+            // Update status analisa dan proses
+            $model->update([
+                'status_analisa' => 'survey',
+                'proses' => 6
+            ]);
+
+            // Tambah riwayat
+            $riwayat = Kkpr_riwayat::where('kkpr_id', $model->id)->where('status_id', 6)->first();
+            if (!$riwayat) {
+                Kkpr_riwayat::create([
+                    'kkpr_id' => $model->id,
+                    'status_id' => '6',
+                    'status' => 'Survey',
+                    'keterangan' => 'Survey lapangan telah dilakukan'
+                ]);
+            } else {
+                Kkpr_riwayat::where('id', $riwayat->id)->update([
+                    'keterangan' => 'Survey lapangan telah dilakukan'
+                ]);
+            }
+
+            return response()->json(['success' => true, 'message' => 'Status survey berhasil diupdate']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()]);
+        }
+    }
+
 }

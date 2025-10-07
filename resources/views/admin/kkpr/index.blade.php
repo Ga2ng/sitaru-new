@@ -4,6 +4,9 @@
 @section('subtitle', 'Kelola semua permohonan kependudukan dengan mudah dan efisien')
 
 @section('content')
+<!-- SweetAlert2 CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
 <div class="max-w-7xl mx-auto space-y-6">
     <!-- Hero Section with Gradient -->
     <div class="relative overflow-hidden bg-gradient-to-br from-[#185B3C] via-[#0F3D26] to-[#185B3C] rounded-xl p-6 text-white">
@@ -387,6 +390,9 @@
     </div>
 </div>
 
+<!-- SweetAlert2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
     function showFilters() {
         document.getElementById('filterSection').style.display = 'block';
@@ -445,6 +451,14 @@
                     <i class="fas fa-check-circle w-4 mr-3"></i>
                     Validasi
                 </a>
+                <a href="/admin/kkpr/${id}/analisa" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-600 transition-colors">
+                    <i class="fas fa-file-signature w-4 mr-3"></i>
+                    Analisa
+                </a>
+                <button onclick="setSurvey(${id}); closeDropdownModal();" class="w-full flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-colors text-left">
+                    <i class="fas fa-map-marked-alt w-4 mr-3"></i>
+                    Survey
+                </button>
                 <a href="/admin/kkpr/${id}/edit" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
                     <i class="fas fa-edit w-4 mr-3"></i>
                     Edit
@@ -735,6 +749,58 @@
         const statusButtons = document.querySelectorAll('button[onclick^="openRiwayat"]');
         console.log('Status buttons found:', statusButtons.length);
     });
+
+    // Set Survey Status
+    function setSurvey(id) {
+        Swal.fire({
+            title: 'Survey Lapangan?',
+            text: "Apakah survey lapangan sudah dilakukan?",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#F97316',
+            cancelButtonColor: '#6B7280',
+            confirmButtonText: 'Ya, Sudah Survey',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch(`/admin/kkpr/survey/${id}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: 'Status survey berhasil diupdate',
+                            timer: 2000,
+                            showConfirmButton: false
+                        }).then(() => {
+                            location.reload();
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal!',
+                            text: data.message || 'Terjadi kesalahan saat update status survey'
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: 'Terjadi kesalahan saat update status survey'
+                    });
+                });
+            }
+        });
+    }
 </script>
 
 <!-- Dropdown Menu Modal -->
