@@ -99,7 +99,8 @@ class AdminKkprNonController extends Controller
 
     public function show($id)
     {
-        $kkpr = Kkpr::with(['user', 'kabupaten', 'kecamatan', 'kelurahan', 'kkpr_kbli', 'kkpr_koordinat', 'kkpr_terbit'])
+        $kkpr = Kkpr::with(['user', 'kabupaten', 'kecamatan', 'kelurahan', 'kkpr_kbli', 'kkpr_koordinat'])
+            ->where('jenis', 'non_usaha')
             ->findOrFail($id);
 
         $data = [
@@ -126,148 +127,343 @@ class AdminKkprNonController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'nama_pemohon' => 'required|string|max:255',
-            'nik_pemohon' => 'required|string|max:16',
-            'no_telp' => 'required|string|max:20',
-            'pekerjaan_pemohon' => 'required|string|max:255',
-            'alamat_pemohon' => 'required|string|max:500',
-            'alamat_tanah' => 'required|string|max:500',
-            'kabupaten_id' => 'required|integer',
-            'kecamatan_id' => 'required|integer',
-            'kelurahan_id' => 'required|integer',
-            'luas' => 'required|numeric',
-            'fungsi' => 'required|string|max:255',
-        ]);
-
-        try {
-            DB::beginTransaction();
-
-            // Cari atau buat user
-            $no_ktp = $request->get('nik_pemohon');
-            $alamat_email = $request->has('email') ? $request->get('email') : $no_ktp . '@email.com';
-
-            $user = User::where('username', $no_ktp)
-                ->orWhere('nik', $no_ktp)
-                ->first();
-
-            if ($user) {
-                $user->update([
-                    'name' => $request->get('nama_pemohon'),
-                    'nik' => $no_ktp,
-                    'email' => $alamat_email,
-                    'phone' => $request->get('no_telp'),
-                    'work' => $request->get('pekerjaan_pemohon'),
-                    'address' => $request->get('alamat_pemohon'),
-                ]);
-            } else {
-                $user = User::create([
-                    'name' => $request->get('nama_pemohon'),
-                    'username' => $no_ktp,
-                    'nik' => $no_ktp,
-                    'email' => $alamat_email,
-                    'phone' => $request->get('no_telp'),
-                    'work' => $request->get('pekerjaan_pemohon'),
-                    'address' => $request->get('alamat_pemohon'),
-                    'password' => bcrypt('123456'),
-                    'active' => 1,
-                ]);
-                $user->assignRole('member');
-                $user->givePermissionTo('KKPR NON BERUSAHA');
-            }
-
-            // Buat KKPR
-            $kkprData = $request->only([
-                'alamat_tanah', 'kabupaten_id', 'kecamatan_id', 'kelurahan_id', 
-                'luas', 'jns_sertifikat', 'thn_sertifikat', 'no_sertifikat', 
-                'an_sertifikat', 'luas_sertifikat', 'penggunaan_awal', 
-                'penggunaan_baru', 'longitude', 'lattitude', 'kepimilikan', 
-                'rt', 'rw', 'fungsi', 'nib', 'alamat_kegiatan', 'NO_KEC', 
-                'NO_KEL', 'luas_dimohon', 'luas_tanah', 'status_lahan', 
-                'status_tanah', 'penggunaan_sekarang', 'jumlah_lantai', 
-                'tinggi_bangunan', 'no_nib', 'tgl_terbit', 'tgl_surat'
-            ]);
-
-            $kkprData['user_id'] = $user->id;
-            $kkprData['jenis'] = 'non_usaha';
-            $kkprData['luas_lantai'] = $request->get('luas_lantai');
-
-            $kkpr = Kkpr::create($kkprData);
-
-            // Simpan KKPR Terbit
-            if ($request->has('jml_kpr')) {
-                $jml_kpr = $request->get('jml_kpr');
-                for ($i = 1; $i <= $jml_kpr; $i++) {
-                    $no_terbit = $request->get('no_terbit_' . $i);
-                    $tgl_terbit = $request->get('tgl_terbit_kkpr_' . $i);
-
-                    if ($no_terbit && $tgl_terbit) {
-                        Kkpr_terbit::create([
-                            'id_kkpr' => $kkpr->id,
-                            'no_terbit' => $no_terbit,
-                            'tgl_terbit' => $tgl_terbit,
-                        ]);
-                    }
-                }
-            }
-
-            // Simpan KBLI
-            if ($request->has('kode_kbli') && $request->has('judul_kbli')) {
-                $kode_kbli = $request->get('kode_kbli');
-                $judul_kbli = $request->get('judul_kbli');
-
-                foreach ($kode_kbli as $key => $kode) {
-                    Kbli::create([
-                        'jenis' => 'KKPR',
-                        'id_kkpr' => $kkpr->id,
-                        'kode_kbli' => $kode,
-                        'judul_kbli' => $judul_kbli[$key],
-                    ]);
-                }
-            }
-
-            // Simpan Koordinat
-            if ($request->has('longi') && $request->has('lati')) {
-                $longitude = $request->get('longi');
-                $lattitude = $request->get('lati');
-
-                foreach ($longitude as $key => $longi) {
-                    Koordinat_kkpr::create([
-                        'jenis' => 'KKPR',
-                        'id_kkpr' => $kkpr->id,
-                        'longi' => $longi,
-                        'lati' => $lattitude[$key],
-                    ]);
-                }
-            }
-
-            // Handle file uploads
-            $this->handleFileUploads($request, $kkpr, $no_ktp);
-
-            // Buat riwayat
-            Kkpr_riwayat::create([
-                'kkpr_id' => $kkpr->id,
-                'status_id' => '1',
-                'status' => 'Pengajuan',
-                'keterangan' => 'Pengajuan dilakukan oleh Pemohon'
-            ]);
-
-            DB::commit();
-
-            return redirect()->route($this->path . '.index')
-                ->with('success', 'Data berhasil disimpan kedalam sistem');
-
-        } catch (\Exception $e) {
-            DB::rollback();
-            return redirect()->back()
-                ->withInput()
-                ->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        $last   = Kkpr::orderBy('id', 'desc')->first();
+        $lastid = 1;
+        if (isset($last)) {
+            $lastid = $last->id + 1;
         }
+
+        $no_ktp       = $request->get('nik_pemohon');
+        $alamat_email = $no_ktp . '@email.com';
+
+        if ($request->has('email')) {
+            $alamat_email = $request->get('email');
+        }
+
+        $user = User::where('username', $no_ktp)
+                    ->orWhere('nik', $no_ktp)
+                    ->first();
+                    
+        if (isset($user)) {
+            $user->update([
+                'name'     => $request->get('nama_pemohon'),
+                'nik'      => $no_ktp,
+                'email'    => $alamat_email,
+                'phone'    => $request->get('no_telp'),
+                'work'     => $request->get('pekerjaan_pemohon'),
+                'address'  => $request->get('alamat_pemohon'),
+            ]);
+        } else {
+            $user = User::create([
+                'name'     => $request->get('nama_pemohon'),
+                'username' => $no_ktp,
+                'nik'      => $no_ktp,
+                'email'    => $alamat_email,
+                'phone'    => $request->get('no_telp'),
+                'work'     => $request->get('pekerjaan_pemohon'),
+                'address'  => $request->get('alamat_pemohon'),
+                'password' => bcrypt('123456'),
+                'active'   => 1,
+            ]);
+            $user->assignRole('member')->givePermissionTo('KKPR NON BERUSAHA');
+        }
+
+        $req                      = $request->only('alamat_tanah', 'kabupaten_id', 'kecamatan_id', 'kelurahan_id', 'luas', 'jns_sertifikat', 'thn_sertifikat', 'no_sertifikat', 'an_sertifikat', 'luas_sertifikat', 'penggunaan_awal', 'penggunaan_baru', 'longitude', 'lattitude', 'kepimilikan','rt', 'rw');
+        $req['user_id']           = $user->id;
+        $req['jenis']             = 'non_usaha';
+        $req['fungsi']            = $request->get('fungsi');
+        $req['nib']               = $request->get('nib');
+        $req['alamat_kegiatan']   = $request->get('alamat_kegiatan');
+        $req['NO_KEC']            = $request->get('NO_KEC');
+        $req['NO_KEL']            = $request->get('NO_KEL');
+        $req['luas_dimohon']      = $request->get('luas_dimohon');
+        $req['luas_tanah']        = $request->get('luas_tanah');
+        $req['status_lahan']      = $request->get('status_lahan');
+        $req['status_tanah']      = $request->get('status_tanah');
+        $req['penggunaan_sekarang'] = $request->get('penggunaan_sekarang');
+        $req['jumlah_lantai']     = $request->get('jumlah_lantai');
+        $req['tinggi_bangunan']   = $request->get('tinggi_bangunan');
+        $req['luas_lantai']       = $request->get('luas_lantai');
+        $req['tgl_surat']         = $request->get('tgl_surat');
+        $req['tgl_terbit']        = $request->get('tgl_terbit');
+        $req['no_nib']            = $request->get('no_nib');
+
+        $model = Kkpr::create($req);
+
+        $kkpr_terbit = $request->only('no_terbit', 'tgl_terbit_kkpr');
+        if (isset($kkpr_terbit)) {
+            $kkpr_terbit_cek = $model->kkpr_terbit;
+            if ($kkpr_terbit_cek->count()) {
+                foreach ($kkpr_terbit_cek as $ada) {
+                    $ada->delete();
+                }
+            }
+
+            $jml_kpr = $request->get('jml_kpr');
+            for($i = 1; $i <= $jml_kpr; $i++) {
+                $no_terbit = $request->get('no_terbit_'.$i);
+                $tgl_terbit = $request->get('tgl_terbit_kkpr_'.$i);
+                
+                if($no_terbit && $tgl_terbit) {
+                    Kkpr_terbit::create([
+                        'id_kkpr'    => $model->id,
+                        'no_terbit'  => $no_terbit,
+                        'tgl_terbit' => $tgl_terbit,
+                    ]);
+                }
+            }
+        }
+
+        $kbli = $request->only('kode_kbli', 'judul_kbli');
+        if (isset($kbli)) {
+            $kbli_cek = $model->kkpr_kbli;
+            if ($kbli_cek->count()) {
+                foreach ($kbli_cek as $ada) {
+                    $ada->delete();
+                }
+            }
+
+            $kode = $kbli['kode_kbli'];
+            $judul = $kbli['judul_kbli'];
+
+            foreach ($kode as $key => $n) {
+                Kbli::create([
+                    'jenis'         => 'KKPR',
+                    'id_kkpr'       => $model->id,
+                    'kode_kbli'     => $kode[$key],
+                    'judul_kbli'    => $judul[$key],
+                ]);
+            }
+        }
+
+        $reqkor = $request->only('longi', 'lati');
+        if (isset($reqkor)) {
+            $koordinat = $model->kkpr_koordinat;
+            if ($koordinat->count()) {
+                foreach ($koordinat as $kor) {
+                    $kor->delete();
+                }
+            }
+
+            $longitude = $reqkor['longi'];
+            $lattitude = $reqkor['lati'];
+
+            foreach ($longitude as $key => $n) {
+                Koordinat_kkpr::create([
+                    'jenis'         => 'KKPR',
+                    'id_kkpr'       => $model->id,
+                    'longi'         => $longitude[$key],
+                    'lati'          => $lattitude[$key],
+                ]);
+            }
+        }
+
+
+        $folderKtp = 'uploads/images/ktp';
+        if ($request->hasFile('fotocopy_ktp')) {
+            if (!file_exists($folderKtp)) {
+                mkdir($folderKtp, 0755, true);
+            }
+            $fKtp      = $request->file('fotocopy_ktp');
+            $filename = $no_ktp.'.'.$fKtp->guessClientExtension();
+            $fKtp->move($folderKtp, $filename);
+
+            $user->update(['ktp'=>$filename]);
+        }
+
+        $folderKtpPemilik = 'uploads/images/ktp/pemilik/' . $model->id;
+        if ($request->hasFile('ktp_pemilik')) {
+            if (!file_exists($folderKtpPemilik)) {
+                mkdir($folderKtpPemilik, 0755, true);
+            }
+            $fKtp      = $request->file('ktp_pemilik');
+            $filename = 'ktp_pemilik.'.$fKtp->guessClientExtension();
+            $fKtp->move($folderKtpPemilik, $filename);
+
+            $model->update(['ktp_pemilik'=>$filename]);
+        }
+
+        $folder = 'uploads/berkas/kkpr/' . $model->id;
+        if (!file_exists($folder)) {
+            mkdir($folder, 0755, true);
+        }
+
+        if ($request->hasFile('dok_kepemilikan')) {
+            if (!file_exists($folder.'/dokumen_kepemilikan')) {
+                mkdir($folder.'/dokumen_kepemilikan', 0755, true);
+            }
+            $fDok      = $request->file('dok_kepemilikan');
+            $filename = 'dok_kepemilikan.'.$fDok->guessClientExtension();
+            $fDok->move($folder.'/dokumen_kepemilikan', $filename);
+
+            $model->update(['dok_kepemilikan'=>$filename]);
+        }
+
+        if ($request->hasFile('dok_taru')) {
+            if (!file_exists($folder.'/dok_taru')) {
+                mkdir($folder.'/dok_taru', 0755, true);
+            }
+            $fTaru      = $request->file('dok_taru');
+            $filename = 'dok_taru.'.$fTaru->guessClientExtension();
+            $fTaru->move($folder.'/dok_taru', $filename);
+
+            $model->update(['dok_taru'=>$filename]);
+        }
+
+        if ($request->hasFile('f_nib')) {
+            if (!file_exists($folder.'/f_nib')) {
+                mkdir($folder.'/f_nib', 0755, true);
+            }
+            $fNib      = $request->file('f_nib');
+            $filename = 'f_nib.'.$fNib->guessClientExtension();
+            $fNib->move($folder.'/f_nib', $filename);
+
+            $model->update(['f_nib'=>$filename]);
+        }
+
+        if ($request->hasFile('f_kml')) {
+            if (!file_exists($folder.'/kml')) {
+                mkdir($folder.'/kml', 0755, true);
+            }
+            $fKml      = $request->file('f_kml');
+            $filename = 'kml.'.$fKml->getClientOriginalExtension();
+            $fKml->move($folder.'/kml', $filename);
+
+            $model->update(['f_kml'=>$filename]);
+        }
+        
+        $kml_geo    = $request->get('kml_geojson');
+        if($kml_geo != null){
+            $dir_to_save = $folder.'/kml/';
+            if (!is_dir($dir_to_save)) {
+                mkdir($folder.'/kml/', 0755, true);
+            }
+            file_put_contents($dir_to_save.'geojson.geojson', json_encode($kml_geo));
+            $model->update(['f_geojson'=>'geojson.geojson']);
+        }
+
+        if ($request->hasFile('f_ktp')) {
+            if (!file_exists($folder.'/f_ktp')) {
+                mkdir($folder.'/f_ktp', 0755, true);
+            }
+            $fKtp = $request->file('f_ktp');
+            $filename = 'f_ktp.'.$fKtp->guessClientExtension();
+            $fKtp->move($folder.'/f_ktp', $filename);
+
+            $model->update(['f_ktp'=>$filename]);
+        }
+
+        if ($request->hasFile('f_sertifikat')) {
+            if (!file_exists($folder.'/f_sertifikat')) {
+                mkdir($folder.'/f_sertifikat', 0755, true);
+            }
+            $fSertifikat = $request->file('f_sertifikat');
+            $filename = 'f_sertifikat.'.$fSertifikat->guessClientExtension();
+            $fSertifikat->move($folder.'/f_sertifikat', $filename);
+
+            $model->update(['f_sertifikat'=>$filename]);
+        }
+
+        if ($request->hasFile('f_siteplan')) {
+            if (!file_exists($folder.'/f_siteplan')) {
+                mkdir($folder.'/f_siteplan', 0755, true);
+            }
+            $fSiteplan = $request->file('f_siteplan');
+            $filename = 'f_siteplan.'.$fSiteplan->guessClientExtension();
+            $fSiteplan->move($folder.'/f_siteplan', $filename);
+
+            $model->update(['f_siteplan'=>$filename]);
+        }
+
+        if ($request->hasFile('f_akta')) {
+            if (!file_exists($folder.'/f_akta')) {
+                mkdir($folder.'/f_akta', 0755, true);
+            }
+            $fAkta = $request->file('f_akta');
+            $filename = 'f_akta.'.$fAkta->guessClientExtension();
+            $fAkta->move($folder.'/f_akta', $filename);
+
+            $model->update(['f_akta'=>$filename]);
+        }
+
+        if ($request->hasFile('f_kkpr')) {
+            if (!file_exists($folder.'/f_kkpr')) {
+                mkdir($folder.'/f_kkpr', 0755, true);
+            }
+            $fKkpr = $request->file('f_kkpr');
+            $filename = 'f_kkpr.'.$fKkpr->guessClientExtension();
+            $fKkpr->move($folder.'/f_kkpr', $filename);
+
+            $model->update(['f_kkpr'=>$filename]);
+        }
+
+        $administrasi = Persyaratan::where('jenis', 5)->where('status', true)->where('bysistem', 0)->get();
+
+        if (isset($administrasi)) {
+            foreach ($administrasi as $adm) {
+                $status = 0;
+                if ($request->hasFile('persyaratan' . $adm->id)) {
+                    $upl    = $request->file('persyaratan' . $adm->id);
+                    $berkas = $this->saveBerkasPdf($model, $upl, $status, $folder, $adm, $adm->keterangan);
+                } else {
+                    $berkas = $this->saveBerkas($model, $status, $adm, $adm->keterangan);
+                }
+            }
+        }
+
+        
+        if ($request->hasFile('foto_utara')) {
+            $utara      = $request->file('foto_utara');
+            $utara->move($folder, 'foto_utara.'.$utara->guessClientExtension());
+            $model->update([
+                'foto_utara'=>'foto_utara.'. $request->file('foto_utara')->guessClientExtension(),
+            ]);
+        }
+        
+        if ($request->hasFile('foto_selatan')) {
+            $selatan      = $request->file('foto_selatan');
+            $selatan->move($folder, 'foto_selatan.'.$selatan->guessClientExtension());
+
+            $model->update([
+                'foto_selatan'=>'foto_selatan.'. $request->file('foto_selatan')->guessClientExtension(),
+            ]);
+        }
+
+        if ($request->hasFile('foto_barat')) {
+            $barat      = $request->file('foto_barat');
+            $barat->move($folder, 'foto_barat.'.$barat->guessClientExtension());
+
+            $model->update([
+
+                'foto_barat'=>'foto_barat.'. $request->file('foto_barat')->guessClientExtension(),
+            ]);
+        }
+
+        if ($request->hasFile('foto_timur')) {
+            $timur      = $request->file('foto_timur');
+            $timur->move($folder, 'foto_timur.'.$timur->guessClientExtension());
+
+            $model->update([
+                'foto_timur'=>'foto_timur.'. $request->file('foto_timur')->guessClientExtension(),
+            ]);
+        }
+
+        $riwayat = Kkpr_riwayat::where('kkpr_id', $model->id)->where('status_id', 1)->first();
+        if(!$riwayat){
+            Kkpr_riwayat::create(['kkpr_id' =>$model->id, 'status_id' => '1', 'status' => 'Pengajuan', 'keterangan' => 'Pengajuan dilakukan oleh Pemohon']);
+        }
+        else{
+            Kkpr_riwayat::where('id', $riwayat->id)->update(array('keterangan' => 'Pengajuan dilakukan oleh Pemohon'));
+        }
+
+        return redirect()->back()->withSuccess('Data berhasil disimpan kedalam sistem');
     }
 
     public function edit($id)
     {
-        $kkpr = Kkpr::with(['kkpr_terbit', 'kkpr_kbli', 'kkpr_koordinat'])->findOrFail($id);
+        $kkpr = Kkpr::with(['kkpr_terbit', 'kkpr_kbli', 'kkpr_koordinat'])
+            ->where('jenis', 'non_usaha')
+            ->findOrFail($id);
         
         $data = [
             'model' => $kkpr,
@@ -302,7 +498,7 @@ class AdminKkprNonController extends Controller
         try {
             DB::beginTransaction();
 
-            $kkpr = Kkpr::findOrFail($id);
+            $kkpr = Kkpr::where('jenis', 'non_usaha')->findOrFail($id);
 
             // Update user
             $no_ktp = $request->get('nik_pemohon');
@@ -463,7 +659,7 @@ class AdminKkprNonController extends Controller
     public function destroy($id)
     {
         try {
-            $kkpr = Kkpr::findOrFail($id);
+            $kkpr = Kkpr::where('jenis', 'non_usaha')->findOrFail($id);
             $kkpr->update(['deleted' => 1]);
 
             return redirect()->route($this->path . '.index')
@@ -478,7 +674,7 @@ class AdminKkprNonController extends Controller
     public function riwayat($id)
     {
         $riwayat = Kkpr_riwayat::where('kkpr_id', $id)->orderBy('status_id', 'asc')->get();
-        $model = Kkpr::findOrFail($id);
+        $model = Kkpr::where('jenis', 'non_usaha')->findOrFail($id);
 
         return view($this->base_view . 'riwayat', compact('riwayat', 'model'));
     }
@@ -486,14 +682,14 @@ class AdminKkprNonController extends Controller
     public function koordinat($id)
     {
         $koordinat = Koordinat_kkpr::where('id_kkpr', $id)->where('jenis', 'KKPR')->get();
-        $model = Kkpr::findOrFail($id);
+        $model = Kkpr::where('jenis', 'non_usaha')->findOrFail($id);
 
         return view($this->base_view . 'koordinat', compact('koordinat', 'model'));
     }
 
     public function peta($id)
     {
-        $kkpr = Kkpr::findOrFail($id);
+        $kkpr = Kkpr::where('jenis', 'non_usaha')->findOrFail($id);
         $koordinat = Koordinat_kkpr::where('id_kkpr', $id)->where('jenis', 'KKPR')->get();
 
         $data = [
@@ -507,7 +703,7 @@ class AdminKkprNonController extends Controller
 
     public function validasi($id)
     {
-        $model = Kkpr::findOrFail($id);
+        $model = Kkpr::where('jenis', 'non_usaha')->findOrFail($id);
         $kkpr = Kkpr_terbit::where('id_kkpr', $id)->get();
         $kbli = Kbli::where('id_kkpr', $id)->where('jenis', 'KKPR')->get();
 
@@ -528,7 +724,7 @@ class AdminKkprNonController extends Controller
     public function validasiStore(Request $request)
     {
         try {
-            $model = Kkpr::findOrFail($request->id);
+            $model = Kkpr::where('jenis', 'non_usaha')->findOrFail($request->id);
             $myuser = Auth::user();
 
             $model->update([
@@ -560,7 +756,7 @@ class AdminKkprNonController extends Controller
     public function validasiRevisi(Request $request)
     {
         try {
-            $model = Kkpr::findOrFail($request->id);
+            $model = Kkpr::where('jenis', 'non_usaha')->findOrFail($request->id);
 
             $model->update(['revisi' => 1]);
 
@@ -577,6 +773,45 @@ class AdminKkprNonController extends Controller
 
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => $e->getMessage()]);
+        }
+    }
+
+    private function saveBerkasPdf($model, $file, $status, $folder, $persyaratan, $keterangan)
+    {
+        try {
+            $filename = Str::slug($persyaratan->nama) . '.' . $file->guessClientExtension();
+            $subfolder = $folder . '/' . Str::slug($persyaratan->nama);
+            if (!file_exists($subfolder)) {
+                mkdir($subfolder, 0755, true);
+            }
+            $file->move($subfolder, $filename);
+
+            return BerkasKkpr::create([
+                'kkpr_id' => $model->id,
+                'persyaratan_id' => $persyaratan->id,
+                'nama_file' => $filename,
+                'status' => $status,
+                'keterangan' => $keterangan,
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Error saving berkas PDF: ' . $e->getMessage());
+            return null;
+        }
+    }
+
+    private function saveBerkas($model, $status, $persyaratan, $keterangan)
+    {
+        try {
+            return BerkasKkpr::create([
+                'kkpr_id' => $model->id,
+                'persyaratan_id' => $persyaratan->id,
+                'nama_file' => null,
+                'status' => $status,
+                'keterangan' => $keterangan,
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Error saving berkas: ' . $e->getMessage());
+            return null;
         }
     }
 
@@ -711,34 +946,6 @@ class AdminKkprNonController extends Controller
         return $filename;
     }
 
-    private function saveBerkasPdf($model, $upl, $status, $folder, $adm, $keterangan)
-    {
-        $filename = Str::slug($adm->nama) . '.' . $upl->guessClientExtension();
-        $upl->move($folder, $filename);
-
-        $berkas = BerkasKkpr::create([
-            'kkpr_id' => $model->id,
-            'persyaratan_id' => $adm->id,
-            'filename' => $filename,
-            'status' => $status,
-            'keterangan' => $keterangan
-        ]);
-
-        return $berkas;
-    }
-
-    private function saveBerkas($model, $status, $adm, $keterangan)
-    {
-        $berkas = BerkasKkpr::create([
-            'kkpr_id' => $model->id,
-            'persyaratan_id' => $adm->id,
-            'status' => $status,
-            'keterangan' => $keterangan
-        ]);
-
-        return $berkas;
-    }
-
     public function uploadDraft(Request $request)
     {
         try {
@@ -747,7 +954,7 @@ class AdminKkprNonController extends Controller
                 'draft_file' => 'required|mimes:pdf|max:10240'
             ]);
 
-            $model = Kkpr::findOrFail($request->kkpr_id);
+            $model = Kkpr::where('jenis', 'non_usaha')->findOrFail($request->kkpr_id);
 
             $folder = 'uploads/berkas/kkpr/' . $model->id;
             if (!file_exists($folder)) {
@@ -795,4 +1002,3 @@ class AdminKkprNonController extends Controller
         }
     }
 }
-
