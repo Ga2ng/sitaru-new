@@ -44,6 +44,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'permission:User'])-
             Route::resource('kkpr', AdminKkprController::class);
             Route::post('kkpr/{kkpr}/toggle-status', [AdminKkprController::class, 'toggleStatus'])->name('kkpr.toggle-status');
             Route::get('kkpr/{kkpr}/riwayat', [AdminKkprController::class, 'riwayat'])->name('kkpr.riwayat');
+            Route::get('kkpr/riwayat-data/{id}', [AdminKkprController::class, 'getRiwayatData'])->name('kkpr.riwayat.data');
             Route::get('kkpr/{kkpr}/koordinat', [AdminKkprController::class, 'koordinat'])->name('kkpr.koordinat');
             Route::get('kkpr/{kkpr}/peta', [AdminKkprController::class, 'peta'])->name('kkpr.peta');
             Route::get('kkpr/{kkpr}/validasi', [AdminKkprController::class, 'validasi'])->name('kkpr.validasi');
@@ -53,6 +54,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'permission:User'])-
             // KKPR Non Berusaha Management Routes
             Route::resource('kkprnon', AdminKkprNonController::class);
             Route::get('kkprnon/{kkprnon}/riwayat', [AdminKkprNonController::class, 'riwayat'])->name('kkprnon.riwayat');
+            Route::get('kkprnon/riwayat-data/{id}', [AdminKkprNonController::class, 'getRiwayatData'])->name('kkprnon.riwayat.data');
             Route::get('kkprnon/{kkprnon}/koordinat', [AdminKkprNonController::class, 'koordinat'])->name('kkprnon.koordinat');
             Route::get('kkprnon/{kkprnon}/peta', [AdminKkprNonController::class, 'peta'])->name('kkprnon.peta');
             Route::get('kkprnon/{kkprnon}/validasi', [AdminKkprNonController::class, 'validasi'])->name('kkprnon.validasi');

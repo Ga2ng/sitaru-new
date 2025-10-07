@@ -578,12 +578,24 @@ class AdminKkprController extends Controller
         }
     }
 
-    public function riwayat($id)
+    // public function riwayat($id)
+    // {
+    //     $riwayat = Kkpr_riwayat::where('kkpr_id', $id)->orderBy('status_id', 'asc')->get();
+    //     $model = Kkpr::findOrFail($id);
+
+    //     return view($this->base_view . 'riwayat', compact('riwayat', 'model'));
+    // }
+
+    public function getRiwayatData($id)
     {
         $riwayat = Kkpr_riwayat::where('kkpr_id', $id)->orderBy('status_id', 'asc')->get();
         $model = Kkpr::findOrFail($id);
-
-        return view($this->base_view . 'riwayat', compact('riwayat', 'model'));
+        
+        return response()->json([
+            'success' => true,
+            'riwayat' => $riwayat,
+            'model' => $model
+        ]);
     }
 
     public function koordinat($id)

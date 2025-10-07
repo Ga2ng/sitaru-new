@@ -339,9 +339,10 @@
                                 ];
                                 $status = $statusConfig[$kkpr->proses] ?? ['label' => 'Unknown', 'color' => 'gray'];
                             @endphp
-                            <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-{{ $status['color'] }}-100 text-{{ $status['color'] }}-800 border border-{{ $status['color'] }}-300">
+                            <button onclick="openRiwayat({{ $kkpr->id }})" class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-{{ $status['color'] }}-100 text-{{ $status['color'] }}-800 border border-{{ $status['color'] }}-300 hover:bg-{{ $status['color'] }}-200 transition-colors cursor-pointer" title="Lihat Riwayat Proses">
+                                <i class="fas fa-history mr-1"></i>
                                 {{ $status['label'] }}
-                            </span>
+                            </button>
                         </div>
                         <div class="col-span-1">
                             <div class="flex items-center space-x-1">
@@ -410,6 +411,187 @@
         alert('Fitur export akan segera tersedia');
     }
 
+    function openRiwayat(id) {
+        console.log('openRiwayat called with id:', id);
+        
+        const modal = document.getElementById('modal-riwayat');
+        console.log('Modal element:', modal);
+        
+        if (!modal) {
+            console.error('Modal element not found!');
+            alert('Error: Modal tidak ditemukan');
+            return;
+        }
+        
+        // Reset content terlebih dahulu
+        const content = document.getElementById('riwayat-content');
+        const subtitle = document.getElementById('modal-subtitle');
+        content.innerHTML = '<div class="text-center py-8"><i class="fas fa-spinner fa-spin text-4xl text-[#185B3C]"></i><p class="mt-4 text-gray-600">Memuat riwayat...</p></div>';
+        subtitle.textContent = 'Loading...';
+        console.log('Content reset');
+        
+        modal.style.display = 'block';
+        modal.classList.add('show');
+        document.body.classList.add('modal-open');
+        
+        console.log('Modal displayed');
+        console.log('Modal styles:', {
+            display: modal.style.display,
+            position: getComputedStyle(modal).position,
+            zIndex: getComputedStyle(modal).zIndex,
+            visibility: getComputedStyle(modal).visibility
+        });
+        
+        // Create backdrop if not exists
+        let backdrop = document.getElementById('modal-backdrop-riwayat');
+        if (!backdrop) {
+            backdrop = document.createElement('div');
+            backdrop.className = 'modal-backdrop fade show';
+            backdrop.id = 'modal-backdrop-riwayat';
+            backdrop.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); z-index: 1040;';
+            document.body.appendChild(backdrop);
+            console.log('Backdrop created');
+        } else {
+            console.log('Backdrop already exists');
+        }
+        
+        // Load content via fetch
+        const url = '/admin/kkpr/riwayat-data/' + id;
+        console.log('Fetching from URL:', url);
+        
+        fetch(url)
+            .then(response => {
+                console.log('Response status:', response.status);
+                return response.json();
+            })
+            .then(data => {
+                console.log('Data received:', data);
+                if (data.success) {
+                    renderRiwayat(data.riwayat, data.model);
+                } else {
+                    console.error('Success flag is false');
+                    alert('Gagal memuat riwayat proses');
+                    closeRiwayatModal();
+                }
+            })
+            .catch(error => {
+                console.error('Fetch error:', error);
+                alert('Gagal memuat riwayat proses: ' + error.message);
+                closeRiwayatModal();
+            });
+    }
+    
+    function renderRiwayat(riwayat, model) {
+        console.log('renderRiwayat called', { riwayat, model });
+        
+        const subtitle = document.getElementById('modal-subtitle');
+        console.log('Subtitle element:', subtitle);
+        subtitle.textContent = (model.jenis == 'usaha' ? 'UMK' : 'KKPR') + ' #' + model.id;
+        
+        const content = document.getElementById('riwayat-content');
+        console.log('Content element:', content);
+        
+        const badgeConfig = {
+            1: { icon: 'fa-address-card', color: '#db3102', label: 'Pengajuan' },
+            2: { icon: 'fa-upload', color: '#dbac02', label: 'Upload Dokumen' },
+            3: { icon: 'fa-check-circle', color: '#9edb02', label: 'Validasi' },
+            4: { icon: 'fa-upload', color: '#38db02', label: 'Upload' },
+            5: { icon: 'fa-upload', color: '#02db84', label: 'Validasi' },
+            6: { icon: 'fa-edit', color: '#02d7db', label: 'Survey' },
+            7: { icon: 'fa-check-circle', color: '#8102db', label: 'Analisa' },
+            8: { icon: 'fa-check-circle', color: '#cd02db', label: 'Persetujuan' },
+            9: { icon: 'fa-check-circle', color: '#db02db', label: 'TTE' },
+            10: { icon: 'fa-handshake', color: '#db0293', label: 'Selesai' },
+            11: { icon: 'fa-file', color: '#0252db', label: 'Dokumen' }
+        };
+        
+        let html = '<div class="relative"><div class="absolute left-6 top-0 bottom-0 w-0.5 bg-gradient-to-b from-[#185B3C] via-gray-300 to-gray-200"></div><div class="space-y-6">';
+        
+        riwayat.forEach((r, index) => {
+            if (r.status_id <= model.proses) {
+                const isRevisi = r.status_id == model.proses && model.revisi == 1;
+                const badge = badgeConfig[r.status_id] || { icon: 'fa-file', color: '#6c757d', label: 'Unknown' };
+                const badgeIcon = isRevisi ? 'fa-exclamation-circle' : badge.icon;
+                const badgeColor = isRevisi ? 'red' : badge.color;
+                
+                const date = new Date(r.updated_at);
+                const formattedDate = date.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
+                const formattedTime = date.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                
+                html += `
+                <div class="relative pl-16 group">
+                    <div class="absolute left-0 w-12 h-12 rounded-full flex items-center justify-center shadow-lg transition-transform duration-300 group-hover:scale-110 z-10" style="background-color: ${badgeColor}">
+                        <i class="fa ${badgeIcon} text-white text-lg"></i>
+                    </div>
+                    <div class="${isRevisi ? 'bg-red-50 border-red-200' : 'bg-white border-gray-200'} rounded-xl p-4 shadow-md border transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+                        <div class="flex items-start justify-between mb-3">
+                            <div class="flex-1">
+                                <h4 class="font-bold text-gray-900 text-base mb-1">${r.status}</h4>
+                                <div class="flex items-center space-x-3 text-xs text-gray-500">
+                                    <div class="flex items-center">
+                                        <i class="fa fa-calendar mr-1.5"></i>
+                                        <span>${formattedDate}</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <i class="fa fa-clock mr-1.5"></i>
+                                        <span>${formattedTime}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            ${isRevisi ? 
+                                '<span class="px-3 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800 border border-red-300"><i class="fa fa-exclamation-circle mr-1"></i>Revisi</span>' :
+                                (r.status_id == model.proses ? 
+                                    '<span class="px-3 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800 border border-blue-300"><i class="fa fa-spinner mr-1"></i>Aktif</span>' :
+                                    '<span class="px-3 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800 border border-green-300"><i class="fa fa-check mr-1"></i>Selesai</span>')
+                            }
+                        </div>
+                        <div class="${isRevisi ? 'bg-white/50' : 'bg-gray-50'} rounded-lg p-3">
+                            <p class="text-sm text-gray-700 leading-relaxed">${r.keterangan}</p>
+                            ${isRevisi && r.revisi_detail ? 
+                                `<div class="mt-3 p-3 bg-red-50 border border-red-200 rounded-lg">
+                                    <p class="text-xs font-semibold text-red-800 mb-1"><i class="fa fa-info-circle mr-1"></i>Detail Revisi:</p>
+                                    <p class="text-sm text-red-700">${r.revisi_detail}</p>
+                                </div>` : ''
+                            }
+                        </div>
+                    </div>
+                </div>`;
+            }
+        });
+        
+        html += '</div></div>';
+        console.log('Generated HTML length:', html.length);
+        content.innerHTML = html;
+        console.log('Timeline rendered successfully');
+    }
+    
+    function closeRiwayatModal() {
+        console.log('closeRiwayatModal called');
+        
+        const modal = document.getElementById('modal-riwayat');
+        const backdrop = document.getElementById('modal-backdrop-riwayat');
+        
+        // Reset content
+        const content = document.getElementById('riwayat-content');
+        const subtitle = document.getElementById('modal-subtitle');
+        if (content) {
+            content.innerHTML = '<div class="text-center py-8"><i class="fas fa-spinner fa-spin text-4xl text-[#185B3C]"></i><p class="mt-4 text-gray-600">Memuat riwayat...</p></div>';
+        }
+        if (subtitle) {
+            subtitle.textContent = 'UMK';
+        }
+        console.log('Content cleared');
+        
+        modal.style.display = 'none';
+        modal.classList.remove('show');
+        document.body.classList.remove('modal-open');
+        
+        if (backdrop) {
+            backdrop.remove();
+        }
+        console.log('Modal closed');
+    }
+
     function deleteKkpr(id) {
         if (confirm('Apakah Anda yakin ingin menghapus permohonan ini?')) {
             fetch(`/admin/kkpr/${id}`, {
@@ -435,6 +617,8 @@
     }
 
     document.addEventListener('DOMContentLoaded', function() {
+        console.log('DOM Content Loaded');
+        
         // Staggered animation for cards
         const cards = document.querySelectorAll('.bg-white\\/80, .bg-gradient-to-br');
         cards.forEach((card, index) => {
@@ -458,6 +642,63 @@
                 this.style.transform = 'translateX(0)';
             });
         });
+
+        // Close modal when clicking outside
+        const modal = document.getElementById('modal-riwayat');
+        if (modal) {
+            console.log('Modal found, adding click listener');
+            modal.addEventListener('click', function(e) {
+                console.log('Modal clicked', e.target);
+                if (e.target === this) {
+                    closeRiwayatModal();
+                }
+            });
+        } else {
+            console.error('Modal not found in DOM!');
+        }
+        
+        // Debug: Check for status buttons
+        const statusButtons = document.querySelectorAll('button[onclick^="openRiwayat"]');
+        console.log('Status buttons found:', statusButtons.length);
     });
 </script>
+
+<!-- Modal Riwayat -->
+<div class="modal fade" id="modal-riwayat" tabindex="-1" role="dialog" aria-labelledby="modalRiwayatLabel" aria-hidden="true" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1050; overflow: auto;">
+    <div class="modal-dialog modal-lg" role="document" style="position: relative; max-width: 800px; margin: 1.75rem auto;">
+        <div class="modal-content border-0 shadow-2xl rounded-xl">
+            <!-- Modal Header -->
+            <div class="bg-gradient-to-r from-[#185B3C] to-[#0F3D26] text-white rounded-t-xl px-6 py-4 relative">
+                <div class="flex items-center space-x-3 pr-12">
+                    <div class="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center backdrop-blur-sm">
+                        <i class="fas fa-history"></i>
+                    </div>
+                    <div>
+                        <h5 class="text-lg font-bold">Riwayat Proses</h5>
+                        <p class="text-sm text-white/80" id="modal-subtitle">UMK</p>
+                    </div>
+                </div>
+                <button type="button" class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-all" onclick="closeRiwayatModal()">
+                    <i class="fas fa-times text-lg"></i>
+                </button>
+            </div>
+            
+            <!-- Modal Body -->
+            <div class="p-6 bg-gray-50" style="max-height: 70vh; overflow-y: auto;" id="riwayat-content">
+                <div class="text-center py-8">
+                    <i class="fas fa-spinner fa-spin text-4xl text-[#185B3C]"></i>
+                    <p class="mt-4 text-gray-600">Memuat riwayat...</p>
+                </div>
+            </div>
+            
+            <!-- Modal Footer -->
+            <div class="bg-gray-50 rounded-b-xl p-4">
+                <button type="button" class="w-full px-4 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors font-semibold" onclick="closeRiwayatModal()">
+                    <i class="fas fa-times mr-2"></i>
+                    Tutup
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
