@@ -345,17 +345,11 @@
                             </button>
                         </div>
                         <div class="col-span-1">
-                            <div class="flex items-center space-x-1">
-                                <a href="{{ route('admin.kkpr.show', $kkpr->id) }}" class="p-2 text-gray-400 hover:text-[#185B3C] hover:bg-[#185B3C]/10 rounded-lg transition-all duration-200 hover:scale-105" title="Lihat Detail">
-                                    <i class="fas fa-eye text-xs"></i>
-                                </a>
-                                <a href="{{ route('admin.kkpr.edit', $kkpr->id) }}" class="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200 hover:scale-105" title="Edit">
-                                    <i class="fas fa-edit text-xs"></i>
-                                </a>
-                                <button onclick="deleteKkpr({{ $kkpr->id }})" class="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all duration-200 hover:scale-105" title="Hapus">
-                                    <i class="fas fa-trash text-xs"></i>
-                                </button>
-                            </div>
+                            <button id="btn-aksi-{{ $kkpr->id }}" onclick="toggleDropdown({{ $kkpr->id }})" class="inline-flex items-center space-x-1.5 px-3 py-1.5 text-xs font-medium text-gray-700 bg-white hover:bg-[#185B3C]/10 hover:text-[#185B3C] border border-gray-300 rounded-lg transition-all duration-200 hover:scale-105" title="Aksi">
+                                <i class="fas fa-cog"></i>
+                                <span>Aksi</span>
+                                <i class="fas fa-chevron-down text-xs"></i>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -410,6 +404,82 @@
         // Implement export functionality
         alert('Fitur export akan segera tersedia');
     }
+
+    function toggleDropdown(id) {
+        const button = event.currentTarget;
+        const chevron = button.querySelector('.fa-chevron-down');
+        const modal = document.getElementById('dropdown-menu-modal');
+        const content = document.getElementById('dropdown-menu-content');
+        const allChevrons = document.querySelectorAll('[onclick^="toggleDropdown"] .fa-chevron-down');
+        
+        // Check if already open
+        if (!modal.classList.contains('hidden') && modal.dataset.currentId == id) {
+            // Close
+            modal.classList.add('hidden');
+            chevron.style.transform = 'rotate(0deg)';
+            delete modal.dataset.currentId;
+            return;
+        }
+        
+        // Reset all chevrons
+        allChevrons.forEach(c => {
+            c.style.transform = 'rotate(0deg)';
+            c.style.transition = 'transform 0.2s';
+        });
+        
+        // Get button position
+        const rect = button.getBoundingClientRect();
+        
+        // Set modal position (below button, aligned to right)
+        modal.style.top = (rect.bottom + window.scrollY + 8) + 'px';
+        modal.style.left = (rect.right + window.scrollX - 192) + 'px'; // 192px = w-48
+        
+        // Set content
+        content.innerHTML = `
+            <div class="py-1">
+                <a href="/admin/kkpr/${id}" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-[#185B3C]/10 hover:text-[#185B3C] transition-colors">
+                    <i class="fas fa-eye w-4 mr-3"></i>
+                    Lihat Detail
+                </a>
+                <a href="/admin/kkpr/${id}/edit" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
+                    <i class="fas fa-edit w-4 mr-3"></i>
+                    Edit
+                </a>
+                <button onclick="deleteKkpr(${id}); closeDropdownModal();" class="w-full flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors text-left">
+                    <i class="fas fa-trash w-4 mr-3"></i>
+                    Hapus
+                </button>
+            </div>
+        `;
+        
+        // Show modal
+        modal.classList.remove('hidden');
+        modal.dataset.currentId = id;
+        
+        // Rotate chevron
+        chevron.style.transform = 'rotate(180deg)';
+        chevron.style.transition = 'transform 0.2s';
+    }
+
+    function closeDropdownModal() {
+        const modal = document.getElementById('dropdown-menu-modal');
+        const allChevrons = document.querySelectorAll('[onclick^="toggleDropdown"] .fa-chevron-down');
+        
+        modal.classList.add('hidden');
+        delete modal.dataset.currentId;
+        
+        // Reset all chevrons
+        allChevrons.forEach(c => {
+            c.style.transform = 'rotate(0deg)';
+        });
+    }
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(event) {
+        if (!event.target.closest('[onclick^="toggleDropdown"]') && !event.target.closest('#dropdown-menu-modal')) {
+            closeDropdownModal();
+        }
+    });
 
     function openRiwayat(id) {
         console.log('openRiwayat called with id:', id);
@@ -662,6 +732,13 @@
         console.log('Status buttons found:', statusButtons.length);
     });
 </script>
+
+<!-- Dropdown Menu Modal -->
+<div id="dropdown-menu-modal" class="hidden fixed" style="z-index: 9999;">
+    <div class="bg-white rounded-lg shadow-2xl border border-gray-200 w-48" id="dropdown-menu-content">
+        <!-- Content will be filled by JavaScript -->
+    </div>
+</div>
 
 <!-- Modal Riwayat -->
 <div class="modal fade" id="modal-riwayat" tabindex="-1" role="dialog" aria-labelledby="modalRiwayatLabel" aria-hidden="true" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1050; overflow: auto;">

@@ -126,7 +126,7 @@
     <!-- Information Cards -->
     <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
         <!-- Informasi Pemohon -->
-    <div class="bg-white/80 backdrop-blur-sm rounded-xl p-6 shadow-lg border border-white/20">
+        <div class="bg-white/80 backdrop-blur-sm rounded-xl p-6 shadow-lg border border-white/20">
             <div class="flex items-center space-x-3 mb-6">
                 <div class="w-10 h-10 bg-gradient-to-br from-[#185B3C] to-[#0F3D26] rounded-xl flex items-center justify-center shadow-md">
                     <i class="fas fa-user text-white text-sm"></i>
@@ -183,7 +183,7 @@
                     </div>
                 </div>
         </div>
-    </div>
+            </div>
 
         <!-- Data Pengajuan Kegiatan dan Lokasi Kegiatan -->
         <div class="xl:col-span-2 bg-white/80 backdrop-blur-sm rounded-xl p-6 shadow-lg border border-white/20">
@@ -219,21 +219,21 @@
                             <div class="flex items-center space-x-3 mb-3">
                                 <div class="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center">
                                     <i class="fas fa-home text-white text-sm"></i>
-                                </div>
+                </div>
                                 <h4 class="font-semibold text-gray-900">Informasi Kegiatan</h4>
-                            </div>
+                </div>
                             <div class="space-y-3">
-                                <div>
+                <div>
                                     <label class="text-sm font-semibold text-gray-600">Fungsi</label>
                                     <p class="text-gray-900 mt-1">{{ is_array($model->fungsi) ? implode(', ', $model->fungsi) : ($model->fungsi ?? 'N/A') }}</p>
-                                </div>
-                                <div>
+                </div>
+                <div>
                                     <label class="text-sm font-semibold text-gray-600">Alamat Kegiatan</label>
                                     <p class="text-gray-900 mt-1">{{ is_array($model->alamat_kegiatan) ? implode(', ', $model->alamat_kegiatan) : ($model->alamat_kegiatan ?? 'N/A') }}</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
 
                     <!-- Right Column -->
                     <div class="space-y-4">
@@ -241,15 +241,15 @@
                             <div class="flex items-center space-x-3 mb-3">
                                 <div class="w-8 h-8 bg-purple-500 rounded-lg flex items-center justify-center">
                                     <i class="fas fa-map text-white text-sm"></i>
-                                </div>
+                </div>
                                 <h4 class="font-semibold text-gray-900">Status Tanah</h4>
-                            </div>
-                            <div class="space-y-3">
-                                <div>
+            </div>
+            <div class="space-y-3">
+                <div>
                                     <label class="text-sm font-semibold text-gray-600">Status Tanah</label>
                                     <p class="text-gray-900 mt-1">{{ is_array($model->status_tanah) ? implode(', ', $model->status_tanah) : ($model->status_tanah ?? 'N/A') }}</p>
-                                </div>
-                                <div>
+                </div>
+                <div>
                                     <label class="text-sm font-semibold text-gray-600">Penggunaan Sekarang</label>
                                     <p class="text-gray-900 mt-1">{{ is_array($model->penggunaan_sekarang) ? implode(', ', $model->penggunaan_sekarang) : ($model->penggunaan_sekarang ?? 'N/A') }}</p>
                                 </div>
@@ -276,16 +276,16 @@
                         </div>
                     </div>
                 </div>
-            </div>
+                </div>
 
             <div id="content-lokasi" class="tab-content hidden">
                 <div class="bg-gradient-to-r from-indigo-50 to-indigo-100 rounded-lg p-6">
                     <div class="flex items-center space-x-3 mb-4">
                         <div class="w-10 h-10 bg-indigo-500 rounded-lg flex items-center justify-center">
                             <i class="fas fa-map-marker-alt text-white text-sm"></i>
-                        </div>
+                </div>
                         <h4 class="text-lg font-semibold text-gray-900">Lokasi Kegiatan</h4>
-                    </div>
+                </div>
                     <div class="bg-white rounded-lg p-4 border border-indigo-200">
                         <p class="text-gray-900 leading-relaxed">
                             {{ is_array($model->alamat_kegiatan) ? implode(', ', $model->alamat_kegiatan) : ($model->alamat_kegiatan ?? 'N/A') }}, {{ ucFirst(strToLower($kel->NAMA_KEL ?? '')) }} Kecamatan {{ ucFirst(strToLower($kec->NAMA_KEC ?? '')) }} Kabupaten {{ ucFirst(strToLower($kab->NAMA_KAB ?? '')) }}.
@@ -294,21 +294,21 @@
                             <button onclick="open_koordinat({{ $model->id }})" class="inline-flex items-center px-4 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition-colors">
                                 <i class="fas fa-search mr-2"></i> Lihat Koordinat
                             </button>
-                        </div>
-                    </div>
                 </div>
             </div>
+        </div>
+    </div>
 
             <div id="content-bangunan" class="tab-content hidden">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="bg-gradient-to-r from-teal-50 to-teal-100 rounded-lg p-4">
-                        <div class="flex items-center space-x-3 mb-4">
+        <div class="flex items-center space-x-3 mb-4">
                             <div class="w-8 h-8 bg-teal-500 rounded-lg flex items-center justify-center">
-                                <i class="fas fa-building text-white text-sm"></i>
-                            </div>
+                <i class="fas fa-building text-white text-sm"></i>
+            </div>
                             <h4 class="font-semibold text-gray-900">Rencana Bangunan</h4>
-                        </div>
-                        <div class="space-y-3">
+        </div>
+            <div class="space-y-3">
                             <div class="flex justify-between items-center">
                                 <span class="text-sm font-semibold text-gray-600">Jumlah Lantai</span>
                                 <span class="text-lg font-bold text-teal-600">{{ $model->jumlah_lantai ?? 'N/A' }}</span>
@@ -357,8 +357,8 @@
         <div class="flex items-center space-x-3 mb-6">
             <div class="w-10 h-10 bg-gradient-to-br from-[#185B3C] to-[#0F3D26] rounded-xl flex items-center justify-center shadow-md">
                 <i class="fas fa-file-alt text-white text-sm"></i>
-            </div>
-            <div>
+                </div>
+                <div>
                 <h3 class="text-lg font-bold text-gray-900">Dokumen Kegiatan</h3>
                 <p class="text-sm text-gray-500">Daftar dokumen yang telah diupload</p>
             </div>
@@ -372,8 +372,8 @@
                             <div class="flex items-center space-x-3">
                                 <div class="w-8 h-8 bg-gradient-to-br from-[#185B3C] to-[#0F3D26] rounded-lg flex items-center justify-center">
                                     <i class="fas fa-file-alt text-white text-sm"></i>
-                                </div>
-                                <div>
+                </div>
+                <div>
                                     <h3 class="text-lg font-bold text-gray-900">Dokumen Persyaratan</h3>
                                     <p class="text-sm text-gray-600">Daftar dokumen yang telah diupload</p>
                                 </div>
@@ -407,7 +407,7 @@
                                         <div class="flex items-center space-x-3">
                                             <div class="w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
                                                 <i class="fas fa-id-card text-white text-sm"></i>
-        </div>
+                </div>
                 <div>
                                                 <p class="font-bold text-gray-900 text-sm">KTP Pemohon</p>
                                                 <p class="text-xs text-gray-500">Dokumen wajib</p>
@@ -440,8 +440,8 @@
                                             @endif
                                         </div>
                                     </div>
-                                </div>
-                            </div>
+                </div>
+            </div>
 
                             <!-- KTP Pemilik -->
                             <div class="px-6 py-4 hover:bg-gradient-to-r hover:from-blue-50 hover:to-transparent transition-all duration-300 group">
@@ -450,8 +450,8 @@
                                         <div class="flex items-center space-x-3">
                                             <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
                                                 <i class="fas fa-id-card text-white text-sm"></i>
-                                            </div>
-                                            <div>
+                </div>
+                <div>
                                                 <p class="font-bold text-gray-900 text-sm">KTP Pemilik</p>
                                                 <p class="text-xs text-gray-500">Dokumen wajib</p>
                                             </div>
@@ -493,8 +493,8 @@
                                         <div class="flex items-center space-x-3">
                                             <div class="w-10 h-10 bg-gradient-to-br from-[#185B3C] to-[#0F3D26] rounded-xl flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
                                                 <i class="fas fa-file-contract text-white text-sm"></i>
-                                            </div>
-                                            <div>
+                </div>
+                <div>
                                                 <p class="font-bold text-gray-900 text-sm">Surat Kepemilikan Tanah</p>
                                                 <p class="text-xs text-gray-500">Dokumen wajib</p>
                                             </div>
@@ -536,8 +536,8 @@
                                         <div class="flex items-center space-x-3">
                                             <div class="w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
                                                 <i class="fas fa-id-card text-white text-sm"></i>
-                                            </div>
-                                            <div>
+                </div>
+                <div>
                                                 <p class="font-bold text-gray-900 text-sm">KTP (F_KTP)</p>
                                                 <p class="text-xs text-gray-500">Dokumen wajib</p>
                                             </div>
@@ -567,10 +567,10 @@
                                                     <i class="fas fa-eye-slash text-xs"></i>
                                                 </span>
                                             @endif
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
                             <!-- Sertifikat -->
                             <div class="px-6 py-4 hover:bg-gradient-to-r hover:from-purple-50 hover:to-transparent transition-all duration-300 group">
@@ -585,7 +585,7 @@
                                                 <p class="text-xs text-gray-500">Dokumen wajib</p>
                                             </div>
                                         </div>
-                                    </div>
+            </div>
                                     <div class="col-span-3">
                                         @if ($model->f_sertifikat != null)
                                             <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-green-100 to-green-200 text-green-800 border border-green-300">
@@ -598,22 +598,22 @@
                                                 Belum Upload
                                             </span>
                                         @endif
-                                    </div>
+        </div>
                                     <div class="col-span-3">
                                         <div class="flex items-center space-x-1">
                                             @if ($model->f_sertifikat != null)
                                                 <a target="_blank" href="{{ asset('uploads/berkas/kkpr/'.$model->id. '/f_sertifikat/' .$model->f_sertifikat) }}" class="p-2 text-gray-400 hover:text-[#185B3C] hover:bg-[#185B3C]/10 rounded-lg transition-all duration-200 hover:scale-105" title="Lihat Dokumen">
                                                     <i class="fas fa-eye text-xs"></i>
-                                                </a>
-                                            @else
+                                </a>
+                            @else
                                                 <span class="p-2 text-gray-300" title="Dokumen Kosong">
                                                     <i class="fas fa-eye-slash text-xs"></i>
                                                 </span>
-                                            @endif
+                            @endif
                                         </div>
                                     </div>
-                                </div>
-                            </div>
+        </div>
+    </div>
 
                             <!-- Siteplan -->
                             <div class="px-6 py-4 hover:bg-gradient-to-r hover:from-orange-50 hover:to-transparent transition-all duration-300 group">
@@ -622,13 +622,13 @@
                                         <div class="flex items-center space-x-3">
                                             <div class="w-10 h-10 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
                                                 <i class="fas fa-map text-white text-sm"></i>
-                                            </div>
+            </div>
                                             <div>
                                                 <p class="font-bold text-gray-900 text-sm">Siteplan/Denah Lokasi</p>
                                                 <p class="text-xs text-gray-500">Dokumen wajib</p>
-                                            </div>
-                                        </div>
-                                    </div>
+        </div>
+        </div>
+    </div>
                                     <div class="col-span-3">
                                         @if ($model->f_siteplan != null)
                                             <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-green-100 to-green-200 text-green-800 border border-green-300">
@@ -652,7 +652,7 @@
                                                 <span class="p-2 text-gray-300" title="Dokumen Kosong">
                                                     <i class="fas fa-eye-slash text-xs"></i>
                                                 </span>
-                                            @endif
+    @endif
                                         </div>
                                     </div>
                                 </div>
@@ -671,7 +671,7 @@
                                                 <p class="text-xs text-gray-500">File koordinat</p>
                                             </div>
                                         </div>
-                                    </div>
+            </div>
                                     <div class="col-span-3">
                                         @if ($model->f_kml != null)
                                             <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-green-100 to-green-200 text-green-800 border border-green-300">
@@ -684,7 +684,7 @@
                                                 Belum Upload
                                             </span>
                                         @endif
-                                    </div>
+        </div>
                                     <div class="col-span-3">
                                         <div class="flex items-center space-x-1">
                                             @if ($model->f_kml != null)
@@ -694,7 +694,7 @@
                                             @else
                                                 <span class="p-2 text-gray-300" title="Dokumen Kosong">
                                                     <i class="fas fa-eye-slash text-xs"></i>
-                                                </span>
+                    </span>
                                             @endif
                                         </div>
                                     </div>
@@ -756,8 +756,8 @@
                                                 <p class="font-bold text-gray-900 text-sm">Foto Selatan</p>
                                                 <p class="text-xs text-gray-500">Dokumen wajib</p>
                                             </div>
-                                        </div>
-                                    </div>
+                </div>
+            </div>
                                     <div class="col-span-3">
                                         @if ($model->foto_selatan != null)
                                             <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-green-100 to-green-200 text-green-800 border border-green-300">
@@ -770,7 +770,7 @@
                                                 Belum Upload
                                             </span>
                                         @endif
-                                    </div>
+                </div>
                                     <div class="col-span-3">
                                         <div class="flex items-center space-x-1">
                                             @if ($model->foto_selatan != null)
@@ -781,7 +781,7 @@
                                                 <span class="p-2 text-gray-300" title="Dokumen Kosong">
                                                     <i class="fas fa-eye-slash text-xs"></i>
                                                 </span>
-                                            @endif
+                @endif
                                         </div>
                                     </div>
                 </div>
@@ -800,7 +800,7 @@
                                                 <p class="text-xs text-gray-500">Dokumen wajib</p>
                                             </div>
                                         </div>
-                                    </div>
+                </div>
                                     <div class="col-span-3">
                                         @if ($model->foto_barat != null)
                                             <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-green-100 to-green-200 text-green-800 border border-green-300">
@@ -812,7 +812,7 @@
                                                 <i class="fas fa-clock mr-1 text-xs"></i>
                                                 Belum Upload
                                             </span>
-                                        @endif
+                @endif
                 </div>
                                     <div class="col-span-3">
                                         <div class="flex items-center space-x-1">
@@ -825,8 +825,8 @@
                                                     <i class="fas fa-eye-slash text-xs"></i>
                                                 </span>
                 @endif
-                                        </div>
-                                    </div>
+            </div>
+        </div>
                                 </div>
                             </div>
 
