@@ -441,6 +441,10 @@
                     <i class="fas fa-eye w-4 mr-3"></i>
                     Lihat Detail
                 </a>
+                <a href="/admin/kkpr/${id}/validasi" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-600 transition-colors">
+                    <i class="fas fa-check-circle w-4 mr-3"></i>
+                    Validasi
+                </a>
                 <a href="/admin/kkpr/${id}/edit" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
                     <i class="fas fa-edit w-4 mr-3"></i>
                     Edit
