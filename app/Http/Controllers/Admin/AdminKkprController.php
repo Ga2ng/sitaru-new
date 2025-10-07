@@ -42,19 +42,20 @@ class AdminKkprController extends Controller
             ->where('deleted', 0)
             ->where('jenis', 'usaha');
 
-        // Filter berdasarkan role
-        if (Gate::allows('Kabid')) {
-            $query->where('proses', 8);
-        } elseif (Gate::allows('Kadin PTSP')) {
-            $query->where('proses', 9);
-        } elseif (Gate::allows('Analis')) {
-            $query->where(function ($q) {
-                $q->where('proses', 7)
-                  ->orWhere('proses', 8)
-                  ->orWhere('status_analisa', 'survey')
-                  ->orWhere('status_analisa', 'analisa');
-            });
-        }
+        // Filter berdasarkan role - DISABLED untuk menampilkan semua data
+        // Semua role bisa melihat semua data di index
+        // if (Gate::allows('Kabid')) {
+        //     $query->where('proses', 8);
+        // } elseif (Gate::allows('Kadin PTSP')) {
+        //     $query->where('proses', 9);
+        // } elseif (Gate::allows('Analis')) {
+        //     $query->where(function ($q) {
+        //         $q->where('proses', 7)
+        //           ->orWhere('proses', 8)
+        //           ->orWhere('status_analisa', 'survey')
+        //           ->orWhere('status_analisa', 'analisa');
+        //     });
+        // }
 
         // Filter berdasarkan pencarian
         if ($request->has('search') && $request->search != '') {
@@ -494,6 +495,7 @@ class AdminKkprController extends Controller
             ]);
 
             $kkprData['user_id'] = $user->id;
+            $kkprData['jenis'] = 'usaha';
             $kkprData['luas_lantai'] = $request->get('luas_lantai');
 
             $kkpr->update($kkprData);

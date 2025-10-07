@@ -65,6 +65,10 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'permission:User'])-
             Route::post('kkprnon/validasi', [AdminKkprNonController::class, 'validasiStore'])->name('kkprnon.validasi.store');
             Route::post('kkprnon/revisi', [AdminKkprNonController::class, 'validasiRevisi'])->name('kkprnon.revisi');
             Route::post('kkprnon/upload-draft', [AdminKkprNonController::class, 'uploadDraft'])->name('kkprnon.upload.draft');
+            Route::get('kkprnon/{kkprnon}/analisa', [AdminKkprNonController::class, 'analisa'])->name('kkprnon.analisa');
+            Route::post('kkprnon/analisa/store', [AdminKkprNonController::class, 'analisaStore'])->name('kkprnon.analisa.store');
+            Route::post('kkprnon/hapus-dokumen', [AdminKkprNonController::class, 'hapusDokumenAnalisa'])->name('kkprnon.hapus.dokumen');
+            Route::post('kkprnon/survey/{id}', [AdminKkprNonController::class, 'survey'])->name('kkprnon.survey');
 
     // Pengaduan Management Routes
     Route::resource('pengaduan', AdminPengaduanController::class);
