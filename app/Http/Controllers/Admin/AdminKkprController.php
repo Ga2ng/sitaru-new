@@ -885,4 +885,130 @@ class AdminKkprController extends Controller
         }
     }
 
+    public function kirimKabid($id)
+    {
+        try {
+            $model = Kkpr::findOrFail($id);
+            
+            $model->update([
+                'proses' => 8,
+                'revisi' => 0
+            ]);
+
+            $riwayat = Kkpr_riwayat::where('kkpr_id', $model->id)->where('status_id', 8)->first();
+            if (!$riwayat) {
+                Kkpr_riwayat::create([
+                    'kkpr_id' => $model->id, 
+                    'status_id' => '8', 
+                    'status' => 'Persetujuan Kabid', 
+                    'keterangan' => 'Dokumen Persetujuan UMK Telah dibuat dan memerlukan persetujuan'
+                ]);
+            } else {
+                Kkpr_riwayat::where('id', $riwayat->id)->update([
+                    'keterangan' => 'Dokumen Persetujuan UMK Telah dibuat dan memerlukan persetujuan'
+                ]);
+            }
+
+            return response()->json(['success' => true, 'message' => 'Berhasil dikirim ke Kabid']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()]);
+        }
+    }
+
+    public function persetujuanDokumen($id)
+    {
+        try {
+            $model = Kkpr::findOrFail($id);
+
+            // Update status proses
+            $model->update([
+                'proses' => 9 // Update proses ke 9 (Proses TTE)
+            ]);
+
+            // Tambah riwayat
+            $riwayat = Kkpr_riwayat::where('kkpr_id', $model->id)->where('status_id', 9)->first();
+            if (!$riwayat) {
+                Kkpr_riwayat::create([
+                    'kkpr_id' => $model->id,
+                    'status_id' => '9',
+                    'status' => 'Persetujuan Dokumen',
+                    'keterangan' => 'Dokumen telah disetujui dan siap untuk proses TTD'
+                ]);
+            } else {
+                Kkpr_riwayat::where('id', $riwayat->id)->update([
+                    'keterangan' => 'Dokumen telah disetujui dan siap untuk proses TTD'
+                ]);
+            }
+
+            return response()->json(['success' => true, 'message' => 'Dokumen berhasil disetujui']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()]);
+        }
+    }
+
+    public function uploadDraft(Request $request)
+    {
+        try {
+            $request->validate([
+                'kkpr_id' => 'required',
+                'draft_file' => 'required|mimes:pdf|max:10240' // max 10MB
+            ]);
+
+            $model = Kkpr::findOrFail($request->kkpr_id);
+
+            // Buat folder jika belum ada
+            $folder = 'uploads/berkas/umk/' . $model->id;
+            if (!file_exists($folder)) {
+                mkdir($folder, 0755, true);
+            }
+
+            // Hapus file lama jika ada
+            if ($model->draft_file && file_exists($folder . '/' . $model->draft_file)) {
+                unlink($folder . '/' . $model->draft_file);
+            }
+
+            // Upload file
+            $file = $request->file('draft_file');
+            $filename = 'draft_' . time() . '.pdf';
+            $file->move($folder, $filename);
+
+            // Update data KKPR
+            $updateData = [
+                'draft_file' => $filename
+            ];
+
+            // Update proses ke 10 hanya jika belum di proses 10
+            if ($model->proses != 10) {
+                $updateData['proses'] = 10;
+            }
+
+            $model->update($updateData);
+
+            // Tambah riwayat
+            $riwayat = Kkpr_riwayat::where('kkpr_id', $model->id)->where('status_id', 10)->first();
+            if (!$riwayat) {
+                Kkpr_riwayat::create([
+                    'kkpr_id' => $model->id,
+                    'status_id' => '10',
+                    'status' => 'Selesai',
+                    'keterangan' => 'Dokumen hasil penilaian telah diupload'
+                ]);
+            } else {
+                Kkpr_riwayat::where('id', $riwayat->id)->update([
+                    'keterangan' => 'Dokumen hasil penilaian telah diperbarui'
+                ]);
+            }
+
+            $message = $model->proses == 10 ?
+                'Hasil penilaian berhasil diperbarui' :
+                'Draft berhasil diupload dan proses telah selesai';
+
+            return redirect()->route($this->path . '.index')
+                ->withSuccess($message);
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->withError('Terjadi kesalahan saat upload dokumen: ' . $e->getMessage());
+        }
+    }
+
 }
