@@ -1,26 +1,34 @@
 @extends('layouts.app')
 
-@section('title', 'Detail Permohonan UMK')
-@section('subtitle', 'Detail Permohonan Persetujuan UMK')
+@section('title', 'Detail KKPR - ' . $model->id)
+@section('subtitle', 'Detail lengkap permohonan KKPR')
 
 @section('content')
+@php
+    $img_path = url('/uploads/berkas/umk/').'/'.$model->id.'/';
+    $prop = \DB::table('setup_prop')->where('NO_PROP', 35)->first();
+    $kab = \DB::table('setup_kab')->where('NO_PROP', 35)->where('NO_KAB', 10)->first();
+    $kec = \DB::table('setup_kec')->where('NO_PROP', 35)->where('NO_KAB', 10)->where('NO_KEC', $model->NO_KEC)->first();
+    $kel = \DB::table('setup_kel_fix')->where('NO_PROP', $prop->NO_PROP)->where('NO_KAB',  10)->where('NO_KEC',$kec->NO_KEC ?? '')->where('NO_KEL', $model->NO_KEL)->first();
+@endphp
+
 <div class="max-w-7xl mx-auto space-y-6">
-    <!-- Hero Section -->
+    <!-- Hero Section with Gradient -->
     <div class="relative overflow-hidden bg-gradient-to-br from-[#185B3C] via-[#0F3D26] to-[#185B3C] rounded-xl p-6 text-white">
         <div class="absolute inset-0 bg-black/10"></div>
         <div class="relative z-10">
             <div class="flex items-center justify-between">
                 <div>
-                    <h1 class="text-2xl font-bold mb-1">Detail Permohonan UMK</h1>
-                    <p class="text-sm text-white/90 mb-4">Informasi lengkap permohonan persetujuan UMK</p>
+                    <h1 class="text-2xl font-bold mb-1">Detail KKPR #{{ $model->id }}</h1>
+                    <p class="text-sm text-white/90 mb-4">Informasi lengkap permohonan KKPR</p>
                     <div class="flex items-center space-x-4">
                         <div class="flex items-center space-x-2">
                             <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                            <span class="text-xs">Status: {{ $model->proses == 1 ? 'Pengajuan' : 'Diproses' }}</span>
+                            <span class="text-xs">Status: {{ $model->proses == 10 ? 'Selesai' : 'Proses' }}</span>
                         </div>
                         <div class="flex items-center space-x-2">
                             <i class="fas fa-calendar text-xs"></i>
-                            <span class="text-xs">{{ $model->created_at->format('d M Y') }}</span>
+                            <span class="text-xs">{{ $model->created_at->format('d M Y H:i') }}</span>
                         </div>
                     </div>
                 </div>
@@ -31,202 +39,837 @@
                 </div>
             </div>
         </div>
-    </div>
-
-    <!-- Status Card -->
-    <div class="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg border border-white/20 p-6">
-        <div class="flex items-center justify-between">
-            <div class="flex items-center space-x-4">
-                <div class="w-12 h-12 bg-gradient-to-br from-[#185B3C] to-[#0F3D26] rounded-lg flex items-center justify-center">
-                    <i class="fas fa-info-circle text-white text-lg"></i>
-                </div>
-                <div>
-                    <h3 class="text-lg font-semibold text-gray-900">Status Permohonan</h3>
-                    <p class="text-sm text-gray-600">Informasi status terkini</p>
-                </div>
-            </div>
-            <div class="text-right">
-                @if($model->revisi == 1)
-                    <span class="inline-flex px-4 py-2 text-sm font-semibold rounded-full bg-red-100 text-red-800 border border-red-300">
-                        <i class="fas fa-exclamation-triangle mr-2"></i>
-                        Perlu Revisi
-                    </span>
-                @else
-                    <span class="inline-flex px-4 py-2 text-sm font-semibold rounded-full bg-blue-100 text-blue-800 border border-blue-300">
-                        <i class="fas fa-clock mr-2"></i>
-                        Sedang Diproses
-                    </span>
-                @endif
-            </div>
-        </div>
-    </div>
-
-    <!-- Detail Information -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <!-- Data Pemohon -->
-        <div class="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg border border-white/20 p-6">
-            <div class="flex items-center space-x-3 mb-6">
-                <div class="w-1 h-8 bg-gradient-to-b from-[#185B3C] to-[#DAAF49] rounded-full"></div>
-                <h4 class="text-lg font-semibold text-gray-900">Data Pemohon</h4>
-            </div>
-            
-            <div class="space-y-4">
-                <div class="flex justify-between items-center py-2 border-b border-gray-100">
-                    <span class="text-sm font-medium text-gray-600">Nama Lengkap</span>
-                    <span class="text-sm text-gray-900">{{ $model->user->name }}</span>
-                </div>
-                <div class="flex justify-between items-center py-2 border-b border-gray-100">
-                    <span class="text-sm font-medium text-gray-600">Email</span>
-                    <span class="text-sm text-gray-900">{{ $model->user->email }}</span>
-                </div>
-                <div class="flex justify-between items-center py-2 border-b border-gray-100">
-                    <span class="text-sm font-medium text-gray-600">No. HP</span>
-                    <span class="text-sm text-gray-900">{{ $model->user->phone ?? '-' }}</span>
-                </div>
-                <div class="flex justify-between items-center py-2">
-                    <span class="text-sm font-medium text-gray-600">Alamat</span>
-                    <span class="text-sm text-gray-900">{{ $model->user->address ?? '-' }}</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Data Tanah -->
-        <div class="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg border border-white/20 p-6">
-            <div class="flex items-center space-x-3 mb-6">
-                <div class="w-1 h-8 bg-gradient-to-b from-[#185B3C] to-[#DAAF49] rounded-full"></div>
-                <h4 class="text-lg font-semibold text-gray-900">Data Tanah</h4>
-            </div>
-            
-            <div class="space-y-4">
-                <div class="flex justify-between items-center py-2 border-b border-gray-100">
-                    <span class="text-sm font-medium text-gray-600">Alamat Tanah</span>
-                    <span class="text-sm text-gray-900">{{ $model->alamat_tanah ?? '-' }}</span>
-                </div>
-                <div class="flex justify-between items-center py-2 border-b border-gray-100">
-                    <span class="text-sm font-medium text-gray-600">Luas Tanah</span>
-                    <span class="text-sm text-gray-900">{{ $model->luas ? number_format($model->luas) . ' m²' : '-' }}</span>
-                </div>
-                <div class="flex justify-between items-center py-2 border-b border-gray-100">
-                    <span class="text-sm font-medium text-gray-600">RT/RW</span>
-                    <span class="text-sm text-gray-900">{{ $model->rt ? $model->rt . '/' . $model->rw : '-' }}</span>
-                </div>
-                <div class="flex justify-between items-center py-2">
-                    <span class="text-sm font-medium text-gray-600">Koordinat</span>
-                    <span class="text-sm text-gray-900">
-                        @if($model->longitude && $model->lattitude)
-                            {{ $model->longitude }}, {{ $model->lattitude }}
-                        @else
-                            -
-                        @endif
-                    </span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Data Kegiatan -->
-        <div class="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg border border-white/20 p-6">
-            <div class="flex items-center space-x-3 mb-6">
-                <div class="w-1 h-8 bg-gradient-to-b from-[#185B3C] to-[#DAAF49] rounded-full"></div>
-                <h4 class="text-lg font-semibold text-gray-900">Data Kegiatan</h4>
-            </div>
-            
-            <div class="space-y-4">
-                <div class="flex justify-between items-center py-2 border-b border-gray-100">
-                    <span class="text-sm font-medium text-gray-600">Jenis Kegiatan</span>
-                    <span class="text-sm text-gray-900">{{ $model->jenis_kegiatan ?? '-' }}</span>
-                </div>
-                <div class="flex justify-between items-center py-2 border-b border-gray-100">
-                    <span class="text-sm font-medium text-gray-600">Fungsi Bangunan</span>
-                    <span class="text-sm text-gray-900">{{ $model->fungsi ?? '-' }}</span>
-                </div>
-                <div class="flex justify-between items-center py-2 border-b border-gray-100">
-                    <span class="text-sm font-medium text-gray-600">Alamat Kegiatan</span>
-                    <span class="text-sm text-gray-900">{{ $model->alamat_kegiatan ?? '-' }}</span>
-                </div>
-                <div class="flex justify-between items-center py-2">
-                    <span class="text-sm font-medium text-gray-600">Luas Dimohon</span>
-                    <span class="text-sm text-gray-900">{{ $model->luas_dimohon ? number_format($model->luas_dimohon) . ' m²' : '-' }}</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Data Sertifikat -->
-        <div class="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg border border-white/20 p-6">
-            <div class="flex items-center space-x-3 mb-6">
-                <div class="w-1 h-8 bg-gradient-to-b from-[#185B3C] to-[#DAAF49] rounded-full"></div>
-                <h4 class="text-lg font-semibold text-gray-900">Data Sertifikat</h4>
-            </div>
-            
-            <div class="space-y-4">
-                <div class="flex justify-between items-center py-2 border-b border-gray-100">
-                    <span class="text-sm font-medium text-gray-600">Jenis Sertifikat</span>
-                    <span class="text-sm text-gray-900">{{ $model->jns_sertifikat ?? '-' }}</span>
-                </div>
-                <div class="flex justify-between items-center py-2 border-b border-gray-100">
-                    <span class="text-sm font-medium text-gray-600">No. Sertifikat</span>
-                    <span class="text-sm text-gray-900">{{ $model->no_sertifikat ?? '-' }}</span>
-                </div>
-                <div class="flex justify-between items-center py-2 border-b border-gray-100">
-                    <span class="text-sm font-medium text-gray-600">Atas Nama</span>
-                    <span class="text-sm text-gray-900">{{ $model->an_sertifikat ?? '-' }}</span>
-                </div>
-                <div class="flex justify-between items-center py-2">
-                    <span class="text-sm font-medium text-gray-600">Tahun Sertifikat</span>
-                    <span class="text-sm text-gray-900">{{ $model->thn_sertifikat ?? '-' }}</span>
-                </div>
-            </div>
-        </div>
+        <!-- Decorative Elements -->
+        <div class="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-y-16 translate-x-16"></div>
+        <div class="absolute bottom-0 left-0 w-24 h-24 bg-white/5 rounded-full translate-y-12 -translate-x-12"></div>
     </div>
 
     <!-- Action Buttons -->
-    <div class="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg border border-white/20 p-6">
-        <div class="flex items-center justify-between">
-            <div class="flex items-center space-x-4">
-                <a href="{{ route('member.kkpr.index') }}" class="flex items-center px-4 py-2 text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">
-                    <i class="fas fa-arrow-left mr-2"></i>
-                    Kembali
-                </a>
-                <a href="{{ route('member.kkpr.edit', $model->id) }}" class="flex items-center px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors">
-                    <i class="fas fa-edit mr-2"></i>
-                    Edit
-                </a>
+    <div class="flex flex-wrap gap-4">
+        <a href="{{ route('member.kkpr.index') }}" class="inline-flex items-center px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors">
+            <i class="fas fa-arrow-left mr-2"></i>
+            Kembali
+        </a>
+        <a href="{{ route('member.kkpr.edit', $model->id) }}" class="inline-flex items-center px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
+            <i class="fas fa-edit mr-2"></i>
+            Edit
+        </a>
+        <button onclick="deleteKkpr({{ $model->id }})" class="inline-flex items-center px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors">
+            <i class="fas fa-trash mr-2"></i>
+            Hapus
+        </button>
+    </div>
+
+    <!-- Stats Cards with Glassmorphism -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="group relative overflow-hidden bg-white/80 backdrop-blur-sm rounded-xl p-4 shadow-lg border border-white/20 hover:shadow-xl transition-all duration-300">
+            <div class="absolute inset-0 bg-gradient-to-br from-[#185B3C]/5 to-transparent"></div>
+            <div class="relative z-10">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-[#185B3C] to-[#0F3D26] rounded-lg flex items-center justify-center shadow-md">
+                    <i class="fas fa-user text-white text-sm"></i>
+                </div>
+                    <div class="text-right">
+                        <p class="text-2xl font-bold text-[#185B3C]">{{ $model->user->name ?? 'N/A' }}</p>
+                        <p class="text-xs text-gray-500">Pemohon</p>
             </div>
-            <div class="flex items-center space-x-4">
-                <a href="{{ route('member.kkpr.cetak.detail', $model->id) }}" target="_blank" class="flex items-center px-4 py-2 text-white bg-green-600 rounded-lg hover:bg-green-700 transition-colors">
-                    <i class="fas fa-file-pdf mr-2"></i>
-                    Cetak PDF
-                </a>
-                <button onclick="printData()" class="flex items-center px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors">
-                    <i class="fas fa-print mr-2"></i>
-                    Print
+                </div>
+                <h3 class="text-sm font-semibold text-gray-900 mb-1">Biodata Pemohon</h3>
+                <div class="flex items-center text-xs text-gray-600">
+                    <i class="fas fa-id-card mr-1"></i>
+                    <span>{{ $model->user->username ?? 'N/A' }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="group relative overflow-hidden bg-white/80 backdrop-blur-sm rounded-xl p-4 shadow-lg border border-white/20 hover:shadow-xl transition-all duration-300">
+            <div class="absolute inset-0 bg-gradient-to-br from-green-500/5 to-transparent"></div>
+            <div class="relative z-10">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center shadow-md">
+                    <i class="fas fa-map-marker-alt text-white text-sm"></i>
+                </div>
+                    <div class="text-right">
+                        <p class="text-2xl font-bold text-green-600">{{ $model->luas_tanah ?? 'N/A' }}</p>
+                        <p class="text-xs text-gray-500">m²</p>
+            </div>
+                </div>
+                <h3 class="text-sm font-semibold text-gray-900 mb-1">Luas Tanah</h3>
+                <div class="flex items-center text-xs text-gray-600">
+                    <i class="fas fa-ruler mr-1"></i>
+                    <span>{{ $model->luas_dimohon ?? 'N/A' }} m² dimohon</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="group relative overflow-hidden bg-white/80 backdrop-blur-sm rounded-xl p-4 shadow-lg border border-white/20 hover:shadow-xl transition-all duration-300">
+            <div class="absolute inset-0 bg-gradient-to-br from-orange-500/5 to-transparent"></div>
+            <div class="relative z-10">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center shadow-md">
+                        <i class="fas fa-building text-white text-sm"></i>
+                </div>
+                    <div class="text-right">
+                        <p class="text-2xl font-bold text-orange-600">{{ $model->jumlah_lantai ?? 'N/A' }}</p>
+                        <p class="text-xs text-gray-500">Lantai</p>
+                </div>
+                </div>
+                <h3 class="text-sm font-semibold text-gray-900 mb-1">Rencana Bangunan</h3>
+                <div class="flex items-center text-xs text-gray-600">
+                    <i class="fas fa-arrow-up mr-1"></i>
+                    <span>{{ $model->tinggi_bangunan ?? 'N/A' }} m tinggi</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Information Cards -->
+    <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+        <!-- Informasi Pemohon -->
+    <div class="bg-white/80 backdrop-blur-sm rounded-xl p-6 shadow-lg border border-white/20">
+            <div class="flex items-center space-x-3 mb-6">
+                <div class="w-10 h-10 bg-gradient-to-br from-[#185B3C] to-[#0F3D26] rounded-xl flex items-center justify-center shadow-md">
+                    <i class="fas fa-user text-white text-sm"></i>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold text-gray-900">Biodata Pemohon</h3>
+                    <p class="text-sm text-gray-500">Informasi lengkap pemohon</p>
+                </div>
+            </div>
+            
+            <!-- Profile Card -->
+            <div class="bg-gradient-to-br from-[#185B3C]/5 to-transparent rounded-lg p-4 mb-6">
+                <div class="flex items-center space-x-4">
+                    <div class="w-16 h-16 bg-gradient-to-br from-[#185B3C] to-[#0F3D26] rounded-full flex items-center justify-center shadow-lg">
+                        <i class="fas fa-user text-white text-xl"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="text-lg font-bold text-gray-900">{{ $model->user->name ?? 'N/A' }}</h4>
+                        <p class="text-sm text-gray-600">{{ $model->user->username ?? 'N/A' }}</p>
+                        <p class="text-xs text-gray-500 mt-1">{{ $model->user->work ?? 'N/A' }}</p>
+                </div>
+                </div>
+            </div>
+
+            <!-- Contact Info -->
+            <div class="space-y-4">
+                <div class="flex items-start space-x-3">
+                    <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <i class="fas fa-envelope text-blue-600 text-xs"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-semibold text-gray-600">Email</p>
+                        <p class="text-sm text-gray-900 break-all">{{ $model->user->email ?? 'N/A' }}</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-start space-x-3">
+                    <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <i class="fas fa-phone text-green-600 text-xs"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-semibold text-gray-600">No HP</p>
+                        <p class="text-sm text-gray-900">{{ $model->user->phone ?? 'N/A' }}</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-start space-x-3">
+                    <div class="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <i class="fas fa-map-marker-alt text-purple-600 text-xs"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-semibold text-gray-600">Alamat</p>
+                        <p class="text-sm text-gray-900">{{ $model->user->address ?? 'N/A' }}</p>
+                    </div>
+                </div>
+
+                @if ($model->jenis == 1)
+                <div class="flex items-start space-x-3">
+                    <div class="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <i class="fas fa-building text-orange-600 text-xs"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-semibold text-gray-600">Nama Badan Usaha</p>
+                        <p class="text-sm text-gray-900">{{ $model->nama_usaha ?? 'N/A' }}</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-start space-x-3">
+                    <div class="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <i class="fas fa-briefcase text-indigo-600 text-xs"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-semibold text-gray-600">Jabatan Pemohon</p>
+                        <p class="text-sm text-gray-900">{{ $model->jabatan_pemohon ?? 'N/A' }}</p>
+                    </div>
+                </div>
+                @endif
+        </div>
+    </div>
+
+        <!-- Data Pengajuan Kegiatan dan Lokasi Kegiatan -->
+        <div class="xl:col-span-2 bg-white/80 backdrop-blur-sm rounded-xl p-6 shadow-lg border border-white/20">
+            <div class="flex items-center space-x-3 mb-6">
+                <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-md">
+                    <i class="fas fa-building text-white text-sm"></i>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold text-gray-900">Data Pengajuan Kegiatan</h3>
+                    <p class="text-sm text-gray-500">Informasi lengkap kegiatan dan lokasi</p>
+                </div>
+            </div>
+
+            <!-- Tabs Navigation -->
+            <div class="flex space-x-1 mb-6 bg-gray-100 p-1 rounded-lg">
+                <button onclick="showTab('kegiatan')" id="tab-kegiatan" class="flex-1 px-4 py-2 text-sm font-medium rounded-md bg-white text-[#185B3C] shadow-sm transition-all duration-200">
+                    <i class="fas fa-building mr-2"></i>Kegiatan
                 </button>
-                <button onclick="shareData()" class="flex items-center px-4 py-2 text-white bg-purple-600 rounded-lg hover:bg-purple-700 transition-colors">
-                    <i class="fas fa-share mr-2"></i>
-                    Bagikan
+                <button onclick="showTab('lokasi')" id="tab-lokasi" class="flex-1 px-4 py-2 text-sm font-medium rounded-md text-gray-600 hover:text-[#185B3C] transition-all duration-200">
+                    <i class="fas fa-map-marker-alt mr-2"></i>Lokasi
                 </button>
+                <button onclick="showTab('bangunan')" id="tab-bangunan" class="flex-1 px-4 py-2 text-sm font-medium rounded-md text-gray-600 hover:text-[#185B3C] transition-all duration-200">
+                    <i class="fas fa-home mr-2"></i>Bangunan
+                </button>
+            </div>
+
+            <!-- Tab Content -->
+            <div id="content-kegiatan" class="tab-content">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Left Column -->
+                    <div class="space-y-4">
+                        <div class="bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg p-4">
+                            <div class="flex items-center space-x-3 mb-3">
+                                <div class="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-briefcase text-white text-sm"></i>
+                                </div>
+                                <h4 class="font-semibold text-gray-900">Informasi Kegiatan</h4>
+                            </div>
+                            <div class="space-y-3">
+                                <div>
+                                    <label class="text-sm font-semibold text-gray-600">Fungsi</label>
+                                    <p class="text-gray-900 mt-1">{{ $model->fungsi ?? 'N/A' }}</p>
+                                </div>
+                                <div>
+                                    <label class="text-sm font-semibold text-gray-600">Jenis Kegiatan</label>
+                                    <p class="text-gray-900 mt-1">
+                                        @if($model->jenis_kegiatan == 'Lainnya')
+                                            {{ $model->jenis_kegiatan_lainnya ?? 'N/A' }}
+                                        @else
+                                            {{ $model->jenis_kegiatan ?? 'N/A' }}
+                                        @endif
+                                    </p>
+                                </div>
+                                <div>
+                                    <label class="text-sm font-semibold text-gray-600">NIB</label>
+                                    <p class="text-gray-900 mt-1 font-mono text-sm">{{ $model->no_nib ?? 'N/A' }}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- KBLI Section -->
+                        @if($model->kkpr_kbli && $model->kkpr_kbli->count() > 0)
+                        <div class="bg-gradient-to-r from-green-50 to-green-100 rounded-lg p-4">
+                            <div class="flex items-center space-x-3 mb-3">
+                                <div class="w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-list text-white text-sm"></i>
+                                </div>
+                                <h4 class="font-semibold text-gray-900">KBLI</h4>
+                            </div>
+                            <div class="space-y-2">
+                                @foreach($model->kkpr_kbli as $kbli)
+                                <div class="bg-white rounded-lg p-3 border border-green-200">
+                                    <div class="flex items-center justify-between">
+                                        <span class="font-mono text-sm font-semibold text-green-700">{{ $kbli->kode_kbli }}</span>
+                                        <span class="text-xs text-gray-500">{{ $kbli->judul_kbli }}</span>
+                                    </div>
+                                </div>
+                                @endforeach
+                            </div>
+                        </div>
+                        @endif
+                    </div>
+
+                    <!-- Right Column -->
+                    <div class="space-y-4">
+                        <div class="bg-gradient-to-r from-purple-50 to-purple-100 rounded-lg p-4">
+                            <div class="flex items-center space-x-3 mb-3">
+                                <div class="w-8 h-8 bg-purple-500 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-map text-white text-sm"></i>
+                                </div>
+                                <h4 class="font-semibold text-gray-900">Status Lahan</h4>
+                            </div>
+                            <div class="space-y-3">
+                                <div>
+                                    <label class="text-sm font-semibold text-gray-600">Status Lahan</label>
+                                    <p class="text-gray-900 mt-1">{{ $model->status_lahan ?? 'N/A' }}</p>
+                                </div>
+                                <div>
+                                    <label class="text-sm font-semibold text-gray-600">Status Penggunaan Tanah</label>
+                                    <p class="text-gray-900 mt-1">{{ $model->status_penggunaan_tanah ?? 'N/A' }}</p>
+                                </div>
+                                <div>
+                                    <label class="text-sm font-semibold text-gray-600">Status Atas Tanah</label>
+                                    <p class="text-gray-900 mt-1">{{ $model->status_tanah ?? 'N/A' }}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg p-4">
+                            <div class="flex items-center space-x-3 mb-3">
+                                <div class="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-ruler-combined text-white text-sm"></i>
+                                </div>
+                                <h4 class="font-semibold text-gray-900">Luas Tanah</h4>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="text-center">
+                                    <p class="text-2xl font-bold text-orange-600">{{ $model->luas_tanah ?? 'N/A' }}</p>
+                                    <p class="text-xs text-gray-600">Sertifikat (m²)</p>
+                                </div>
+                                <div class="text-center">
+                                    <p class="text-2xl font-bold text-orange-600">{{ $model->luas_dimohon ?? 'N/A' }}</p>
+                                    <p class="text-xs text-gray-600">Dimohon (m²)</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="content-lokasi" class="tab-content hidden">
+                <div class="bg-gradient-to-r from-indigo-50 to-indigo-100 rounded-lg p-6">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="w-10 h-10 bg-indigo-500 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-map-marker-alt text-white text-sm"></i>
+                        </div>
+                        <h4 class="text-lg font-semibold text-gray-900">Lokasi Kegiatan</h4>
+                    </div>
+                    <div class="bg-white rounded-lg p-4 border border-indigo-200">
+                        <p class="text-gray-900 leading-relaxed">
+                            {{ $model->alamat_kegiatan ?? 'N/A' }}, {{ ucFirst(strToLower($kel->NAMA_KEL ?? '')) }} Kecamatan {{ ucFirst(strToLower($kec->NAMA_KEC ?? '')) }} Kabupaten {{ ucFirst(strToLower($kab->NAMA_KAB ?? '')) }}.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="content-bangunan" class="tab-content hidden">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-gradient-to-r from-teal-50 to-teal-100 rounded-lg p-4">
+                        <div class="flex items-center space-x-3 mb-4">
+                            <div class="w-8 h-8 bg-teal-500 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-home text-white text-sm"></i>
+                            </div>
+                            <h4 class="font-semibold text-gray-900">Rencana Bangunan</h4>
+                        </div>
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm font-semibold text-gray-600">Jumlah Lantai</span>
+                                <span class="text-lg font-bold text-teal-600">{{ $model->jumlah_lantai ?? 'N/A' }}</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm font-semibold text-gray-600">Tinggi Bangunan</span>
+                                <span class="text-lg font-bold text-teal-600">{{ $model->tinggi_bangunan ?? 'N/A' }} m</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-gradient-to-r from-pink-50 to-pink-100 rounded-lg p-4">
+                        <div class="flex items-center space-x-3 mb-4">
+                            <div class="w-8 h-8 bg-pink-500 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-layer-group text-white text-sm"></i>
+                            </div>
+                            <h4 class="font-semibold text-gray-900">Luas Lantai</h4>
+                        </div>
+                        <div class="space-y-2">
+                            @if(is_array($model->luas_lantai))
+                                @foreach($model->luas_lantai as $index => $luas)
+                                <div class="flex justify-between items-center bg-white rounded-lg p-2 border border-pink-200">
+                                    <span class="text-sm font-semibold text-gray-600">Lantai {{ $index + 1 }}</span>
+                                    <span class="text-sm font-bold text-pink-600">{{ $luas }} m²</span>
+                                </div>
+                                @endforeach
+                            @else
+                                <div class="flex justify-between items-center bg-white rounded-lg p-2 border border-pink-200">
+                                    <span class="text-sm font-semibold text-gray-600">Total</span>
+                                    <span class="text-sm font-bold text-pink-600">{{ $model->luas_lantai ?? 'N/A' }} m²</span>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dokumen Kegiatan Section -->
+    <div class="bg-white/80 backdrop-blur-sm rounded-xl p-6 shadow-lg border border-white/20">
+        <div class="flex items-center space-x-3 mb-6">
+            <div class="w-10 h-10 bg-gradient-to-br from-[#185B3C] to-[#0F3D26] rounded-xl flex items-center justify-center shadow-md">
+                <i class="fas fa-file-alt text-white text-sm"></i>
+            </div>
+            <div>
+                <h3 class="text-lg font-bold text-gray-900">Dokumen Kegiatan</h3>
+                <p class="text-sm text-gray-500">Daftar dokumen yang telah diupload</p>
+            </div>
+        </div>
+                
+                <!-- Modern Data Table -->
+                <div class="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg border border-white/20 overflow-hidden">
+                    <!-- Table Header -->
+                    <div class="px-6 py-4 bg-gradient-to-r from-gray-50 to-gray-100 border-b border-gray-200">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-8 h-8 bg-gradient-to-br from-[#185B3C] to-[#0F3D26] rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-file-alt text-white text-sm"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-bold text-gray-900">Dokumen Persyaratan</h3>
+                                    <p class="text-sm text-gray-600">Daftar dokumen yang telah diupload</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Table Content -->
+                    <div class="overflow-hidden">
+                        <!-- Table Headers -->
+                        <div class="px-6 py-3 bg-gray-50/80 border-b border-gray-100">
+                            <div class="grid grid-cols-12 gap-4">
+                                <div class="col-span-6">
+                                    <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">JENIS DOKUMEN</span>
+                                </div>
+                                <div class="col-span-3">
+                                    <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">STATUS</span>
+                                </div>
+                                <div class="col-span-3">
+                                    <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">AKSI</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Table Rows -->
+                        <div class="divide-y divide-gray-100">
+                            <!-- Surat Pernyataan Mandiri -->
+                            <div class="px-6 py-4 hover:bg-gradient-to-r hover:from-[#185B3C]/5 hover:to-transparent transition-all duration-300 group">
+                                <div class="grid grid-cols-12 gap-4 items-center">
+                                    <div class="col-span-6">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-10 h-10 bg-gradient-to-br from-[#185B3C] to-[#0F3D26] rounded-xl flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
+                                                <i class="fas fa-file-signature text-white text-sm"></i>
+            </div>
+                                            <div>
+                                                <p class="font-bold text-gray-900 text-sm">Surat Pernyataan Mandiri</p>
+                                                <p class="text-xs text-gray-500">Dokumen wajib</p>
+        </div>
+        </div>
+    </div>
+                                    <div class="col-span-3">
+                                        @if ($model->sp_mandiri != null)
+                                            <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-green-100 to-green-200 text-green-800 border border-green-300">
+                                                <i class="fas fa-check-circle mr-1 text-xs"></i>
+                                                Terupload
+                                            </span>
+                                        @else
+                                            <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-800 border border-yellow-300">
+                                                <i class="fas fa-clock mr-1 text-xs"></i>
+                                                Belum Upload
+                                            </span>
+                                        @endif
+                                    </div>
+                                    <div class="col-span-3">
+                                        <div class="flex items-center space-x-1">
+                                            @if ($model->sp_mandiri != null)
+                                                <a target="_blank" href="{{ asset('uploads/berkas/umk/'.$model->id. '/sp_mandiri/' .$model->sp_mandiri) }}" class="p-2 text-gray-400 hover:text-[#185B3C] hover:bg-[#185B3C]/10 rounded-lg transition-all duration-200 hover:scale-105" title="Lihat Dokumen">
+                                                    <i class="fas fa-eye text-xs"></i>
+                                                </a>
+                                            @else
+                                                <span class="p-2 text-gray-300" title="Dokumen Kosong">
+                                                    <i class="fas fa-eye-slash text-xs"></i>
+                                                </span>
+    @endif
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Surat Kepemilikan Tanah -->
+                            <div class="px-6 py-4 hover:bg-gradient-to-r hover:from-blue-50 hover:to-transparent transition-all duration-300 group">
+                                <div class="grid grid-cols-12 gap-4 items-center">
+                                    <div class="col-span-6">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
+                                                <i class="fas fa-file-contract text-white text-sm"></i>
+                                            </div>
+                                            <div>
+                                                <p class="font-bold text-gray-900 text-sm">Surat Kepemilikan Tanah</p>
+                                                <p class="text-xs text-gray-500">Dokumen wajib</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-span-3">
+                                        @if ($model->dok_kepemilikan != null)
+                                            <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-green-100 to-green-200 text-green-800 border border-green-300">
+                                                <i class="fas fa-check-circle mr-1 text-xs"></i>
+                                                Terupload
+                                            </span>
+                                        @else
+                                            <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-800 border border-yellow-300">
+                                                <i class="fas fa-clock mr-1 text-xs"></i>
+                                                Belum Upload
+                                            </span>
+                                        @endif
+                                    </div>
+                                    <div class="col-span-3">
+                                        <div class="flex items-center space-x-1">
+                                            @if ($model->dok_kepemilikan != null)
+                                                <a target="_blank" href="{{ asset('uploads/berkas/umk/'.$model->id. '/dok_kepemilikan/' .$model->dok_kepemilikan) }}" class="p-2 text-gray-400 hover:text-[#185B3C] hover:bg-[#185B3C]/10 rounded-lg transition-all duration-200 hover:scale-105" title="Lihat Dokumen">
+                                                    <i class="fas fa-eye text-xs"></i>
+                                                </a>
+                                            @else
+                                                <span class="p-2 text-gray-300" title="Dokumen Kosong">
+                                                    <i class="fas fa-eye-slash text-xs"></i>
+                                                </span>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+            </div>
+
+                            <!-- KTP Pemohon -->
+                            <div class="px-6 py-4 hover:bg-gradient-to-r hover:from-green-50 hover:to-transparent transition-all duration-300 group">
+                                <div class="grid grid-cols-12 gap-4 items-center">
+                                    <div class="col-span-6">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
+                                                <i class="fas fa-id-card text-white text-sm"></i>
+        </div>
+                <div>
+                                                <p class="font-bold text-gray-900 text-sm">KTP Pemohon</p>
+                                                <p class="text-xs text-gray-500">Dokumen wajib</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-span-3">
+                                        @if ($model->f_ktp != null)
+                                            <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-green-100 to-green-200 text-green-800 border border-green-300">
+                                                <i class="fas fa-check-circle mr-1 text-xs"></i>
+                                                Terupload
+                                            </span>
+                                        @else
+                                            <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-800 border border-yellow-300">
+                                                <i class="fas fa-clock mr-1 text-xs"></i>
+                                                Belum Upload
+                                            </span>
+                                        @endif
+                                    </div>
+                                    <div class="col-span-3">
+                                        <div class="flex items-center space-x-1">
+                                            @if ($model->f_ktp != null)
+                                                <a target="_blank" href="{{ asset('uploads/berkas/umk/'.$model->id. '/f_ktp/' .$model->f_ktp) }}" class="p-2 text-gray-400 hover:text-[#185B3C] hover:bg-[#185B3C]/10 rounded-lg transition-all duration-200 hover:scale-105" title="Lihat Dokumen">
+                                                    <i class="fas fa-eye text-xs"></i>
+                                                </a>
+                                            @else
+                                                <span class="p-2 text-gray-300" title="Dokumen Kosong">
+                                                    <i class="fas fa-eye-slash text-xs"></i>
+                    </span>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Sertifikat Tanah -->
+                            <div class="px-6 py-4 hover:bg-gradient-to-r hover:from-purple-50 hover:to-transparent transition-all duration-300 group">
+                                <div class="grid grid-cols-12 gap-4 items-center">
+                                    <div class="col-span-6">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
+                                                <i class="fas fa-certificate text-white text-sm"></i>
+                </div>
+                <div>
+                                                <p class="font-bold text-gray-900 text-sm">Sertifikat Tanah</p>
+                                                <p class="text-xs text-gray-500">Dokumen wajib</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-span-3">
+                                        @if ($model->f_sertifikat != null)
+                                            <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-green-100 to-green-200 text-green-800 border border-green-300">
+                                                <i class="fas fa-check-circle mr-1 text-xs"></i>
+                                                Terupload
+                                            </span>
+                                        @else
+                                            <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-800 border border-yellow-300">
+                                                <i class="fas fa-clock mr-1 text-xs"></i>
+                                                Belum Upload
+                                            </span>
+                                        @endif
+                                    </div>
+                                    <div class="col-span-3">
+                                        <div class="flex items-center space-x-1">
+                                            @if ($model->f_sertifikat != null)
+                                                <a target="_blank" href="{{ asset('uploads/berkas/umk/'.$model->id. '/f_sertifikat/' .$model->f_sertifikat) }}" class="p-2 text-gray-400 hover:text-[#185B3C] hover:bg-[#185B3C]/10 rounded-lg transition-all duration-200 hover:scale-105" title="Lihat Dokumen">
+                                                    <i class="fas fa-eye text-xs"></i>
+                                                </a>
+                                            @else
+                                                <span class="p-2 text-gray-300" title="Dokumen Kosong">
+                                                    <i class="fas fa-eye-slash text-xs"></i>
+                                                </span>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Siteplan/Denah Lokasi -->
+                            <div class="px-6 py-4 hover:bg-gradient-to-r hover:from-orange-50 hover:to-transparent transition-all duration-300 group">
+                                <div class="grid grid-cols-12 gap-4 items-center">
+                                    <div class="col-span-6">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-10 h-10 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
+                                                <i class="fas fa-map text-white text-sm"></i>
+                </div>
+                <div>
+                                                <p class="font-bold text-gray-900 text-sm">Siteplan/Denah Lokasi</p>
+                                                <p class="text-xs text-gray-500">Dokumen wajib</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-span-3">
+                                        @if ($model->f_siteplan != null)
+                                            <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-green-100 to-green-200 text-green-800 border border-green-300">
+                                                <i class="fas fa-check-circle mr-1 text-xs"></i>
+                                                Terupload
+                                            </span>
+                                        @else
+                                            <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-800 border border-yellow-300">
+                                                <i class="fas fa-clock mr-1 text-xs"></i>
+                                                Belum Upload
+                                            </span>
+                                        @endif
+                                    </div>
+                                    <div class="col-span-3">
+                                        <div class="flex items-center space-x-1">
+                                            @if ($model->f_siteplan != null)
+                                                <a target="_blank" href="{{ asset('uploads/berkas/umk/'.$model->id. '/f_siteplan/' .$model->f_siteplan) }}" class="p-2 text-gray-400 hover:text-[#185B3C] hover:bg-[#185B3C]/10 rounded-lg transition-all duration-200 hover:scale-105" title="Lihat Dokumen">
+                                                    <i class="fas fa-eye text-xs"></i>
+                                                </a>
+                                            @else
+                                                <span class="p-2 text-gray-300" title="Dokumen Kosong">
+                                                    <i class="fas fa-eye-slash text-xs"></i>
+                                                </span>
+                                            @endif
+                                        </div>
+                                    </div>
+                </div>
+            </div>
+
+                            <!-- Akta Perusahaan -->
+                            <div class="px-6 py-4 hover:bg-gradient-to-r hover:from-indigo-50 hover:to-transparent transition-all duration-300 group">
+                                <div class="grid grid-cols-12 gap-4 items-center">
+                                    <div class="col-span-6">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-10 h-10 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
+                                                <i class="fas fa-building text-white text-sm"></i>
+                                            </div>
+                <div>
+                                                <p class="font-bold text-gray-900 text-sm">Akta Perusahaan</p>
+                                                <p class="text-xs text-gray-500">Dokumen wajib</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-span-3">
+                                        @if ($model->f_akta != null)
+                                            <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-green-100 to-green-200 text-green-800 border border-green-300">
+                                                <i class="fas fa-check-circle mr-1 text-xs"></i>
+                                                Terupload
+                                            </span>
+                                        @else
+                                            <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-800 border border-yellow-300">
+                                                <i class="fas fa-clock mr-1 text-xs"></i>
+                                                Belum Upload
+                                            </span>
+                                        @endif
+                </div>
+                                    <div class="col-span-3">
+                                        <div class="flex items-center space-x-1">
+                                            @if ($model->f_akta != null)
+                                                <a target="_blank" href="{{ asset('uploads/berkas/umk/'.$model->id. '/f_akta/' .$model->f_akta) }}" class="p-2 text-gray-400 hover:text-[#185B3C] hover:bg-[#185B3C]/10 rounded-lg transition-all duration-200 hover:scale-105" title="Lihat Dokumen">
+                                                    <i class="fas fa-eye text-xs"></i>
+                                                </a>
+                                            @else
+                                                <span class="p-2 text-gray-300" title="Dokumen Kosong">
+                                                    <i class="fas fa-eye-slash text-xs"></i>
+                                                </span>
+                @endif
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Dokumen NIB -->
+                            <div class="px-6 py-4 hover:bg-gradient-to-r hover:from-teal-50 hover:to-transparent transition-all duration-300 group">
+                                <div class="grid grid-cols-12 gap-4 items-center">
+                                    <div class="col-span-6">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-10 h-10 bg-gradient-to-br from-teal-500 to-teal-600 rounded-xl flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
+                                                <i class="fas fa-file-invoice text-white text-sm"></i>
+                                            </div>
+                <div>
+                                                <p class="font-bold text-gray-900 text-sm">Dokumen NIB</p>
+                                                <p class="text-xs text-gray-500">Dokumen wajib</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-span-3">
+                                        @if ($model->f_nib != null)
+                                            <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-green-100 to-green-200 text-green-800 border border-green-300">
+                                                <i class="fas fa-check-circle mr-1 text-xs"></i>
+                                                Terupload
+                                            </span>
+                                        @else
+                                            <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-800 border border-yellow-300">
+                                                <i class="fas fa-clock mr-1 text-xs"></i>
+                                                Belum Upload
+                                            </span>
+                                        @endif
+                </div>
+                                    <div class="col-span-3">
+                                        <div class="flex items-center space-x-1">
+                                            @if ($model->f_nib != null)
+                                                <a target="_blank" href="{{ asset('uploads/berkas/umk/'.$model->id. '/f_nib/' .$model->f_nib) }}" class="p-2 text-gray-400 hover:text-[#185B3C] hover:bg-[#185B3C]/10 rounded-lg transition-all duration-200 hover:scale-105" title="Lihat Dokumen">
+                                                    <i class="fas fa-eye text-xs"></i>
+                                                </a>
+                                            @else
+                                                <span class="p-2 text-gray-300" title="Dokumen Kosong">
+                                                    <i class="fas fa-eye-slash text-xs"></i>
+                                                </span>
+                @endif
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- KML File -->
+                            <div class="px-6 py-4 hover:bg-gradient-to-r hover:from-pink-50 hover:to-transparent transition-all duration-300 group">
+                                <div class="grid grid-cols-12 gap-4 items-center">
+                                    <div class="col-span-6">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-10 h-10 bg-gradient-to-br from-pink-500 to-pink-600 rounded-xl flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
+                                                <i class="fas fa-map-marked-alt text-white text-sm"></i>
+                                            </div>
+                <div>
+                                                <p class="font-bold text-gray-900 text-sm">KML File</p>
+                                                <p class="text-xs text-gray-500">File koordinat</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-span-3">
+                                        @if ($model->f_kml != null)
+                                            <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-green-100 to-green-200 text-green-800 border border-green-300">
+                                                <i class="fas fa-check-circle mr-1 text-xs"></i>
+                                                Terupload
+                                            </span>
+                                        @else
+                                            <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-800 border border-yellow-300">
+                                                <i class="fas fa-clock mr-1 text-xs"></i>
+                                                Belum Upload
+                                            </span>
+                                        @endif
+                                    </div>
+                                    <div class="col-span-3">
+                                        <div class="flex items-center space-x-1">
+                                            @if ($model->f_kml != null)
+                                                <a target="_blank" href="{{ asset('uploads/berkas/umk/'.$model->id. '/kml/' .$model->f_kml) }}" class="p-2 text-gray-400 hover:text-[#185B3C] hover:bg-[#185B3C]/10 rounded-lg transition-all duration-200 hover:scale-105" title="Lihat Dokumen">
+                                                    <i class="fas fa-eye text-xs"></i>
+                                                </a>
+                                            @else
+                                                <span class="p-2 text-gray-300" title="Dokumen Kosong">
+                                                    <i class="fas fa-eye-slash text-xs"></i>
+                                                </span>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-<script>
-function printData() {
-    window.print();
-}
+<!-- Modal Koordinat -->
+<div class="modal fade" id="modal-kor" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;" tabindex="-1">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content"></div>
+    </div>
+</div>
 
-function shareData() {
-    if (navigator.share) {
-        navigator.share({
-            title: 'Detail Permohonan UMK',
-            text: 'Lihat detail permohonan UMK saya',
-            url: window.location.href
-        });
-    } else {
-        // Fallback untuk browser yang tidak mendukung Web Share API
-        navigator.clipboard.writeText(window.location.href).then(() => {
-            alert('Link berhasil disalin ke clipboard');
-        });
+<script>
+    function deleteKkpr(id) {
+        if (confirm('Apakah Anda yakin ingin menghapus permohonan ini?')) {
+            fetch(`/admin/kkpr/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.href = '/admin/kkpr';
+                } else {
+                    alert('Gagal menghapus data');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Terjadi kesalahan');
+            });
+        }
     }
-}
+
+    // Function koordinat tidak digunakan - disabled
+    // function open_koordinat(id) {
+    //     // Route member.kkpr.koordinat tidak ada
+    // }
+
+    function showTab(tabName) {
+        // Hide all tab contents
+        document.querySelectorAll('.tab-content').forEach(content => {
+            content.classList.add('hidden');
+        });
+        
+        // Remove active class from all tabs
+        document.querySelectorAll('[id^="tab-"]').forEach(tab => {
+            tab.classList.remove('bg-white', 'text-[#185B3C]', 'shadow-sm');
+            tab.classList.add('text-gray-600');
+        });
+        
+        // Show selected tab content
+        document.getElementById('content-' + tabName).classList.remove('hidden');
+        
+        // Add active class to selected tab
+        const activeTab = document.getElementById('tab-' + tabName);
+        activeTab.classList.add('bg-white', 'text-[#185B3C]', 'shadow-sm');
+        activeTab.classList.remove('text-gray-600');
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Staggered animation for cards
+        const cards = document.querySelectorAll('.bg-white\\/80, .bg-gradient-to-br');
+        cards.forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            setTimeout(() => {
+                card.style.transition = 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, index * 100);
+        });
+    });
 </script>
 @endsection

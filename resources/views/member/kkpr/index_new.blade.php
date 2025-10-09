@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
-@section('title', 'Permohonan KKPR Non')
-@section('subtitle', 'Kelola semua permohonan persetujuan KKPR Non Anda')
+@section('title', 'Permohonan UMK')
+@section('subtitle', 'Kelola semua permohonan persetujuan UMK Anda')
 
 @section('content')
 <!-- SweetAlert2 CSS -->
@@ -14,8 +14,8 @@
         <div class="relative z-10">
             <div class="flex items-center justify-between">
                 <div>
-                    <h1 class="text-2xl font-bold mb-1">Permohonan KKPR Non</h1>
-                    <p class="text-sm text-white/90 mb-4">Kelola semua permohonan persetujuan KKPR Non Anda dengan mudah dan efisien</p>
+                    <h1 class="text-2xl font-bold mb-1">Permohonan UMK</h1>
+                    <p class="text-sm text-white/90 mb-4">Kelola semua permohonan persetujuan UMK Anda dengan mudah dan efisien</p>
                     <div class="flex items-center space-x-4">
                         <div class="flex items-center space-x-2">
                             <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
@@ -103,11 +103,11 @@
 
     <!-- Action Buttons -->
     <div class="flex flex-wrap gap-4">
-        <a href="{{ route('member.kkprnon.create') }}" class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-[#185B3C] to-[#0F3D26] text-white rounded-lg hover:shadow-lg transition-all">
+        <a href="{{ route('member.kkpr.create') }}" class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-[#185B3C] to-[#0F3D26] text-white rounded-lg hover:shadow-lg transition-all">
             <i class="fas fa-plus mr-2"></i>
             Buat Permohonan Baru
         </a>
-        <a href="{{ route('member.kkprnon.cetak.daftar') }}" target="_blank" class="inline-flex items-center px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
+        <a href="{{ route('member.kkpr.cetak.daftar') }}" target="_blank" class="inline-flex items-center px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
             <i class="fas fa-file-pdf mr-2"></i>
             Cetak Daftar PDF
         </a>
@@ -178,13 +178,13 @@
                             @endphp
                             
                             @if($kkpr->revisi == 1)
-                                <span class="inline-flex items-center px-3 py-1.5 text-xs font-bold rounded-lg bg-red-100 text-red-800 border-2 border-red-300 shadow-sm">
-                                    <i class="fas fa-exclamation-triangle mr-1.5 text-xs"></i>
+                                <span class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-lg bg-red-100 text-red-800 border border-red-200">
+                                    <i class="fas fa-exclamation-triangle mr-1.5"></i>
                                     Revisi
                                 </span>
                             @else
-                                <button onclick="openRiwayat({{ $kkpr->id }})" class="inline-flex items-center px-3 py-1.5 text-xs font-bold rounded-lg {{ $status['color'] }} border-2 border-current/30 hover:shadow-md hover:scale-105 transition-all">
-                                    <i class="fas {{ $status['icon'] }} mr-1.5 text-xs"></i>
+                                <button onclick="openRiwayat({{ $kkpr->id }})" class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-lg {{ $status['color'] }} border border-current/20 hover:shadow-md transition-all">
+                                    <i class="fas {{ $status['icon'] }} mr-1.5"></i>
                                     {{ $status['text'] }}
                                 </button>
                             @endif
@@ -206,8 +206,8 @@
                                 <i class="fas fa-file-alt text-gray-400 text-2xl"></i>
                             </div>
                             <h3 class="text-lg font-semibold text-gray-900 mb-2">Belum Ada Permohonan</h3>
-                            <p class="text-gray-600 mb-6">Anda belum memiliki permohonan KKPR Non. Mulai buat permohonan pertama Anda.</p>
-                            <a href="{{ route('member.kkprnon.create') }}" class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-[#185B3C] to-[#0F3D26] text-white rounded-lg hover:shadow-lg transition-all">
+                            <p class="text-gray-600 mb-6">Anda belum memiliki permohonan UMK. Mulai buat permohonan pertama Anda.</p>
+                            <a href="{{ route('member.kkpr.create') }}" class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-[#185B3C] to-[#0F3D26] text-white rounded-lg hover:shadow-lg transition-all">
                                 <i class="fas fa-plus mr-2"></i>
                                 Buat Permohonan Pertama
                             </a>
@@ -328,7 +328,7 @@
         const subtitleDiv = document.getElementById('modal-subtitle');
         
         contentDiv.innerHTML = '<div class="text-center py-8"><i class="fas fa-spinner fa-spin text-4xl text-[#185B3C]"></i><p class="mt-4 text-gray-600">Memuat riwayat...</p></div>';
-        subtitleDiv.textContent = 'KKPR Non #' + id;
+        subtitleDiv.textContent = 'UMK #' + id;
         
         modal.style.display = 'block';
         modal.classList.remove('fade');
@@ -342,7 +342,7 @@
             document.body.appendChild(backdrop);
         }
         
-        fetch(`/member/kkprnon/riwayat-data/${id}`)
+        fetch(`/member/kkpr/riwayat-data/${id}`)
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
@@ -358,52 +358,24 @@
     function renderRiwayat(data) {
         const contentDiv = document.getElementById('riwayat-content');
         const riwayat = data.riwayat;
-        const model = data.model;
         
-        const badgeConfig = {
-            1: { icon: 'fa-address-card', color: '#db3102', label: 'Pengajuan' },
-            2: { icon: 'fa-upload', color: '#dbac02', label: 'Upload Dokumen' },
-            3: { icon: 'fa-check-circle', color: '#9edb02', label: 'Validasi' },
-            4: { icon: 'fa-upload', color: '#38db02', label: 'Upload' },
-            5: { icon: 'fa-upload', color: '#02db84', label: 'Validasi' },
-            6: { icon: 'fa-edit', color: '#02d7db', label: 'Survey' },
-            7: { icon: 'fa-check-circle', color: '#8102db', label: 'Analisa' },
-            8: { icon: 'fa-check-circle', color: '#cd02db', label: 'Persetujuan' },
-            9: { icon: 'fa-check-circle', color: '#db02db', label: 'TTE' },
-            10: { icon: 'fa-handshake', color: '#db0293', label: 'Selesai' },
-            11: { icon: 'fa-file', color: '#0252db', label: 'Dokumen' }
-        };
-        
-        let html = '<div class="relative"><div class="absolute left-6 top-0 bottom-0 w-0.5 bg-gradient-to-b from-[#185B3C] via-gray-300 to-gray-200"></div><div class="space-y-6">';
-        
-        riwayat.forEach((r, index) => {
-            const isRevisi = r.status_id == model.proses && model.revisi == 1;
-            const badge = badgeConfig[r.status_id] || { icon: 'fa-file', color: '#6B7280', label: 'Unknown' };
-            const badgeIcon = isRevisi ? 'fa-exclamation-circle' : badge.icon;
-            const badgeColor = isRevisi ? '#EF4444' : badge.color;
-            
+        let html = '<div class="space-y-4">';
+        riwayat.forEach((item, index) => {
             html += `
-                <div class="relative flex items-start space-x-4 pl-2">
-                    <div class="relative z-10 flex items-center justify-center w-12 h-12 rounded-full shadow-lg" style="background: linear-gradient(135deg, ${badgeColor}, ${badgeColor}dd);">
-                        <i class="fas ${badgeIcon} text-white text-lg"></i>
-                    </div>
-                    <div class="flex-1 bg-white rounded-xl p-5 shadow-md hover:shadow-lg transition-all border-l-4" style="border-left-color: ${badgeColor};">
+                <div class="relative pl-8 pb-6 ${index === riwayat.length - 1 ? '' : 'border-l-2 border-[#185B3C]'}">
+                    <div class="absolute -left-2.5 top-0 w-5 h-5 rounded-full bg-[#185B3C] border-4 border-white"></div>
+                    <div class="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow">
                         <div class="flex items-center justify-between mb-2">
-                            <div class="flex items-center space-x-2">
-                                <h4 class="font-bold text-gray-900 text-base">${r.status}</h4>
-                                ${isRevisi ? '<span class="px-2 py-1 bg-red-100 text-red-700 text-xs font-semibold rounded-full">Revisi</span>' : ''}
-                            </div>
-                            <span class="text-xs font-medium text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
-                                <i class="fas fa-calendar-alt mr-1"></i>${new Date(r.created_at).toLocaleDateString('id-ID')}
-                            </span>
+                            <h4 class="font-bold text-gray-900">${item.status}</h4>
+                            <span class="text-xs text-gray-500">${new Date(item.created_at).toLocaleDateString('id-ID')}</span>
                         </div>
-                        <p class="text-sm text-gray-700 leading-relaxed">${r.keterangan}</p>
-                        ${r.revisi_detail ? `<div class="mt-3 p-3 bg-red-50 border-l-4 border-red-400 rounded-r-lg"><p class="text-xs text-red-800"><i class="fas fa-exclamation-triangle mr-2"></i><strong>Catatan Revisi:</strong> ${r.revisi_detail}</p></div>` : ''}
+                        <p class="text-sm text-gray-600">${item.keterangan}</p>
+                        ${item.revisi_detail ? `<div class="mt-2 p-2 bg-red-50 border border-red-200 rounded-lg"><p class="text-xs text-red-700"><strong>Catatan Revisi:</strong> ${item.revisi_detail}</p></div>` : ''}
                     </div>
                 </div>
             `;
         });
-        html += '</div></div>';
+        html += '</div>';
         
         contentDiv.innerHTML = html;
     }
@@ -418,7 +390,7 @@
         if (backdrop) backdrop.remove();
         
         contentDiv.innerHTML = '<div class="text-center py-8"><i class="fas fa-spinner fa-spin text-4xl text-[#185B3C]"></i><p class="mt-4 text-gray-600">Memuat riwayat...</p></div>';
-        subtitleDiv.textContent = 'KKPR Non';
+        subtitleDiv.textContent = 'UMK';
     }
 
     // Delete KKPR
@@ -481,7 +453,7 @@
                     </div>
                     <div>
                         <h5 class="text-lg font-bold">Riwayat Proses</h5>
-                        <p class="text-sm text-white/80" id="modal-subtitle">KKPR Non</p>
+                        <p class="text-sm text-white/80" id="modal-subtitle">UMK</p>
                     </div>
                 </div>
                 <button type="button" class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-all" onclick="closeRiwayatModal()">

@@ -1,339 +1,950 @@
 @extends('layouts.app')
 
-@section('title', 'Detail KKPR Non Usaha')
-@section('subtitle', 'Detail Permohonan KKPR Non Usaha')
+@section('title', 'Detail KKPR Non - ' . $model->id)
+@section('subtitle', 'Detail lengkap permohonan KKPR Non Berusaha')
 
 @section('content')
+@php
+    $img_path = url('/uploads/berkas/kkpr/').'/'.$model->id.'/';
+    $prop = \DB::table('setup_prop')->where('NO_PROP', 35)->first();
+    $kab = \DB::table('setup_kab')->where('NO_PROP', 35)->where('NO_KAB', 10)->first();
+    $kec = \DB::table('setup_kec')->where('NO_PROP', 35)->where('NO_KAB', 10)->where('NO_KEC', $model->NO_KEC)->first();
+    $kel = \DB::table('setup_kel_fix')->where('NO_PROP', $prop->NO_PROP)->where('NO_KAB',  10)->where('NO_KEC',$kec->NO_KEC ?? '')->where('NO_KEL', $model->NO_KEL)->first();
+@endphp
+
 <div class="max-w-7xl mx-auto space-y-6">
-    <!-- Header Actions -->
-    <div class="flex justify-between items-center mb-6">
-        <div class="flex items-center space-x-4">
-            <a href="{{ route('member.kkprnon.index') }}" class="flex items-center px-4 py-2 text-gray-600 bg-white rounded-lg hover:bg-gray-100 transition-colors border border-gray-300">
-                <i class="fas fa-arrow-left mr-2"></i>
-                Kembali
-            </a>
-            <a href="{{ route('member.kkprnon.edit', $model->id) }}" class="flex items-center px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors">
-                <i class="fas fa-edit mr-2"></i>
-                Edit
-            </a>
+    <!-- Hero Section with Gradient -->
+    <div class="relative overflow-hidden bg-gradient-to-br from-[#185B3C] via-[#0F3D26] to-[#185B3C] rounded-xl p-6 text-white">
+        <div class="absolute inset-0 bg-black/10"></div>
+        <div class="relative z-10">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-2xl font-bold mb-1">Detail KKPR Non #{{ $model->id }}</h1>
+                    <p class="text-sm text-white/90 mb-4">Informasi lengkap permohonan KKPR Non Berusaha</p>
+                    <div class="flex items-center space-x-4">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                            <span class="text-xs">Status: {{ $model->proses == 10 ? 'Selesai' : 'Proses' }}</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <i class="fas fa-calendar text-xs"></i>
+                            <span class="text-xs">{{ $model->created_at->format('d M Y H:i') }}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="hidden lg:block">
+                    <div class="w-20 h-20 bg-white/10 rounded-full flex items-center justify-center backdrop-blur-sm">
+                        <i class="fas fa-home text-3xl text-white/80"></i>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="flex items-center space-x-4">
-            <a href="{{ route('member.kkprnon.cetak.detail', $model->id) }}" target="_blank" class="flex items-center px-4 py-2 text-white bg-green-600 rounded-lg hover:bg-green-700 transition-colors">
-                <i class="fas fa-file-pdf mr-2"></i>
-                Cetak PDF
-            </a>
-            <button onclick="printData()" class="flex items-center px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors">
-                <i class="fas fa-print mr-2"></i>
-                Print
-            </button>
-            <button onclick="shareData()" class="flex items-center px-4 py-2 text-white bg-purple-600 rounded-lg hover:bg-purple-700 transition-colors">
-                <i class="fas fa-share mr-2"></i>
-                Bagikan
-            </button>
+        <!-- Decorative Elements -->
+        <div class="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-y-16 translate-x-16"></div>
+        <div class="absolute bottom-0 left-0 w-24 h-24 bg-white/5 rounded-full translate-y-12 -translate-x-12"></div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="flex flex-wrap gap-4">
+        <a href="{{ route('member.kkprnon.index') }}" class="inline-flex items-center px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors">
+            <i class="fas fa-arrow-left mr-2"></i>
+            Kembali
+        </a>
+        <a href="{{ route('member.kkprnon.edit', $model->id) }}" class="inline-flex items-center px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
+            <i class="fas fa-edit mr-2"></i>
+            Edit
+        </a>
+        <button onclick="deleteKkprNon({{ $model->id }})" class="inline-flex items-center px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors">
+            <i class="fas fa-trash mr-2"></i>
+            Hapus
+        </button>
+    </div>
+
+    <!-- Stats Cards with Glassmorphism -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="group relative overflow-hidden bg-white/80 backdrop-blur-sm rounded-xl p-4 shadow-lg border border-white/20 hover:shadow-xl transition-all duration-300">
+            <div class="absolute inset-0 bg-gradient-to-br from-[#185B3C]/5 to-transparent"></div>
+            <div class="relative z-10">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-[#185B3C] to-[#0F3D26] rounded-lg flex items-center justify-center shadow-md">
+                    <i class="fas fa-user text-white text-sm"></i>
+                </div>
+                    <div class="text-right">
+                        <p class="text-2xl font-bold text-[#185B3C]">{{ $model->user->name ?? 'N/A' }}</p>
+                        <p class="text-xs text-gray-500">Pemohon</p>
+            </div>
+                </div>
+                <h3 class="text-sm font-semibold text-gray-900 mb-1">Biodata Pemohon</h3>
+                <div class="flex items-center text-xs text-gray-600">
+                    <i class="fas fa-id-card mr-1"></i>
+                    <span>{{ $model->user->username ?? 'N/A' }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="group relative overflow-hidden bg-white/80 backdrop-blur-sm rounded-xl p-4 shadow-lg border border-white/20 hover:shadow-xl transition-all duration-300">
+            <div class="absolute inset-0 bg-gradient-to-br from-green-500/5 to-transparent"></div>
+            <div class="relative z-10">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center shadow-md">
+                    <i class="fas fa-map-marker-alt text-white text-sm"></i>
+                </div>
+                    <div class="text-right">
+                        <p class="text-2xl font-bold text-green-600">{{ $model->luas_tanah ?? 'N/A' }}</p>
+                        <p class="text-xs text-gray-500">m²</p>
+            </div>
+                </div>
+                <h3 class="text-sm font-semibold text-gray-900 mb-1">Luas Tanah</h3>
+                <div class="flex items-center text-xs text-gray-600">
+                    <i class="fas fa-ruler mr-1"></i>
+                    <span>{{ $model->luas_dimohon ?? 'N/A' }} m² dimohon</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="group relative overflow-hidden bg-white/80 backdrop-blur-sm rounded-xl p-4 shadow-lg border border-white/20 hover:shadow-xl transition-all duration-300">
+            <div class="absolute inset-0 bg-gradient-to-br from-orange-500/5 to-transparent"></div>
+            <div class="relative z-10">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center shadow-md">
+                        <i class="fas fa-building text-white text-sm"></i>
+                </div>
+                    <div class="text-right">
+                        <p class="text-2xl font-bold text-orange-600">{{ $model->jumlah_lantai ?? 'N/A' }}</p>
+                        <p class="text-xs text-gray-500">Lantai</p>
+                </div>
+                </div>
+                <h3 class="text-sm font-semibold text-gray-900 mb-1">Rencana Bangunan</h3>
+                <div class="flex items-center text-xs text-gray-600">
+                    <i class="fas fa-arrow-up mr-1"></i>
+                    <span>{{ $model->tinggi_bangunan ?? 'N/A' }} m tinggi</span>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- Status Card -->
-    <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-6">
-        <div class="flex items-center justify-between">
-            <div class="flex items-center space-x-4">
-                <div class="w-16 h-16 bg-gradient-to-br from-[#185B3C] to-[#0F3D26] rounded-xl flex items-center justify-center">
-                    <i class="fas fa-home text-white text-2xl"></i>
+    <!-- Information Cards -->
+    <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+        <!-- Informasi Pemohon -->
+        <div class="bg-white/80 backdrop-blur-sm rounded-xl p-6 shadow-lg border border-white/20">
+            <div class="flex items-center space-x-3 mb-6">
+                <div class="w-10 h-10 bg-gradient-to-br from-[#185B3C] to-[#0F3D26] rounded-xl flex items-center justify-center shadow-md">
+                    <i class="fas fa-user text-white text-sm"></i>
                 </div>
                 <div>
-                    <h1 class="text-2xl font-bold text-gray-900">Detail KKPR Non Usaha</h1>
-                    <p class="text-gray-600">ID: #KKPR-NON-{{ str_pad($model->id, 6, '0', STR_PAD_LEFT) }}</p>
+                    <h3 class="text-lg font-bold text-gray-900">Biodata Pemohon</h3>
+                    <p class="text-sm text-gray-500">Informasi lengkap pemohon</p>
                 </div>
             </div>
-            <div class="text-right">
-                @include('member.kkprnon._proses_berkas', ['model' => $model])
+            
+            <!-- Profile Card -->
+            <div class="bg-gradient-to-br from-[#185B3C]/5 to-transparent rounded-lg p-4 mb-6">
+                <div class="flex items-center space-x-4">
+                    <div class="w-16 h-16 bg-gradient-to-br from-[#185B3C] to-[#0F3D26] rounded-full flex items-center justify-center shadow-lg">
+                        <i class="fas fa-user text-white text-xl"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="text-lg font-bold text-gray-900">{{ $model->user->name ?? 'N/A' }}</h4>
+                        <p class="text-sm text-gray-600">{{ $model->user->username ?? 'N/A' }}</p>
+                        <p class="text-xs text-gray-500 mt-1">{{ $model->user->work ?? 'N/A' }}</p>
+                </div>
+                </div>
+            </div>
+
+            <!-- Contact Info -->
+            <div class="space-y-4">
+                <div class="flex items-start space-x-3">
+                    <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <i class="fas fa-envelope text-blue-600 text-xs"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-semibold text-gray-600">Email</p>
+                        <p class="text-sm text-gray-900 break-all">{{ $model->user->email ?? 'N/A' }}</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-start space-x-3">
+                    <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <i class="fas fa-phone text-green-600 text-xs"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-semibold text-gray-600">No HP</p>
+                        <p class="text-sm text-gray-900">{{ $model->user->phone ?? 'N/A' }}</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-start space-x-3">
+                    <div class="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <i class="fas fa-map-marker-alt text-purple-600 text-xs"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-semibold text-gray-600">Alamat</p>
+                        <p class="text-sm text-gray-900">{{ $model->user->address ?? 'N/A' }}</p>
+                    </div>
+                </div>
+        </div>
+            </div>
+
+        <!-- Data Pengajuan Kegiatan dan Lokasi Kegiatan -->
+        <div class="xl:col-span-2 bg-white/80 backdrop-blur-sm rounded-xl p-6 shadow-lg border border-white/20">
+            <div class="flex items-center space-x-3 mb-6">
+                <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-md">
+                    <i class="fas fa-home text-white text-sm"></i>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold text-gray-900">Data Pengajuan KKPR Non Berusaha</h3>
+                    <p class="text-sm text-gray-500">Informasi lengkap kegiatan dan lokasi</p>
+                </div>
+            </div>
+
+            <!-- Tabs Navigation -->
+            <div class="flex space-x-1 mb-6 bg-gray-100 p-1 rounded-lg">
+                <button onclick="showTab('kegiatan')" id="tab-kegiatan" class="flex-1 px-4 py-2 text-sm font-medium rounded-md bg-white text-[#185B3C] shadow-sm transition-all duration-200">
+                    <i class="fas fa-home mr-2"></i>Kegiatan
+                </button>
+                <button onclick="showTab('lokasi')" id="tab-lokasi" class="flex-1 px-4 py-2 text-sm font-medium rounded-md text-gray-600 hover:text-[#185B3C] transition-all duration-200">
+                    <i class="fas fa-map-marker-alt mr-2"></i>Lokasi
+                </button>
+                <button onclick="showTab('bangunan')" id="tab-bangunan" class="flex-1 px-4 py-2 text-sm font-medium rounded-md text-gray-600 hover:text-[#185B3C] transition-all duration-200">
+                    <i class="fas fa-building mr-2"></i>Bangunan
+                </button>
+            </div>
+
+            <!-- Tab Content -->
+            <div id="content-kegiatan" class="tab-content">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Left Column -->
+                    <div class="space-y-4">
+                        <div class="bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg p-4">
+                            <div class="flex items-center space-x-3 mb-3">
+                                <div class="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-home text-white text-sm"></i>
+                </div>
+                                <h4 class="font-semibold text-gray-900">Informasi Kegiatan</h4>
+                </div>
+                            <div class="space-y-3">
+                <div>
+                                    <label class="text-sm font-semibold text-gray-600">Fungsi</label>
+                                    <p class="text-gray-900 mt-1">{{ is_array($model->fungsi) ? implode(', ', $model->fungsi) : ($model->fungsi ?? 'N/A') }}</p>
+                </div>
+                <div>
+                                    <label class="text-sm font-semibold text-gray-600">Alamat Kegiatan</label>
+                                    <p class="text-gray-900 mt-1">{{ is_array($model->alamat_kegiatan) ? implode(', ', $model->alamat_kegiatan) : ($model->alamat_kegiatan ?? 'N/A') }}</p>
+                </div>
+                </div>
+            </div>
+        </div>
+
+                    <!-- Right Column -->
+                    <div class="space-y-4">
+                        <div class="bg-gradient-to-r from-purple-50 to-purple-100 rounded-lg p-4">
+                            <div class="flex items-center space-x-3 mb-3">
+                                <div class="w-8 h-8 bg-purple-500 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-map text-white text-sm"></i>
+                </div>
+                                <h4 class="font-semibold text-gray-900">Status Tanah</h4>
+            </div>
+            <div class="space-y-3">
+                <div>
+                                    <label class="text-sm font-semibold text-gray-600">Status Tanah</label>
+                                    <p class="text-gray-900 mt-1">{{ is_array($model->status_tanah) ? implode(', ', $model->status_tanah) : ($model->status_tanah ?? 'N/A') }}</p>
+                </div>
+                <div>
+                                    <label class="text-sm font-semibold text-gray-600">Penggunaan Sekarang</label>
+                                    <p class="text-gray-900 mt-1">{{ is_array($model->penggunaan_sekarang) ? implode(', ', $model->penggunaan_sekarang) : ($model->penggunaan_sekarang ?? 'N/A') }}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg p-4">
+                            <div class="flex items-center space-x-3 mb-3">
+                                <div class="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-ruler-combined text-white text-sm"></i>
+                                </div>
+                                <h4 class="font-semibold text-gray-900">Luas Tanah</h4>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="text-center">
+                                    <p class="text-2xl font-bold text-orange-600">{{ $model->luas_tanah ?? 'N/A' }}</p>
+                                    <p class="text-xs text-gray-600">Sertifikat (m²)</p>
+                                </div>
+                                <div class="text-center">
+                                    <p class="text-2xl font-bold text-orange-600">{{ $model->luas_dimohon ?? 'N/A' }}</p>
+                                    <p class="text-xs text-gray-600">Dimohon (m²)</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </div>
+
+            <div id="content-lokasi" class="tab-content hidden">
+                <div class="bg-gradient-to-r from-indigo-50 to-indigo-100 rounded-lg p-6">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="w-10 h-10 bg-indigo-500 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-map-marker-alt text-white text-sm"></i>
+                </div>
+                        <h4 class="text-lg font-semibold text-gray-900">Lokasi Kegiatan</h4>
+                </div>
+                    <div class="bg-white rounded-lg p-4 border border-indigo-200">
+                        <p class="text-gray-900 leading-relaxed">
+                            {{ is_array($model->alamat_kegiatan) ? implode(', ', $model->alamat_kegiatan) : ($model->alamat_kegiatan ?? 'N/A') }}, {{ ucFirst(strToLower($kel->NAMA_KEL ?? '')) }} Kecamatan {{ ucFirst(strToLower($kec->NAMA_KEC ?? '')) }} Kabupaten {{ ucFirst(strToLower($kab->NAMA_KAB ?? '')) }}.
+                        </p>
             </div>
         </div>
     </div>
 
-    <!-- Data Pemohon -->
-    <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-6">
-        <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center">
-            <i class="fas fa-user mr-2 text-[#185B3C]"></i>
-            Data Pemohon
-        </h3>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap</label>
-                <p class="text-gray-900">{{ $model->user->name ?? '-' }}</p>
+            <div id="content-bangunan" class="tab-content hidden">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-gradient-to-r from-teal-50 to-teal-100 rounded-lg p-4">
+        <div class="flex items-center space-x-3 mb-4">
+                            <div class="w-8 h-8 bg-teal-500 rounded-lg flex items-center justify-center">
+                <i class="fas fa-building text-white text-sm"></i>
             </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                <p class="text-gray-900">{{ $model->user->email ?? '-' }}</p>
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">NIK</label>
-                <p class="text-gray-900">{{ $model->user->nik ?? '-' }}</p>
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">No. Telepon</label>
-                <p class="text-gray-900">{{ $model->user->phone ?? '-' }}</p>
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Pekerjaan</label>
-                <p class="text-gray-900">{{ $model->user->work ?? '-' }}</p>
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Alamat</label>
-                <p class="text-gray-900">{{ $model->user->address ?? '-' }}</p>
+                            <h4 class="font-semibold text-gray-900">Rencana Bangunan</h4>
+        </div>
+            <div class="space-y-3">
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm font-semibold text-gray-600">Jumlah Lantai</span>
+                                <span class="text-lg font-bold text-teal-600">{{ $model->jumlah_lantai ?? 'N/A' }}</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm font-semibold text-gray-600">Tinggi Bangunan</span>
+                                <span class="text-lg font-bold text-teal-600">{{ $model->tinggi_bangunan ?? 'N/A' }} m</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm font-semibold text-gray-600">Luas Bangunan</span>
+                                <span class="text-lg font-bold text-teal-600">{{ $model->luas_bangunan ?? 'N/A' }} m²</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-gradient-to-r from-pink-50 to-pink-100 rounded-lg p-4">
+                        <div class="flex items-center space-x-3 mb-4">
+                            <div class="w-8 h-8 bg-pink-500 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-layer-group text-white text-sm"></i>
+                            </div>
+                            <h4 class="font-semibold text-gray-900">Luas Lantai</h4>
+                        </div>
+                        <div class="space-y-2">
+                            @if(is_array($model->luas_lantai))
+                                @foreach($model->luas_lantai as $index => $luas)
+                                <div class="flex justify-between items-center bg-white rounded-lg p-2 border border-pink-200">
+                                    <span class="text-sm font-semibold text-gray-600">Lantai {{ $index + 1 }}</span>
+                                    <span class="text-sm font-bold text-pink-600">{{ $luas }} m²</span>
+                                </div>
+                                @endforeach
+                            @else
+                                <div class="flex justify-between items-center bg-white rounded-lg p-2 border border-pink-200">
+                                    <span class="text-sm font-semibold text-gray-600">Total</span>
+                                    <span class="text-sm font-bold text-pink-600">{{ $model->luas_lantai ?? 'N/A' }} m²</span>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Data Tanah -->
-    <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-6">
-        <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center">
-            <i class="fas fa-map-marker-alt mr-2 text-[#185B3C]"></i>
-            Data Tanah
-        </h3>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Alamat Tanah</label>
-                <p class="text-gray-900">{{ $model->alamat_tanah ?? '-' }}</p>
+    <!-- Dokumen Kegiatan Section -->
+    <div class="bg-white/80 backdrop-blur-sm rounded-xl p-6 shadow-lg border border-white/20">
+        <div class="flex items-center space-x-3 mb-6">
+            <div class="w-10 h-10 bg-gradient-to-br from-[#185B3C] to-[#0F3D26] rounded-xl flex items-center justify-center shadow-md">
+                <i class="fas fa-file-alt text-white text-sm"></i>
+                </div>
+                <div>
+                <h3 class="text-lg font-bold text-gray-900">Dokumen Kegiatan</h3>
+                <p class="text-sm text-gray-500">Daftar dokumen yang telah diupload</p>
             </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Luas Tanah</label>
-                <p class="text-gray-900">{{ $model->luas ? number_format((float)$model->luas) . ' m²' : '-' }}</p>
+        </div>
+                
+                <!-- Modern Data Table -->
+                <div class="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg border border-white/20 overflow-hidden">
+                    <!-- Table Header -->
+                    <div class="px-6 py-4 bg-gradient-to-r from-gray-50 to-gray-100 border-b border-gray-200">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-8 h-8 bg-gradient-to-br from-[#185B3C] to-[#0F3D26] rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-file-alt text-white text-sm"></i>
+                </div>
+                <div>
+                                    <h3 class="text-lg font-bold text-gray-900">Dokumen Persyaratan</h3>
+                                    <p class="text-sm text-gray-600">Daftar dokumen yang telah diupload</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Table Content -->
+                    <div class="overflow-hidden">
+                        <!-- Table Headers -->
+                        <div class="px-6 py-3 bg-gray-50/80 border-b border-gray-100">
+                            <div class="grid grid-cols-12 gap-4">
+                                <div class="col-span-6">
+                                    <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">JENIS DOKUMEN</span>
+                                </div>
+                                <div class="col-span-3">
+                                    <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">STATUS</span>
+                                </div>
+                                <div class="col-span-3">
+                                    <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">AKSI</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Table Rows -->
+                        <div class="divide-y divide-gray-100">
+                            <!-- KTP Pemohon -->
+                            <div class="px-6 py-4 hover:bg-gradient-to-r hover:from-green-50 hover:to-transparent transition-all duration-300 group">
+                                <div class="grid grid-cols-12 gap-4 items-center">
+                                    <div class="col-span-6">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
+                                                <i class="fas fa-id-card text-white text-sm"></i>
+                </div>
+                <div>
+                                                <p class="font-bold text-gray-900 text-sm">KTP Pemohon</p>
+                                                <p class="text-xs text-gray-500">Dokumen wajib</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-span-3">
+                                        @if ($model->user->ktp != null)
+                                            <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-green-100 to-green-200 text-green-800 border border-green-300">
+                                                <i class="fas fa-check-circle mr-1 text-xs"></i>
+                                                Terupload
+                                            </span>
+                                        @else
+                                            <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-800 border border-yellow-300">
+                                                <i class="fas fa-clock mr-1 text-xs"></i>
+                                                Belum Upload
+                                            </span>
+                                        @endif
+                                    </div>
+                                    <div class="col-span-3">
+                                        <div class="flex items-center space-x-1">
+                                            @if ($model->user->ktp != null)
+                                                <a target="_blank" href="{{ asset('uploads/images/ktp/' . $model->user->ktp) }}" class="p-2 text-gray-400 hover:text-[#185B3C] hover:bg-[#185B3C]/10 rounded-lg transition-all duration-200 hover:scale-105" title="Lihat Dokumen">
+                                                    <i class="fas fa-eye text-xs"></i>
+                                                </a>
+                                            @else
+                                                <span class="p-2 text-gray-300" title="Dokumen Kosong">
+                                                    <i class="fas fa-eye-slash text-xs"></i>
+                    </span>
+                                            @endif
+                                        </div>
+                                    </div>
+                </div>
             </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">RT/RW</label>
-                <p class="text-gray-900">{{ $model->rt ? $model->rt . '/' . $model->rw : '-' }}</p>
+
+                            <!-- KTP Pemilik -->
+                            <div class="px-6 py-4 hover:bg-gradient-to-r hover:from-blue-50 hover:to-transparent transition-all duration-300 group">
+                                <div class="grid grid-cols-12 gap-4 items-center">
+                                    <div class="col-span-6">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
+                                                <i class="fas fa-id-card text-white text-sm"></i>
+                </div>
+                <div>
+                                                <p class="font-bold text-gray-900 text-sm">KTP Pemilik</p>
+                                                <p class="text-xs text-gray-500">Dokumen wajib</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-span-3">
+                                        @if ($model->ktp_pemilik != null)
+                                            <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-green-100 to-green-200 text-green-800 border border-green-300">
+                                                <i class="fas fa-check-circle mr-1 text-xs"></i>
+                                                Terupload
+                                            </span>
+                                        @else
+                                            <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-800 border border-yellow-300">
+                                                <i class="fas fa-clock mr-1 text-xs"></i>
+                                                Belum Upload
+                                            </span>
+                                        @endif
+                                    </div>
+                                    <div class="col-span-3">
+                                        <div class="flex items-center space-x-1">
+                                            @if ($model->ktp_pemilik != null)
+                                                <a target="_blank" href="{{ asset('uploads/images/ktp/pemilik/' . $model->id . '/' . $model->ktp_pemilik) }}" class="p-2 text-gray-400 hover:text-[#185B3C] hover:bg-[#185B3C]/10 rounded-lg transition-all duration-200 hover:scale-105" title="Lihat Dokumen">
+                                                    <i class="fas fa-eye text-xs"></i>
+                                                </a>
+                                            @else
+                                                <span class="p-2 text-gray-300" title="Dokumen Kosong">
+                                                    <i class="fas fa-eye-slash text-xs"></i>
+                                                </span>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
             </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Status Penggunaan Tanah</label>
-                <p class="text-gray-900">{{ $model->status_penggunaan_tanah ?? '-' }}</p>
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Koordinat</label>
-                <p class="text-gray-900">
-                    @if($model->longitude && $model->lattitude)
-                        {{ $model->longitude }}, {{ $model->lattitude }}
-                    @else
-                        -
-                    @endif
-                </p>
+
+                            <!-- Dokumen Kepemilikan -->
+                            <div class="px-6 py-4 hover:bg-gradient-to-r hover:from-[#185B3C]/5 hover:to-transparent transition-all duration-300 group">
+                                <div class="grid grid-cols-12 gap-4 items-center">
+                                    <div class="col-span-6">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-10 h-10 bg-gradient-to-br from-[#185B3C] to-[#0F3D26] rounded-xl flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
+                                                <i class="fas fa-file-contract text-white text-sm"></i>
+                </div>
+                <div>
+                                                <p class="font-bold text-gray-900 text-sm">Surat Kepemilikan Tanah</p>
+                                                <p class="text-xs text-gray-500">Dokumen wajib</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-span-3">
+                                        @if ($model->dok_kepemilikan != null)
+                                            <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-green-100 to-green-200 text-green-800 border border-green-300">
+                                                <i class="fas fa-check-circle mr-1 text-xs"></i>
+                                                Terupload
+                                            </span>
+                                        @else
+                                            <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-800 border border-yellow-300">
+                                                <i class="fas fa-clock mr-1 text-xs"></i>
+                                                Belum Upload
+                                            </span>
+                                        @endif
+                                    </div>
+                                    <div class="col-span-3">
+                                        <div class="flex items-center space-x-1">
+                                            @if ($model->dok_kepemilikan != null)
+                                                <a target="_blank" href="{{ asset('uploads/berkas/kkpr/'.$model->id. '/dokumen_kepemilikan/' .$model->dok_kepemilikan) }}" class="p-2 text-gray-400 hover:text-[#185B3C] hover:bg-[#185B3C]/10 rounded-lg transition-all duration-200 hover:scale-105" title="Lihat Dokumen">
+                                                    <i class="fas fa-eye text-xs"></i>
+                                                </a>
+                                            @else
+                                                <span class="p-2 text-gray-300" title="Dokumen Kosong">
+                                                    <i class="fas fa-eye-slash text-xs"></i>
+                                                </span>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- F KTP -->
+                            <div class="px-6 py-4 hover:bg-gradient-to-r hover:from-green-50 hover:to-transparent transition-all duration-300 group">
+                                <div class="grid grid-cols-12 gap-4 items-center">
+                                    <div class="col-span-6">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
+                                                <i class="fas fa-id-card text-white text-sm"></i>
+                </div>
+                <div>
+                                                <p class="font-bold text-gray-900 text-sm">KTP (F_KTP)</p>
+                                                <p class="text-xs text-gray-500">Dokumen wajib</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-span-3">
+                                        @if ($model->f_ktp != null)
+                                            <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-green-100 to-green-200 text-green-800 border border-green-300">
+                                                <i class="fas fa-check-circle mr-1 text-xs"></i>
+                                                Terupload
+                                            </span>
+                                        @else
+                                            <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-800 border border-yellow-300">
+                                                <i class="fas fa-clock mr-1 text-xs"></i>
+                                                Belum Upload
+                                            </span>
+                                        @endif
+                                    </div>
+                                    <div class="col-span-3">
+                                        <div class="flex items-center space-x-1">
+                                            @if ($model->f_ktp != null)
+                                                <a target="_blank" href="{{ asset('uploads/berkas/kkpr/'.$model->id. '/f_ktp/' .$model->f_ktp) }}" class="p-2 text-gray-400 hover:text-[#185B3C] hover:bg-[#185B3C]/10 rounded-lg transition-all duration-200 hover:scale-105" title="Lihat Dokumen">
+                                                    <i class="fas fa-eye text-xs"></i>
+                                                </a>
+                                            @else
+                                                <span class="p-2 text-gray-300" title="Dokumen Kosong">
+                                                    <i class="fas fa-eye-slash text-xs"></i>
+                                                </span>
+                                            @endif
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Data Kegiatan -->
-    <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-6">
-        <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center">
-            <i class="fas fa-building mr-2 text-[#185B3C]"></i>
-            Data Kegiatan
-        </h3>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Jenis Kegiatan</label>
-                <p class="text-gray-900">{{ $model->jenis_kegiatan ?? '-' }}</p>
+                            <!-- Sertifikat -->
+                            <div class="px-6 py-4 hover:bg-gradient-to-r hover:from-purple-50 hover:to-transparent transition-all duration-300 group">
+                                <div class="grid grid-cols-12 gap-4 items-center">
+                                    <div class="col-span-6">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
+                                                <i class="fas fa-certificate text-white text-sm"></i>
+                                            </div>
+                                            <div>
+                                                <p class="font-bold text-gray-900 text-sm">Sertifikat Tanah</p>
+                                                <p class="text-xs text-gray-500">Dokumen wajib</p>
+                                            </div>
+                                        </div>
             </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Fungsi</label>
-                <p class="text-gray-900">{{ $model->fungsi ?? '-' }}</p>
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Alamat Kegiatan</label>
-                <p class="text-gray-900">{{ $model->alamat_kegiatan ?? '-' }}</p>
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Luas Dimohon</label>
-                <p class="text-gray-900">{{ $model->luas_dimohon ? number_format((float)$model->luas_dimohon) . ' m²' : '-' }}</p>
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Status Lahan</label>
-                <p class="text-gray-900">{{ $model->status_lahan ?? '-' }}</p>
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Penggunaan Sekarang</label>
-                <p class="text-gray-900">{{ $model->penggunaan_sekarang ?? '-' }}</p>
-            </div>
+                                    <div class="col-span-3">
+                                        @if ($model->f_sertifikat != null)
+                                            <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-green-100 to-green-200 text-green-800 border border-green-300">
+                                                <i class="fas fa-check-circle mr-1 text-xs"></i>
+                                                Terupload
+                                            </span>
+                                        @else
+                                            <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-800 border border-yellow-300">
+                                                <i class="fas fa-clock mr-1 text-xs"></i>
+                                                Belum Upload
+                                            </span>
+                                        @endif
+        </div>
+                                    <div class="col-span-3">
+                                        <div class="flex items-center space-x-1">
+                                            @if ($model->f_sertifikat != null)
+                                                <a target="_blank" href="{{ asset('uploads/berkas/kkpr/'.$model->id. '/f_sertifikat/' .$model->f_sertifikat) }}" class="p-2 text-gray-400 hover:text-[#185B3C] hover:bg-[#185B3C]/10 rounded-lg transition-all duration-200 hover:scale-105" title="Lihat Dokumen">
+                                                    <i class="fas fa-eye text-xs"></i>
+                                </a>
+                            @else
+                                                <span class="p-2 text-gray-300" title="Dokumen Kosong">
+                                                    <i class="fas fa-eye-slash text-xs"></i>
+                                                </span>
+                            @endif
+                                        </div>
+                                    </div>
         </div>
     </div>
 
-    <!-- Data Bangunan -->
-    <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-6">
-        <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center">
-            <i class="fas fa-home mr-2 text-[#185B3C]"></i>
-            Data Bangunan
-        </h3>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Jumlah Lantai</label>
-                <p class="text-gray-900">{{ $model->jumlah_lantai ?? '-' }}</p>
+                            <!-- Siteplan -->
+                            <div class="px-6 py-4 hover:bg-gradient-to-r hover:from-orange-50 hover:to-transparent transition-all duration-300 group">
+                                <div class="grid grid-cols-12 gap-4 items-center">
+                                    <div class="col-span-6">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-10 h-10 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
+                                                <i class="fas fa-map text-white text-sm"></i>
             </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Tinggi Bangunan</label>
-                <p class="text-gray-900">{{ $model->tinggi_bangunan ? $model->tinggi_bangunan . ' m' : '-' }}</p>
-            </div>
-            <div class="md:col-span-2">
-                <label class="block text-sm font-medium text-gray-700 mb-1">Luas Lantai</label>
-                <p class="text-gray-900">
-                    @if($model->luas_lantai)
-                        @if(is_array($model->luas_lantai))
-                            @foreach($model->luas_lantai as $index => $luas)
-                                Lantai {{ $index + 1 }}: {{ number_format((float)$luas) }} m²<br>
-                            @endforeach
-                        @else
-                            {{ number_format((float)$model->luas_lantai) }} m²
-                        @endif
-                    @else
-                        -
-                    @endif
-                </p>
-            </div>
+                                            <div>
+                                                <p class="font-bold text-gray-900 text-sm">Siteplan/Denah Lokasi</p>
+                                                <p class="text-xs text-gray-500">Dokumen wajib</p>
+        </div>
         </div>
     </div>
-
-    <!-- Data Sertifikat -->
-    <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-6">
-        <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center">
-            <i class="fas fa-certificate mr-2 text-[#185B3C]"></i>
-            Data Sertifikat
-        </h3>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Jenis Sertifikat</label>
-                <p class="text-gray-900">{{ $model->jns_sertifikat ?? '-' }}</p>
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">No. Sertifikat</label>
-                <p class="text-gray-900">{{ $model->no_sertifikat ?? '-' }}</p>
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Atas Nama</label>
-                <p class="text-gray-900">{{ $model->an_sertifikat ?? '-' }}</p>
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Tahun Sertifikat</label>
-                <p class="text-gray-900">{{ $model->thn_sertifikat ?? '-' }}</p>
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Luas Sertifikat</label>
-                <p class="text-gray-900">{{ $model->luas_sertifikat ? number_format((float)$model->luas_sertifikat) . ' m²' : '-' }}</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Data NIB -->
-    <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-6">
-        <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center">
-            <i class="fas fa-id-card mr-2 text-[#185B3C]"></i>
-            Data NIB
-        </h3>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">No. NIB</label>
-                <p class="text-gray-900">{{ $model->no_nib ?? '-' }}</p>
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Tanggal Terbit</label>
-                <p class="text-gray-900">{{ $model->tgl_terbit ?? '-' }}</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Data KKPR -->
-    <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-6">
-        <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center">
-            <i class="fas fa-file-alt mr-2 text-[#185B3C]"></i>
-            Data KKPR
-        </h3>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">No. KKPR</label>
-                <p class="text-gray-900">{{ $model->no_kkpr ?? '-' }}</p>
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Tanggal KKPR</label>
-                <p class="text-gray-900">{{ $model->tgl_kkpr ?? '-' }}</p>
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Tanggal Surat</label>
-                <p class="text-gray-900">{{ $model->tgl_surat ?? '-' }}</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- KBLI Data -->
-    @if($model->kkpr_kbli && $model->kkpr_kbli->count() > 0)
-    <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-6">
-        <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center">
-            <i class="fas fa-list mr-2 text-[#185B3C]"></i>
-            Data KBLI
-        </h3>
-        <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
-                    <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kode KBLI</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Judul KBLI</th>
-                    </tr>
-                </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
-                    @foreach($model->kkpr_kbli as $kbli)
-                    <tr>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $kbli->kode_kbli }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $kbli->judul_kbli }}</td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
-    </div>
+                                    <div class="col-span-3">
+                                        @if ($model->f_siteplan != null)
+                                            <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-green-100 to-green-200 text-green-800 border border-green-300">
+                                                <i class="fas fa-check-circle mr-1 text-xs"></i>
+                                                Terupload
+                                            </span>
+                                        @else
+                                            <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-800 border border-yellow-300">
+                                                <i class="fas fa-clock mr-1 text-xs"></i>
+                                                Belum Upload
+                                            </span>
+                                        @endif
+                                    </div>
+                                    <div class="col-span-3">
+                                        <div class="flex items-center space-x-1">
+                                            @if ($model->f_siteplan != null)
+                                                <a target="_blank" href="{{ asset('uploads/berkas/kkpr/'.$model->id. '/f_siteplan/' .$model->f_siteplan) }}" class="p-2 text-gray-400 hover:text-[#185B3C] hover:bg-[#185B3C]/10 rounded-lg transition-all duration-200 hover:scale-105" title="Lihat Dokumen">
+                                                    <i class="fas fa-eye text-xs"></i>
+                                                </a>
+                                            @else
+                                                <span class="p-2 text-gray-300" title="Dokumen Kosong">
+                                                    <i class="fas fa-eye-slash text-xs"></i>
+                                                </span>
     @endif
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
-    <!-- Koordinat Data -->
-    @if($model->kkpr_koordinat && $model->kkpr_koordinat->count() > 0)
-    <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-6">
-        <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center">
-            <i class="fas fa-map mr-2 text-[#185B3C]"></i>
-            Data Koordinat
-        </h3>
-        <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
-                    <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Longitude</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Latitude</th>
-                    </tr>
-                </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
-                    @foreach($model->kkpr_koordinat as $koordinat)
-                    <tr>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $koordinat->longi }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $koordinat->lati }}</td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
+                            <!-- KML File -->
+                            <div class="px-6 py-4 hover:bg-gradient-to-r hover:from-pink-50 hover:to-transparent transition-all duration-300 group">
+                                <div class="grid grid-cols-12 gap-4 items-center">
+                                    <div class="col-span-6">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-10 h-10 bg-gradient-to-br from-pink-500 to-pink-600 rounded-xl flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
+                                                <i class="fas fa-map-marked-alt text-white text-sm"></i>
+                                            </div>
+                                            <div>
+                                                <p class="font-bold text-gray-900 text-sm">KML File</p>
+                                                <p class="text-xs text-gray-500">File koordinat</p>
+                                            </div>
+                                        </div>
+            </div>
+                                    <div class="col-span-3">
+                                        @if ($model->f_kml != null)
+                                            <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-green-100 to-green-200 text-green-800 border border-green-300">
+                                                <i class="fas fa-check-circle mr-1 text-xs"></i>
+                                                Terupload
+                                            </span>
+                                        @else
+                                            <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-800 border border-yellow-300">
+                                                <i class="fas fa-clock mr-1 text-xs"></i>
+                                                Belum Upload
+                                            </span>
+                                        @endif
+        </div>
+                                    <div class="col-span-3">
+                                        <div class="flex items-center space-x-1">
+                                            @if ($model->f_kml != null)
+                                                <a target="_blank" href="{{ asset('uploads/berkas/kkpr/'.$model->id. '/kml/' .$model->f_kml) }}" class="p-2 text-gray-400 hover:text-[#185B3C] hover:bg-[#185B3C]/10 rounded-lg transition-all duration-200 hover:scale-105" title="Lihat Dokumen">
+                                                    <i class="fas fa-eye text-xs"></i>
+                                                </a>
+                                            @else
+                                                <span class="p-2 text-gray-300" title="Dokumen Kosong">
+                                                    <i class="fas fa-eye-slash text-xs"></i>
+                    </span>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Foto Utara -->
+                            <div class="px-6 py-4 hover:bg-gradient-to-r hover:from-purple-50 hover:to-transparent transition-all duration-300 group">
+                                <div class="grid grid-cols-12 gap-4 items-center">
+                                    <div class="col-span-6">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
+                                                <i class="fas fa-camera text-white text-sm"></i>
+                </div>
+                <div>
+                                                <p class="font-bold text-gray-900 text-sm">Foto Utara</p>
+                                                <p class="text-xs text-gray-500">Dokumen wajib</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-span-3">
+                                        @if ($model->foto_utara != null)
+                                            <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-green-100 to-green-200 text-green-800 border border-green-300">
+                                                <i class="fas fa-check-circle mr-1 text-xs"></i>
+                                                Terupload
+                                            </span>
+                                        @else
+                                            <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-800 border border-yellow-300">
+                                                <i class="fas fa-clock mr-1 text-xs"></i>
+                                                Belum Upload
+                                            </span>
+                                        @endif
+                                    </div>
+                                    <div class="col-span-3">
+                                        <div class="flex items-center space-x-1">
+                                            @if ($model->foto_utara != null)
+                                                <a target="_blank" href="{{ asset('uploads/berkas/kkpr/' . $model->id . '/' . $model->foto_utara) }}" class="p-2 text-gray-400 hover:text-[#185B3C] hover:bg-[#185B3C]/10 rounded-lg transition-all duration-200 hover:scale-105" title="Lihat Dokumen">
+                                                    <i class="fas fa-eye text-xs"></i>
+                                                </a>
+                                            @else
+                                                <span class="p-2 text-gray-300" title="Dokumen Kosong">
+                                                    <i class="fas fa-eye-slash text-xs"></i>
+                                                </span>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Foto Selatan -->
+                            <div class="px-6 py-4 hover:bg-gradient-to-r hover:from-orange-50 hover:to-transparent transition-all duration-300 group">
+                                <div class="grid grid-cols-12 gap-4 items-center">
+                                    <div class="col-span-6">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-10 h-10 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
+                                                <i class="fas fa-camera text-white text-sm"></i>
+                </div>
+                <div>
+                                                <p class="font-bold text-gray-900 text-sm">Foto Selatan</p>
+                                                <p class="text-xs text-gray-500">Dokumen wajib</p>
+                                            </div>
+                </div>
+            </div>
+                                    <div class="col-span-3">
+                                        @if ($model->foto_selatan != null)
+                                            <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-green-100 to-green-200 text-green-800 border border-green-300">
+                                                <i class="fas fa-check-circle mr-1 text-xs"></i>
+                                                Terupload
+                                            </span>
+                                        @else
+                                            <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-800 border border-yellow-300">
+                                                <i class="fas fa-clock mr-1 text-xs"></i>
+                                                Belum Upload
+                                            </span>
+                                        @endif
+                </div>
+                                    <div class="col-span-3">
+                                        <div class="flex items-center space-x-1">
+                                            @if ($model->foto_selatan != null)
+                                                <a target="_blank" href="{{ asset('uploads/berkas/kkpr/' . $model->id . '/' . $model->foto_selatan) }}" class="p-2 text-gray-400 hover:text-[#185B3C] hover:bg-[#185B3C]/10 rounded-lg transition-all duration-200 hover:scale-105" title="Lihat Dokumen">
+                                                    <i class="fas fa-eye text-xs"></i>
+                                                </a>
+                                            @else
+                                                <span class="p-2 text-gray-300" title="Dokumen Kosong">
+                                                    <i class="fas fa-eye-slash text-xs"></i>
+                                                </span>
+                @endif
+                                        </div>
+                                    </div>
+                </div>
+            </div>
+
+                            <!-- Foto Barat -->
+                            <div class="px-6 py-4 hover:bg-gradient-to-r hover:from-indigo-50 hover:to-transparent transition-all duration-300 group">
+                                <div class="grid grid-cols-12 gap-4 items-center">
+                                    <div class="col-span-6">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-10 h-10 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
+                                                <i class="fas fa-camera text-white text-sm"></i>
+                                            </div>
+                <div>
+                                                <p class="font-bold text-gray-900 text-sm">Foto Barat</p>
+                                                <p class="text-xs text-gray-500">Dokumen wajib</p>
+                                            </div>
+                                        </div>
+                </div>
+                                    <div class="col-span-3">
+                                        @if ($model->foto_barat != null)
+                                            <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-green-100 to-green-200 text-green-800 border border-green-300">
+                                                <i class="fas fa-check-circle mr-1 text-xs"></i>
+                                                Terupload
+                                            </span>
+                                        @else
+                                            <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-800 border border-yellow-300">
+                                                <i class="fas fa-clock mr-1 text-xs"></i>
+                                                Belum Upload
+                                            </span>
+                @endif
+                </div>
+                                    <div class="col-span-3">
+                                        <div class="flex items-center space-x-1">
+                                            @if ($model->foto_barat != null)
+                                                <a target="_blank" href="{{ asset('uploads/berkas/kkpr/' . $model->id . '/' . $model->foto_barat) }}" class="p-2 text-gray-400 hover:text-[#185B3C] hover:bg-[#185B3C]/10 rounded-lg transition-all duration-200 hover:scale-105" title="Lihat Dokumen">
+                                                    <i class="fas fa-eye text-xs"></i>
+                                                </a>
+                                            @else
+                                                <span class="p-2 text-gray-300" title="Dokumen Kosong">
+                                                    <i class="fas fa-eye-slash text-xs"></i>
+                                                </span>
+                @endif
+            </div>
+        </div>
+                                </div>
+                            </div>
+
+                            <!-- Foto Timur -->
+                            <div class="px-6 py-4 hover:bg-gradient-to-r hover:from-teal-50 hover:to-transparent transition-all duration-300 group">
+                                <div class="grid grid-cols-12 gap-4 items-center">
+                                    <div class="col-span-6">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-10 h-10 bg-gradient-to-br from-teal-500 to-teal-600 rounded-xl flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
+                                                <i class="fas fa-camera text-white text-sm"></i>
+                                            </div>
+                <div>
+                                                <p class="font-bold text-gray-900 text-sm">Foto Timur</p>
+                                                <p class="text-xs text-gray-500">Dokumen wajib</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-span-3">
+                                        @if ($model->foto_timur != null)
+                                            <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-green-100 to-green-200 text-green-800 border border-green-300">
+                                                <i class="fas fa-check-circle mr-1 text-xs"></i>
+                                                Terupload
+                                            </span>
+                                        @else
+                                            <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-800 border border-yellow-300">
+                                                <i class="fas fa-clock mr-1 text-xs"></i>
+                                                Belum Upload
+                                            </span>
+                                        @endif
+                </div>
+                                    <div class="col-span-3">
+                                        <div class="flex items-center space-x-1">
+                                            @if ($model->foto_timur != null)
+                                                <a target="_blank" href="{{ asset('uploads/berkas/kkpr/' . $model->id . '/' . $model->foto_timur) }}" class="p-2 text-gray-400 hover:text-[#185B3C] hover:bg-[#185B3C]/10 rounded-lg transition-all duration-200 hover:scale-105" title="Lihat Dokumen">
+                                                    <i class="fas fa-eye text-xs"></i>
+                                                </a>
+                                            @else
+                                                <span class="p-2 text-gray-300" title="Dokumen Kosong">
+                                                    <i class="fas fa-eye-slash text-xs"></i>
+                                                </span>
+                @endif
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-    @endif
+</div>
+
+<!-- Modal Koordinat -->
+<div class="modal fade" id="modal-kor" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;" tabindex="-1">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content"></div>
+    </div>
 </div>
 
 <script>
-function printData() {
-    window.print();
-}
-
-function shareData() {
-    if (navigator.share) {
-        navigator.share({
-            title: 'Detail KKPR Non Usaha',
-            text: 'Lihat detail permohonan KKPR Non Usaha',
-            url: window.location.href
-        });
-    } else {
-        // Fallback untuk browser yang tidak mendukung Web Share API
-        navigator.clipboard.writeText(window.location.href).then(() => {
-            alert('Link berhasil disalin ke clipboard');
-        });
+    function deleteKkprNon(id) {
+        if (confirm('Apakah Anda yakin ingin menghapus permohonan ini?')) {
+            fetch(`/admin/kkprnon/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.href = '/admin/kkprnon';
+                } else {
+                    alert('Gagal menghapus data');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Terjadi kesalahan');
+            });
+        }
     }
-}
+
+    // Function koordinat tidak digunakan - disabled
+    // function open_koordinat(id) {
+    //     // Route member.kkprnon.koordinat tidak ada
+    // }
+
+    function showTab(tabName) {
+        // Hide all tab contents
+        document.querySelectorAll('.tab-content').forEach(content => {
+            content.classList.add('hidden');
+        });
+        
+        // Remove active class from all tabs
+        document.querySelectorAll('[id^="tab-"]').forEach(tab => {
+            tab.classList.remove('bg-white', 'text-[#185B3C]', 'shadow-sm');
+            tab.classList.add('text-gray-600');
+        });
+        
+        // Show selected tab content
+        document.getElementById('content-' + tabName).classList.remove('hidden');
+        
+        // Add active class to selected tab
+        const activeTab = document.getElementById('tab-' + tabName);
+        activeTab.classList.add('bg-white', 'text-[#185B3C]', 'shadow-sm');
+        activeTab.classList.remove('text-gray-600');
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Staggered animation for cards
+        const cards = document.querySelectorAll('.bg-white\\/80, .bg-gradient-to-br');
+        cards.forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            setTimeout(() => {
+                card.style.transition = 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, index * 100);
+        });
+    });
 </script>
 @endsection

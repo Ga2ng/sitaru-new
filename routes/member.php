@@ -19,6 +19,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/kkpr/{id}/cetak', [MemberKkprController::class, 'cetakDetail'])->name('kkpr.cetak.detail');
         Route::get('/kkpr/cetak/daftar', [MemberKkprController::class, 'cetakDaftar'])->name('kkpr.cetak.daftar');
         
+        // Riwayat Route
+        Route::get('/kkpr/riwayat-data/{id}', [MemberKkprController::class, 'getRiwayatData'])->name('kkpr.riwayat.data');
+        
         // Member KKPR Non Routes
         Route::get('/kkprnon', [MemberKkprNonController::class, 'index'])->name('kkprnon.index');
         Route::get('/kkprnon/create', [MemberKkprNonController::class, 'create'])->name('kkprnon.create');
@@ -31,5 +34,8 @@ Route::middleware(['auth'])->group(function () {
         // PDF Routes for KKPR Non
         Route::get('/kkprnon/{id}/cetak', [MemberKkprNonController::class, 'cetakDetail'])->name('kkprnon.cetak.detail');
         Route::get('/kkprnon/cetak/daftar', [MemberKkprNonController::class, 'cetakDaftar'])->name('kkprnon.cetak.daftar');
+        
+        // Riwayat Route for KKPR Non
+        Route::get('/kkprnon/riwayat-data/{id}', [MemberKkprNonController::class, 'getRiwayatData'])->name('kkprnon.riwayat.data');
     });
 });
