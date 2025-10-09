@@ -89,10 +89,15 @@ class AdminUserController extends Controller
         $req['active'] = 1;
 
         $model = User::create($req);
-        $model->assignRole($request->role_id);
+        
+        // Get role name by ID
+        $role = Role::findOrFail($request->role_id);
+        $model->assignRole($role->name);
 
         if ($request->has('permission_lists')) {
-            $model->givePermissionTo($request->permission_lists);
+            // Get permission names by IDs
+            $permissions = Permission::whereIn('id', $request->permission_lists)->pluck('name')->toArray();
+            $model->givePermissionTo($permissions);
         }
 
         return redirect()->route('admin.users.index')
@@ -150,8 +155,18 @@ class AdminUserController extends Controller
         $req = $request->except('_token', 'password', 'role_id', 'permission_lists');
 
         $user->update($req);
-        $user->syncRoles([$request->role_id]);
-        $user->syncPermissions($request->permission_lists ?? []);
+        
+        // Get role name by ID
+        $role = Role::findOrFail($request->role_id);
+        $user->syncRoles([$role->name]);
+        
+        // Get permission names by IDs
+        if ($request->has('permission_lists') && !empty($request->permission_lists)) {
+            $permissions = Permission::whereIn('id', $request->permission_lists)->pluck('name')->toArray();
+            $user->syncPermissions($permissions);
+        } else {
+            $user->syncPermissions([]);
+        }
 
         return redirect()->route('admin.users.index')
             ->with('success', 'User berhasil diperbarui.');
