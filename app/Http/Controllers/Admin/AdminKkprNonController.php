@@ -1203,4 +1203,65 @@ class AdminKkprNonController extends Controller
             return response()->json(['success' => false, 'message' => $e->getMessage()]);
         }
     }
+
+    public function kirimKabid($id)
+    {
+        try {
+            $model = Kkpr::where('jenis', 'non_usaha')->findOrFail($id);
+            
+            $model->update([
+                'proses' => 8,
+                'revisi' => 0
+            ]);
+
+            $riwayat = Kkpr_riwayat::where('kkpr_id', $model->id)->where('status_id', 8)->first();
+            if (!$riwayat) {
+                Kkpr_riwayat::create([
+                    'kkpr_id' => $model->id, 
+                    'status_id' => '8', 
+                    'status' => 'Persetujuan Kabid', 
+                    'keterangan' => 'Dokumen Persetujuan KKPR Non Telah dibuat dan memerlukan persetujuan'
+                ]);
+            } else {
+                Kkpr_riwayat::where('id', $riwayat->id)->update([
+                    'keterangan' => 'Dokumen Persetujuan KKPR Non Telah dibuat dan memerlukan persetujuan'
+                ]);
+            }
+
+            return response()->json(['success' => true, 'message' => 'Berhasil dikirim ke Kabid']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()]);
+        }
+    }
+
+    public function persetujuanDokumen($id)
+    {
+        try {
+            $model = Kkpr::where('jenis', 'non_usaha')->findOrFail($id);
+
+            // Update status proses
+            $model->update([
+                'proses' => 9 // Update proses ke 9 (Proses TTE)
+            ]);
+
+            // Tambah riwayat
+            $riwayat = Kkpr_riwayat::where('kkpr_id', $model->id)->where('status_id', 9)->first();
+            if (!$riwayat) {
+                Kkpr_riwayat::create([
+                    'kkpr_id' => $model->id,
+                    'status_id' => '9',
+                    'status' => 'Persetujuan Dokumen',
+                    'keterangan' => 'Dokumen telah disetujui dan siap untuk proses TTD'
+                ]);
+            } else {
+                Kkpr_riwayat::where('id', $riwayat->id)->update([
+                    'keterangan' => 'Dokumen telah disetujui dan siap untuk proses TTD'
+                ]);
+            }
+
+            return response()->json(['success' => true, 'message' => 'Dokumen berhasil disetujui']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()]);
+        }
+    }
 }
