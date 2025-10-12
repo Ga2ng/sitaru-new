@@ -355,7 +355,7 @@
                             @endif
                         </div>
                         <div class="col-span-1">
-                            <button id="btn-aksi-{{ $kkpr->id }}" onclick="toggleDropdown({{ $kkpr->id }})" class="inline-flex items-center space-x-1.5 px-3 py-1.5 text-xs font-medium text-gray-700 bg-white hover:bg-[#185B3C]/10 hover:text-[#185B3C] border border-gray-300 rounded-lg transition-all duration-200 hover:scale-105" title="Aksi">
+                            <button id="btn-aksi-{{ $kkpr->id }}" onclick="toggleDropdown({{ $kkpr->id }}, {{ $kkpr->proses }}, {{ $kkpr->revisi }}, {{ auth()->user()->can('Verifikator') ? 'true' : 'false' }})" class="inline-flex items-center space-x-1.5 px-3 py-1.5 text-xs font-medium text-gray-700 bg-white hover:bg-[#185B3C]/10 hover:text-[#185B3C] border border-gray-300 rounded-lg transition-all duration-200 hover:scale-105" title="Aksi">
                                 <i class="fas fa-cog"></i>
                                 <span>Aksi</span>
                                 <i class="fas fa-chevron-down text-xs"></i>
@@ -417,7 +417,7 @@
         alert('Fitur export akan segera tersedia');
     }
 
-    function toggleDropdown(id) {
+    function toggleDropdown(id, status, revisi, canValidate) {
         const button = event.currentTarget;
         const chevron = button.querySelector('.fa-chevron-down');
         const modal = document.getElementById('dropdown-menu-modal');
@@ -446,17 +446,24 @@
         modal.style.top = (rect.bottom + window.scrollY + 8) + 'px';
         modal.style.left = (rect.right + window.scrollX - 192) + 'px'; // 192px = w-48
         
-        // Set content
-        content.innerHTML = `
+        // Set content with conditional menu items
+        let menuItems = `
             <div class="py-1">
                 <a href="/admin/kkprnon/${id}" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-[#185B3C]/10 hover:text-[#185B3C] transition-colors">
                     <i class="fas fa-eye w-4 mr-3"></i>
                     Lihat Detail
-                </a>
+                </a>`;
+        
+        // Validasi - hanya untuk Verifikator dan status = 1 (Pengajuan)
+        if (canValidate && status == 1) {
+            menuItems += `
                 <a href="/admin/kkprnon/${id}/validasi" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-600 transition-colors">
                     <i class="fas fa-check-circle w-4 mr-3"></i>
                     Validasi
-                </a>
+                </a>`;
+        }
+        
+        menuItems += `
                 <a href="/admin/kkprnon/${id}/analisa" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-600 transition-colors">
                     <i class="fas fa-file-signature w-4 mr-3"></i>
                     Analisa
@@ -476,17 +483,25 @@
                 <button onclick="openUploadDraftModal(${id}); closeDropdownModal();" class="w-full flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 transition-colors text-left">
                     <i class="fas fa-file-upload w-4 mr-3"></i>
                     Upload Draft
-                </button>
+                </button>`;
+        
+        // Edit - HIDDEN (commented out as per requirement)
+        /*
                 <a href="/admin/kkprnon/${id}/edit" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
                     <i class="fas fa-edit w-4 mr-3"></i>
                     Edit
                 </a>
+        */
+        
+        menuItems += `
                 <button onclick="deleteKkpr(${id}); closeDropdownModal();" class="w-full flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors text-left">
                     <i class="fas fa-trash w-4 mr-3"></i>
                     Hapus
                 </button>
             </div>
         `;
+        
+        content.innerHTML = menuItems;
         
         // Show modal
         modal.classList.remove('hidden');

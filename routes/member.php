@@ -22,6 +22,9 @@ Route::middleware(['auth'])->group(function () {
         // Riwayat Route
         Route::get('/kkpr/riwayat-data/{id}', [MemberKkprController::class, 'getRiwayatData'])->name('kkpr.riwayat.data');
         
+        // Delete File Route
+        Route::delete('/kkpr/{id}/delete-file/{fieldName}', [MemberKkprController::class, 'deleteFile'])->name('kkpr.delete.file');
+        
         // Member KKPR Non Routes
         Route::get('/kkprnon', [MemberKkprNonController::class, 'index'])->name('kkprnon.index');
         Route::get('/kkprnon/create', [MemberKkprNonController::class, 'create'])->name('kkprnon.create');
@@ -37,5 +40,8 @@ Route::middleware(['auth'])->group(function () {
         
         // Riwayat Route for KKPR Non
         Route::get('/kkprnon/riwayat-data/{id}', [MemberKkprNonController::class, 'getRiwayatData'])->name('kkprnon.riwayat.data');
+        
+        // Delete File Route for KKPR Non
+        Route::delete('/kkprnon/{id}/delete-file/{fieldName}', [MemberKkprNonController::class, 'deleteFile'])->name('kkprnon.delete.file');
     });
 });

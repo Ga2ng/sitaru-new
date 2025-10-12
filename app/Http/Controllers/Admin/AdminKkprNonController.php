@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class AdminKkprNonController extends Controller
@@ -1262,6 +1263,50 @@ class AdminKkprNonController extends Controller
             return response()->json(['success' => true, 'message' => 'Dokumen berhasil disetujui']);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => $e->getMessage()]);
+        }
+    }
+
+    public function deleteFile($id, $fieldName)
+    {
+        try {
+            $model = Kkpr::where('jenis', 'non_usaha')->findOrFail($id);
+
+            // Map field names to their folder paths
+            $folderMap = [
+                'f_nib' => 'f_nib',
+                'sp_mandiri' => 'sp_mandiri',
+                'dok_kepemilikan' => 'dokumen_kepemilikan',
+                'f_ktp' => 'f_ktp',
+                'f_sertifikat' => 'f_sertifikat',
+                'f_siteplan' => 'f_siteplan',
+                'f_akta' => 'f_akta',
+                'dok_taru' => 'dok_taru',
+                'f_kml' => 'kml'
+            ];
+
+            if(!isset($folderMap[$fieldName])){
+                return response()->json(['success' => false, 'message' => 'Invalid field name'], 400);
+            }
+
+            $fileName = $model->{$fieldName};
+            if(!$fileName){
+                return response()->json(['success' => false, 'message' => 'File not found'], 404);
+            }
+
+            $filePath = public_path('uploads/berkas/kkpr_non/' . $model->id . '/' . $folderMap[$fieldName] . '/' . $fileName);
+            
+            // Delete physical file
+            if(File::exists($filePath)){
+                File::delete($filePath);
+            }
+
+            // Update database
+            $model->{$fieldName} = null;
+            $model->save();
+
+            return response()->json(['success' => true, 'message' => 'File deleted successfully']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
     }
 }

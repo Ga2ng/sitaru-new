@@ -74,6 +74,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'permission:User'])-
             Route::post('kkprnon/kirim-kabid/{id}', [AdminKkprNonController::class, 'kirimKabid'])->name('kkprnon.kirim.kabid');
             Route::post('kkprnon/persetujuan-dokumen/{id}', [AdminKkprNonController::class, 'persetujuanDokumen'])->name('kkprnon.persetujuan.dokumen');
             Route::post('kkprnon/upload-draft', [AdminKkprNonController::class, 'uploadDraft'])->name('kkprnon.upload.draft');
+            Route::delete('kkprnon/{id}/delete-file/{fieldName}', [AdminKkprNonController::class, 'deleteFile'])->name('kkprnon.delete.file');
 
     // Pengaduan Management Routes
     Route::resource('pengaduan', AdminPengaduanController::class);

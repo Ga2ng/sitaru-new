@@ -191,7 +191,7 @@
                         </td>
                         <td class="px-6 py-4">
                             <div class="flex items-center justify-center space-x-1">
-                                <button id="btn-aksi-{{ $kkpr->id }}" onclick="toggleDropdown({{ $kkpr->id }})" class="inline-flex items-center space-x-1.5 px-3 py-1.5 text-xs font-medium text-gray-700 bg-white hover:bg-[#185B3C]/10 hover:text-[#185B3C] border border-gray-300 rounded-lg transition-all duration-200 hover:scale-105" title="Aksi">
+                                <button id="btn-aksi-{{ $kkpr->id }}" onclick="toggleDropdown({{ $kkpr->id }}, {{ $kkpr->proses }}, {{ $kkpr->revisi }})" class="inline-flex items-center space-x-1.5 px-3 py-1.5 text-xs font-medium text-gray-700 bg-white hover:bg-[#185B3C]/10 hover:text-[#185B3C] border border-gray-300 rounded-lg transition-all duration-200 hover:scale-105" title="Aksi">
                                     <i class="fas fa-cog"></i>
                                     <span>Aksi</span>
                                     <i class="fas fa-chevron-down text-xs"></i>
@@ -263,7 +263,7 @@
     });
 
     // Dropdown Toggle
-    function toggleDropdown(id) {
+    function toggleDropdown(id, status, revisi) {
         const button = event.currentTarget;
         const chevron = button.querySelector('.fa-chevron-down');
         const modal = document.getElementById('dropdown-menu-modal');
@@ -286,16 +286,23 @@
         modal.style.top = (rect.bottom + window.scrollY + 8) + 'px';
         modal.style.left = (rect.right + window.scrollX - 192) + 'px';
         
-        content.innerHTML = `
+        let menuItems = `
             <div class="py-1">
                 <a href="/member/kkpr/${id}" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-[#185B3C]/10 hover:text-[#185B3C] transition-colors">
                     <i class="fas fa-eye w-4 mr-3"></i>
                     Lihat Detail
-                </a>
+                </a>`;
+        
+        // Edit - hanya muncul jika status = 1 (Pengajuan) atau revisi = 1
+        if (status == 1 || revisi == 1) {
+            menuItems += `
                 <a href="/member/kkpr/${id}/edit" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
                     <i class="fas fa-edit w-4 mr-3"></i>
                     Edit
-                </a>
+                </a>`;
+        }
+        
+        menuItems += `
                 <a href="/member/kkpr/cetak/${id}" target="_blank" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-600 transition-colors">
                     <i class="fas fa-file-pdf w-4 mr-3"></i>
                     Cetak PDF
@@ -307,6 +314,7 @@
             </div>
         `;
         
+        content.innerHTML = menuItems;
         modal.classList.remove('hidden');
         modal.dataset.currentId = id;
         chevron.style.transform = 'rotate(180deg)';

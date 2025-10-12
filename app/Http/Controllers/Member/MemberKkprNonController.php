@@ -315,7 +315,8 @@ class MemberKkprNonController extends Controller
         $req['tgl_terbit'] = $request->get('tgl_terbit');
         $req['no_nib'] = $request->get('no_nib');
         $req['tgl_surat'] = $request->get('tgl_surat');
-        $req['revisi'] = 0;
+        $req['revisi'] = 0; // Reset status revisi
+        $req['proses'] = 1; // Kembali ke status Pengajuan
         
         $model->update($req);  
         
@@ -477,6 +478,27 @@ class MemberKkprNonController extends Controller
             $model->update(['f_akta'=>$filename]);
         }
 
+        // Update riwayat status kembali ke Pengajuan setelah edit
+        // Hapus semua riwayat dengan status > 1 (reset ke pengajuan awal)
+        Kkpr_riwayat::where('kkpr_id', $model->id)->where('status_id', '>', 1)->delete();
+        
+        // Update atau create riwayat pengajuan
+        $riwayat = Kkpr_riwayat::where('kkpr_id', $model->id)->where('status_id', 1)->first();
+        if(!$riwayat){
+            Kkpr_riwayat::create([
+                'kkpr_id' => $model->id, 
+                'status_id' => '1', 
+                'status' => 'Pengajuan', 
+                'keterangan' => 'Data permohonan telah diperbarui dan diajukan kembali oleh Pemohon'
+            ]);
+        } else {
+            $riwayat->update([
+                'status' => 'Pengajuan',
+                'keterangan' => 'Data permohonan telah diperbarui dan diajukan kembali oleh Pemohon',
+                'updated_at' => now()
+            ]);
+        }
+
         return redirect()->route('member.kkprnon.index')->withSuccess('Data berhasil diupdate kedalam sistem');
     }
 
@@ -553,6 +575,51 @@ class MemberKkprNonController extends Controller
             'riwayat' => $riwayat,
             'model' => $model
         ]);
+    }
+
+    public function deleteFile($id, $fieldName)
+    {
+        $model = Kkpr::findOrFail($id);
+        $user = Auth::user();
+
+        if($model->user_id != $user->id){
+            return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
+        }
+
+        // Map field names to their folder paths
+        $folderMap = [
+            'f_nib' => 'f_nib',
+            'sp_mandiri' => 'sp_mandiri',
+            'dok_kepemilikan' => 'dokumen_kepemilikan',
+            'f_ktp' => 'f_ktp',
+            'f_sertifikat' => 'f_sertifikat',
+            'f_siteplan' => 'f_siteplan',
+            'f_akta' => 'f_akta',
+            'dok_taru' => 'dok_taru',
+            'f_kml' => 'kml'
+        ];
+
+        if(!isset($folderMap[$fieldName])){
+            return response()->json(['success' => false, 'message' => 'Invalid field name'], 400);
+        }
+
+        $fileName = $model->{$fieldName};
+        if(!$fileName){
+            return response()->json(['success' => false, 'message' => 'File not found'], 404);
+        }
+
+        $filePath = public_path('uploads/berkas/kkpr_non/' . $model->id . '/' . $folderMap[$fieldName] . '/' . $fileName);
+        
+        // Delete physical file
+        if(File::exists($filePath)){
+            File::delete($filePath);
+        }
+
+        // Update database
+        $model->{$fieldName} = null;
+        $model->save();
+
+        return response()->json(['success' => true, 'message' => 'File deleted successfully']);
     }
 
 }
