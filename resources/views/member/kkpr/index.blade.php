@@ -178,10 +178,10 @@
                             @endphp
                             
                             @if($kkpr->revisi == 1)
-                                <span class="inline-flex items-center px-3 py-1.5 text-xs font-bold rounded-lg bg-red-100 text-red-800 border-2 border-red-300 shadow-sm">
+                                <button onclick="openRiwayat({{ $kkpr->id }})" class="inline-flex items-center px-3 py-1.5 text-xs font-bold rounded-lg bg-red-100 text-red-800 border-2 border-red-300 shadow-sm hover:bg-red-200 hover:shadow-md hover:scale-105 transition-all cursor-pointer" title="Lihat Riwayat Proses">
                                     <i class="fas fa-exclamation-triangle mr-1.5 text-xs"></i>
                                     Revisi
-                                </span>
+                                </button>
                             @else
                                 <button onclick="openRiwayat({{ $kkpr->id }})" class="inline-flex items-center px-3 py-1.5 text-xs font-bold rounded-lg {{ $status['color'] }} border-2 border-current/30 hover:shadow-md hover:scale-105 transition-all">
                                     <i class="fas {{ $status['icon'] }} mr-1.5 text-xs"></i>

@@ -329,23 +329,30 @@
                         <div class="col-span-1">
                             @php
                                 $statusConfig = [
-                                    1 => ['label' => 'Pengajuan', 'color' => 'blue'],
-                                    2 => ['label' => 'Upload', 'color' => 'yellow'],
-                                    3 => ['label' => 'Validasi', 'color' => 'orange'],
-                                    4 => ['label' => 'Bayar', 'color' => 'purple'],
-                                    5 => ['label' => 'V.Bayar', 'color' => 'indigo'],
-                                    6 => ['label' => 'Survey', 'color' => 'pink'],
-                                    7 => ['label' => 'Analisa', 'color' => 'cyan'],
-                                    8 => ['label' => 'Setuju', 'color' => 'teal'],
-                                    9 => ['label' => 'TTE', 'color' => 'emerald'],
-                                    10 => ['label' => 'Selesai', 'color' => 'green'],
+                                    1 => ['label' => 'Pengajuan', 'color' => 'blue', 'icon' => 'fa-file-alt'],
+                                    2 => ['label' => 'Upload', 'color' => 'yellow', 'icon' => 'fa-upload'],
+                                    3 => ['label' => 'Validasi', 'color' => 'orange', 'icon' => 'fa-check-circle'],
+                                    4 => ['label' => 'Bayar', 'color' => 'purple', 'icon' => 'fa-money-bill'],
+                                    5 => ['label' => 'V.Bayar', 'color' => 'indigo', 'icon' => 'fa-receipt'],
+                                    6 => ['label' => 'Survey', 'color' => 'pink', 'icon' => 'fa-map-marked-alt'],
+                                    7 => ['label' => 'Analisa', 'color' => 'cyan', 'icon' => 'fa-file-signature'],
+                                    8 => ['label' => 'Setuju', 'color' => 'teal', 'icon' => 'fa-check-double'],
+                                    9 => ['label' => 'TTE', 'color' => 'emerald', 'icon' => 'fa-signature'],
+                                    10 => ['label' => 'Selesai', 'color' => 'green', 'icon' => 'fa-check-circle'],
                                 ];
-                                $status = $statusConfig[$kkpr->proses] ?? ['label' => 'Unknown', 'color' => 'gray'];
+                                $status = $statusConfig[$kkpr->proses] ?? ['label' => 'Unknown', 'color' => 'gray', 'icon' => 'fa-question'];
                             @endphp
-                            <button onclick="openRiwayat({{ $kkpr->id }})" class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-{{ $status['color'] }}-100 text-{{ $status['color'] }}-800 border border-{{ $status['color'] }}-300 hover:bg-{{ $status['color'] }}-200 transition-colors cursor-pointer" title="Lihat Riwayat Proses">
-                                <i class="fas fa-history mr-1"></i>
-                                {{ $status['label'] }}
-                            </button>
+                            @if($kkpr->revisi == 1)
+                                <button onclick="openRiwayat({{ $kkpr->id }})" class="inline-flex items-center px-2 py-1 text-xs font-bold rounded-full bg-red-100 text-red-800 border-2 border-red-300 shadow-sm hover:bg-red-200 transition-colors cursor-pointer" title="Lihat Riwayat Proses">
+                                    <i class="fas fa-exclamation-triangle mr-1"></i>
+                                    Revisi
+                                </button>
+                            @else
+                                <button onclick="openRiwayat({{ $kkpr->id }})" class="inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full bg-{{ $status['color'] }}-100 text-{{ $status['color'] }}-800 border border-{{ $status['color'] }}-300 hover:bg-{{ $status['color'] }}-200 transition-colors cursor-pointer" title="Lihat Riwayat Proses">
+                                    <i class="fas {{ $status['icon'] }} mr-1"></i>
+                                    {{ $status['label'] }}
+                                </button>
+                            @endif
                         </div>
                         <div class="col-span-1">
                             <button id="btn-aksi-{{ $kkpr->id }}" onclick="toggleDropdown({{ $kkpr->id }})" class="inline-flex items-center space-x-1.5 px-3 py-1.5 text-xs font-medium text-gray-700 bg-white hover:bg-[#185B3C]/10 hover:text-[#185B3C] border border-gray-300 rounded-lg transition-all duration-200 hover:scale-105" title="Aksi">
