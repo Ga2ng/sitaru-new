@@ -471,7 +471,7 @@
         if (backdrop) backdrop.remove();
         
         contentDiv.innerHTML = '<div class="text-center py-8"><i class="fas fa-spinner fa-spin text-4xl text-[#185B3C]"></i><p class="mt-4 text-gray-600">Memuat riwayat...</p></div>';
-        subtitleDiv.textContent = 'UMK';
+        subtitleDiv.textContent = 'KKPR Terbit Otomatis';
     }
 
     // Delete KKPR
@@ -534,7 +534,7 @@
                     </div>
                     <div>
                         <h5 class="text-lg font-bold">Riwayat Proses</h5>
-                        <p class="text-sm text-white/80" id="modal-subtitle">UMK</p>
+                        <p class="text-sm text-white/80" id="modal-subtitle">KKPR Terbit Otomatis</p>
                     </div>
                 </div>
                 <button type="button" class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-all" onclick="closeRiwayatModal()">
@@ -559,5 +559,7 @@
     </div>
 </div>
 @endsection
+
+
 
 

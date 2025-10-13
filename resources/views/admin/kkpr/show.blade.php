@@ -5,7 +5,7 @@
 
 @section('content')
 @php
-    $img_path = url('/uploads/berkas/umk/').'/'.$model->id.'/';
+    $img_path = url('/uploads/berkas/kkpr/').'/'.$model->id.'/';
     $prop = \DB::table('setup_prop')->where('NO_PROP', 35)->first();
     $kab = \DB::table('setup_kab')->where('NO_PROP', 35)->where('NO_KAB', 10)->first();
     $kec = \DB::table('setup_kec')->where('NO_PROP', 35)->where('NO_KAB', 10)->where('NO_KEC', $model->NO_KEC)->first();
@@ -484,7 +484,7 @@
                                     <div class="col-span-3">
                                         <div class="flex items-center space-x-1">
                                             @if ($model->sp_mandiri != null)
-                                                <a target="_blank" href="{{ asset('uploads/berkas/umk/'.$model->id. '/sp_mandiri/' .$model->sp_mandiri) }}" class="p-2 text-gray-400 hover:text-[#185B3C] hover:bg-[#185B3C]/10 rounded-lg transition-all duration-200 hover:scale-105" title="Lihat Dokumen">
+                                                <a target="_blank" href="{{ asset('uploads/berkas/kkpr/'.$model->id. '/sp_mandiri/' .$model->sp_mandiri) }}" class="p-2 text-gray-400 hover:text-[#185B3C] hover:bg-[#185B3C]/10 rounded-lg transition-all duration-200 hover:scale-105" title="Lihat Dokumen">
                                                     <i class="fas fa-eye text-xs"></i>
                                                 </a>
                                             @else
@@ -527,7 +527,7 @@
                                     <div class="col-span-3">
                                         <div class="flex items-center space-x-1">
                                             @if ($model->dok_kepemilikan != null)
-                                                <a target="_blank" href="{{ asset('uploads/berkas/umk/'.$model->id. '/dok_kepemilikan/' .$model->dok_kepemilikan) }}" class="p-2 text-gray-400 hover:text-[#185B3C] hover:bg-[#185B3C]/10 rounded-lg transition-all duration-200 hover:scale-105" title="Lihat Dokumen">
+                                                <a target="_blank" href="{{ asset('uploads/berkas/kkpr/'.$model->id. '/dok_kepemilikan/' .$model->dok_kepemilikan) }}" class="p-2 text-gray-400 hover:text-[#185B3C] hover:bg-[#185B3C]/10 rounded-lg transition-all duration-200 hover:scale-105" title="Lihat Dokumen">
                                                     <i class="fas fa-eye text-xs"></i>
                                                 </a>
                                             @else
@@ -570,7 +570,7 @@
                                     <div class="col-span-3">
                                         <div class="flex items-center space-x-1">
                                             @if ($model->f_ktp != null)
-                                                <a target="_blank" href="{{ asset('uploads/berkas/umk/'.$model->id. '/f_ktp/' .$model->f_ktp) }}" class="p-2 text-gray-400 hover:text-[#185B3C] hover:bg-[#185B3C]/10 rounded-lg transition-all duration-200 hover:scale-105" title="Lihat Dokumen">
+                                                <a target="_blank" href="{{ asset('uploads/berkas/kkpr/'.$model->id. '/f_ktp/' .$model->f_ktp) }}" class="p-2 text-gray-400 hover:text-[#185B3C] hover:bg-[#185B3C]/10 rounded-lg transition-all duration-200 hover:scale-105" title="Lihat Dokumen">
                                                     <i class="fas fa-eye text-xs"></i>
                                                 </a>
                                             @else
@@ -613,7 +613,7 @@
                                     <div class="col-span-3">
                                         <div class="flex items-center space-x-1">
                                             @if ($model->f_sertifikat != null)
-                                                <a target="_blank" href="{{ asset('uploads/berkas/umk/'.$model->id. '/f_sertifikat/' .$model->f_sertifikat) }}" class="p-2 text-gray-400 hover:text-[#185B3C] hover:bg-[#185B3C]/10 rounded-lg transition-all duration-200 hover:scale-105" title="Lihat Dokumen">
+                                                <a target="_blank" href="{{ asset('uploads/berkas/kkpr/'.$model->id. '/f_sertifikat/' .$model->f_sertifikat) }}" class="p-2 text-gray-400 hover:text-[#185B3C] hover:bg-[#185B3C]/10 rounded-lg transition-all duration-200 hover:scale-105" title="Lihat Dokumen">
                                                     <i class="fas fa-eye text-xs"></i>
                                                 </a>
                                             @else
@@ -656,7 +656,7 @@
                                     <div class="col-span-3">
                                         <div class="flex items-center space-x-1">
                                             @if ($model->f_siteplan != null)
-                                                <a target="_blank" href="{{ asset('uploads/berkas/umk/'.$model->id. '/f_siteplan/' .$model->f_siteplan) }}" class="p-2 text-gray-400 hover:text-[#185B3C] hover:bg-[#185B3C]/10 rounded-lg transition-all duration-200 hover:scale-105" title="Lihat Dokumen">
+                                                <a target="_blank" href="{{ asset('uploads/berkas/kkpr/'.$model->id. '/f_siteplan/' .$model->f_siteplan) }}" class="p-2 text-gray-400 hover:text-[#185B3C] hover:bg-[#185B3C]/10 rounded-lg transition-all duration-200 hover:scale-105" title="Lihat Dokumen">
                                                     <i class="fas fa-eye text-xs"></i>
                                                 </a>
                                             @else
@@ -699,7 +699,7 @@
                                     <div class="col-span-3">
                                         <div class="flex items-center space-x-1">
                                             @if ($model->f_akta != null)
-                                                <a target="_blank" href="{{ asset('uploads/berkas/umk/'.$model->id. '/f_akta/' .$model->f_akta) }}" class="p-2 text-gray-400 hover:text-[#185B3C] hover:bg-[#185B3C]/10 rounded-lg transition-all duration-200 hover:scale-105" title="Lihat Dokumen">
+                                                <a target="_blank" href="{{ asset('uploads/berkas/kkpr/'.$model->id. '/f_akta/' .$model->f_akta) }}" class="p-2 text-gray-400 hover:text-[#185B3C] hover:bg-[#185B3C]/10 rounded-lg transition-all duration-200 hover:scale-105" title="Lihat Dokumen">
                                                     <i class="fas fa-eye text-xs"></i>
                                                 </a>
                                             @else
@@ -742,7 +742,7 @@
                                     <div class="col-span-3">
                                         <div class="flex items-center space-x-1">
                                             @if ($model->f_nib != null)
-                                                <a target="_blank" href="{{ asset('uploads/berkas/umk/'.$model->id. '/f_nib/' .$model->f_nib) }}" class="p-2 text-gray-400 hover:text-[#185B3C] hover:bg-[#185B3C]/10 rounded-lg transition-all duration-200 hover:scale-105" title="Lihat Dokumen">
+                                                <a target="_blank" href="{{ asset('uploads/berkas/kkpr/'.$model->id. '/f_nib/' .$model->f_nib) }}" class="p-2 text-gray-400 hover:text-[#185B3C] hover:bg-[#185B3C]/10 rounded-lg transition-all duration-200 hover:scale-105" title="Lihat Dokumen">
                                                     <i class="fas fa-eye text-xs"></i>
                                                 </a>
                                             @else
@@ -785,7 +785,7 @@
                                     <div class="col-span-3">
                                         <div class="flex items-center space-x-1">
                                             @if ($model->f_kml != null)
-                                                <a target="_blank" href="{{ asset('uploads/berkas/umk/'.$model->id. '/kml/' .$model->f_kml) }}" class="p-2 text-gray-400 hover:text-[#185B3C] hover:bg-[#185B3C]/10 rounded-lg transition-all duration-200 hover:scale-105" title="Lihat Dokumen">
+                                                <a target="_blank" href="{{ asset('uploads/berkas/kkpr/'.$model->id. '/kml/' .$model->f_kml) }}" class="p-2 text-gray-400 hover:text-[#185B3C] hover:bg-[#185B3C]/10 rounded-lg transition-all duration-200 hover:scale-105" title="Lihat Dokumen">
                                                     <i class="fas fa-eye text-xs"></i>
                                                 </a>
                                             @else
@@ -885,4 +885,6 @@
     });
 </script>
 @endsection
+
+
 

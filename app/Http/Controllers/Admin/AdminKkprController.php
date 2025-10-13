@@ -649,7 +649,7 @@ class AdminKkprController extends Controller
             $myuser = Auth::user();
 
             $model->update([
-                'proses' => 7,
+                'proses' => 3,
                 'penerima' => $myuser->name,
                 'tgl_terima' => date("Y-m-d"),
                 'jam_terima' => date("h:i:s"),

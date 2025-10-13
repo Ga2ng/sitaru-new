@@ -355,7 +355,7 @@
                             @endif
                         </div>
                         <div class="col-span-1">
-                            <button id="btn-aksi-{{ $kkpr->id }}" onclick="toggleDropdown({{ $kkpr->id }}, {{ $kkpr->proses }}, {{ $kkpr->revisi }}, {{ auth()->user()->can('Verifikator') ? 'true' : 'false' }})" class="inline-flex items-center space-x-1.5 px-3 py-1.5 text-xs font-medium text-gray-700 bg-white hover:bg-[#185B3C]/10 hover:text-[#185B3C] border border-gray-300 rounded-lg transition-all duration-200 hover:scale-105" title="Aksi">
+                            <button id="btn-aksi-{{ $kkpr->id }}" onclick="toggleDropdown({{ $kkpr->id }}, {{ $kkpr->proses }}, {{ $kkpr->revisi }}, {{ auth()->user()->can('Verifikator') ? 'true' : 'false' }}, {{ auth()->user()->can('Analis') ? 'true' : 'false' }})" class="inline-flex items-center space-x-1.5 px-3 py-1.5 text-xs font-medium text-gray-700 bg-white hover:bg-[#185B3C]/10 hover:text-[#185B3C] border border-gray-300 rounded-lg transition-all duration-200 hover:scale-105" title="Aksi">
                                 <i class="fas fa-cog"></i>
                                 <span>Aksi</span>
                                 <i class="fas fa-chevron-down text-xs"></i>
@@ -418,7 +418,7 @@
         alert('Fitur export akan segera tersedia');
     }
 
-    function toggleDropdown(id, status, revisi, canValidate) {
+    function toggleDropdown(id, status, revisi, canValidate, canSurvey) {
         const button = event.currentTarget;
         const chevron = button.querySelector('.fa-chevron-down');
         const modal = document.getElementById('dropdown-menu-modal');
@@ -457,15 +457,26 @@
                 </a>`;
         }
         
-        menuItems += `
-                <a href="/admin/kkpr/${id}/analisa" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-600 transition-colors">
-                    <i class="fas fa-file-signature w-4 mr-3"></i>
-                    Analisa
-                </a>
+        
+        // Survey - hanya untuk Analis dan belum survey (proses < 6)
+        if (canSurvey && status < 6) {
+            menuItems += `
                 <button onclick="setSurvey(${id}); closeDropdownModal();" class="w-full flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-colors text-left">
                     <i class="fas fa-map-marked-alt w-4 mr-3"></i>
                     Survey
-                </button>
+                </button>`;
+        }
+        
+        // Analisa - hanya untuk Analis dan belum analisa (proses < 7), bisa skip survey
+        if (canSurvey && status < 7) {
+            menuItems += `
+                <a href="/admin/kkpr/${id}/analisa" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-600 transition-colors">
+                    <i class="fas fa-file-signature w-4 mr-3"></i>
+                    Analisa
+                </a>`;
+        }
+        
+        menuItems += `
                 <button onclick="kirimKabid(${id}); closeDropdownModal();" class="w-full flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition-colors text-left">
                     <i class="fas fa-paper-plane w-4 mr-3"></i>
                     Kirim Kabid
@@ -649,7 +660,7 @@
         
         const subtitle = document.getElementById('modal-subtitle');
         console.log('Subtitle element:', subtitle);
-        subtitle.textContent = (model.jenis == 'non_umk' ? 'UMK' : 'KKPR') + ' #' + model.id;
+        subtitle.textContent = (model.jenis == 'non_umk' ? 'KKPR Terbit Otomatis' : 'KKPR') + ' #' + model.id;
         
         const content = document.getElementById('riwayat-content');
         console.log('Content element:', content);
@@ -741,7 +752,7 @@
             content.innerHTML = '<div class="text-center py-8"><i class="fas fa-spinner fa-spin text-4xl text-[#185B3C]"></i><p class="mt-4 text-gray-600">Memuat riwayat...</p></div>';
         }
         if (subtitle) {
-            subtitle.textContent = 'UMK';
+            subtitle.textContent = 'KKPR Terbit Otomatis';
         }
         console.log('Content cleared');
         
@@ -1048,7 +1059,7 @@
                     </div>
                     <div>
                         <h5 class="text-lg font-bold">Riwayat Proses</h5>
-                        <p class="text-sm text-white/80" id="modal-subtitle">UMK</p>
+                        <p class="text-sm text-white/80" id="modal-subtitle">KKPR Terbit Otomatis</p>
                     </div>
                 </div>
                 <button type="button" class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-all" onclick="closeRiwayatModal()">
@@ -1187,4 +1198,6 @@
     </div>
 </div>
 @endsection
+
+
 

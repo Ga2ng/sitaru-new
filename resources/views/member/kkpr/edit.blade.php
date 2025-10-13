@@ -413,7 +413,7 @@
                         <div class="flex items-center space-x-2 p-3 bg-green-50 border border-green-200 rounded-lg mb-2">
                             <i class="fas fa-file-pdf text-green-600"></i>
                             <span class="text-sm text-green-700 flex-1">{{ $model->f_nib }}</span>
-                            <a href="{{ asset('uploads/berkas/umk/'.$model->id.'/f_nib/'.$model->f_nib) }}" target="_blank" class="text-blue-600 hover:text-blue-800">
+                            <a href="{{ asset('uploads/berkas/kkpr/'.$model->id.'/f_nib/'.$model->f_nib) }}" target="_blank" class="text-blue-600 hover:text-blue-800">
                                 <i class="fas fa-eye"></i>
                             </a>
                             <button type="button" onclick="deleteFile('f_nib', {{ $model->id }})" class="text-red-600 hover:text-red-800">
@@ -653,7 +653,7 @@
                         <div class="flex items-center space-x-2 p-3 bg-green-50 border border-green-200 rounded-lg mb-2">
                             <i class="fas fa-file-pdf text-green-600"></i>
                             <span class="text-sm text-green-700 flex-1">{{ $model->sp_mandiri }}</span>
-                            <a href="{{ asset('uploads/berkas/umk/'.$model->id.'/sp_mandiri/'.$model->sp_mandiri) }}" target="_blank" class="text-blue-600 hover:text-blue-800">
+                            <a href="{{ asset('uploads/berkas/kkpr/'.$model->id.'/sp_mandiri/'.$model->sp_mandiri) }}" target="_blank" class="text-blue-600 hover:text-blue-800">
                                 <i class="fas fa-eye"></i>
                             </a>
                             <button type="button" onclick="deleteFile('sp_mandiri', {{ $model->id }})" class="text-red-600 hover:text-red-800">
@@ -684,7 +684,7 @@
                         <div class="flex items-center space-x-2 p-3 bg-green-50 border border-green-200 rounded-lg mb-2">
                             <i class="fas fa-file-pdf text-green-600"></i>
                             <span class="text-sm text-green-700 flex-1">{{ $model->dok_kepemilikan }}</span>
-                            <a href="{{ asset('uploads/berkas/umk/'.$model->id.'/dokumen_kepemilikan/'.$model->dok_kepemilikan) }}" target="_blank" class="text-blue-600 hover:text-blue-800">
+                            <a href="{{ asset('uploads/berkas/kkpr/'.$model->id.'/dokumen_kepemilikan/'.$model->dok_kepemilikan) }}" target="_blank" class="text-blue-600 hover:text-blue-800">
                                 <i class="fas fa-eye"></i>
                             </a>
                             <button type="button" onclick="deleteFile('dok_kepemilikan', {{ $model->id }})" class="text-red-600 hover:text-red-800">
@@ -715,7 +715,7 @@
                         <div class="flex items-center space-x-2 p-3 bg-green-50 border border-green-200 rounded-lg mb-2">
                             <i class="fas fa-file-pdf text-green-600"></i>
                             <span class="text-sm text-green-700 flex-1">{{ $model->f_ktp }}</span>
-                            <a href="{{ asset('uploads/berkas/umk/'.$model->id.'/f_ktp/'.$model->f_ktp) }}" target="_blank" class="text-blue-600 hover:text-blue-800">
+                            <a href="{{ asset('uploads/berkas/kkpr/'.$model->id.'/f_ktp/'.$model->f_ktp) }}" target="_blank" class="text-blue-600 hover:text-blue-800">
                                 <i class="fas fa-eye"></i>
                             </a>
                             <button type="button" onclick="deleteFile('f_ktp', {{ $model->id }})" class="text-red-600 hover:text-red-800">
@@ -746,7 +746,7 @@
                         <div class="flex items-center space-x-2 p-3 bg-green-50 border border-green-200 rounded-lg mb-2">
                             <i class="fas fa-file-pdf text-green-600"></i>
                             <span class="text-sm text-green-700 flex-1">{{ $model->f_sertifikat }}</span>
-                            <a href="{{ asset('uploads/berkas/umk/'.$model->id.'/f_sertifikat/'.$model->f_sertifikat) }}" target="_blank" class="text-blue-600 hover:text-blue-800">
+                            <a href="{{ asset('uploads/berkas/kkpr/'.$model->id.'/f_sertifikat/'.$model->f_sertifikat) }}" target="_blank" class="text-blue-600 hover:text-blue-800">
                                 <i class="fas fa-eye"></i>
                             </a>
                             <button type="button" onclick="deleteFile('f_sertifikat', {{ $model->id }})" class="text-red-600 hover:text-red-800">
@@ -777,7 +777,7 @@
                         <div class="flex items-center space-x-2 p-3 bg-green-50 border border-green-200 rounded-lg mb-2">
                             <i class="fas fa-file-pdf text-green-600"></i>
                             <span class="text-sm text-green-700 flex-1">{{ $model->f_siteplan }}</span>
-                            <a href="{{ asset('uploads/berkas/umk/'.$model->id.'/f_siteplan/'.$model->f_siteplan) }}" target="_blank" class="text-blue-600 hover:text-blue-800">
+                            <a href="{{ asset('uploads/berkas/kkpr/'.$model->id.'/f_siteplan/'.$model->f_siteplan) }}" target="_blank" class="text-blue-600 hover:text-blue-800">
                                 <i class="fas fa-eye"></i>
                             </a>
                             <button type="button" onclick="deleteFile('f_siteplan', {{ $model->id }})" class="text-red-600 hover:text-red-800">
@@ -808,7 +808,7 @@
                         <div class="flex items-center space-x-2 p-3 bg-green-50 border border-green-200 rounded-lg mb-2">
                             <i class="fas fa-file-pdf text-green-600"></i>
                             <span class="text-sm text-green-700 flex-1">{{ $model->f_akta }}</span>
-                            <a href="{{ asset('uploads/berkas/umk/'.$model->id.'/f_akta/'.$model->f_akta) }}" target="_blank" class="text-blue-600 hover:text-blue-800">
+                            <a href="{{ asset('uploads/berkas/kkpr/'.$model->id.'/f_akta/'.$model->f_akta) }}" target="_blank" class="text-blue-600 hover:text-blue-800">
                                 <i class="fas fa-eye"></i>
                             </a>
                             <button type="button" onclick="deleteFile('f_akta', {{ $model->id }})" class="text-red-600 hover:text-red-800">
@@ -838,7 +838,7 @@
                         <div class="flex items-center space-x-2 p-3 bg-green-50 border border-green-200 rounded-lg mb-2">
                             <i class="fas fa-file-pdf text-green-600"></i>
                             <span class="text-sm text-green-700 flex-1">{{ $model->dok_taru }}</span>
-                            <a href="{{ asset('uploads/berkas/umk/'.$model->id.'/dok_taru/'.$model->dok_taru) }}" target="_blank" class="text-blue-600 hover:text-blue-800">
+                            <a href="{{ asset('uploads/berkas/kkpr/'.$model->id.'/dok_taru/'.$model->dok_taru) }}" target="_blank" class="text-blue-600 hover:text-blue-800">
                                 <i class="fas fa-eye"></i>
                             </a>
                             <button type="button" onclick="deleteFile('dok_taru', {{ $model->id }})" class="text-red-600 hover:text-red-800">
@@ -1110,7 +1110,7 @@
                                 <div class="flex items-center space-x-2 p-3 bg-green-50 border border-green-200 rounded-lg mb-2">
                                     <i class="fas fa-map text-green-600"></i>
                                     <span class="text-sm text-green-700 flex-1">{{ $model->f_kml }}</span>
-                                    <a href="{{ asset('uploads/berkas/umk/'.$model->id.'/kml/'.$model->f_kml) }}" download class="text-blue-600 hover:text-blue-800" title="Download KML">
+                                    <a href="{{ asset('uploads/berkas/kkpr/'.$model->id.'/kml/'.$model->f_kml) }}" download class="text-blue-600 hover:text-blue-800" title="Download KML">
                                         <i class="fas fa-download"></i>
                                     </a>
                                     <button type="button" onclick="deleteFile('f_kml', {{ $model->id }})" class="text-red-600 hover:text-red-800" title="Hapus KML">
@@ -2614,7 +2614,7 @@
         setTimeout(function() {
             if(window.kkprMap) {
                 // Fetch and load the existing KML file
-                const kmlPath = '{{ asset("uploads/berkas/umk/".$model->id."/kml/".$model->f_kml) }}';
+                const kmlPath = '{{ asset("uploads/berkas/kkpr/".$model->id."/kml/".$model->f_kml) }}';
                 
                 fetch(kmlPath)
                     .then(response => response.text())
@@ -2679,4 +2679,6 @@
     @endif
 </script>
 @endsection
+
+
 

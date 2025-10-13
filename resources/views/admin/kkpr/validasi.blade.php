@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Validasi Dokumen UMK')
+@section('title', 'Validasi Dokumen KKPR Terbit Otomatis')
 @section('subtitle', 'Validasi dokumen Permohonan KKPR Terbit Otomatis #' . $model->id)
 
 @section('content')
@@ -263,7 +263,7 @@
                             </div>
                             <div>
                                 @if ($model->dok_kepemilikan != null)
-                                    <a target="_blank" href="{{ url('/uploads/berkas/umk/').'/'.$model->id.'/dokumen_kepemilikan/'.$model->dok_kepemilikan }}" class="text-[#185B3C] hover:underline text-sm">{{ $model->dok_kepemilikan }}</a>
+                                    <a target="_blank" href="{{ url('/uploads/berkas/kkpr/').'/'.$model->id.'/dokumen_kepemilikan/'.$model->dok_kepemilikan }}" class="text-[#185B3C] hover:underline text-sm">{{ $model->dok_kepemilikan }}</a>
                                 @else 
                                     <span class="text-yellow-600 text-sm">Tidak Upload</span>
                                 @endif
@@ -280,7 +280,7 @@
                             </div>
                             <div>
                                 @if ($model->f_ktp != null)
-                                    <a target="_blank" href="{{ url('/uploads/berkas/umk/').'/'.$model->id.'/f_ktp/'.$model->f_ktp }}" class="text-[#185B3C] hover:underline text-sm">{{ $model->f_ktp }}</a>
+                                    <a target="_blank" href="{{ url('/uploads/berkas/kkpr/').'/'.$model->id.'/f_ktp/'.$model->f_ktp }}" class="text-[#185B3C] hover:underline text-sm">{{ $model->f_ktp }}</a>
                                 @else 
                                     <span class="text-yellow-600 text-sm">Tidak Upload</span>
                                 @endif
@@ -297,7 +297,7 @@
                             </div>
                             <div>
                                 @if ($model->f_sertifikat != null)
-                                    <a target="_blank" href="{{ url('/uploads/berkas/umk/').'/'.$model->id.'/f_sertifikat/'.$model->f_sertifikat }}" class="text-[#185B3C] hover:underline text-sm">{{ $model->f_sertifikat }}</a>
+                                    <a target="_blank" href="{{ url('/uploads/berkas/kkpr/').'/'.$model->id.'/f_sertifikat/'.$model->f_sertifikat }}" class="text-[#185B3C] hover:underline text-sm">{{ $model->f_sertifikat }}</a>
                                 @else 
                                     <span class="text-yellow-600 text-sm">Tidak Upload</span>
                                 @endif
@@ -314,7 +314,7 @@
                             </div>
                             <div>
                                 @if ($model->f_siteplan != null)
-                                    <a target="_blank" href="{{ url('/uploads/berkas/umk/').'/'.$model->id.'/f_siteplan/'.$model->f_siteplan }}" class="text-[#185B3C] hover:underline text-sm">{{ $model->f_siteplan }}</a>
+                                    <a target="_blank" href="{{ url('/uploads/berkas/kkpr/').'/'.$model->id.'/f_siteplan/'.$model->f_siteplan }}" class="text-[#185B3C] hover:underline text-sm">{{ $model->f_siteplan }}</a>
                                 @else 
                                     <span class="text-yellow-600 text-sm">Tidak Upload</span>
                                 @endif
@@ -331,7 +331,7 @@
                             </div>
                             <div>
                                 @if ($model->f_akta != null)
-                                    <a target="_blank" href="{{ url('/uploads/berkas/umk/').'/'.$model->id.'/f_akta/'.$model->f_akta }}" class="text-[#185B3C] hover:underline text-sm">{{ $model->f_akta }}</a>
+                                    <a target="_blank" href="{{ url('/uploads/berkas/kkpr/').'/'.$model->id.'/f_akta/'.$model->f_akta }}" class="text-[#185B3C] hover:underline text-sm">{{ $model->f_akta }}</a>
                                 @else 
                                     <span class="text-yellow-600 text-sm">Tidak Upload</span>
                                 @endif
@@ -348,7 +348,7 @@
                             </div>
                             <div>
                                 @if ($model->f_kml != null)
-                                    <a target="_blank" href="{{ url('/uploads/berkas/umk/').'/'.$model->id.'/kml/'.$model->f_kml }}" class="text-[#185B3C] hover:underline text-sm">{{ $model->f_kml }}</a>
+                                    <a target="_blank" href="{{ url('/uploads/berkas/kkpr/').'/'.$model->id.'/kml/'.$model->f_kml }}" class="text-[#185B3C] hover:underline text-sm">{{ $model->f_kml }}</a>
                                 @else 
                                     <span class="text-yellow-600 text-sm">Tidak Upload</span>
                                 @endif
@@ -379,7 +379,7 @@
                         </div>
                         <div class="flex-1 text-right">
                             @if ($model->sp_mandiri != null)
-                                <a target="_blank" href="{{ url('/uploads/berkas/umk/').'/'.$model->id.'/sp_mandiri/'.$model->sp_mandiri }}" class="text-[#185B3C] hover:underline text-sm">{{ $model->sp_mandiri }}</a>
+                                <a target="_blank" href="{{ url('/uploads/berkas/kkpr/').'/'.$model->id.'/sp_mandiri/'.$model->sp_mandiri }}" class="text-[#185B3C] hover:underline text-sm">{{ $model->sp_mandiri }}</a>
                             @else 
                                 <span class="text-yellow-600 text-sm">Tidak Upload</span>
                             @endif
@@ -409,7 +409,7 @@
                         </div>
                         <div class="flex-1 text-right">
                             @if ($model->f_nib != null)
-                                <a target="_blank" href="{{ url('/uploads/berkas/umk/').'/'.$model->id.'/f_nib/'.$model->f_nib }}" class="text-[#185B3C] hover:underline text-sm">{{ $model->f_nib }}</a>
+                                <a target="_blank" href="{{ url('/uploads/berkas/kkpr/').'/'.$model->id.'/f_nib/'.$model->f_nib }}" class="text-[#185B3C] hover:underline text-sm">{{ $model->f_nib }}</a>
                             @else 
                                 <span class="text-yellow-600 text-sm">Tidak Upload</span>
                             @endif
@@ -535,7 +535,7 @@
     function validasi_dokumen(id) {
         Swal.fire({
             title: "Validasi Dokumen",
-            text: "Apa anda yakin akan memvalidasi pengajuan UMK ini?",
+            text: "Apa anda yakin akan memvalidasi pengajuan KKPR Terbit Otomatis ini?",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonText: 'Ya, Validasi',
@@ -601,4 +601,6 @@
     }
 </script>
 @endsection
+
+
 

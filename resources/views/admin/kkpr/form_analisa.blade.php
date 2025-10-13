@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Form Analisa UMK')
+@section('title', 'Form Analisa KKPR Terbit Otomatis')
 @section('subtitle', 'Form analisa kesesuaian pemanfaatan ruang')
 
 @section('content')
@@ -11,7 +11,7 @@
         <div class="relative z-10">
             <div class="flex items-center justify-between">
                 <div>
-                    <h1 class="text-2xl font-bold mb-1">Form {{ $isEdit ? 'Edit' : 'Tambah' }} Analisa UMK</h1>
+                    <h1 class="text-2xl font-bold mb-1">Form {{ $isEdit ? 'Edit' : 'Tambah' }} Analisa KKPR Terbit Otomatis</h1>
                     <p class="text-sm text-white/90 mb-4">Permohonan #{{ $model->id }} - {{ $model->user->name }}</p>
                     <div class="flex items-center space-x-4">
                         <div class="flex items-center space-x-2">
@@ -55,7 +55,7 @@
                 <div class="w-8 h-8 bg-gradient-to-br from-[#185B3C] to-[#0F3D26] rounded-lg flex items-center justify-center">
                     <i class="fas fa-file-alt text-white text-sm"></i>
                 </div>
-                <h3 class="text-lg font-bold text-gray-900">1. Persetujuan Kegiatan Pemanfaatan Ruang Bagi UMK</h3>
+                <h3 class="text-lg font-bold text-gray-900">1. Kesesuaian Kegiatan Pemanfaatan Ruang Terbit Otomatis</h3>
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -330,7 +330,7 @@
                     </label>
                     @if(isset($model) && $model->f_kml != null)
                         <div class="flex items-center space-x-2">
-                            <a href="{{ url('uploads/berkas/umk/' . $model->id . '/kml/' . $model->f_kml) }}" 
+                            <a href="{{ url('uploads/berkas/kkpr/' . $model->id . '/kml/' . $model->f_kml) }}" 
                                target="_blank" 
                                class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors">
                                 <i class="fa fa-download"></i> Download
@@ -357,7 +357,7 @@
                     </label>
                     @if(isset($model) && $model->foto_peta != null)
                         <div class="flex items-center space-x-2">
-                            <a href="{{ url('uploads/berkas/umk/' . $model->id . '/peta/' . $model->foto_peta) }}" 
+                            <a href="{{ url('uploads/berkas/kkpr/' . $model->id . '/peta/' . $model->foto_peta) }}" 
                                target="_blank" 
                                class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors">
                                 <i class="fa fa-download"></i> Download
@@ -706,7 +706,7 @@
 
     // Load existing KML
     function loadExistingKML() {
-        fetch('{{ url("uploads/berkas/umk/" . $model->id . "/kml/" . ($model->f_geojson ?? "")) }}')
+        fetch('{{ url("uploads/berkas/kkpr/" . $model->id . "/kml/" . ($model->f_geojson ?? "")) }}')
             .then(response => response.text())
             .then(geoJsonText => {
                 const geoJsonData = JSON.parse(geoJsonText);
@@ -825,4 +825,6 @@
     }
 </script>
 @endsection
+
+
 
