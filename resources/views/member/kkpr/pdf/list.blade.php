@@ -15,8 +15,8 @@
     }
 @endphp
 
-@section('title', 'Daftar Permohonan UMK')
-@section('document_type', 'Daftar Permohonan Persetujuan UMK')
+@section('title', 'Daftar Permohonan KKPR Terbit Otomatis')
+@section('document_type', 'Daftar Permohonan persetujuan KKPR Terbit Otomatis')
 @section('document_number', 'LAPORAN-' . date('Ymd'))
 @section('document_status', 'Laporan')
 
@@ -186,3 +186,4 @@
     </div>
 </div>
 @endsection
+

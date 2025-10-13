@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'Validasi Dokumen UMK')
-@section('subtitle', 'Validasi dokumen permohonan UMK #' . $model->id)
+@section('subtitle', 'Validasi dokumen Permohonan KKPR Terbit Otomatis #' . $model->id)
 
 @section('content')
 @php
@@ -18,8 +18,8 @@
         <div class="relative z-10">
             <div class="flex items-center justify-between">
                 <div>
-                    <h1 class="text-2xl font-bold mb-1">Validasi Dokumen UMK #{{ $model->id }}</h1>
-                    <p class="text-sm text-white/90 mb-4">Validasi kelengkapan dokumen permohonan UMK</p>
+                    <h1 class="text-2xl font-bold mb-1">Validasi Dokumen KKPR Terbit Otomatis #{{ $model->id }}</h1>
+                    <p class="text-sm text-white/90 mb-4">Validasi kelengkapan dokumen Permohonan KKPR Terbit Otomatis</p>
                     <div class="flex items-center space-x-4">
                         <div class="flex items-center space-x-2">
                             <div class="w-2 h-2 bg-yellow-400 rounded-full animate-pulse"></div>
@@ -601,3 +601,4 @@
     }
 </script>
 @endsection
+

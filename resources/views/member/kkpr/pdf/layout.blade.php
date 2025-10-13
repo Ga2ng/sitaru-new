@@ -345,7 +345,7 @@
             <div class="info-grid">
                 <div class="info-row">
                     <div class="info-label">Jenis Dokumen:</div>
-                    <div class="info-value">@yield('document_type', 'Permohonan Persetujuan UMK')</div>
+                    <div class="info-value">@yield('document_type', 'Permohonan persetujuan KKPR Terbit Otomatis')</div>
                 </div>
                 <div class="info-row">
                     <div class="info-label">Nomor Dokumen:</div>
@@ -375,3 +375,4 @@
     </div>
 </body>
 </html>
+

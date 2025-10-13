@@ -49,7 +49,7 @@
                         <p class="text-xs text-gray-500">Lokasi</p>
                     </div>
                 </div>
-                <h3 class="text-sm font-semibold text-gray-900 mb-1">UMK (Persetujuan Bagi UMK)</h3>
+                <h3 class="text-sm font-semibold text-gray-900 mb-1">KKPR Terbit Otomatis</h3>
                 <div class="flex items-center text-xs text-yellow-600">
                     <i class="fas fa-map-marker-alt mr-1"></i>
                     <span>Dengan data geolokasi</span>
@@ -69,7 +69,7 @@
                         <p class="text-xs text-gray-500">Lokasi</p>
                     </div>
                 </div>
-                <h3 class="text-sm font-semibold text-gray-900 mb-1">KKPR Terbit Otomatis</h3>
+                <h3 class="text-sm font-semibold text-gray-900 mb-1">Persetujuan Bagi UMK</h3>
                 <div class="flex items-center text-xs text-green-600">
                     <i class="fas fa-map-marker-alt mr-1"></i>
                     <span>Dengan data geolokasi</span>
@@ -112,11 +112,11 @@
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div class="flex items-center space-x-2">
                     <div class="w-4 h-4 bg-yellow-500 rounded"></div>
-                    <span class="text-xs text-gray-700">UMK</span>
+                    <span class="text-xs text-gray-700">KKPR Terbit Otomatis</span>
                 </div>
                 <div class="flex items-center space-x-2">
                     <div class="w-4 h-4 bg-green-500 rounded"></div>
-                    <span class="text-xs text-gray-700">KKPR Terbit Otomatis</span>
+                    <span class="text-xs text-gray-700">Persetujuan Bagi UMK</span>
                 </div>
                 <div class="flex items-center space-x-2">
                     <div class="w-4 h-4 bg-purple-300 rounded"></div>

@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
-@section('title', 'Permohonan UMK')
-@section('subtitle', 'Kelola semua permohonan persetujuan UMK Anda')
+@section('title', 'Permohonan KKPR Terbit Otomatis')
+@section('subtitle', 'Kelola semua permohonan persetujuan KKPR Terbit Otomatis Anda')
 
 @section('content')
 <!-- SweetAlert2 CSS -->
@@ -14,8 +14,8 @@
         <div class="relative z-10">
             <div class="flex items-center justify-between">
                 <div>
-                    <h1 class="text-2xl font-bold mb-1">Permohonan UMK</h1>
-                    <p class="text-sm text-white/90 mb-4">Kelola semua permohonan persetujuan UMK Anda dengan mudah dan efisien</p>
+                    <h1 class="text-2xl font-bold mb-1">Permohonan KKPR Terbit Otomatis</h1>
+                    <p class="text-sm text-white/90 mb-4">Kelola semua permohonan persetujuan KKPR Terbit Otomatis Anda dengan mudah dan efisien</p>
                     <div class="flex items-center space-x-4">
                         <div class="flex items-center space-x-2">
                             <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
@@ -206,7 +206,7 @@
                                 <i class="fas fa-file-alt text-gray-400 text-2xl"></i>
                             </div>
                             <h3 class="text-lg font-semibold text-gray-900 mb-2">Belum Ada Permohonan</h3>
-                            <p class="text-gray-600 mb-6">Anda belum memiliki permohonan UMK. Mulai buat permohonan pertama Anda.</p>
+                            <p class="text-gray-600 mb-6">Anda belum memiliki Permohonan KKPR Terbit Otomatis. Mulai buat permohonan pertama Anda.</p>
                             <a href="{{ route('member.kkpr.create') }}" class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-[#185B3C] to-[#0F3D26] text-white rounded-lg hover:shadow-lg transition-all">
                                 <i class="fas fa-plus mr-2"></i>
                                 Buat Permohonan Pertama
@@ -336,7 +336,7 @@
         const subtitleDiv = document.getElementById('modal-subtitle');
         
         contentDiv.innerHTML = '<div class="text-center py-8"><i class="fas fa-spinner fa-spin text-4xl text-[#185B3C]"></i><p class="mt-4 text-gray-600">Memuat riwayat...</p></div>';
-        subtitleDiv.textContent = 'UMK #' + id;
+        subtitleDiv.textContent = 'KKPR Terbit Otomatis #' + id;
         
         modal.style.display = 'block';
         modal.classList.remove('fade');
@@ -514,4 +514,5 @@
     </div>
 </div>
 @endsection
+
 

@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
-@section('title', 'Edit Permohonan KKPR Terbit Otomatis')
-@section('subtitle', 'Form edit pengajuan kesesuaian pemanfaatan ruang terbit otomatis')
+@section('title', 'Edit Permohonan Persetujuan Bagi UMK')
+@section('subtitle', 'Form edit pengajuan kesesuaian kegiatan pemanfaatan ruang bagi UMK')
 
 @section('content')
 <div class="max-w-7xl mx-auto space-y-6">
@@ -11,8 +11,8 @@
         <div class="relative z-10">
             <div class="flex items-center justify-between">
                 <div>
-                    <h1 class="text-2xl font-bold mb-1">Edit Permohonan KKPR Terbit Otomatis</h1>
-                    <p class="text-sm text-white/90 mb-4">Form edit pengajuan kesesuaian pemanfaatan ruang terbit otomatis</p>
+                    <h1 class="text-2xl font-bold mb-1">Edit Permohonan Persetujuan Bagi UMK</h1>
+                    <p class="text-sm text-white/90 mb-4">Form edit pengajuan kesesuaian kegiatan pemanfaatan ruang bagi UMK</p>
                     <div class="flex items-center space-x-4">
                         <div class="flex items-center space-x-2">
                             <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
@@ -1176,7 +1176,7 @@
                 <div class="flex items-start space-x-3">
                     <input type="checkbox" class="mt-1 h-4 w-4 text-[#185B3C] focus:ring-[#185B3C] border-gray-300 rounded" id="konfirmasi1" required>
                     <label for="konfirmasi1" class="text-sm text-gray-700">
-                        Bersedia untuk mengikuti ketentuan dan melakukan penyesuaian kepatuhan terhadap ketentuan yang termuat dalam hasil validasi Pernyataan mandiri KKPR Terbit Otomatis
+                        Bersedia untuk mengikuti ketentuan dan melakukan penyesuaian kepatuhan terhadap ketentuan yang termuat dalam hasil validasi Pernyataan mandiri Persetujuan Bagi UMK
                     </label>
                 </div>
 
@@ -2679,4 +2679,5 @@
     @endif
 </script>
 @endsection
+
 

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Buat Permohonan KKPR Terbit Otomatis')
+@section('title', 'Buat Permohonan Persetujuan Bagi UMK')
 @section('subtitle', 'Form pengajuan kesesuaian pemanfaatan ruang')
 
 @section('content')
@@ -11,7 +11,7 @@
         <div class="relative z-10">
             <div class="flex items-center justify-between">
                 <div>
-                    <h1 class="text-2xl font-bold mb-1">Buat Permohonan KKPR Terbit Otomatis</h1>
+                    <h1 class="text-2xl font-bold mb-1">Buat Permohonan Persetujuan Bagi UMK</h1>
                     <p class="text-sm text-white/90 mb-4">Form pengajuan kesesuaian pemanfaatan ruang</p>
                     <div class="flex items-center space-x-4">
                         <div class="flex items-center space-x-2">
@@ -2438,4 +2438,5 @@
     }
 </script>
 @endsection
+
 

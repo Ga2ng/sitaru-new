@@ -15,8 +15,8 @@
     }
 @endphp
 
-@section('title', 'Detail Permohonan UMK')
-@section('document_type', 'Detail Permohonan Persetujuan UMK')
+@section('title', 'Detail Permohonan KKPR Terbit Otomatis')
+@section('document_type', 'Detail Permohonan persetujuan KKPR Terbit Otomatis')
 @section('document_number', '#UMK-' . str_pad($model->id, 6, '0', STR_PAD_LEFT))
 @section('document_status', $model->revisi == 1 ? 'Perlu Revisi' : 'Sedang Diproses')
 
@@ -315,3 +315,4 @@
     </div>
 </div>
 @endsection
+

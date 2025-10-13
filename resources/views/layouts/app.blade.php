@@ -224,14 +224,14 @@
                         @can('KKPR BERUSAHA')
                         <a href="{{ route('admin.kkpr.index') }}" class="nav-item flex items-center space-x-3 px-3 py-2.5 text-sm font-medium {{ request()->is('admin/kkpr') || request()->is('admin/kkpr/*') ? 'active' : '' }}">
                             <i class="fas fa-file-alt w-4 h-4"></i>
-                            <span>Persetujuan Bagi UMK</span>
+                            <span>KKPR Terbit Otomatis</span>
                         </a>
                         @endcan
 
-                        @can('KKPR NON BERUSAHA')   
+                        @can('KKPR NON BERUSAHA')
                         <a href="{{ route('admin.kkprnon.index') }}" class="nav-item flex items-center space-x-3 px-3 py-2.5 text-sm font-medium {{ request()->is('admin/kkprnon*') ? 'active' : '' }}">
                             <i class="fas fa-file-contract w-4 h-4"></i>
-                            <span>Penilaian KKPR Terbit Otomatis</span>
+                            <span>Persetujuan Bagi UMK</span>
                         </a>
                         @endcan
 
@@ -349,12 +349,12 @@
                     <div class="space-y-1">
                         <a href="{{ route('member.kkpr.index') }}" class="nav-item flex items-center space-x-3 px-3 py-2.5 text-sm font-medium {{ request()->routeIs('member.kkpr.index') || request()->routeIs('member.kkpr.create') || request()->routeIs('member.kkpr.show') || request()->routeIs('member.kkpr.edit') || request()->routeIs('member.kkpr.cetak.*') ? 'active' : '' }}">
                             <i class="fas fa-file-alt w-4 h-4"></i>
-                            <span>Persetujuan Bagi UMK</span>
+                            <span>KKPR Terbit Otomatis</span>
                         </a>
 
                         <a href="{{ route('member.kkprnon.index') }}" class="nav-item flex items-center space-x-3 px-3 py-2.5 text-sm font-medium {{ request()->routeIs('member.kkprnon.index') || request()->routeIs('member.kkprnon.create') || request()->routeIs('member.kkprnon.show') || request()->routeIs('member.kkprnon.edit') || request()->routeIs('member.kkprnon.cetak.*') ? 'active' : '' }}">
                             <i class="fas fa-home w-4 h-4"></i>
-                            <span>KKPR Terbit Otomatis</span>
+                            <span>Persetujuan Bagi UMK</span>
                         </a>
 
                         {{-- <a href="#" class="nav-item flex items-center space-x-3 px-3 py-2.5 text-sm font-medium text-gray-600">

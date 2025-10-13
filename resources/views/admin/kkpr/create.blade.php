@@ -1096,7 +1096,7 @@
                 <div class="flex items-start space-x-3">
                     <input type="checkbox" class="mt-1 h-4 w-4 text-[#185B3C] focus:ring-[#185B3C] border-gray-300 rounded" id="konfirmasi1" required>
                     <label for="konfirmasi1" class="text-sm text-gray-700">
-                        Bersedia untuk mengikuti ketentuan dan melakukan penyesuaian kepatuhan terhadap ketentuan yang termuat dalam hasil validasi Pernyataan mandiri pelaku UMK
+                        Bersedia untuk mengikuti ketentuan dan melakukan penyesuaian kepatuhan terhadap ketentuan yang termuat dalam hasil validasi Pernyataan mandiri pelaku KKPR Terbit Otomatis
                     </label>
                 </div>
 
@@ -2438,3 +2438,4 @@
     }
 </script>
 @endsection
+
