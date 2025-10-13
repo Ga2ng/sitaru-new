@@ -439,14 +439,7 @@
             c.style.transition = 'transform 0.2s';
         });
         
-        // Get button position
-        const rect = button.getBoundingClientRect();
-        
-        // Set modal position (below button, aligned to right)
-        modal.style.top = (rect.bottom + window.scrollY + 8) + 'px';
-        modal.style.left = (rect.right + window.scrollX - 192) + 'px'; // 192px = w-48
-        
-        // Set content with conditional menu items
+        // Set content first to calculate height
         let menuItems = `
             <div class="py-1">
                 <a href="/admin/kkprnon/${id}" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-[#185B3C]/10 hover:text-[#185B3C] transition-colors">
@@ -503,8 +496,55 @@
         
         content.innerHTML = menuItems;
         
-        // Show modal
+        // Show modal temporarily to get height
         modal.classList.remove('hidden');
+        modal.style.visibility = 'hidden';
+        
+        // Get button and modal dimensions
+        const rect = button.getBoundingClientRect();
+        const modalHeight = content.offsetHeight;
+        const modalWidth = 192; // w-48 = 12rem = 192px
+        const viewportHeight = window.innerHeight;
+        const viewportWidth = window.innerWidth;
+        
+        // Calculate space available
+        const spaceBelow = viewportHeight - rect.bottom;
+        const spaceAbove = rect.top;
+        const spaceRight = viewportWidth - rect.right;
+        const spaceLeft = rect.left;
+        
+        // Determine vertical position
+        let top;
+        if (spaceBelow >= modalHeight + 8 || spaceBelow >= spaceAbove) {
+            // Show below
+            top = rect.bottom + window.scrollY + 8;
+        } else {
+            // Show above
+            top = rect.top + window.scrollY - modalHeight - 8;
+        }
+        
+        // Determine horizontal position (align to right of button)
+        let left = rect.right + window.scrollX - modalWidth;
+        
+        // Constrain horizontal position
+        if (left < 8) {
+            left = 8; // 8px from left edge
+        } else if (left + modalWidth > viewportWidth - 8) {
+            left = viewportWidth - modalWidth - 8; // 8px from right edge
+        }
+        
+        // Constrain vertical position
+        if (top < window.scrollY + 8) {
+            top = window.scrollY + 8; // 8px from top
+        } else if (top + modalHeight > window.scrollY + viewportHeight - 8) {
+            top = window.scrollY + viewportHeight - modalHeight - 8; // 8px from bottom
+        }
+        
+        // Set final position
+        modal.style.top = top + 'px';
+        modal.style.left = left + 'px';
+        modal.style.visibility = 'visible';
+        
         modal.dataset.currentId = id;
         
         // Rotate chevron
@@ -517,6 +557,7 @@
         const allChevrons = document.querySelectorAll('[onclick^="toggleDropdown"] .fa-chevron-down');
         
         modal.classList.add('hidden');
+        modal.style.visibility = 'visible'; // Reset visibility
         delete modal.dataset.currentId;
         
         // Reset all chevrons
@@ -987,7 +1028,7 @@
 
 <!-- Dropdown Menu Modal -->
 <div id="dropdown-menu-modal" class="hidden fixed" style="z-index: 9999;">
-    <div class="bg-white rounded-lg shadow-2xl border border-gray-200 w-48" id="dropdown-menu-content">
+    <div class="bg-white rounded-lg shadow-2xl border border-gray-200 w-48 max-h-[80vh] overflow-y-auto" id="dropdown-menu-content">
         <!-- Content will be filled by JavaScript -->
     </div>
 </div>
