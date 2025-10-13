@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
-@section('title', 'Detail KKPR Non - ' . $model->id)
-@section('subtitle', 'Detail lengkap permohonan KKPR Non Berusaha')
+@section('title', 'Detail KKPR Terbit Otomatis - ' . $model->id)
+@section('subtitle', 'Detail lengkap permohonan KKPR Terbit Otomatis')
 
 @section('content')
 @php
@@ -19,8 +19,8 @@
         <div class="relative z-10">
             <div class="flex items-center justify-between">
                 <div>
-                    <h1 class="text-2xl font-bold mb-1">Detail KKPR Non #{{ $model->id }}</h1>
-                    <p class="text-sm text-white/90 mb-4">Informasi lengkap permohonan KKPR Non Berusaha</p>
+                    <h1 class="text-2xl font-bold mb-1">Detail KKPR Terbit Otomatis #{{ $model->id }}</h1>
+                    <p class="text-sm text-white/90 mb-4">Informasi lengkap permohonan KKPR Terbit Otomatis</p>
                     <div class="flex items-center space-x-4">
                         <div class="flex items-center space-x-2">
                             <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
@@ -192,7 +192,7 @@
                     <i class="fas fa-home text-white text-sm"></i>
                 </div>
                 <div>
-                    <h3 class="text-lg font-bold text-gray-900">Data Pengajuan KKPR Non Berusaha</h3>
+                    <h3 class="text-lg font-bold text-gray-900">Data Pengajuan KKPR Terbit Otomatis</h3>
                     <p class="text-sm text-gray-500">Informasi lengkap kegiatan dan lokasi</p>
                 </div>
             </div>
@@ -948,3 +948,4 @@
     });
 </script>
 @endsection
+

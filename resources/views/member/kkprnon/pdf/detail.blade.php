@@ -15,8 +15,8 @@
     }
 @endphp
 
-@section('title', 'Detail Permohonan KKPR Non Usaha')
-@section('document_type', 'Detail Permohonan KKPR Non Usaha')
+@section('title', 'Detail Permohonan KKPR Terbit Otomatis')
+@section('document_type', 'Detail Permohonan KKPR Terbit Otomatis')
 @section('document_number', '#KKPR-NON-' . str_pad($model->id, 6, '0', STR_PAD_LEFT))
 @section('document_status', $model->revisi == 1 ? 'Perlu Revisi' : 'Sedang Diproses')
 

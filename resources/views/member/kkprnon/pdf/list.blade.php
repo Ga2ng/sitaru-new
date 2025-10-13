@@ -15,8 +15,8 @@
     }
 @endphp
 
-@section('title', 'Daftar Permohonan KKPR Non Usaha')
-@section('document_type', 'Daftar Permohonan KKPR Non Usaha')
+@section('title', 'Daftar Permohonan KKPR Terbit Otomatis')
+@section('document_type', 'Daftar Permohonan KKPR Terbit Otomatis')
 @section('document_number', 'LAPORAN-' . date('Ymd'))
 @section('document_status', 'Laporan')
 
@@ -51,7 +51,7 @@
 
 <!-- Data Permohonan -->
 <div class="section">
-    <div class="section-title">DAFTAR PERMOHONAN KKPR NON USAHA</div>
+    <div class="section-title">DAFTAR PERMOHONAN KKPR TERBIT OTOMATIS</div>
     <div class="data-table">
         <table>
             <thead>

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Admin KKPR Non Berusaha')
+@section('title', 'Admin KKPR Terbit Otomatis')
 @section('subtitle', 'Penilaian KKPR Terbit Otomatis')
 
 @section('content')
@@ -14,7 +14,7 @@
         <div class="relative z-10">
             <div class="flex items-center justify-between">
                 <div>
-                    <h1 class="text-2xl font-bold mb-1">Admin KKPR Non Berusaha</h1>
+                    <h1 class="text-2xl font-bold mb-1">Admin KKPR Terbit Otomatis</h1>
                     <p class="text-sm text-white/90 mb-4">Penilaian KKPR Terbit Otomatis - Kelola semua permohonan dengan mudah</p>
                     <div class="flex items-center space-x-4">
                         <div class="flex items-center space-x-2">
@@ -249,7 +249,7 @@
                         <i class="fas fa-chart-line text-white text-sm"></i>
                     </div>
                     <div>
-                        <h3 class="text-lg font-bold text-gray-900">Daftar Permohonan KKPR Non Berusaha</h3>
+                        <h3 class="text-lg font-bold text-gray-900">Daftar Permohonan KKPR Terbit Otomatis</h3>
                         <p class="text-sm text-gray-600">Menampilkan {{ $kkprs->count() }} dari {{ $kkprs->total() }} permohonan</p>
                     </div>
                 </div>
@@ -369,7 +369,7 @@
                         <i class="fas fa-inbox text-gray-400 text-2xl"></i>
                     </div>
                     <h3 class="text-lg font-semibold text-gray-900 mb-2">Tidak ada data</h3>
-                    <p class="text-gray-500 mb-4">Belum ada permohonan KKPR Non Berusaha yang tersedia</p>
+                    <p class="text-gray-500 mb-4">Belum ada permohonan KKPR Terbit Otomatis yang tersedia</p>
                     <a href="{{ route('admin.kkprnon.create') }}" class="inline-flex items-center px-4 py-2 bg-[#185B3C] text-white rounded-lg hover:bg-[#0F3D26] transition-colors">
                         <i class="fas fa-plus mr-2"></i>
                         Buat Permohonan Pertama
@@ -607,7 +607,7 @@
         
         const subtitle = document.getElementById('modal-subtitle');
         console.log('Subtitle element:', subtitle);
-        subtitle.textContent = 'KKPR Non Berusaha #' + model.id;
+        subtitle.textContent = 'KKPR Terbit Otomatis #' + model.id;
         
         const content = document.getElementById('riwayat-content');
         console.log('Content element:', content);
@@ -699,7 +699,7 @@
             content.innerHTML = '<div class="text-center py-8"><i class="fas fa-spinner fa-spin text-4xl text-[#185B3C]"></i><p class="mt-4 text-gray-600">Memuat riwayat...</p></div>';
         }
         if (subtitle) {
-            subtitle.textContent = 'KKPR Non Berusaha';
+            subtitle.textContent = 'KKPR Terbit Otomatis';
         }
         console.log('Content cleared');
         
@@ -1004,7 +1004,7 @@
                     </div>
                     <div>
                         <h5 class="text-lg font-bold">Riwayat Proses</h5>
-                        <p class="text-sm text-white/80" id="modal-subtitle">KKPR Non Berusaha</p>
+                        <p class="text-sm text-white/80" id="modal-subtitle">KKPR Terbit Otomatis</p>
                     </div>
                 </div>
                 <button type="button" class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-all" onclick="closeRiwayatModal()">
@@ -1143,4 +1143,5 @@
     </div>
 </div>
 @endsection
+
 
