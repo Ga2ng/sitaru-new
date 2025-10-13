@@ -31,7 +31,7 @@ class AdminKkprNonController extends Controller
     {
         $query = Kkpr::with(['user', 'kabupaten', 'kecamatan', 'kelurahan'])
             ->where('deleted', 0)
-            ->where('jenis', 'non_usaha');
+            ->where('jenis', 'umk');
 
         // Filter berdasarkan role - DISABLED untuk menampilkan semua data
         // Semua role bisa melihat semua data di index
@@ -81,10 +81,10 @@ class AdminKkprNonController extends Controller
         $kkprs = $query->paginate(15)->withQueryString();
 
         // Statistics
-        $totalKkpr = Kkpr::where('deleted', 0)->where('jenis', 'non_usaha')->count();
-        $pengajuan = Kkpr::where('deleted', 0)->where('jenis', 'non_usaha')->where('proses', 1)->count();
-        $proses = Kkpr::where('deleted', 0)->where('jenis', 'non_usaha')->whereIn('proses', [2, 3, 4, 5, 6, 7, 8, 9])->count();
-        $selesai = Kkpr::where('deleted', 0)->where('jenis', 'non_usaha')->where('proses', 10)->count();
+        $totalKkpr = Kkpr::where('deleted', 0)->where('jenis', 'umk')->count();
+        $pengajuan = Kkpr::where('deleted', 0)->where('jenis', 'umk')->where('proses', 1)->count();
+        $proses = Kkpr::where('deleted', 0)->where('jenis', 'umk')->whereIn('proses', [2, 3, 4, 5, 6, 7, 8, 9])->count();
+        $selesai = Kkpr::where('deleted', 0)->where('jenis', 'umk')->where('proses', 10)->count();
 
         $data = [
             'title' => 'Penilaian KKPR Terbit Otomatis',
@@ -102,7 +102,7 @@ class AdminKkprNonController extends Controller
     public function show($id)
     {
         $kkpr = Kkpr::with(['user', 'kabupaten', 'kecamatan', 'kelurahan', 'kkpr_kbli', 'kkpr_koordinat'])
-            ->where('jenis', 'non_usaha')
+            ->where('jenis', 'umk')
             ->findOrFail($id);
 
         $data = [
@@ -172,7 +172,7 @@ class AdminKkprNonController extends Controller
 
         $req                      = $request->only('alamat_tanah', 'kabupaten_id', 'kecamatan_id', 'kelurahan_id', 'luas', 'jns_sertifikat', 'thn_sertifikat', 'no_sertifikat', 'an_sertifikat', 'luas_sertifikat', 'penggunaan_awal', 'penggunaan_baru', 'longitude', 'lattitude', 'kepimilikan','rt', 'rw');
         $req['user_id']           = $user->id;
-        $req['jenis']             = 'non_usaha';
+        $req['jenis']             = 'umk';
         $req['fungsi']            = $request->get('fungsi');
         $req['nib']               = $request->get('nib');
         $req['alamat_kegiatan']   = $request->get('alamat_kegiatan');
@@ -285,7 +285,7 @@ class AdminKkprNonController extends Controller
             $model->update(['ktp_pemilik'=>$filename]);
         }
 
-        $folder = 'uploads/berkas/kkpr/' . $model->id;
+        $folder = 'uploads/berkas/umk/' . $model->id;
         if (!file_exists($folder)) {
             mkdir($folder, 0755, true);
         }
@@ -464,7 +464,7 @@ class AdminKkprNonController extends Controller
     public function edit($id)
     {
         $kkpr = Kkpr::with(['kkpr_terbit', 'kkpr_kbli', 'kkpr_koordinat'])
-            ->where('jenis', 'non_usaha')
+            ->where('jenis', 'umk')
             ->findOrFail($id);
         
         $data = [
@@ -500,7 +500,7 @@ class AdminKkprNonController extends Controller
         try {
             DB::beginTransaction();
 
-            $kkpr = Kkpr::where('jenis', 'non_usaha')->findOrFail($id);
+            $kkpr = Kkpr::where('jenis', 'umk')->findOrFail($id);
 
             // Update user
             $no_ktp = $request->get('nik_pemohon');
@@ -549,7 +549,7 @@ class AdminKkprNonController extends Controller
             ]);
 
             $kkprData['user_id'] = $user->id;
-            $kkprData['jenis'] = 'non_usaha';
+            $kkprData['jenis'] = 'umk';
             $kkprData['luas_lantai'] = $request->get('luas_lantai');
 
             $kkpr->update($kkprData);
@@ -569,7 +569,7 @@ class AdminKkprNonController extends Controller
                 $hapus_tidak_ikut = Kkpr_terbit::whereNotIn('id', $id_ikut)->where('id_kkpr', $kkpr->id);
                 foreach ($hapus_tidak_ikut->get() as $hps) {
                     if ($hps->file_kkpr != null && $hps->file_kkpr != '') {
-                        $folder = 'uploads/berkas/kkpr/' . $kkpr->id . '/f_kkpr';
+                        $folder = 'uploads/berkas/umk/' . $kkpr->id . '/f_kkpr';
                         $originalPath = $folder . DIRECTORY_SEPARATOR . $hps->file_kkpr;
                         File::delete($originalPath);
                     }
@@ -610,14 +610,14 @@ class AdminKkprNonController extends Controller
 
             // Update KBLI
             if ($request->has('kode_kbli') && $request->has('judul_kbli')) {
-                Kbli::where('id_kkpr', $kkpr->id)->where('jenis', 'KKPR')->delete();
+                Kbli::where('id_kkpr', $kkpr->id)->where('jenis', 'UMK')->delete();
 
                 $kode_kbli = $request->get('kode_kbli');
                 $judul_kbli = $request->get('judul_kbli');
 
                 foreach ($kode_kbli as $key => $kode) {
                     Kbli::create([
-                        'jenis' => 'KKPR',
+                        'jenis' => 'UMK',
                         'id_kkpr' => $kkpr->id,
                         'kode_kbli' => $kode,
                         'judul_kbli' => $judul_kbli[$key],
@@ -627,14 +627,14 @@ class AdminKkprNonController extends Controller
 
             // Update Koordinat
             if ($request->has('longi') && $request->has('lati')) {
-                Koordinat_kkpr::where('id_kkpr', $kkpr->id)->where('jenis', 'KKPR')->delete();
+                Koordinat_kkpr::where('id_kkpr', $kkpr->id)->where('jenis', 'UMK')->delete();
 
                 $longitude = $request->get('longi');
                 $lattitude = $request->get('lati');
 
                 foreach ($longitude as $key => $longi) {
                     Koordinat_kkpr::create([
-                        'jenis' => 'KKPR',
+                        'jenis' => 'UMK',
                         'id_kkpr' => $kkpr->id,
                         'longi' => $longi,
                         'lati' => $lattitude[$key],
@@ -661,7 +661,7 @@ class AdminKkprNonController extends Controller
     public function destroy($id)
     {
         try {
-            $kkpr = Kkpr::where('jenis', 'non_usaha')->findOrFail($id);
+            $kkpr = Kkpr::where('jenis', 'umk')->findOrFail($id);
             $kkpr->update(['deleted' => 1]);
 
             return redirect()->route($this->path . '.index')
@@ -676,7 +676,7 @@ class AdminKkprNonController extends Controller
     // public function riwayat($id)
     // {
     //     $riwayat = Kkpr_riwayat::where('kkpr_id', $id)->orderBy('status_id', 'asc')->get();
-    //     $model = Kkpr::where('jenis', 'non_usaha')->findOrFail($id);
+    //     $model = Kkpr::where('jenis', 'umk')->findOrFail($id);
 
     //     return view($this->base_view . 'riwayat', compact('riwayat', 'model'));
     // }
@@ -684,7 +684,7 @@ class AdminKkprNonController extends Controller
     public function getRiwayatData($id)
     {
         $riwayat = Kkpr_riwayat::where('kkpr_id', $id)->orderBy('status_id', 'asc')->get();
-        $model = Kkpr::where('jenis', 'non_usaha')->findOrFail($id);
+        $model = Kkpr::where('jenis', 'umk')->findOrFail($id);
         
         return response()->json([
             'success' => true,
@@ -695,16 +695,16 @@ class AdminKkprNonController extends Controller
 
     public function koordinat($id)
     {
-        $koordinat = Koordinat_kkpr::where('id_kkpr', $id)->where('jenis', 'KKPR')->get();
-        $model = Kkpr::where('jenis', 'non_usaha')->findOrFail($id);
+        $koordinat = Koordinat_kkpr::where('id_kkpr', $id)->where('jenis', 'UMK')->get();
+        $model = Kkpr::where('jenis', 'umk')->findOrFail($id);
 
         return view($this->base_view . 'koordinat', compact('koordinat', 'model'));
     }
 
     public function peta($id)
     {
-        $kkpr = Kkpr::where('jenis', 'non_usaha')->findOrFail($id);
-        $koordinat = Koordinat_kkpr::where('id_kkpr', $id)->where('jenis', 'KKPR')->get();
+        $kkpr = Kkpr::where('jenis', 'umk')->findOrFail($id);
+        $koordinat = Koordinat_kkpr::where('id_kkpr', $id)->where('jenis', 'UMK')->get();
 
         $data = [
             'model' => $kkpr,
@@ -717,9 +717,9 @@ class AdminKkprNonController extends Controller
 
     public function validasi($id)
     {
-        $model = Kkpr::where('jenis', 'non_usaha')->findOrFail($id);
+        $model = Kkpr::where('jenis', 'umk')->findOrFail($id);
         $kkpr = Kkpr_terbit::where('id_kkpr', $id)->get();
-        $kbli = Kbli::where('id_kkpr', $id)->where('jenis', 'KKPR')->get();
+        $kbli = Kbli::where('id_kkpr', $id)->where('jenis', 'UMK')->get();
 
         $data = [
             'model' => $model,
@@ -738,7 +738,7 @@ class AdminKkprNonController extends Controller
     public function validasiStore(Request $request)
     {
         try {
-            $model = Kkpr::where('jenis', 'non_usaha')->findOrFail($request->id);
+            $model = Kkpr::where('jenis', 'umk')->findOrFail($request->id);
             $myuser = Auth::user();
 
             $model->update([
@@ -770,7 +770,7 @@ class AdminKkprNonController extends Controller
     public function validasiRevisi(Request $request)
     {
         try {
-            $model = Kkpr::where('jenis', 'non_usaha')->findOrFail($request->id);
+            $model = Kkpr::where('jenis', 'umk')->findOrFail($request->id);
 
             $model->update(['revisi' => 1]);
 
@@ -857,7 +857,7 @@ class AdminKkprNonController extends Controller
             $kkpr->update(['ktp_pemilik' => $filename]);
         }
 
-        $folder = 'uploads/berkas/kkpr/' . $kkpr->id;
+        $folder = 'uploads/berkas/umk/' . $kkpr->id;
         if (!file_exists($folder)) {
             mkdir($folder, 0755, true);
         }
@@ -928,7 +928,7 @@ class AdminKkprNonController extends Controller
 
     private function handleKkprFileUpload($request, $n, $kkpr, $kprModel)
     {
-        $folder = 'uploads/berkas/kkpr/' . $kkpr->id . '/f_kkpr';
+        $folder = 'uploads/berkas/umk/' . $kkpr->id . '/f_kkpr';
         if (!file_exists($folder)) {
             mkdir($folder, 0755, true);
         }
@@ -948,7 +948,7 @@ class AdminKkprNonController extends Controller
 
     private function uploadKkprFile($request, $n, $kkpr)
     {
-        $folder = 'uploads/berkas/kkpr/' . $kkpr->id . '/f_kkpr';
+        $folder = 'uploads/berkas/umk/' . $kkpr->id . '/f_kkpr';
         if (!file_exists($folder)) {
             mkdir($folder, 0755, true);
         }
@@ -968,9 +968,9 @@ class AdminKkprNonController extends Controller
                 'draft_file' => 'required|mimes:pdf|max:10240'
             ]);
 
-            $model = Kkpr::where('jenis', 'non_usaha')->findOrFail($request->kkpr_id);
+            $model = Kkpr::where('jenis', 'umk')->findOrFail($request->kkpr_id);
 
-            $folder = 'uploads/berkas/kkpr/' . $model->id;
+            $folder = 'uploads/berkas/umk/' . $model->id;
             if (!file_exists($folder)) {
                 mkdir($folder, 0755, true);
             }
@@ -1019,7 +1019,7 @@ class AdminKkprNonController extends Controller
     public function survey($id)
     {
         try {
-            $model = Kkpr::where('jenis', 'non_usaha')->findOrFail($id);
+            $model = Kkpr::where('jenis', 'umk')->findOrFail($id);
 
             // Update status analisa dan proses
             $model->update([
@@ -1050,7 +1050,7 @@ class AdminKkprNonController extends Controller
 
     public function analisa($id)
     {
-        $model = Kkpr::with(['user', 'kkpr_kbli'])->where('jenis', 'non_usaha')->findOrFail($id);
+        $model = Kkpr::with(['user', 'kkpr_kbli'])->where('jenis', 'umk')->findOrFail($id);
         $kbli = Kbli::where('id_kkpr', $id)->where('jenis', 'NON')->get();
         
         $data = [
@@ -1069,7 +1069,7 @@ class AdminKkprNonController extends Controller
         try {
             DB::beginTransaction();
 
-            $model = Kkpr::where('jenis', 'non_usaha')->findOrFail($request->id);
+            $model = Kkpr::where('jenis', 'umk')->findOrFail($request->id);
 
             // Update data analisa
             $updateData = [
@@ -1106,7 +1106,7 @@ class AdminKkprNonController extends Controller
             }
 
             // Handle file uploads
-            $folder = 'uploads/berkas/kkpr/' . $model->id;
+            $folder = 'uploads/berkas/umk/' . $model->id;
             if (!file_exists($folder)) {
                 mkdir($folder, 0755, true);
             }
@@ -1178,10 +1178,10 @@ class AdminKkprNonController extends Controller
     public function hapusDokumenAnalisa(Request $request)
     {
         try {
-            $model = Kkpr::where('jenis', 'non_usaha')->findOrFail($request->id);
+            $model = Kkpr::where('jenis', 'umk')->findOrFail($request->id);
             $field = $request->field;
             
-            $folder = 'uploads/berkas/kkpr/' . $model->id;
+            $folder = 'uploads/berkas/umk/' . $model->id;
             
             // Hapus file sesuai field
             if ($field == 'f_kml' && $model->f_kml) {
@@ -1208,7 +1208,7 @@ class AdminKkprNonController extends Controller
     public function kirimKabid($id)
     {
         try {
-            $model = Kkpr::where('jenis', 'non_usaha')->findOrFail($id);
+            $model = Kkpr::where('jenis', 'umk')->findOrFail($id);
             
             $model->update([
                 'proses' => 8,
@@ -1238,7 +1238,7 @@ class AdminKkprNonController extends Controller
     public function persetujuanDokumen($id)
     {
         try {
-            $model = Kkpr::where('jenis', 'non_usaha')->findOrFail($id);
+            $model = Kkpr::where('jenis', 'umk')->findOrFail($id);
 
             // Update status proses
             $model->update([
@@ -1269,7 +1269,7 @@ class AdminKkprNonController extends Controller
     public function deleteFile($id, $fieldName)
     {
         try {
-            $model = Kkpr::where('jenis', 'non_usaha')->findOrFail($id);
+            $model = Kkpr::where('jenis', 'umk')->findOrFail($id);
 
             // Map field names to their folder paths
             $folderMap = [
@@ -1293,7 +1293,7 @@ class AdminKkprNonController extends Controller
                 return response()->json(['success' => false, 'message' => 'File not found'], 404);
             }
 
-            $filePath = public_path('uploads/berkas/kkpr_non/' . $model->id . '/' . $folderMap[$fieldName] . '/' . $fileName);
+            $filePath = public_path('uploads/berkas/umk/' . $model->id . '/' . $folderMap[$fieldName] . '/' . $fileName);
             
             // Delete physical file
             if(File::exists($filePath)){

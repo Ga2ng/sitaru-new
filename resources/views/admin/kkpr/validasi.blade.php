@@ -111,7 +111,7 @@
                     </div>
                 </div>
 
-                @if ($model->jenis == 'usaha')
+                @if ($model->jenis == 'non_umk')
                 <div class="flex items-start space-x-3">
                     <div class="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
                         <i class="fas fa-building text-orange-600 text-xs"></i>

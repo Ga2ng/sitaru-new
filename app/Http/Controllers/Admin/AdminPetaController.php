@@ -18,14 +18,14 @@ class AdminPetaController extends Controller
         $umk = Kkpr::select('kkpr.*')
             ->join('users', 'user_id', '=', 'users.id')
             ->where('kkpr.deleted', 0)
-            ->where('kkpr.jenis', '=', 'usaha')
+            ->where('kkpr.jenis', '=', 'non_umk')
             ->whereNotNull('kkpr.f_geojson')
             ->get();
 
         $kkpr = Kkpr::select('kkpr.*')
             ->join('users', 'user_id', '=', 'users.id')
             ->where('kkpr.deleted', 0)
-            ->where('kkpr.jenis', '=', 'non_usaha')
+            ->where('kkpr.jenis', '=', 'umk')
             ->whereNotNull('kkpr.f_geojson')
             ->get();
 

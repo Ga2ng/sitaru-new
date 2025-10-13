@@ -23,7 +23,7 @@ class MemberKkprController extends Controller
     {
         $user = Auth::user();
         $permohonan = Kkpr::where('user_id', $user->id)
-            ->where('jenis', 'usaha')
+            ->where('jenis', 'non_umk')
             ->where('deleted', 0)
             ->orderBy('updated_at', 'desc')
             ->get();
@@ -49,7 +49,7 @@ class MemberKkprController extends Controller
         $req = $request->only('alamat_tanah', 'kabupaten_id', 'kecamatan_id', 'kelurahan_id', 'luas', 'jns_sertifikat', 'thn_sertifikat', 'no_sertifikat', 'an_sertifikat', 'luas_sertifikat', 'penggunaan_awal', 'penggunaan_baru', 'longitude', 'lattitude', 'kepimilikan', 'rt', 'rw');
         
         $req['user_id'] = $user->id;
-        $req['jenis'] = 'usaha';
+        $req['jenis'] = 'non_umk';
         $req['status_penggunaan_tanah'] = $request->get('status_penggunaan_tanah');
         $req['jenis_kegiatan'] = $request->get('jenis_kegiatan');
         $req['jenis_kegiatan_lainnya'] = $request->get('jenis_kegiatan_lainnya');
@@ -86,7 +86,7 @@ class MemberKkprController extends Controller
 
             foreach ($kode as $key => $n) {
                 Kbli::create([
-                    'jenis' => 'UMK',
+                    'jenis' => 'KKPR',
                     'id_kkpr' => $model->id,
                     'kode_kbli' => $kode[$key],
                     'judul_kbli' => $judul[$key],
@@ -108,7 +108,7 @@ class MemberKkprController extends Controller
 
             foreach ($longitude as $key => $n) {
                 KoordinatKkpr::create([
-                    'jenis' => 'UMK',
+                    'jenis' => 'KKPR',
                     'id_kkpr' => $model->id,
                     'longi' => $longitude[$key],
                     'lati' => $lattitude[$key],
@@ -116,7 +116,7 @@ class MemberKkprController extends Controller
             }
         }
 
-        $folder = 'uploads/berkas/umk/' . $model->id;
+        $folder = 'uploads/berkas/kkpr/' . $model->id;
         if (!file_exists($folder)) {
             mkdir($folder, 0755, true);
         }
@@ -265,8 +265,8 @@ class MemberKkprController extends Controller
             return redirect()->route('member.kkpr.index')->withErrors('Anda Tidak Berhak Mengakses Halaman Ini');
         }
 
-        $kbli = Kbli::where('id_kkpr', $id)->where('jenis', 'UMK')->get();
-        $koordinat = KoordinatKkpr::where('id_kkpr', $id)->where('jenis', 'UMK')->get();
+        $kbli = Kbli::where('id_kkpr', $id)->where('jenis', 'KKPR')->get();
+        $koordinat = KoordinatKkpr::where('id_kkpr', $id)->where('jenis', 'KKPR')->get();
         
         $data = [
             'model' => $model,
@@ -291,7 +291,7 @@ class MemberKkprController extends Controller
         $req = $request->only('alamat_tanah', 'kabupaten_id', 'kecamatan_id', 'kelurahan_id', 'luas', 'jns_sertifikat', 'thn_sertifikat', 'no_sertifikat', 'an_sertifikat', 'luas_sertifikat', 'penggunaan_awal', 'penggunaan_baru', 'longitude', 'lattitude', 'kepimilikan', 'rt', 'rw');
         
         $req['user_id'] = $user->id;
-        $req['jenis'] = 'usaha';
+        $req['jenis'] = 'non_umk';
         $req['status_penggunaan_tanah'] = $request->get('status_penggunaan_tanah');
         $req['jenis_kegiatan'] = $request->get('jenis_kegiatan');
         $req['jenis_kegiatan_lainnya'] = $request->get('jenis_kegiatan_lainnya');
@@ -329,7 +329,7 @@ class MemberKkprController extends Controller
 
             foreach ($kode as $key => $n) {
                 Kbli::create([
-                    'jenis' => 'UMK',
+                    'jenis' => 'KKPR',
                     'id_kkpr' => $model->id,
                     'kode_kbli' => $kode[$key],
                     'judul_kbli' => $judul[$key],
@@ -351,7 +351,7 @@ class MemberKkprController extends Controller
 
             foreach ($longitude as $key => $n) {
                 KoordinatKkpr::create([
-                    'jenis' => 'UMK',
+                    'jenis' => 'KKPR',
                     'id_kkpr' => $model->id,
                     'longi' => $longitude[$key],
                     'lati' => $lattitude[$key],
@@ -359,7 +359,7 @@ class MemberKkprController extends Controller
             }
         }
 
-        $folder = 'uploads/berkas/umk/' . $model->id;
+        $folder = 'uploads/berkas/kkpr/' . $model->id;
         if (!file_exists($folder)) {
             mkdir($folder, 0755, true);
         }
@@ -537,7 +537,7 @@ class MemberKkprController extends Controller
     {
         $user = Auth::user();
         $permohonan = Kkpr::where('user_id', $user->id)
-            ->where('jenis', 'usaha')
+            ->where('jenis', 'non_umk')
             ->where('deleted', 0)
             ->with(['user', 'kkpr_kbli', 'kkpr_koordinat'])
             ->orderBy('updated_at', 'desc')
@@ -557,7 +557,7 @@ class MemberKkprController extends Controller
 
     public function getRiwayatData($id)
     {
-        $model = Kkpr::where('jenis', 'usaha')->findOrFail($id);
+        $model = Kkpr::where('jenis', 'non_umk')->findOrFail($id);
         $user = Auth::user();
 
         if($model->user_id != $user->id){
@@ -604,7 +604,7 @@ class MemberKkprController extends Controller
             return response()->json(['success' => false, 'message' => 'File not found'], 404);
         }
 
-        $filePath = public_path('uploads/berkas/umk/' . $model->id . '/' . $folderMap[$fieldName] . '/' . $fileName);
+        $filePath = public_path('uploads/berkas/kkpr/' . $model->id . '/' . $folderMap[$fieldName] . '/' . $fileName);
         
         // Delete physical file
         if(File::exists($filePath)){
@@ -620,7 +620,7 @@ class MemberKkprController extends Controller
 
     private function handleFileUploads(Request $request, $model)
     {
-        $folder = 'uploads/berkas/umk/' . $model->id;
+        $folder = 'uploads/berkas/kkpr/' . $model->id;
         if (!file_exists($folder)) {
             mkdir($folder, 0755, true);
         }

@@ -1,0 +1,6 @@
+Model or Table KKPR = for UMK and NON-UMK (All Data)
+before kkpr = berusaha and non_berusaha
+after table/model KKPR(for all data) : 
+                                        berusaha = non_umk  
+                                        non_berusah = umk
+      

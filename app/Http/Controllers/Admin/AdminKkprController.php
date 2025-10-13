@@ -40,7 +40,7 @@ class AdminKkprController extends Controller
     {
         $query = Kkpr::with(['user', 'kabupaten', 'kecamatan', 'kelurahan'])
             ->where('deleted', 0)
-            ->where('jenis', 'usaha');
+            ->where('jenis', 'non_umk');
 
         // Filter berdasarkan role - DISABLED untuk menampilkan semua data
         // Semua role bisa melihat semua data di index
@@ -90,10 +90,10 @@ class AdminKkprController extends Controller
         $kkprs = $query->paginate(15)->withQueryString();
 
         // Statistics
-        $totalKkpr = Kkpr::where('deleted', 0)->where('jenis', 'usaha')->count();
-        $pengajuan = Kkpr::where('deleted', 0)->where('jenis', 'usaha')->where('proses', 1)->count();
-        $proses = Kkpr::where('deleted', 0)->where('jenis', 'usaha')->whereIn('proses', [2, 3, 4, 5, 6, 7, 8, 9])->count();
-        $selesai = Kkpr::where('deleted', 0)->where('jenis', 'usaha')->where('proses', 10)->count();
+        $totalKkpr = Kkpr::where('deleted', 0)->where('jenis', 'non_umk')->count();
+        $pengajuan = Kkpr::where('deleted', 0)->where('jenis', 'non_umk')->where('proses', 1)->count();
+        $proses = Kkpr::where('deleted', 0)->where('jenis', 'non_umk')->whereIn('proses', [2, 3, 4, 5, 6, 7, 8, 9])->count();
+        $selesai = Kkpr::where('deleted', 0)->where('jenis', 'non_umk')->where('proses', 10)->count();
 
         $data = [
             'title' => 'Persetujuan UMK',
@@ -195,7 +195,7 @@ class AdminKkprController extends Controller
             $req = $request->only('alamat_tanah', 'kabupaten_id', 'kecamatan_id', 'kelurahan_id', 'luas', 'jns_sertifikat', 'thn_sertifikat', 'no_sertifikat', 'an_sertifikat', 'luas_sertifikat', 'penggunaan_awal', 'penggunaan_baru', 'longitude', 'lattitude', 'kepimilikan', 'rt', 'rw');
 
             $req['user_id'] = $user->id;
-            $req['jenis'] = 'usaha';
+            $req['jenis'] = 'non_umk';
             $req['status_penggunaan_tanah'] = $request->get('status_penggunaan_tanah');
             $req['jenis_kegiatan'] = $request->get('jenis_kegiatan');
             $req['jenis_kegiatan_lainnya'] = $request->get('jenis_kegiatan_lainnya');
@@ -237,7 +237,7 @@ class AdminKkprController extends Controller
 
                 foreach ($kode as $key => $n) {
                     Kbli::create([
-                        'jenis' => 'UMK',
+                        'jenis' => 'KKPR',
                         'id_kkpr' => $model->id,
                         'kode_kbli' => $kode[$key],
                         'judul_kbli' => $judul[$key],
@@ -260,7 +260,7 @@ class AdminKkprController extends Controller
 
                 foreach ($longitude as $key => $n) {
                     Koordinat_kkpr::create([
-                        'jenis' => 'UMK',
+                        'jenis' => 'KKPR',
                         'id_kkpr' => $model->id,
                         'longi' => $longitude[$key],
                         'lati' => $lattitude[$key],
@@ -269,7 +269,7 @@ class AdminKkprController extends Controller
             }
 
             // Handle file uploads (sesuai logic lama)
-            $folder = 'uploads/berkas/umk/' . $model->id;
+            $folder = 'uploads/berkas/kkpr/' . $model->id;
             if (!file_exists($folder)) {
                 mkdir($folder, 0755, true);
             }
@@ -495,7 +495,7 @@ class AdminKkprController extends Controller
             ]);
 
             $kkprData['user_id'] = $user->id;
-            $kkprData['jenis'] = 'usaha';
+            $kkprData['jenis'] = 'non_umk';
             $kkprData['luas_lantai'] = $request->get('luas_lantai');
 
             $kkpr->update($kkprData);
@@ -503,7 +503,7 @@ class AdminKkprController extends Controller
             // Update KBLI
             if ($request->has('kode_kbli') && $request->has('judul_kbli')) {
                 // Hapus KBLI lama
-                Kbli::where('id_kkpr', $kkpr->id)->where('jenis', 'UMK')->delete();
+                Kbli::where('id_kkpr', $kkpr->id)->where('jenis', 'KKPR')->delete();
 
                 // Tambah KBLI baru
                 $kode_kbli = $request->get('kode_kbli');
@@ -511,7 +511,7 @@ class AdminKkprController extends Controller
 
                 foreach ($kode_kbli as $key => $kode) {
                     Kbli::create([
-                        'jenis' => 'UMK',
+                        'jenis' => 'KKPR',
                         'id_kkpr' => $kkpr->id,
                         'kode_kbli' => $kode,
                         'judul_kbli' => $judul_kbli[$key],
@@ -522,7 +522,7 @@ class AdminKkprController extends Controller
             // Update Koordinat
             if ($request->has('longi') && $request->has('lati')) {
                 // Hapus koordinat lama
-                Koordinat_kkpr::where('id_kkpr', $kkpr->id)->where('jenis', 'UMK')->delete();
+                Koordinat_kkpr::where('id_kkpr', $kkpr->id)->where('jenis', 'KKPR')->delete();
 
                 // Tambah koordinat baru
                 $longitude = $request->get('longi');
@@ -530,7 +530,7 @@ class AdminKkprController extends Controller
 
                 foreach ($longitude as $key => $longi) {
                     Koordinat_kkpr::create([
-                        'jenis' => 'UMK',
+                        'jenis' => 'KKPR',
                         'id_kkpr' => $kkpr->id,
                         'longi' => $longi,
                         'lati' => $lattitude[$key],
@@ -602,7 +602,7 @@ class AdminKkprController extends Controller
 
     public function koordinat($id)
     {
-        $koordinat = Koordinat_kkpr::where('id_kkpr', $id)->where('jenis', 'UMK')->get();
+        $koordinat = Koordinat_kkpr::where('id_kkpr', $id)->where('jenis', 'KKPR')->get();
         $model = Kkpr::findOrFail($id);
 
         return view($this->base_view . 'koordinat', compact('koordinat', 'model'));
@@ -611,7 +611,7 @@ class AdminKkprController extends Controller
     public function peta($id)
     {
         $kkpr = Kkpr::findOrFail($id);
-        $koordinat = Koordinat_kkpr::where('id_kkpr', $id)->where('jenis', 'UMK')->get();
+        $koordinat = Koordinat_kkpr::where('id_kkpr', $id)->where('jenis', 'KKPR')->get();
 
         $data = [
             'model' => $kkpr,
@@ -626,7 +626,7 @@ class AdminKkprController extends Controller
     {
         $model = Kkpr::findOrFail($id);
         $kkpr = Kkpr_terbit::where('id_kkpr', $id)->get();
-        $kbli = Kbli::where('id_kkpr', $id)->where('jenis', 'UMK')->get();
+        $kbli = Kbli::where('id_kkpr', $id)->where('jenis', 'KKPR')->get();
 
         $data = [
             'model' => $model,
@@ -700,7 +700,7 @@ class AdminKkprController extends Controller
     public function analisa($id)
     {
         $model = Kkpr::with(['user', 'kkpr_kbli'])->findOrFail($id);
-        $kbli = Kbli::where('id_kkpr', $id)->where('jenis', 'UMK')->get();
+        $kbli = Kbli::where('id_kkpr', $id)->where('jenis', 'KKPR')->get();
         
         $data = [
             'model' => $model,
@@ -738,14 +738,14 @@ class AdminKkprController extends Controller
 
             // Update KBLI jika ada
             if ($request->has('kode_kbli') && $request->has('judul_kbli')) {
-                Kbli::where('id_kkpr', $model->id)->where('jenis', 'UMK')->delete();
+                Kbli::where('id_kkpr', $model->id)->where('jenis', 'KKPR')->delete();
 
                 $kode_kbli = $request->get('kode_kbli');
                 $judul_kbli = $request->get('judul_kbli');
 
                 foreach ($kode_kbli as $key => $kode) {
                     Kbli::create([
-                        'jenis' => 'UMK',
+                        'jenis' => 'KKPR',
                         'id_kkpr' => $model->id,
                         'kode_kbli' => $kode,
                         'judul_kbli' => $judul_kbli[$key],
@@ -754,7 +754,7 @@ class AdminKkprController extends Controller
             }
 
             // Handle file uploads
-            $folder = 'uploads/berkas/umk/' . $model->id;
+            $folder = 'uploads/berkas/kkpr/' . $model->id;
             if (!file_exists($folder)) {
                 mkdir($folder, 0755, true);
             }
@@ -829,7 +829,7 @@ class AdminKkprController extends Controller
             $model = Kkpr::findOrFail($request->id);
             $field = $request->field;
             
-            $folder = 'uploads/berkas/umk/' . $model->id;
+            $folder = 'uploads/berkas/kkpr/' . $model->id;
             
             // Hapus file sesuai field
             if ($field == 'f_kml' && $model->f_kml) {
@@ -957,7 +957,7 @@ class AdminKkprController extends Controller
             $model = Kkpr::findOrFail($request->kkpr_id);
 
             // Buat folder jika belum ada
-            $folder = 'uploads/berkas/umk/' . $model->id;
+            $folder = 'uploads/berkas/kkpr/' . $model->id;
             if (!file_exists($folder)) {
                 mkdir($folder, 0755, true);
             }

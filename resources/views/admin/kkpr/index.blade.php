@@ -608,7 +608,7 @@
         
         const subtitle = document.getElementById('modal-subtitle');
         console.log('Subtitle element:', subtitle);
-        subtitle.textContent = (model.jenis == 'usaha' ? 'UMK' : 'KKPR') + ' #' + model.id;
+        subtitle.textContent = (model.jenis == 'non_umk' ? 'UMK' : 'KKPR') + ' #' + model.id;
         
         const content = document.getElementById('riwayat-content');
         console.log('Content element:', content);
