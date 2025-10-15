@@ -672,4 +672,22 @@ class MemberKkprNonController extends Controller
         }
     }
 
+    public function peta($id)
+    {
+        try {
+            $model = Kkpr::with(['user', 'kkpr_kbli', 'kkpr_koordinat'])
+                ->findOrFail($id);
+            $user = Auth::user();
+
+            if($model->user_id != $user->id){
+                return redirect()->route('member.kkprnon.index')->withErrors('Anda Tidak Berhak Mengakses Halaman Ini');
+            }
+
+            return view('member.kkprnon.peta', compact('model'));
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->withError('Terjadi kesalahan saat mengakses halaman peta: ' . $e->getMessage());
+        }
+    }
+
 }

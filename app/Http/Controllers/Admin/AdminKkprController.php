@@ -611,16 +611,15 @@ class AdminKkprController extends Controller
 
     public function peta($id)
     {
-        $kkpr = Kkpr::findOrFail($id);
-        $koordinat = Koordinat_kkpr::where('id_kkpr', $id)->where('jenis', 'KKPR')->get();
+        try {
+            $model = Kkpr::with(['user', 'kkpr_kbli', 'kkpr_koordinat'])
+                ->findOrFail($id);
 
-        $data = [
-            'model' => $kkpr,
-            'koordinat' => $koordinat,
-            'title' => 'Map Persetujuan UMK',
-        ];
-
-        return view($this->base_view . 'peta', $data);
+            return view($this->base_view . 'peta', compact('model'));
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->withError('Terjadi kesalahan saat mengakses halaman peta: ' . $e->getMessage());
+        }
     }
 
     public function validasi($id)

@@ -704,16 +704,16 @@ class AdminKkprNonController extends Controller
 
     public function peta($id)
     {
-        $kkpr = Kkpr::where('jenis', 'umk')->findOrFail($id);
-        $koordinat = Koordinat_kkpr::where('id_kkpr', $id)->where('jenis', 'UMK')->get();
+        try {
+            $model = Kkpr::with(['user', 'kkpr_kbli', 'kkpr_koordinat'])
+                ->where('jenis', 'umk')
+                ->findOrFail($id);
 
-        $data = [
-            'model' => $kkpr,
-            'koordinat' => $koordinat,
-            'title' => 'Map Penilaian KKPR',
-        ];
-
-        return view($this->base_view . 'peta', $data);
+            return view($this->base_view . 'peta', compact('model'));
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->withError('Terjadi kesalahan saat mengakses halaman peta: ' . $e->getMessage());
+        }
     }
 
     public function validasi($id)
@@ -1355,4 +1355,5 @@ class AdminKkprNonController extends Controller
                 ->withError('Terjadi kesalahan saat generate PDF: ' . $e->getMessage());
         }
     }
+
 }

@@ -485,6 +485,13 @@
                 </a>`;
         }
         
+        // Lihat Peta - selalu tersedia
+        menuItems += `
+            <a href="/admin/kkpr/${id}/peta" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-600 transition-colors">
+                <i class="fas fa-map w-4 mr-3"></i>
+                Lihat Peta
+            </a>`;
+        
         menuItems += `
                 <button onclick="kirimKabid(${id}); closeDropdownModal();" class="w-full flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition-colors text-left">
                     <i class="fas fa-paper-plane w-4 mr-3"></i>

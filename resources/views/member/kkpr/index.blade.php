@@ -308,6 +308,13 @@
                 </a>`;
         }
         
+        // Lihat Peta - selalu tersedia
+        menuItems += `
+            <a href="/member/kkpr/${id}/peta" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-600 transition-colors">
+                <i class="fas fa-map w-4 mr-3"></i>
+                Lihat Peta
+            </a>`;
+        
         menuItems += `
                 <a href="/member/kkpr/cetak/${id}" target="_blank" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-600 transition-colors">
                     <i class="fas fa-file-pdf w-4 mr-3"></i>

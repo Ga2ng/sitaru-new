@@ -712,4 +712,22 @@ class MemberKkprController extends Controller
             $model->update(['f_geojson' => 'geojson.geojson']);
         }
     }
+
+    public function peta($id)
+    {
+        try {
+            $model = Kkpr::with(['user', 'kkpr_kbli', 'kkpr_koordinat'])
+                ->findOrFail($id);
+            $user = Auth::user();
+
+            if($model->user_id != $user->id){
+                return redirect()->route('member.kkpr.index')->withErrors('Anda Tidak Berhak Mengakses Halaman Ini');
+            }
+
+            return view('member.kkpr.peta', compact('model'));
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->withError('Terjadi kesalahan saat mengakses halaman peta: ' . $e->getMessage());
+        }
+    }
 }
