@@ -25,6 +25,7 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class AdminKkprController extends Controller
 {
@@ -1008,6 +1009,51 @@ class AdminKkprController extends Controller
         } catch (\Exception $e) {
             return redirect()->back()
                 ->withError('Terjadi kesalahan saat upload dokumen: ' . $e->getMessage());
+        }
+    }
+
+    public function cetakBerkasKkpr($id)
+    {
+        try {
+            $model = Kkpr::with(['user', 'kkpr_kbli', 'kkpr_koordinat'])
+                ->findOrFail($id);
+
+            // Prepare logo as base64
+            $logoPath = public_path('images/logo_bwi.png');
+            $logoBase64 = null;
+            if (file_exists($logoPath)) {
+                $logoData = file_get_contents($logoPath);
+                $logoBase64 = 'data:image/png;base64,' . base64_encode($logoData);
+            }
+
+            // Prepare foto peta as base64
+            $fotoPetaBase64 = null;
+            if ($model->foto_peta) {
+                $fotoPetaPath = public_path('uploads/berkas/kkpr/' . $model->id . '/peta/' . $model->foto_peta);
+                if (file_exists($fotoPetaPath)) {
+                    $fotoPetaData = file_get_contents($fotoPetaPath);
+                    $fotoPetaBase64 = 'data:image/' . pathinfo($fotoPetaPath, PATHINFO_EXTENSION) . ';base64,' . base64_encode($fotoPetaData);
+                }
+            }
+
+            $data = [
+                'model' => $model,
+                'logoBase64' => $logoBase64,
+                'fotoPetaBase64' => $fotoPetaBase64
+            ];
+
+            $pdf = Pdf::loadView('admin.kkpr.pdf.berkas-kkpr', $data)
+                ->setPaper('A4', 'portrait')
+                ->setOptions([
+                    'isHtml5ParserEnabled' => true,
+                    'isRemoteEnabled' => true,
+                    'defaultFont' => 'DejaVu Sans'
+                ]);
+
+            return $pdf->stream('berkas-kkpr-' . $model->id . '.pdf');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->withError('Terjadi kesalahan saat generate PDF: ' . $e->getMessage());
         }
     }
 

@@ -18,6 +18,7 @@ Route::middleware(['auth'])->group(function () {
         // PDF Routes
         Route::get('/kkpr/{id}/cetak', [MemberKkprController::class, 'cetakDetail'])->name('kkpr.cetak.detail');
         Route::get('/kkpr/cetak/daftar', [MemberKkprController::class, 'cetakDaftar'])->name('kkpr.cetak.daftar');
+        Route::get('/kkpr/{id}/cetak-berkas', [MemberKkprController::class, 'cetakBerkasKkpr'])->name('kkpr.cetak.berkas');
         
         // Riwayat Route
         Route::get('/kkpr/riwayat-data/{id}', [MemberKkprController::class, 'getRiwayatData'])->name('kkpr.riwayat.data');
@@ -43,5 +44,6 @@ Route::middleware(['auth'])->group(function () {
         
         // Delete File Route for KKPR Non
         Route::delete('/kkprnon/{id}/delete-file/{fieldName}', [MemberKkprNonController::class, 'deleteFile'])->name('kkprnon.delete.file');
+        Route::get('/kkprnon/{id}/cetak-berkas', [MemberKkprNonController::class, 'cetakBerkasUmk'])->name('kkprnon.cetak.berkas');
     });
 });

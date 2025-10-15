@@ -299,6 +299,15 @@
                 </a>`;
         }
         
+        // Cetak Berkas - hanya setelah analisa (proses >= 7)
+        if (status >= 7) {
+            menuItems += `
+                <a href="/member/kkprnon/${id}/cetak-berkas" target="_blank" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
+                    <i class="fas fa-file-pdf w-4 mr-3"></i>
+                    Cetak Berkas
+                </a>`;
+        }
+        
         menuItems += `
                 <a href="/member/kkprnon/cetak/${id}" target="_blank" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-600 transition-colors">
                     <i class="fas fa-file-pdf w-4 mr-3"></i>

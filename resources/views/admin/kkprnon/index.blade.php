@@ -475,6 +475,15 @@
                 </a>`;
         }
         
+        // Cetak Berkas - hanya setelah analisa (proses >= 7)
+        if (status >= 7) {
+            menuItems += `
+                <a href="/admin/kkprnon/${id}/cetak-berkas" target="_blank" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
+                    <i class="fas fa-file-pdf w-4 mr-3"></i>
+                    Cetak Berkas
+                </a>`;
+        }
+        
         menuItems += `
                 <button onclick="kirimKabid(${id}); closeDropdownModal();" class="w-full flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition-colors text-left">
                     <i class="fas fa-paper-plane w-4 mr-3"></i>
