@@ -269,6 +269,69 @@
             </div>
         </div>
 
+        <!-- Informasi KKPR & NIB -->
+        <div class="bg-white/80 backdrop-blur-sm rounded-xl p-6 shadow-lg border border-white/20">
+            <div class="flex items-center space-x-3 mb-6">
+                <div class="w-8 h-8 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-file-alt text-white text-sm"></i>
+                </div>
+                <h3 class="text-lg font-bold text-gray-900">Informasi KKPR & NIB</h3>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="space-y-2">
+                    <label for="no_kkpr" class="block text-sm font-semibold text-gray-700">
+                        <i class="fas fa-hashtag mr-2 text-orange-600"></i>
+                        Nomor KKPR
+                    </label>
+                    <input type="text" id="no_kkpr" name="no_kkpr" value="{{ old('no_kkpr', $model->no_kkpr) }}" 
+                           class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm" 
+                           placeholder="Nomor KKPR">
+                    @error('no_kkpr')
+                        <div class="flex items-center space-x-2 text-red-600 text-sm mt-1">
+                            <i class="fas fa-exclamation-circle text-xs"></i>
+                            <span>{{ $message }}</span>
+                        </div>
+                    @enderror
+                </div>
+
+                <div class="space-y-2">
+                    <label for="tgl_kkpr" class="block text-sm font-semibold text-gray-700">
+                        <i class="fas fa-calendar mr-2 text-orange-600"></i>
+                        Tanggal KKPR
+                    </label>
+                    <input type="date" id="tgl_kkpr" name="tgl_kkpr" value="{{ old('tgl_kkpr', $model->tgl_kkpr) }}" 
+                           class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm">
+                    @error('tgl_kkpr')
+                        <div class="flex items-center space-x-2 text-red-600 text-sm mt-1">
+                            <i class="fas fa-exclamation-circle text-xs"></i>
+                            <span>{{ $message }}</span>
+                        </div>
+                    @enderror
+                </div>
+
+                <div class="space-y-2">
+                    <label for="nib" class="block text-sm font-semibold text-gray-700">
+                        <i class="fas fa-file-alt mr-2 text-orange-600"></i>
+                        NIB
+                    </label>
+                    <input type="text" id="nib" name="nib" value="{{ old('nib', $model->nib) }}" 
+                           class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm" 
+                           placeholder="Masukkan NIB">
+                </div>
+
+                <div class="space-y-2">
+                    <label for="no_nib" class="block text-sm font-semibold text-gray-700">
+                        <i class="fas fa-hashtag mr-2 text-orange-600"></i>
+                        Nomor NIB
+                    </label>
+                    <input type="text" id="no_nib" name="no_nib" value="{{ old('no_nib', $model->no_nib) }}" 
+                           class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm" 
+                           placeholder="Nomor NIB">
+                </div>
+            </div>
+        </div>
+
         <!-- Informasi Kegiatan -->
         <div class="bg-white/80 backdrop-blur-sm rounded-xl p-6 shadow-lg border border-white/20">
             <div class="flex items-center space-x-3 mb-6">
@@ -323,16 +386,6 @@
                     <input type="number" id="luas_dimohon" name="luas_dimohon" value="{{ old('luas_dimohon', $model->luas_dimohon) }}" 
                            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm" 
                            placeholder="Masukkan luas dimohon">
-                </div>
-
-                <div class="space-y-2">
-                    <label for="nib" class="block text-sm font-semibold text-gray-700">
-                        <i class="fas fa-file-alt mr-2 text-purple-600"></i>
-                        NIB
-                    </label>
-                    <input type="text" id="nib" name="nib" value="{{ old('nib', $model->nib) }}" 
-                           class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm" 
-                           placeholder="Masukkan NIB">
                 </div>
             </div>
         </div>

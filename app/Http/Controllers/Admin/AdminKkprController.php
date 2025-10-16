@@ -220,6 +220,8 @@ class AdminKkprController extends Controller
             $req['no_nib'] = $request->get('no_nib');
             $req['tgl_terbit'] = $request->get('tgl_terbit');
             $req['tgl_surat'] = $request->get('tgl_surat');
+            $req['no_kkpr'] = $request->get('no_kkpr');
+            $req['tgl_kkpr'] = $request->get('tgl_kkpr');
 
             $model = Kkpr::create($req);
 
@@ -492,7 +494,8 @@ class AdminKkprController extends Controller
                 'jenis_kegiatan_lainnya', 'fungsi', 'alamat_kegiatan', 'NO_KEC', 
                 'NO_KEL', 'luas_dimohon', 'luas_tanah', 'status_lahan', 
                 'status_tanah', 'penggunaan_sekarang', 'jumlah_lantai', 
-                'tinggi_bangunan', 'tgl_terbit', 'tgl_surat', 'no_nib'
+                'tinggi_bangunan', 'tgl_terbit', 'tgl_surat', 'no_nib', 
+                'no_kkpr', 'tgl_kkpr', 'nib'
             ]);
 
             $kkprData['user_id'] = $user->id;

@@ -61,7 +61,7 @@
     </div>
 
     <!-- Stats Cards with Glassmorphism -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div class="group relative overflow-hidden bg-white/80 backdrop-blur-sm rounded-xl p-4 shadow-lg border border-white/20 hover:shadow-xl transition-all duration-300">
             <div class="absolute inset-0 bg-gradient-to-br from-[#185B3C]/5 to-transparent"></div>
             <div class="relative z-10">
@@ -78,6 +78,26 @@
                 <div class="flex items-center text-xs text-gray-600">
                     <i class="fas fa-id-card mr-1"></i>
                     <span>{{ $model->user->username ?? 'N/A' }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="group relative overflow-hidden bg-white/80 backdrop-blur-sm rounded-xl p-4 shadow-lg border border-white/20 hover:shadow-xl transition-all duration-300">
+            <div class="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent"></div>
+            <div class="relative z-10">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center shadow-md">
+                    <i class="fas fa-file-alt text-white text-sm"></i>
+                </div>
+                    <div class="text-right">
+                        <p class="text-lg font-bold text-blue-600">{{ $model->no_kkpr ?? '-' }}</p>
+                        <p class="text-xs text-gray-500">No. KKPR</p>
+            </div>
+                </div>
+                <h3 class="text-sm font-semibold text-gray-900 mb-1">Nomor KKPR</h3>
+                <div class="flex items-center text-xs text-gray-600">
+                    <i class="fas fa-calendar mr-1"></i>
+                    <span>{{ $model->tgl_kkpr ? \Carbon\Carbon::parse($model->tgl_kkpr)->format('d M Y') : '-' }}</span>
                 </div>
             </div>
         </div>
