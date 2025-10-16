@@ -143,6 +143,9 @@
                         <a href="{{ route('login') }}" class="btn-primary text-white px-10 py-4 rounded-lg font-semibold text-lg shadow-xl relative overflow-hidden">
                             <span class="relative z-10">Mulai Sekarang</span>
                         </a>
+                        <a href="{{ route('cek-status.index') }}" class="bg-transparent text-white px-10 py-4 rounded-lg font-semibold text-lg border-2 border-accent hover:bg-accent hover:text-primary transition-all duration-300 shadow-lg">
+                            <i class="fas fa-search mr-2"></i>Cek Status KKPR
+                        </a>
                         <a href="#layanan" class="bg-transparent text-white px-10 py-4 rounded-lg font-semibold text-lg border-2 border-accent hover:bg-accent hover:text-primary transition-all duration-300 shadow-lg">Lihat Layanan</a>
                     </div>
                 </div>

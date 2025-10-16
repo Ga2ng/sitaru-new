@@ -13,6 +13,12 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+// Cek Status KKPR (Public - No Middleware)
+Route::prefix('cek-status')->name('cek-status.')->group(function () {
+    Route::get('/', [App\Http\Controllers\CekStatusController::class, 'index'])->name('index');
+    Route::post('/search', [App\Http\Controllers\CekStatusController::class, 'search'])->name('search');
+});
+
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
