@@ -178,6 +178,55 @@
         </div>
     </div>
 
+    <!-- Filter Section -->
+    <div id="filterSection" class="bg-white/80 backdrop-blur-sm rounded-xl p-6 shadow-lg border border-white/20" style="display: none;">
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-bold text-gray-900">Filter & Search</h3>
+            <button onclick="toggleFilter()" class="text-gray-500 hover:text-gray-700">
+                <i class="fas fa-times text-lg"></i>
+            </button>
+        </div>
+        
+        <form method="GET" action="{{ route('admin.users.index') }}" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Pencarian</label>
+                <input type="text" name="search" value="{{ $request->search ?? '' }}" placeholder="Nama, username, atau email..." class="w-full px-4 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#185B3C] focus:border-transparent">
+            </div>
+            
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Role</label>
+                <select name="role" class="w-full px-4 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#185B3C] focus:border-transparent">
+                    <option value="">Semua Role</option>
+                    @foreach($roles as $roleName => $roleValue)
+                        <option value="{{ $roleValue }}" {{ ($request->role ?? '') == $roleValue ? 'selected' : '' }}>{{ $roleName }}</option>
+                    @endforeach
+                </select>
+            </div>
+            
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Status</label>
+                <select name="status" class="w-full px-4 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#185B3C] focus:border-transparent">
+                    <option value="">Semua Status</option>
+                    <option value="1" {{ ($request->status ?? '') == '1' ? 'selected' : '' }}>Aktif</option>
+                    <option value="0" {{ ($request->status ?? '') === '0' ? 'selected' : '' }}>Nonaktif</option>
+                </select>
+            </div>
+            
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">&nbsp;</label>
+                <div class="flex space-x-2">
+                    <button type="submit" class="flex-1 px-4 py-2 bg-[#185B3C] text-white rounded-xl hover:bg-[#0F3D26] transition-colors">
+                        <i class="fas fa-search mr-2"></i>
+                        Cari
+                    </button>
+                    <a href="{{ route('admin.users.index') }}" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-xl hover:bg-gray-300 transition-colors">
+                        <i class="fas fa-redo"></i>
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+
     <!-- Modern Data Table -->
     <div class="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg border border-white/20 overflow-hidden">
         <!-- Table Header -->
@@ -193,20 +242,13 @@
                     </div>
                 </div>
                 <div class="flex items-center space-x-2">
-                    <div class="relative">
-                        <input type="text" placeholder="Cari user..." class="pl-8 pr-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#185B3C] focus:border-transparent bg-white/80">
-                        <i class="fas fa-search absolute left-2.5 top-2.5 text-gray-400 text-xs"></i>
-                    </div>
-                    <button class="flex items-center px-3 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-white/80 rounded-lg transition-colors">
+                    <button onclick="toggleFilter()" class="flex items-center px-3 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-white/80 rounded-lg transition-colors">
                         <i class="fas fa-filter mr-1 text-xs"></i>
                         Filter
                     </button>
-                    <button class="flex items-center px-3 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-white/80 rounded-lg transition-colors">
-                        <i class="fas fa-sort mr-1 text-xs"></i>
-                        Sort
-                    </button>
-                    <button class="p-2 text-gray-600 hover:text-gray-900 hover:bg-white/80 rounded-lg transition-colors">
-                        <i class="fas fa-ellipsis-h text-xs"></i>
+                    <button onclick="refreshTable()" class="flex items-center px-3 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-white/80 rounded-lg transition-colors">
+                        <i class="fas fa-sync mr-1 text-xs"></i>
+                        Refresh
                     </button>
                 </div>
             </div>
@@ -374,87 +416,116 @@
     </div>
 </div>
 
-@endsection
-
-@push('scripts')
 <script>
 let currentUserId = null;
 
+function toggleFilter() {
+    const filterSection = document.getElementById('filterSection');
+    if (filterSection.style.display === 'none') {
+        filterSection.style.display = 'block';
+    } else {
+        filterSection.style.display = 'none';
+    }
+}
+
+function refreshTable() {
+    window.location.href = '{{ route('admin.users.index') }}';
+}
+
 function resetPassword(id) {
     currentUserId = id;
-    $('#resetPasswordForm')[0].reset();
-    $('#resetPasswordModal').removeClass('hidden');
+    document.getElementById('resetPasswordForm').reset();
+    document.getElementById('resetPasswordModal').classList.remove('hidden');
 }
 
 function deleteUser(id) {
     if (confirm('Apakah Anda yakin ingin menghapus user ini?')) {
-        $.ajax({
-            url: `/admin/users/${id}`,
-            type: 'DELETE',
-            data: {
-                _token: $('meta[name="csrf-token"]').attr('content')
-            },
-            success: function(response) {
-                location.reload();
+        fetch(`/admin/users/${id}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
             }
+        })
+        .then(response => response.json())
+        .then(data => {
+            location.reload();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Terjadi kesalahan saat menghapus user');
         });
     }
 }
 
 function toggleUserStatus(id, checked) {
-    $.ajax({
-        url: `/admin/users/${id}/toggle-status`,
-        type: 'POST',
-        data: {
-            _token: $('meta[name="csrf-token"]').attr('content'),
+    fetch(`/admin/users/${id}/toggle-status`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        },
+        body: JSON.stringify({
             id: id,
             value: checked ? 1 : 0
-        },
-        success: function(response) {
-            showNotification('success', response.message);
-        }
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        showNotification('success', data.message);
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotification('error', 'Terjadi kesalahan');
     });
 }
 
-$('#resetPasswordForm').on('submit', function(e) {
-    e.preventDefault();
-    
-    $.ajax({
-        url: `/admin/users/${currentUserId}/update-password`,
-        type: 'PATCH',
-        data: $(this).serialize(),
-        success: function(response) {
-            closeResetModal();
-            showNotification('success', response.message);
-        },
-        error: function(xhr) {
-            const errors = xhr.responseJSON.errors;
-            showNotification('error', Object.values(errors).flat().join(', '));
-        }
-    });
-});
-
 function closeResetModal() {
-    $('#resetPasswordModal').addClass('hidden');
+    document.getElementById('resetPasswordModal').classList.add('hidden');
     currentUserId = null;
 }
 
 function showNotification(type, message) {
-    const notification = $(`
-        <div class="fixed top-4 right-4 p-4 rounded-md shadow-lg z-50 ${type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'}">
-            ${message}
-        </div>
-    `);
+    const notification = document.createElement('div');
+    notification.className = `fixed top-4 right-4 p-4 rounded-md shadow-lg z-50 ${type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'}`;
+    notification.textContent = message;
     
-    $('body').append(notification);
+    document.body.appendChild(notification);
     
     setTimeout(() => {
-        notification.fadeOut();
+        notification.remove();
     }, 3000);
 }
 
-// Staggered animation for cards
+// Handle reset password form
 document.addEventListener('DOMContentLoaded', function() {
+    const resetForm = document.getElementById('resetPasswordForm');
+    if (resetForm) {
+        resetForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            
+            fetch(`/admin/users/${currentUserId}/update-password`, {
+                method: 'PATCH',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                closeResetModal();
+                showNotification('success', data.message);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification('error', 'Terjadi kesalahan saat reset password');
+            });
+        });
+    }
+
+    // Staggered animation for cards
     const cards = document.querySelectorAll('.bg-white\\/80, .bg-gradient-to-br');
     cards.forEach((card, index) => {
         card.style.opacity = '0';
@@ -479,4 +550,4 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
-@endpush
+@endsection

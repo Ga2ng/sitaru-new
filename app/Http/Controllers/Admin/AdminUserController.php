@@ -20,9 +20,33 @@ class AdminUserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::with(['roles', 'permissions'])->orderBy('created_at', 'desc')->paginate(10);
+        $query = User::with(['roles', 'permissions']);
+
+        // Filter berdasarkan pencarian (name atau username)
+        if ($request->has('search') && $request->search != '') {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('username', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%");
+            });
+        }
+
+        // Filter berdasarkan role
+        if ($request->has('role') && $request->role != '') {
+            $query->whereHas('roles', function($q) use ($request) {
+                $q->where('name', $request->role);
+            });
+        }
+
+        // Filter berdasarkan status aktif
+        if ($request->has('status') && $request->status != '') {
+            $query->where('active', $request->status);
+        }
+
+        $users = $query->orderBy('created_at', 'desc')->paginate(10)->withQueryString();
         
         // Count statistics
         $totalUsers = User::count();
@@ -34,6 +58,9 @@ class AdminUserController extends Controller
             $q->where('name', 'Petugas'); 
         })->count();
         
+        // Get all roles for filter
+        $roles = Role::pluck('name', 'name');
+        
         $data = [
             'title' => 'User Management',
             'users' => $users,
@@ -41,6 +68,8 @@ class AdminUserController extends Controller
             'activeUsers' => $activeUsers,
             'adminUsers' => $adminUsers,
             'petugasUsers' => $petugasUsers,
+            'roles' => $roles,
+            'request' => $request,
         ];
         return view($this->base_view . 'index', $data);
     }
