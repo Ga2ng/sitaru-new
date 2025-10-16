@@ -135,7 +135,7 @@
         </div>
         
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            @unless(auth()->user()->can('OPD Eksternal'))
+            @cannot('OPD Eksternal')
             <a href="{{ route('admin.kkpr.create') }}" class="group relative overflow-hidden bg-gradient-to-br from-[#185B3C] to-[#0F3D26] rounded-xl p-4 text-white hover:shadow-lg transition-all duration-300">
                 <div class="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 <div class="relative z-10 text-center">
@@ -146,7 +146,7 @@
                     <p class="text-xs text-white/80">Buat permohonan baru</p>
                 </div>
             </a>
-            @endunless
+            @endcannot
             
             <button onclick="refreshTable()" class="group relative overflow-hidden bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-4 text-white hover:shadow-lg transition-all duration-300">
                 <div class="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
@@ -357,7 +357,18 @@
                             @endif
                         </div>
                         <div class="col-span-1">
-                            <button id="btn-aksi-{{ $kkpr->id }}" onclick="toggleDropdown({{ $kkpr->id }}, {{ $kkpr->proses }}, {{ $kkpr->revisi }}, {{ auth()->user()->can('Verifikator') ? 'true' : 'false' }}, {{ auth()->user()->can('Analis') ? 'true' : 'false' }}, {{ auth()->user()->can('Pimpinan') ? 'true' : 'false' }}, {{ auth()->user()->can('Kabid') ? 'true' : 'false' }}, {{ auth()->user()->can('Kepala Dinas') ? 'true' : 'false' }}, {{ auth()->user()->can('Upload Draft') ? 'true' : 'false' }}, {{ auth()->user()->can('OPD Eksternal') ? 'true' : 'false' }})" class="inline-flex items-center space-x-1.5 px-3 py-1.5 text-xs font-medium text-gray-700 bg-white hover:bg-[#185B3C]/10 hover:text-[#185B3C] border border-gray-300 rounded-lg transition-all duration-200 hover:scale-105" title="Aksi">
+                                @php
+                                    $can = [
+                                        'verifikator' => auth()->user()->can('Verifikator'),
+                                        'analis' => auth()->user()->can('Analis'),
+                                        'pimpinan' => auth()->user()->can('Pimpinan'),
+                                        'kabid' => auth()->user()->can('Kabid'),
+                                        'kepala_dinas' => auth()->user()->can('Kepala Dinas'),
+                                        'upload_draft' => auth()->user()->can('Upload Draft'),
+                                        'opd_eksternal' => auth()->user()->can('OPD Eksternal'),
+                                    ];
+                                @endphp
+                            <button id="btn-aksi-{{ $kkpr->id }}" onclick="toggleDropdown({{ $kkpr->id }}, {{ $kkpr->proses }}, {{ $kkpr->revisi }}, {{ $can['verifikator'] ? 'true' : 'false' }}, {{ $can['analis'] ? 'true' : 'false' }}, {{ $can['pimpinan'] ? 'true' : 'false' }}, {{ $can['kabid'] ? 'true' : 'false' }}, {{ $can['kepala_dinas'] ? 'true' : 'false' }}, {{ $can['upload_draft'] ? 'true' : 'false' }}, {{ $can['opd_eksternal'] ? 'true' : 'false' }})" class="inline-flex items-center space-x-1.5 px-3 py-1.5 text-xs font-medium text-gray-700 bg-white hover:bg-[#185B3C]/10 hover:text-[#185B3C] border border-gray-300 rounded-lg transition-all duration-200 hover:scale-105" title="Aksi">
                                 <i class="fas fa-cog"></i>
                                 <span>Aksi</span>
                                 <i class="fas fa-chevron-down text-xs"></i>
@@ -463,7 +474,7 @@
                 </a>`;
         }
         // Jika user eksternal, hanya tampilkan menu view-only
-        else if (isExternal === 'true') {
+        else if (isExternal == true) {
             // Hanya menu view yang bisa diakses
             menuItems += `
                 <a href="/admin/kkpr/${id}/peta" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-600 transition-colors">
@@ -526,7 +537,7 @@
             </a>`;
         
         // Kirim Kabid - hanya untuk Pimpinan dan Kabid setelah analisa (status >= 7)
-        if ((canPimpinan === 'true' || canKabid === 'true') && parseInt(status) >= 7 && parseInt(status) < 10) {
+        if ((canPimpinan == true || canKabid == true) && parseInt(status) == 7 && parseInt(status) < 10) {
             menuItems += `
                 <button onclick="kirimKabid(${id}); closeDropdownModal();" class="w-full flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition-colors text-left">
                     <i class="fas fa-paper-plane w-4 mr-3"></i>
@@ -535,7 +546,7 @@
         }
         
         // Persetujuan Dokumen - hanya untuk Kepala Dinas setelah sudah dikirim kabid (status >= 8)
-        if (canKepalaDinas === 'true' && parseInt(status) >= 8 && parseInt(status) < 10) {
+        if (canKepalaDinas == true && parseInt(status) == 8 && parseInt(status) < 10) {
             menuItems += `
                 <button onclick="persetujuanDokumen(${id}); closeDropdownModal();" class="w-full flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-cyan-50 hover:text-cyan-600 transition-colors text-left">
                     <i class="fas fa-check-double w-4 mr-3"></i>
@@ -544,7 +555,7 @@
         }
         
         // Upload Draft - hanya dengan permission Upload Draft dan sudah persetujuan dokumen (status >= 9)
-        if (canUploadDraft === 'true' && parseInt(status) >= 9 && parseInt(status) < 10) {
+        if (canUploadDraft == true && parseInt(status) == 9 && parseInt(status) < 10) {
             menuItems += `
                 <button onclick="openUploadDraftModal(${id}); closeDropdownModal();" class="w-full flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 transition-colors text-left">
                     <i class="fas fa-file-upload w-4 mr-3"></i>

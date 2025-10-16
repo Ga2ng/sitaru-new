@@ -1148,20 +1148,20 @@ class AdminKkprNonController extends Controller
             }
 
             // Update riwayat
-            $riwayat = Kkpr_riwayat::where('kkpr_id', $model->id)->where('status_id', 8)->first();
+            $riwayat = Kkpr_riwayat::where('kkpr_id', $model->id)->where('status_id', 7)->first();
             if (!$riwayat) {
                 Kkpr_riwayat::create([
                     'kkpr_id' => $model->id,
-                    'status_id' => '8',
+                    'status_id' => '7',
                     'status' => 'Analisa',
-                    'keterangan' => 'Analisa telah selesai dan menunggu persetujuan dokumen'
+                    'keterangan' => 'Data KKPR Non telah dianalisa oleh analis'
                 ]);
             } else {
-                $riwayat->update(['keterangan' => 'Analisa telah selesai dan menunggu persetujuan dokumen']);
+                $riwayat->update(['keterangan' => 'Data KKPR Non telah dianalisa oleh analis']);
             }
 
             // Update proses status
-            $model->update(['proses' => 8]);
+            $model->update(['proses' => 7]);
 
             DB::commit();
 

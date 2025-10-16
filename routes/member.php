@@ -27,6 +27,9 @@ Route::middleware(['auth'])->group(function () {
         // Delete File Route
         Route::delete('/kkpr/{id}/delete-file/{fieldName}', [MemberKkprController::class, 'deleteFile'])->name('kkpr.delete.file');
         
+        // Upload Draft Route for KKPR (member yang punya permission bisa upload)
+        Route::post('/kkpr/upload-draft', [MemberKkprController::class, 'uploadDraft'])->name('kkpr.upload.draft');
+        
         // Member KKPR Non Routes
         Route::get('/kkprnon', [MemberKkprNonController::class, 'index'])->name('kkprnon.index');
         Route::get('/kkprnon/create', [MemberKkprNonController::class, 'create'])->name('kkprnon.create');
@@ -47,5 +50,8 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/kkprnon/{id}/delete-file/{fieldName}', [MemberKkprNonController::class, 'deleteFile'])->name('kkprnon.delete.file');
         Route::get('/kkprnon/{id}/cetak-berkas', [MemberKkprNonController::class, 'cetakBerkasUmk'])->name('kkprnon.cetak.berkas');
         Route::get('/kkprnon/{id}/peta', [MemberKkprNonController::class, 'peta'])->name('kkprnon.peta');
+        
+        // Upload Draft Route for KKPR Non (member yang punya permission bisa upload)
+        Route::post('/kkprnon/upload-draft', [MemberKkprNonController::class, 'uploadDraft'])->name('kkprnon.upload.draft');
     });
 });

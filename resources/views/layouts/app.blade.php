@@ -208,6 +208,7 @@
                 <div class="px-4 py-6">
                     @role('admin|superadmin')
                     <!-- MENU Section - Admin -->
+                    @cannot('OPD Eksternal')
                     <div class="nav-section-title">MENU</div>
                     
                     <div class="space-y-1">
@@ -216,34 +217,37 @@
                             <span>Dashboard</span>
                         </a>
                     </div>
+                    @endcannot
 
                     <!-- LAYANAN Section - Admin -->
                     <div class="nav-section-title">LAYANAN</div>
                     
                     <div class="space-y-1">
-                        @can('KKPR BERUSAHA')
+                        @cannot('Tim FPR')
                         <a href="{{ route('admin.kkpr.index') }}" class="nav-item flex items-center space-x-3 px-3 py-2.5 text-sm font-medium {{ request()->is('admin/kkpr') || request()->is('admin/kkpr/*') ? 'active' : '' }}">
                             <i class="fas fa-file-alt w-4 h-4"></i>
                             <span>KKPR Terbit Otomatis</span>
                         </a>
-                        @endcan
+                        @endcannot
 
-                        @can('KKPR NON BERUSAHA')
                         <a href="{{ route('admin.kkprnon.index') }}" class="nav-item flex items-center space-x-3 px-3 py-2.5 text-sm font-medium {{ request()->is('admin/kkprnon*') ? 'active' : '' }}">
                             <i class="fas fa-file-contract w-4 h-4"></i>
                             <span>Persetujuan Bagi UMK</span>
                         </a>
-                        @endcan
+                        
 
+                        @cannot('OPD Eksternal')
                         @can('Pengaduan')
                         <a href="{{ route('admin.pengaduan.index') }}" class="nav-item flex items-center space-x-3 px-3 py-2.5 text-sm font-medium {{ request()->is('admin/pengaduan*') ? 'active' : '' }}">
                             <i class="fas fa-bullhorn w-4 h-4"></i>
                             <span>Pengaduan</span>
                         </a>
                         @endcan
+                        @endcannot
                     </div>
 
                     <!-- INFORMASI Section - Admin -->
+                    @cannot('OPD Eksternal')
                     <div class="nav-section-title">INFORMASI</div>
                     
                     <div class="space-y-1">
@@ -282,6 +286,7 @@
                         </a>
                         @endcan
                     </div>
+                    @endcannot
 
                     <!-- ACCOUNT Section - Admin -->
                     <div class="nav-section-title">ACCOUNT</div>
@@ -293,6 +298,7 @@
                         </a>
 
                         <!-- Settings Dropdown - Admin Only -->
+                        @cannot('OPD Eksternal')
                         @can(['Setting'])
                         <div class="relative" x-data="{ settingsOpen: false }">
                             <button @click="settingsOpen = !settingsOpen" class="nav-item flex items-center justify-between w-full space-x-3 px-3 py-2.5 text-sm font-medium text-gray-600 hover:text-gray-900">
@@ -321,6 +327,7 @@
                             </div>
                         </div>
                         @endcan
+                        @endcannot
 
                         <form method="POST" action="{{ route('logout') }}" class="mt-2">
                             @csrf

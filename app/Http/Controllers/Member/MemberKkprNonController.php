@@ -690,4 +690,66 @@ class MemberKkprNonController extends Controller
         }
     }
 
+    public function uploadDraft(Request $request)
+    {
+        try {
+            $request->validate([
+                'kkpr_id' => 'required',
+                'draft_file' => 'required|mimes:pdf|max:10240'
+            ]);
+
+            $model = Kkpr::where('jenis', 'umk')->findOrFail($request->kkpr_id);
+            $user = Auth::user();
+
+            // Authorization check
+            if($model->user_id != $user->id){
+                return redirect()->route('member.kkprnon.index')->withErrors('Anda Tidak Berhak Mengakses Data Ini');
+            }
+
+            $folder = 'uploads/berkas/umk/' . $model->id;
+            if (!file_exists($folder)) {
+                mkdir($folder, 0755, true);
+            }
+
+            if ($model->draft_file && file_exists($folder . '/' . $model->draft_file)) {
+                unlink($folder . '/' . $model->draft_file);
+            }
+
+            $file = $request->file('draft_file');
+            $filename = 'draft_' . time() . '.pdf';
+            $file->move($folder, $filename);
+
+            $updateData = ['draft_file' => $filename];
+
+            if ($model->proses != 10) {
+                $updateData['proses'] = 10;
+            }
+
+            $model->update($updateData);
+
+            $riwayat = Kkpr_riwayat::where('kkpr_id', $model->id)->where('status_id', 10)->first();
+            if (!$riwayat) {
+                Kkpr_riwayat::create([
+                    'kkpr_id' => $model->id,
+                    'status_id' => '10',
+                    'status' => 'Selesai',
+                    'keterangan' => 'Dokumen hasil penilaian telah diupload'
+                ]);
+            } else {
+                $riwayat->update(['keterangan' => 'Dokumen hasil penilaian telah diperbarui']);
+            }
+
+            $message = $model->proses == 10 ?
+                'Hasil penilaian berhasil diperbarui' :
+                'Draft berhasil diupload dan proses telah selesai';
+
+            return redirect()->route('member.kkprnon.index')
+                ->with('success', $message);
+
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Terjadi kesalahan saat upload dokumen: ' . $e->getMessage());
+        }
+    }
+
 }

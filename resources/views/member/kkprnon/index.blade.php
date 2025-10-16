@@ -191,7 +191,7 @@
                         </td>
                         <td class="px-6 py-4">
                             <div class="flex items-center justify-center space-x-1">
-                                <button id="btn-aksi-{{ $kkpr->id }}" onclick="toggleDropdown({{ $kkpr->id }}, {{ $kkpr->proses }}, {{ $kkpr->revisi }})" class="inline-flex items-center space-x-1.5 px-3 py-1.5 text-xs font-medium text-gray-700 bg-white hover:bg-[#185B3C]/10 hover:text-[#185B3C] border border-gray-300 rounded-lg transition-all duration-200 hover:scale-105" title="Aksi">
+                                <button id="btn-aksi-{{ $kkpr->id }}" onclick="toggleDropdown({{ $kkpr->id }}, {{ $kkpr->proses }}, {{ $kkpr->revisi }}, {{ auth()->user()->can('Upload Draft') ? 'true' : 'false' }})" class="inline-flex items-center space-x-1.5 px-3 py-1.5 text-xs font-medium text-gray-700 bg-white hover:bg-[#185B3C]/10 hover:text-[#185B3C] border border-gray-300 rounded-lg transition-all duration-200 hover:scale-105" title="Aksi">
                                     <i class="fas fa-cog"></i>
                                     <span>Aksi</span>
                                     <i class="fas fa-chevron-down text-xs"></i>
@@ -263,7 +263,7 @@
     });
 
     // Dropdown Toggle
-    function toggleDropdown(id, status, revisi) {
+    function toggleDropdown(id, status, revisi, canUploadDraft) {
         const button = event.currentTarget;
         const chevron = button.querySelector('.fa-chevron-down');
         const modal = document.getElementById('dropdown-menu-modal');
@@ -319,7 +319,18 @@
                 <a href="/member/kkprnon/cetak/${id}" target="_blank" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-600 transition-colors">
                     <i class="fas fa-file-pdf w-4 mr-3"></i>
                     Cetak PDF
-                </a>
+                </a>`;
+        
+        // Upload Draft - hanya dengan permission Upload Draft dan sudah persetujuan dokumen (status >= 9)
+        if (canUploadDraft === 'true' && parseInt(status) >= 9 && parseInt(status) < 10) {
+            menuItems += `
+                <button onclick="openUploadDraftModal(${id}); closeDropdownModal();" class="w-full flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 transition-colors text-left">
+                    <i class="fas fa-file-upload w-4 mr-3"></i>
+                    Upload Draft
+                </button>`;
+        }
+        
+        menuItems += `
                 <button onclick="deleteKkpr(${id}); closeDropdownModal();" class="w-full flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors text-left">
                     <i class="fas fa-trash w-4 mr-3"></i>
                     Hapus
@@ -490,6 +501,25 @@
         subtitleDiv.textContent = 'Persetujuan Bagi UMK';
     }
 
+    // Open Upload Draft Modal
+    function openUploadDraftModal(id) {
+        document.getElementById('upload_draft_kkpr_id').value = id;
+        document.getElementById('upload-draft-modal').classList.remove('hidden');
+        document.getElementById('upload-draft-backdrop').classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+
+    // Close Upload Draft Modal
+    function closeUploadDraftModal() {
+        document.getElementById('upload-draft-modal').classList.add('hidden');
+        document.getElementById('upload-draft-backdrop').classList.add('hidden');
+        document.getElementById('upload-draft-form').reset();
+        document.getElementById('file-name-display').textContent = 'Belum ada file dipilih';
+        document.getElementById('file-size-display').textContent = '';
+        document.getElementById('file-preview-section').classList.add('hidden');
+        document.body.style.overflow = 'auto';
+    }
+
     // Delete KKPR
     function deleteKkpr(id) {
         Swal.fire({
@@ -571,6 +601,147 @@
                     Tutup
                 </button>
             </div>
+        </div>
+    </div>
+</div>
+
+    // Handle file selection
+    document.addEventListener('DOMContentLoaded', function() {
+        const fileInput = document.getElementById('draft_file');
+        if (fileInput) {
+            fileInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    // Display file info
+                    document.getElementById('file-name-display').textContent = file.name;
+                    const fileSize = (file.size / 1024 / 1024).toFixed(2);
+                    document.getElementById('file-size-display').textContent = `${fileSize} MB`;
+                    document.getElementById('file-preview-section').classList.remove('hidden');
+                    
+                    // Validate file size
+                    if (file.size > 10 * 1024 * 1024) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'File Terlalu Besar!',
+                            text: 'Ukuran file maksimal 10 MB'
+                        });
+                        fileInput.value = '';
+                        document.getElementById('file-preview-section').classList.add('hidden');
+                    }
+                }
+            });
+        }
+    });
+</script>
+
+<!-- Upload Draft Modal -->
+<div id="upload-draft-backdrop" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-[9998] transition-opacity" onclick="closeUploadDraftModal()"></div>
+<div id="upload-draft-modal" class="hidden fixed inset-0 z-[9999] overflow-y-auto">
+    <div class="flex min-h-full items-center justify-center p-4">
+        <div class="relative bg-white rounded-2xl shadow-2xl max-w-lg w-full transform transition-all">
+            <!-- Modal Header -->
+            <div class="relative overflow-hidden bg-gradient-to-br from-emerald-500 via-emerald-600 to-teal-600 px-6 py-8 rounded-t-2xl">
+                <div class="absolute inset-0 bg-black/10"></div>
+                <div class="relative z-10 flex items-center justify-between">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center shadow-lg">
+                            <i class="fas fa-file-upload text-3xl text-white"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-bold text-white">Upload Draft Dokumen</h3>
+                            <p class="text-sm text-white/80 mt-1">Upload dokumen hasil penilaian (PDF)</p>
+                        </div>
+                    </div>
+                    <button type="button" onclick="closeUploadDraftModal()" class="text-white/80 hover:text-white hover:bg-white/20 rounded-lg p-2 transition-all">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                <!-- Decorative circles -->
+                <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-16 translate-x-16"></div>
+                <div class="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full translate-y-12 -translate-x-12"></div>
+            </div>
+
+            <!-- Modal Body -->
+            <form id="upload-draft-form" action="{{ route('member.kkprnon.upload.draft') }}" method="POST" enctype="multipart/form-data" class="p-6">
+                @csrf
+                <input type="hidden" name="kkpr_id" id="upload_draft_kkpr_id">
+
+                <!-- Upload Area -->
+                <div class="space-y-4">
+                    <!-- Info Box -->
+                    <div class="bg-gradient-to-r from-emerald-50 to-teal-50 border-l-4 border-emerald-500 rounded-lg p-4">
+                        <div class="flex items-start space-x-3">
+                            <i class="fas fa-info-circle text-emerald-600 mt-0.5"></i>
+                            <div class="flex-1">
+                                <p class="text-sm font-medium text-emerald-900">Informasi Upload</p>
+                                <ul class="text-xs text-emerald-700 mt-2 space-y-1 list-disc list-inside">
+                                    <li>Format file: <strong>PDF</strong></li>
+                                    <li>Ukuran maksimal: <strong>10 MB</strong></li>
+                                    <li>Dokumen akan otomatis menyelesaikan proses</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- File Upload Area -->
+                    <div class="relative">
+                        <label class="block text-sm font-semibold text-gray-700 mb-3">
+                            <i class="fas fa-file-pdf mr-2 text-emerald-600"></i>
+                            Pilih File PDF <span class="text-red-500">*</span>
+                        </label>
+                        
+                        <div class="relative border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:border-emerald-500 transition-all duration-300 bg-gradient-to-br from-gray-50 to-gray-100">
+                            <input type="file" id="draft_file" name="draft_file" accept="application/pdf" required
+                                   class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+                            
+                            <div class="pointer-events-none">
+                                <div class="w-16 h-16 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+                                    <i class="fas fa-cloud-upload-alt text-3xl text-white"></i>
+                                </div>
+                                <p class="text-base font-semibold text-gray-700 mb-1">Klik atau drag file ke sini</p>
+                                <p class="text-xs text-gray-500">PDF, maksimal 10 MB</p>
+                            </div>
+                        </div>
+
+                        <!-- File Preview -->
+                        <div id="file-preview-section" class="hidden mt-4 p-4 bg-white border-2 border-emerald-200 rounded-xl">
+                            <div class="flex items-center space-x-4">
+                                <div class="w-12 h-12 bg-gradient-to-br from-red-500 to-red-600 rounded-lg flex items-center justify-center flex-shrink-0 shadow-md">
+                                    <i class="fas fa-file-pdf text-2xl text-white"></i>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-sm font-semibold text-gray-900 truncate" id="file-name-display">Belum ada file dipilih</p>
+                                    <div class="flex items-center space-x-2 mt-1">
+                                        <span class="text-xs text-gray-500" id="file-size-display"></span>
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">
+                                            <i class="fas fa-check-circle mr-1"></i>
+                                            Siap Upload
+                                        </span>
+                                    </div>
+                                </div>
+                                <button type="button" onclick="document.getElementById('draft_file').value=''; document.getElementById('file-preview-section').classList.add('hidden');" 
+                                        class="text-gray-400 hover:text-red-600 transition-colors">
+                                    <i class="fas fa-times-circle text-xl"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="flex items-center justify-end space-x-3 mt-6 pt-6 border-t border-gray-200">
+                    <button type="button" onclick="closeUploadDraftModal()" 
+                            class="px-6 py-2.5 text-gray-700 bg-gray-100 hover:bg-gray-200 font-semibold rounded-xl transition-all duration-200">
+                        <i class="fas fa-times mr-2"></i>
+                        Batal
+                    </button>
+                    <button type="submit" 
+                            class="px-6 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-xl hover:shadow-lg hover:scale-105 transition-all duration-200">
+                        <i class="fas fa-upload mr-2"></i>
+                        Upload Dokumen
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
