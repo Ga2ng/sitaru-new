@@ -131,7 +131,7 @@
                         <div class="w-16 h-1 bg-gradient-to-r from-accent to-primary mx-auto mb-4"></div>
                         <h1 class="text-4xl md:text-6xl font-bold text-white mb-4 font-heading">
                             Selamat Datang di <span class="text-[#DAAF49] relative">
-                                SITARU
+                                SITARU test
                                 <div class="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-accent to-transparent"></div>
                             </span>
                         </h1>
