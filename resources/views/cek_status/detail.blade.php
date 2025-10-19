@@ -7,6 +7,7 @@
     
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700&family=poppins:400,500,600,700,800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     
@@ -88,15 +89,15 @@
                         <div class="ml-2 w-1 h-6 bg-gradient-to-b from-primary to-accent"></div>
                     </div>
                     <div class="flex items-center space-x-4">
-                        <a href="{{ route('cek-status.index') }}" class="text-gray-700 hover:text-primary px-3 py-2 rounded-md text-sm font-medium transition-colors">
-                            <i class="fas fa-search mr-1"></i>Cek Lagi
+                        <a href="{{ route('cek-status.index') }}" class="text-gray-700 hover:text-[#155D4F] px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                            <i class="fa fa-search mr-1"></i>Cek Lagi
                         </a>
-                        <a href="{{ url('/') }}" class="text-gray-700 hover:text-primary px-3 py-2 rounded-md text-sm font-medium transition-colors">Beranda</a>
+                        <a href="{{ url('/') }}" class="text-gray-700 hover:text-[#155D4F] px-3 py-2 rounded-md text-sm font-medium transition-colors">Beranda</a>
                         @if (Route::has('login'))
                             @auth
                                 <a href="{{ url('/dashboard') }}" class="btn-primary text-white px-6 py-2 rounded-lg font-medium">Dashboard</a>
                             @else
-                                <a href="{{ route('login') }}" class="text-gray-700 hover:text-primary px-3 py-2 rounded-md text-sm font-medium transition-colors">Masuk</a>
+                                <a href="{{ route('login') }}" class="text-gray-700 hover:text-[#155D4F] px-3 py-2 rounded-md text-sm font-medium transition-colors">Masuk</a>
                             @endauth
                         @endif
                     </div>
@@ -109,11 +110,11 @@
             <!-- Header -->
             <div class="text-center mb-12">
                 <div class="inline-block mb-6">
-                    <div class="w-16 h-1 bg-gradient-to-r from-accent to-primary mx-auto mb-4"></div>
-                    <h1 class="text-3xl md:text-4xl font-bold text-primary mb-4 font-heading">
+                    <div class="w-16 h-1 bg-gradient-to-r from-[#DAAF49] to-[#155D4F] mx-auto mb-4"></div>
+                    <h1 class="text-3xl md:text-4xl font-bold text-[#155D4F] mb-4 font-heading">
                         Status <span class="text-[#DAAF49] relative">
                             KKPR
-                            <div class="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-accent to-transparent"></div>
+                            <div class="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-[#DAAF49] to-transparent"></div>
                         </span>
                     </h1>
                 </div>
@@ -123,36 +124,36 @@
             <!-- Info Cards -->
             <div class="grid md:grid-cols-4 gap-6 mb-12">
                 <div class="feature-card bg-white p-6 rounded-xl card-shadow text-center">
-                    <div class="w-12 h-12 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center mx-auto mb-4">
-                        <i class="fas fa-hashtag text-white"></i>
+                    <div class="w-14 h-14 bg-gradient-to-br from-[#155D4F] to-[#0F3D26] rounded-lg flex items-center justify-center mx-auto mb-4 shadow-lg">
+                        <i class="fa fa-hashtag text-white text-xl"></i>
                     </div>
-                    <h3 class="text-lg font-semibold text-primary mb-2 font-heading">Nomor KKPR</h3>
-                    <p class="text-gray-600 text-sm font-body font-mono">{{ $model->no_kkpr ?? '-' }}</p>
+                    <h3 class="text-lg font-semibold text-[#155D4F] mb-2 font-heading">Nomor KKPR</h3>
+                    <p class="text-gray-600 text-sm font-body font-mono font-bold">{{ $model->no_kkpr ?? '-' }}</p>
                 </div>
 
                 <div class="feature-card bg-white p-6 rounded-xl card-shadow text-center">
-                    <div class="w-12 h-12 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center mx-auto mb-4">
-                        <i class="fas fa-user text-white"></i>
+                    <div class="w-14 h-14 bg-gradient-to-br from-[#155D4F] to-[#0F3D26] rounded-lg flex items-center justify-center mx-auto mb-4 shadow-lg">
+                        <i class="fa fa-user text-white text-xl"></i>
                     </div>
-                    <h3 class="text-lg font-semibold text-primary mb-2 font-heading">Pemohon</h3>
+                    <h3 class="text-lg font-semibold text-[#155D4F] mb-2 font-heading">Pemohon</h3>
                     <p class="text-gray-600 text-sm font-body">{{ $model->user->name ?? 'N/A' }}</p>
                 </div>
 
                 <div class="feature-card bg-white p-6 rounded-xl card-shadow text-center">
-                    <div class="w-12 h-12 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center mx-auto mb-4">
-                        <i class="fas fa-calendar text-white"></i>
+                    <div class="w-14 h-14 bg-gradient-to-br from-[#155D4F] to-[#0F3D26] rounded-lg flex items-center justify-center mx-auto mb-4 shadow-lg">
+                        <i class="fa fa-calendar text-white text-xl"></i>
                     </div>
-                    <h3 class="text-lg font-semibold text-primary mb-2 font-heading">Tanggal KKPR</h3>
+                    <h3 class="text-lg font-semibold text-[#155D4F] mb-2 font-heading">Tanggal KKPR</h3>
                     <p class="text-gray-600 text-sm font-body">
                         {{ $model->tgl_kkpr ? \Carbon\Carbon::parse($model->tgl_kkpr)->format('d M Y') : '-' }}
                     </p>
                 </div>
 
                 <div class="feature-card bg-white p-6 rounded-xl card-shadow text-center">
-                    <div class="w-12 h-12 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center mx-auto mb-4">
-                        <i class="fas fa-map-marker-alt text-white"></i>
+                    <div class="w-14 h-14 bg-gradient-to-br from-[#155D4F] to-[#0F3D26] rounded-lg flex items-center justify-center mx-auto mb-4 shadow-lg">
+                        <i class="fa fa-map-marker-alt text-white text-xl"></i>
                     </div>
-                    <h3 class="text-lg font-semibold text-primary mb-2 font-heading">Lokasi</h3>
+                    <h3 class="text-lg font-semibold text-[#155D4F] mb-2 font-heading">Lokasi</h3>
                     <p class="text-gray-600 text-sm font-body">{{ $model->alamat_tanah ?? '-' }}</p>
                 </div>
             </div>
@@ -160,7 +161,10 @@
             <!-- Progress Timeline -->
             <div class="bg-white rounded-2xl p-8 shadow-2xl border border-white/20 mb-8">
                 <div class="text-center mb-8">
-                    <h2 class="text-2xl font-bold text-primary font-heading mb-2">Progress Status</h2>
+                    <div class="w-16 h-16 bg-gradient-to-br from-[#155D4F] to-[#0F3D26] rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                        <i class="fa fa-list-check text-white text-2xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-[#155D4F] font-heading mb-2">Progress Status</h2>
                     <p class="text-gray-600">Timeline proses pengajuan KKPR Anda</p>
                 </div>
 
@@ -249,15 +253,15 @@
             </div>
 
             <!-- Action Buttons -->
-            <div class="text-center">
-                <a href="{{ route('cek-status.index') }}" class="btn-primary text-white px-8 py-3 rounded-lg font-semibold shadow-xl relative overflow-hidden mr-4">
-                    <span class="relative z-10">
-                        <i class="fas fa-search mr-2"></i>
+            <div class="flex justify-center items-center gap-4 flex-wrap">
+                <a href="{{ route('cek-status.index') }}" class="btn-primary text-white px-8 py-3 rounded-lg font-semibold shadow-xl relative overflow-hidden">
+                    <span class="relative z-10 flex items-center">
+                        <i class="fa fa-search mr-2"></i>
                         Cek Status Lain
                     </span>
                 </a>
-                <a href="{{ url('/') }}" class="bg-transparent text-primary px-8 py-3 rounded-lg font-semibold border-2 border-primary hover:bg-primary hover:text-white transition-all duration-300">
-                    <i class="fas fa-home mr-2"></i>
+                <a href="{{ url('/') }}" class="bg-transparent text-[#155D4F] px-8 py-3 rounded-lg font-semibold border-2 border-[#155D4F] hover:bg-[#155D4F] hover:text-white transition-all duration-300">
+                    <i class="fa fa-home mr-2"></i>
                     Kembali ke Beranda
                 </a>
             </div>

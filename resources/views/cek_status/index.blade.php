@@ -7,6 +7,7 @@
     
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700&family=poppins:400,500,600,700,800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     
@@ -88,12 +89,12 @@
                         <div class="ml-2 w-1 h-6 bg-gradient-to-b from-primary to-accent"></div>
                     </div>
                     <div class="flex items-center space-x-4">
-                        <a href="{{ url('/') }}" class="text-gray-700 hover:text-primary px-3 py-2 rounded-md text-sm font-medium transition-colors">Beranda</a>
+                        <a href="{{ url('/') }}" class="text-gray-700 hover:text-[#155D4F] px-3 py-2 rounded-md text-sm font-medium transition-colors">Beranda</a>
                         @if (Route::has('login'))
                             @auth
                                 <a href="{{ url('/dashboard') }}" class="btn-primary text-white px-6 py-2 rounded-lg font-medium">Dashboard</a>
                             @else
-                                <a href="{{ route('login') }}" class="text-gray-700 hover:text-primary px-3 py-2 rounded-md text-sm font-medium transition-colors">Masuk</a>
+                                <a href="{{ route('login') }}" class="text-gray-700 hover:text-[#155D4F] px-3 py-2 rounded-md text-sm font-medium transition-colors">Masuk</a>
                             @endauth
                         @endif
                     </div>
@@ -125,25 +126,25 @@
                     <form method="POST" action="{{ route('cek-status.search') }}" class="space-y-6">
                         @csrf
                         <div class="text-center mb-6">
-                            <div class="w-16 h-16 bg-gradient-to-br from-primary to-accent rounded-full flex items-center justify-center mx-auto mb-4">
-                                <i class="fas fa-search text-white text-xl"></i>
+                            <div class="w-16 h-16 bg-gradient-to-br from-[#155D4F] to-[#0F3D26] rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                                <i class="fa fa-search text-white text-2xl"></i>
                             </div>
-                            <h2 class="text-2xl font-bold text-primary font-heading">Cari Status KKPR</h2>
+                            <h2 class="text-2xl font-bold text-[#155D4F] font-heading">Cari Status KKPR</h2>
                             <p class="text-gray-600 mt-2">Masukkan nomor KKPR yang ingin Anda cek</p>
                         </div>
 
                         <div class="space-y-4">
                             <div>
                                 <label for="no_kkpr" class="block text-sm font-semibold text-gray-700 mb-2">
-                                    <i class="fas fa-hashtag mr-2 text-primary"></i>
+                                    <i class="fa fa-hashtag mr-2 text-[#155D4F]"></i>
                                     Nomor KKPR <span class="text-red-500">*</span>
                                 </label>
                                 <input type="text" id="no_kkpr" name="no_kkpr" value="{{ old('no_kkpr') }}" 
-                                       class="w-full px-6 py-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 text-lg font-medium" 
+                                       class="w-full px-6 py-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#155D4F] focus:border-transparent transition-all duration-200 text-lg font-medium" 
                                        placeholder="Masukkan nomor KKPR" required>
                                 @error('no_kkpr')
                                     <div class="flex items-center space-x-2 text-red-600 text-sm mt-2">
-                                        <i class="fas fa-exclamation-circle text-xs"></i>
+                                        <i class="fa fa-exclamation-circle text-xs"></i>
                                         <span>{{ $message }}</span>
                                     </div>
                                 @enderror
@@ -152,7 +153,7 @@
                             @if(session('error'))
                                 <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
                                     <div class="flex items-center">
-                                        <i class="fas fa-exclamation-circle mr-2"></i>
+                                        <i class="fa fa-exclamation-circle mr-2"></i>
                                         <span>{{ session('error') }}</span>
                                     </div>
                                 </div>
@@ -161,7 +162,7 @@
                             <div class="text-center">
                                 <button type="submit" class="btn-primary text-white px-12 py-4 rounded-xl font-semibold text-lg shadow-xl relative overflow-hidden">
                                     <span class="relative z-10">
-                                        <i class="fas fa-search mr-2"></i>
+                                        <i class="fa fa-search mr-2"></i>
                                         Cek Status
                                     </span>
                                 </button>
@@ -173,26 +174,26 @@
                 <!-- Info Cards -->
                 <div class="grid md:grid-cols-3 gap-6 mt-12">
                     <div class="feature-card bg-white/90 backdrop-blur-sm p-6 rounded-xl card-shadow text-center">
-                        <div class="w-12 h-12 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center mx-auto mb-4">
-                            <i class="fas fa-shield-alt text-white"></i>
+                        <div class="w-14 h-14 bg-gradient-to-br from-[#155D4F] to-[#0F3D26] rounded-lg flex items-center justify-center mx-auto mb-4 shadow-lg">
+                            <i class="fa fa-shield-alt text-white text-xl"></i>
                         </div>
-                        <h3 class="text-lg font-semibold text-primary mb-2 font-heading">Aman & Terpercaya</h3>
+                        <h3 class="text-lg font-semibold text-[#155D4F] mb-2 font-heading">Aman & Terpercaya</h3>
                         <p class="text-gray-600 text-sm font-body">Data Anda terlindungi dengan sistem keamanan terbaik</p>
                     </div>
 
                     <div class="feature-card bg-white/90 backdrop-blur-sm p-6 rounded-xl card-shadow text-center">
-                        <div class="w-12 h-12 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center mx-auto mb-4">
-                            <i class="fas fa-clock text-white"></i>
+                        <div class="w-14 h-14 bg-gradient-to-br from-[#155D4F] to-[#0F3D26] rounded-lg flex items-center justify-center mx-auto mb-4 shadow-lg">
+                            <i class="fa fa-clock text-white text-xl"></i>
                         </div>
-                        <h3 class="text-lg font-semibold text-primary mb-2 font-heading">Real-time</h3>
+                        <h3 class="text-lg font-semibold text-[#155D4F] mb-2 font-heading">Real-time</h3>
                         <p class="text-gray-600 text-sm font-body">Informasi status terbaru dan akurat</p>
                     </div>
 
                     <div class="feature-card bg-white/90 backdrop-blur-sm p-6 rounded-xl card-shadow text-center">
-                        <div class="w-12 h-12 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center mx-auto mb-4">
-                            <i class="fas fa-mobile-alt text-white"></i>
+                        <div class="w-14 h-14 bg-gradient-to-br from-[#155D4F] to-[#0F3D26] rounded-lg flex items-center justify-center mx-auto mb-4 shadow-lg">
+                            <i class="fa fa-mobile-alt text-white text-xl"></i>
                         </div>
-                        <h3 class="text-lg font-semibold text-primary mb-2 font-heading">Mudah Diakses</h3>
+                        <h3 class="text-lg font-semibold text-[#155D4F] mb-2 font-heading">Mudah Diakses</h3>
                         <p class="text-gray-600 text-sm font-body">Bisa diakses kapan saja dan di mana saja</p>
                     </div>
                 </div>
