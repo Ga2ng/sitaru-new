@@ -454,12 +454,14 @@
         });
         
         // Set content first to calculate height
-        let menuItems = `
-            <div class="py-1">
-                <a href="/admin/kkpr/${id}" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-[#185B3C]/10 hover:text-[#185B3C] transition-colors">
-                    <i class="fas fa-eye w-4 mr-3"></i>
-                    Lihat Detail
-                </a>`;
+        let menuItems = `<div class="py-1">`;
+        
+        // SELALU TAMPILKAN: Lihat Detail (urutan pertama)
+        menuItems += `
+            <a href="/admin/kkpr/${id}" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-[#185B3C]/10 hover:text-[#185B3C] transition-colors">
+                <i class="fas fa-eye w-4 mr-3"></i>
+                Lihat Detail
+            </a>`;
         
         // Jika status sudah selesai (10), hanya tampilkan menu view-only
         if (parseInt(status) == 10) {
@@ -475,7 +477,6 @@
         }
         // Jika user eksternal, hanya tampilkan menu view-only
         else if (isExternal == true) {
-            // Hanya menu view yang bisa diakses
             menuItems += `
                 <a href="/admin/kkpr/${id}/peta" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-600 transition-colors">
                     <i class="fas fa-map w-4 mr-3"></i>
@@ -490,87 +491,107 @@
                     </a>`;
             }
         } else {
-            // Menu normal untuk user non-eksternal
-        
-        // Validasi - hanya untuk Verifikator dan status = 1 (Pengajuan)
-        if (canValidate && parseInt(status) == 1) {
+            // Menu normal untuk user non-eksternal - URUT BERDASARKAN PROSES
+            
+            // PROSES 1: Validasi - hanya untuk Verifikator dan status = 1 (Pengajuan)
+            if (canValidate && parseInt(status) == 1) {
+                menuItems += `
+                    <div class="border-t border-gray-100"></div>
+                    <a href="/admin/kkpr/${id}/validasi" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-600 transition-colors">
+                        <i class="fas fa-check-circle w-4 mr-3"></i>
+                        <span class="flex-1">Validasi</span>
+                        <span class="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">Step 1</span>
+                    </a>`;
+            }
+            
+            // PROSES 2-5: Survey & Analisa - hanya untuk Analis
+            if (canSurvey && parseInt(status) >= 3 && parseInt(status) < 7) {
+                menuItems += `<div class="border-t border-gray-100"></div>`;
+                
+                // Survey - jika belum survey (proses < 6)
+                if (parseInt(status) < 6) {
+                    menuItems += `
+                        <button onclick="setSurvey(${id}); closeDropdownModal();" class="w-full flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-colors text-left">
+                            <i class="fas fa-map-marked-alt w-4 mr-3"></i>
+                            <span class="flex-1">Survey</span>
+                            <span class="text-xs bg-orange-100 text-orange-700 px-2 py-0.5 rounded-full">Step 2</span>
+                        </button>`;
+                }
+                
+                // Analisa - jika belum analisa (proses < 7)
+                menuItems += `
+                    <a href="/admin/kkpr/${id}/analisa" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-600 transition-colors">
+                        <i class="fas fa-file-signature w-4 mr-3"></i>
+                        <span class="flex-1">Analisa</span>
+                        <span class="text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full">Step 3</span>
+                    </a>`;
+            }
+            
+            // PROSES 7: Kirim Kabid - hanya untuk Pimpinan dan Kabid setelah analisa
+            if ((canPimpinan == true || canKabid == true) && parseInt(status) == 7) {
+                menuItems += `
+                    <div class="border-t border-gray-100"></div>
+                    <button onclick="kirimKabid(${id}); closeDropdownModal();" class="w-full flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition-colors text-left">
+                        <i class="fas fa-paper-plane w-4 mr-3"></i>
+                        <span class="flex-1">Kirim Kabid</span>
+                        <span class="text-xs bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-full">Step 4</span>
+                    </button>`;
+            }
+            
+            // PROSES 8: Persetujuan Dokumen - hanya untuk Kepala Dinas
+            if (canKepalaDinas == true && parseInt(status) == 8) {
+                menuItems += `
+                    <div class="border-t border-gray-100"></div>
+                    <button onclick="persetujuanDokumen(${id}); closeDropdownModal();" class="w-full flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-cyan-50 hover:text-cyan-600 transition-colors text-left">
+                        <i class="fas fa-check-double w-4 mr-3"></i>
+                        <span class="flex-1">Persetujuan Dokumen</span>
+                        <span class="text-xs bg-cyan-100 text-cyan-700 px-2 py-0.5 rounded-full">Step 5</span>
+                    </button>`;
+            }
+            
+            // PROSES 9: Upload Draft - hanya dengan permission Upload Draft
+            if (canUploadDraft == true && parseInt(status) == 9) {
+                menuItems += `
+                    <div class="border-t border-gray-100"></div>
+                    <button onclick="openUploadDraftModal(${id}); closeDropdownModal();" class="w-full flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 transition-colors text-left">
+                        <i class="fas fa-file-upload w-4 mr-3"></i>
+                        <span class="flex-1">Upload Draft</span>
+                        <span class="text-xs bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full">Step 6</span>
+                    </button>`;
+            }
+            
+            // SEPARATOR untuk menu sekunder
+            if (parseInt(status) < 10) {
+                menuItems += `<div class="border-t border-gray-200 my-1"></div>`;
+            }
+            
+            // MENU SEKUNDER: Lihat Peta & Cetak Berkas
             menuItems += `
-                <a href="/admin/kkpr/${id}/validasi" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-600 transition-colors">
-                    <i class="fas fa-check-circle w-4 mr-3"></i>
-                    Validasi
+                <a href="/admin/kkpr/${id}/peta" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-600 transition-colors">
+                    <i class="fas fa-map w-4 mr-3"></i>
+                    Lihat Peta
                 </a>`;
-        }
-        
-        
-        // Survey - hanya untuk Analis dan belum survey (proses < 6)
-        if (canSurvey && parseInt(status) < 6) {
-            menuItems += `
-                <button onclick="setSurvey(${id}); closeDropdownModal();" class="w-full flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-colors text-left">
-                    <i class="fas fa-map-marked-alt w-4 mr-3"></i>
-                    Survey
-                </button>`;
-        }
-        
-        // Analisa - hanya untuk Analis dan belum analisa (proses < 7), bisa skip survey
-        if (canSurvey && parseInt(status) < 7) {
-            menuItems += `
-                <a href="/admin/kkpr/${id}/analisa" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-600 transition-colors">
-                    <i class="fas fa-file-signature w-4 mr-3"></i>
-                    Analisa
-                </a>`;
-        }
-        
-        // Cetak Berkas - hanya setelah analisa (proses >= 7)
-        if (parseInt(status) >= 7) {
-            menuItems += `
-                <a href="/admin/kkpr/${id}/cetak-berkas" target="_blank" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
-                    <i class="fas fa-file-pdf w-4 mr-3"></i>
-                    Cetak Berkas
-                </a>`;
-        }
-        
-        // Lihat Peta - selalu tersedia
-        menuItems += `
-            <a href="/admin/kkpr/${id}/peta" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-600 transition-colors">
-                <i class="fas fa-map w-4 mr-3"></i>
-                Lihat Peta
-            </a>`;
-        
-        // Kirim Kabid - hanya untuk Pimpinan dan Kabid setelah analisa (status >= 7)
-        if ((canPimpinan == true || canKabid == true) && parseInt(status) == 7 && parseInt(status) < 10) {
-            menuItems += `
-                <button onclick="kirimKabid(${id}); closeDropdownModal();" class="w-full flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition-colors text-left">
-                    <i class="fas fa-paper-plane w-4 mr-3"></i>
-                    Kirim Kabid
-                </button>`;
-        }
-        
-        // Persetujuan Dokumen - hanya untuk Kepala Dinas setelah sudah dikirim kabid (status >= 8)
-        if (canKepalaDinas == true && parseInt(status) == 8 && parseInt(status) < 10) {
-            menuItems += `
-                <button onclick="persetujuanDokumen(${id}); closeDropdownModal();" class="w-full flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-cyan-50 hover:text-cyan-600 transition-colors text-left">
-                    <i class="fas fa-check-double w-4 mr-3"></i>
-                    Persetujuan Dokumen
-                </button>`;
-        }
-        
-        // Upload Draft - hanya dengan permission Upload Draft dan sudah persetujuan dokumen (status >= 9)
-        if (canUploadDraft == true && parseInt(status) == 9 && parseInt(status) < 10) {
-            menuItems += `
-                <button onclick="openUploadDraftModal(${id}); closeDropdownModal();" class="w-full flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 transition-colors text-left">
-                    <i class="fas fa-file-upload w-4 mr-3"></i>
-                    Upload Draft
-                </button>`;
-        }
-        
-        // Hapus - tidak tersedia untuk status selesai
-        if (parseInt(status) < 10) {
-            menuItems += `
-                <button onclick="deleteKkpr(${id}); closeDropdownModal();" class="w-full flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors text-left">
-                    <i class="fas fa-trash w-4 mr-3"></i>
-                    Hapus
-                </button>`;
-        }
+            
+            // Cetak Berkas - hanya setelah analisa (proses >= 7)
+            if (parseInt(status) >= 7) {
+                menuItems += `
+                    <a href="/admin/kkpr/${id}/cetak-berkas" target="_blank" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
+                        <i class="fas fa-file-pdf w-4 mr-3"></i>
+                        Cetak Berkas
+                    </a>`;
+            }
+            
+            // SEPARATOR untuk aksi berbahaya
+            if (parseInt(status) < 10) {
+                menuItems += `<div class="border-t border-gray-200 my-1"></div>`;
+                
+                // Hapus - hanya jika belum selesai
+                menuItems += `
+                    <button onclick="deleteKkpr(${id}); closeDropdownModal();" class="w-full flex items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors text-left">
+                        <i class="fas fa-trash w-4 mr-3"></i>
+                        Hapus
+                    </button>`;
+            }
         }
         
         menuItems += `
