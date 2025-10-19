@@ -3,12 +3,14 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>SITARU - Sistem Informasi Terpadu</title>
+        <title>SITARU - SISTEM INFORMASI TATA RUANG</title>
+        <link rel="icon" type="image/png" href="{{ asset('images/logo_bwi.png') }}">
 
         <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700&family=poppins:400,500,600,700,800&display=swap" rel="stylesheet" />
+        <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700&family=poppins:400,500,600,700,800&display=swap" rel="stylesheet" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-            @vite(['resources/css/app.css', 'resources/js/app.js'])
+        @vite(['resources/css/app.css', 'resources/js/app.js'])
     
             <style>
         .hero-bg { 
@@ -139,14 +141,33 @@
                     <p class="text-xl text-gray-100 mb-8 max-w-3xl mx-auto font-body leading-relaxed">
                         <span class="text-[#DAAF49] font-semibold">Sistem Informasi Terpadu</span> yang memudahkan Anda mengakses berbagai layanan digital dengan cepat, aman, dan efisien.
                     </p>
-                    <div class="flex flex-col sm:flex-row gap-6 justify-center">
-                        <a href="{{ route('login') }}" class="btn-primary text-white px-10 py-4 rounded-lg font-semibold text-lg shadow-xl relative overflow-hidden">
-                            <span class="relative z-10">Mulai Sekarang</span>
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                        <!-- Button 1: Mulai Sekarang -->
+                        <a href="{{ route('login') }}" class="group btn-primary text-white px-10 py-4 rounded-xl font-bold text-lg shadow-2xl relative overflow-hidden transform hover:scale-105 transition-all duration-300">
+                            <span class="relative z-10 flex items-center justify-center">
+                                <i class="fas fa-rocket mr-2 group-hover:animate-bounce"></i>
+                                Mulai Sekarang
+                            </span>
+                            <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
                         </a>
-                        <a href="{{ route('cek-status.index') }}" class="bg-transparent text-white px-10 py-4 rounded-lg font-semibold text-lg border-2 border-accent hover:bg-accent hover:text-primary transition-all duration-300 shadow-lg">
-                            <i class="fas fa-search mr-2"></i>Cek Status KKPR
+                        
+                        <!-- Button 2: Cek Status KKPR -->
+                        <a href="{{ route('cek-status.index') }}" class="group relative bg-gradient-to-r from-[#DAAF49] to-[#d4a030] text-[#155D4F] px-10 py-4 rounded-xl font-bold text-lg shadow-2xl border-2 border-[#DAAF49] transform hover:scale-105 transition-all duration-300 overflow-hidden">
+                            <span class="relative z-10 flex items-center justify-center">
+                                <i class="fas fa-search mr-2 group-hover:rotate-90 transition-transform duration-300"></i>
+                                Cek Status KKPR
+                            </span>
+                            <div class="absolute inset-0 bg-white/20 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
                         </a>
-                        <a href="#layanan" class="bg-transparent text-white px-10 py-4 rounded-lg font-semibold text-lg border-2 border-accent hover:bg-accent hover:text-primary transition-all duration-300 shadow-lg">Lihat Layanan</a>
+                        
+                        <!-- Button 3: Lihat Layanan -->
+                        <a href="#layanan" class="group bg-white/10 backdrop-blur-md text-white px-10 py-4 rounded-xl font-bold text-lg shadow-2xl border-2 border-white/30 hover:bg-white hover:text-[#155D4F] transform hover:scale-105 transition-all duration-300 relative overflow-hidden">
+                            <span class="relative z-10 flex items-center justify-center">
+                                <i class="fas fa-th-large mr-2 group-hover:rotate-180 transition-transform duration-500"></i>
+                                Lihat Layanan
+                            </span>
+                            <div class="absolute inset-0 bg-gradient-to-br from-white/0 to-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -231,46 +252,216 @@
         </section>
 
         <!-- About Section -->
-        <section id="tentang" class="py-20 bg-white relative">
+        <section id="tentang" class="py-20 bg-white relative overflow-hidden">
             <div class="absolute inset-0 traditional-pattern opacity-20"></div>
+            <!-- Decorative Background Elements -->
+            <div class="absolute top-20 right-10 w-72 h-72 bg-[#155D4F]/5 rounded-full blur-3xl"></div>
+            <div class="absolute bottom-20 left-10 w-96 h-96 bg-[#DAAF49]/5 rounded-full blur-3xl"></div>
+            
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-                <div class="grid lg:grid-cols-2 gap-16 items-center">
-                    <div>
-                        <div class="inline-block mb-6">
-                            <div class="w-20 h-1 bg-gradient-to-r from-primary to-accent mb-4"></div>
-                            <h2 class="text-3xl md:text-4xl font-bold text-primary mb-4 font-heading">Tentang SITARU</h2>
-                            <div class="w-16 h-1 bg-gradient-to-r from-accent to-primary"></div>
-                        </div>
-                        <p class="text-lg text-gray-600 mb-6 font-body leading-relaxed">
-                            <span class="text-primary font-semibold">SITARU</span> adalah platform digital terintegrasi yang dirancang khusus untuk memudahkan akses berbagai layanan administrasi kependudukan dan pencatatan sipil.
-                        </p>
-                        <p class="text-lg text-gray-600 mb-8 font-body leading-relaxed">
-                            Dengan teknologi terkini dan antarmuka yang intuitif, kami berkomitmen memberikan pengalaman terbaik untuk semua pengguna.
-                        </p>
-                        <div class="grid grid-cols-2 gap-8">
-                            <div class="text-center p-6 bg-gradient-to-br from-bg-accent to-white rounded-xl border border-accent">
-                                <div class="text-4xl font-bold text-primary mb-2 font-heading">1000+</div>
-                                <div class="text-gray-600 font-body">Pengguna Aktif</div>
+                <!-- Section Header -->
+                <div class="text-center mb-16">
+                    <div class="inline-block mb-6">
+                        <div class="w-20 h-1 bg-gradient-to-r from-[#155D4F] to-[#DAAF49] mx-auto mb-4"></div>
+                        <h2 class="text-3xl md:text-5xl font-bold text-[#155D4F] mb-4 font-heading">Tentang SITARU</h2>
+                        <div class="w-16 h-1 bg-gradient-to-r from-[#DAAF49] to-[#155D4F] mx-auto"></div>
+                    </div>
+                    <p class="text-lg text-gray-600 max-w-3xl mx-auto font-body">Sistem Informasi Terpadu Penataan Ruang</p>
+                </div>
+
+                <div class="grid lg:grid-cols-2 gap-12 items-center mb-16">
+                    <!-- Left Column: Description -->
+                    <div class="space-y-6">
+                        <div class="bg-gradient-to-br from-[#155D4F]/5 to-[#DAAF49]/5 rounded-2xl p-8 border border-[#DAAF49]/20 shadow-lg">
+                            <div class="flex items-start space-x-4 mb-6">
+                                <div class="w-12 h-12 bg-gradient-to-br from-[#155D4F] to-[#0F3D26] rounded-xl flex items-center justify-center shadow-lg flex-shrink-0">
+                                    <i class="fa fa-info-circle text-white text-xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-bold text-[#155D4F] mb-2 font-heading">Apa itu SITARU?</h3>
+                                    <p class="text-gray-600 font-body leading-relaxed">
+                                        <span class="text-[#155D4F] font-semibold">SITARU</span> adalah platform digital terintegrasi yang dirancang khusus untuk memudahkan akses berbagai layanan penataan ruang dan kesesuaian kegiatan pemanfaatan ruang (KKPR).
+                                    </p>
+                                </div>
                             </div>
-                            <div class="text-center p-6 bg-gradient-to-br from-bg-accent to-white rounded-xl border border-accent">
-                                <div class="text-4xl font-bold text-primary mb-2 font-heading">99.9%</div>
-                                <div class="text-gray-600 font-body">Uptime</div>
+                        </div>
+
+                        <div class="bg-gradient-to-br from-[#DAAF49]/5 to-[#155D4F]/5 rounded-2xl p-8 border border-[#155D4F]/20 shadow-lg">
+                            <div class="flex items-start space-x-4">
+                                <div class="w-12 h-12 bg-gradient-to-br from-[#DAAF49] to-[#d4a030] rounded-xl flex items-center justify-center shadow-lg flex-shrink-0">
+                                    <i class="fa fa-bullseye text-white text-xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-bold text-[#155D4F] mb-2 font-heading">Tujuan Kami</h3>
+                                    <p class="text-gray-600 font-body leading-relaxed">
+                                        Memberikan layanan publik yang cepat, transparan, dan efisien dengan memanfaatkan teknologi terkini untuk mendukung pembangunan berkelanjutan.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Feature List -->
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="flex items-center space-x-3 bg-white rounded-lg p-4 border border-gray-200 hover:border-[#155D4F] hover:shadow-md transition-all duration-300">
+                                <div class="w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center shadow-md">
+                                    <i class="fa fa-check text-white"></i>
+                                </div>
+                                <span class="text-sm font-semibold text-gray-700">Mudah Digunakan</span>
+                            </div>
+                            <div class="flex items-center space-x-3 bg-white rounded-lg p-4 border border-gray-200 hover:border-[#155D4F] hover:shadow-md transition-all duration-300">
+                                <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center shadow-md">
+                                    <i class="fa fa-shield-alt text-white"></i>
+                                </div>
+                                <span class="text-sm font-semibold text-gray-700">Aman & Terpercaya</span>
+                            </div>
+                            <div class="flex items-center space-x-3 bg-white rounded-lg p-4 border border-gray-200 hover:border-[#155D4F] hover:shadow-md transition-all duration-300">
+                                <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg flex items-center justify-center shadow-md">
+                                    <i class="fa fa-bolt text-white"></i>
+                                </div>
+                                <span class="text-sm font-semibold text-gray-700">Proses Cepat</span>
+                            </div>
+                            <div class="flex items-center space-x-3 bg-white rounded-lg p-4 border border-gray-200 hover:border-[#155D4F] hover:shadow-md transition-all duration-300">
+                                <div class="w-10 h-10 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center shadow-md">
+                                    <i class="fa fa-headset text-white"></i>
+                                </div>
+                                <span class="text-sm font-semibold text-gray-700">Support 24/7</span>
                             </div>
                         </div>
                     </div>
-                    <div class="lg:text-right">
-                        <div class="bg-white p-8 rounded-xl card-shadow border border-accent relative overflow-hidden">
-                            <div class="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-primary to-accent"></div>
-                            <div class="w-full h-64 bg-gradient-to-br from-bg-accent to-primary/10 rounded-lg flex items-center justify-center border border-accent relative">
-                                <div class="absolute inset-0 traditional-pattern opacity-10"></div>
-                                <svg class="w-24 h-24 text-primary relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
-                                </svg>
+
+                    <!-- Right Column: Stats & Visual -->
+                    <div class="space-y-6">
+                        <!-- Main Visual Card -->
+                        <div class="relative overflow-hidden bg-gradient-to-br from-[#155D4F] via-[#0F3D26] to-[#155D4F] rounded-2xl p-8 shadow-2xl">
+                            <div class="absolute inset-0 traditional-pattern opacity-10"></div>
+                            <div class="absolute top-0 right-0 w-32 h-32 bg-[#DAAF49]/20 rounded-full -translate-y-16 translate-x-16"></div>
+                            <div class="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full translate-y-12 -translate-x-12"></div>
+                            
+                            <div class="relative z-10 text-center text-white">
+                                <div class="w-24 h-24 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-xl">
+                                    <i class="fa fa-building text-5xl text-[#DAAF49]"></i>
+                                </div>
+                                <h3 class="text-2xl font-bold mb-4 font-heading">Platform Terpadu</h3>
+                                <p class="text-white/90 mb-8 leading-relaxed">Solusi digital untuk pengelolaan penataan ruang yang efektif dan efisien</p>
+                                
+                                <!-- Mini Stats -->
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div class="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+                                        <div class="flex items-center justify-center space-x-2 mb-2">
+                                            <i class="fa fa-clock text-[#DAAF49] text-xl"></i>
+                                            <span class="text-3xl font-bold">24/7</span>
+                                        </div>
+                                        <p class="text-xs text-white/80">Akses Kapan Saja</p>
+                                    </div>
+                                    <div class="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+                                        <div class="flex items-center justify-center space-x-2 mb-2">
+                                            <i class="fa fa-users text-[#DAAF49] text-xl"></i>
+                                            <span class="text-3xl font-bold">1K+</span>
+                                        </div>
+                                        <p class="text-xs text-white/80">Pengguna Aktif</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Stats Grid -->
+                        <div class="grid grid-cols-3 gap-4">
+                            <div class="group bg-white rounded-xl p-6 border-2 border-gray-100 hover:border-[#155D4F] shadow-md hover:shadow-xl transition-all duration-300 text-center">
+                                <div class="w-14 h-14 bg-gradient-to-br from-[#155D4F] to-[#0F3D26] rounded-xl flex items-center justify-center mx-auto mb-3 shadow-lg group-hover:scale-110 transition-transform">
+                                    <i class="fa fa-file-alt text-white text-2xl"></i>
+                                </div>
+                                <div class="text-3xl font-bold text-[#155D4F] mb-1 font-heading">500+</div>
+                                <div class="text-xs text-gray-600 font-body">Dokumen Diproses</div>
+                            </div>
+
+                            <div class="group bg-white rounded-xl p-6 border-2 border-gray-100 hover:border-[#DAAF49] shadow-md hover:shadow-xl transition-all duration-300 text-center">
+                                <div class="w-14 h-14 bg-gradient-to-br from-[#DAAF49] to-[#d4a030] rounded-xl flex items-center justify-center mx-auto mb-3 shadow-lg group-hover:scale-110 transition-transform">
+                                    <i class="fa fa-chart-line text-white text-2xl"></i>
+                                </div>
+                                <div class="text-3xl font-bold text-[#DAAF49] mb-1 font-heading">99%</div>
+                                <div class="text-xs text-gray-600 font-body">Kepuasan User</div>
+                            </div>
+
+                            <div class="group bg-white rounded-xl p-6 border-2 border-gray-100 hover:border-green-500 shadow-md hover:shadow-xl transition-all duration-300 text-center">
+                                <div class="w-14 h-14 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center mx-auto mb-3 shadow-lg group-hover:scale-110 transition-transform">
+                                    <i class="fa fa-thumbs-up text-white text-2xl"></i>
+                                </div>
+                                <div class="text-3xl font-bold text-green-600 mb-1 font-heading">100%</div>
+                                <div class="text-xs text-gray-600 font-body">Digital</div>
+                            </div>
+                        </div>
+
+                        <!-- Feature Badges -->
+                        <div class="bg-gradient-to-br from-gray-50 to-white rounded-2xl p-6 border border-gray-200 shadow-lg">
+                            <h4 class="text-lg font-bold text-[#155D4F] mb-4 font-heading flex items-center">
+                                <i class="fa fa-star text-[#DAAF49] mr-2"></i>
+                                Keunggulan Platform
+                            </h4>
+                            <div class="space-y-3">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-8 h-8 bg-gradient-to-br from-[#155D4F] to-[#0F3D26] rounded-lg flex items-center justify-center shadow-md">
+                                        <i class="fa fa-mobile-alt text-white text-sm"></i>
+                                    </div>
+                                    <span class="text-sm text-gray-700 font-body">Responsive di semua perangkat</span>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center shadow-md">
+                                        <i class="fa fa-database text-white text-sm"></i>
+                                    </div>
+                                    <span class="text-sm text-gray-700 font-body">Database terintegrasi & real-time</span>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-8 h-8 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg flex items-center justify-center shadow-md">
+                                        <i class="fa fa-lock text-white text-sm"></i>
+                                    </div>
+                                    <span class="text-sm text-gray-700 font-body">Keamanan data terjamin</span>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-8 h-8 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center shadow-md">
+                                        <i class="fa fa-sync text-white text-sm"></i>
+                                    </div>
+                                    <span class="text-sm text-gray-700 font-body">Update otomatis & monitoring</span>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                                </div>
+
+                <!-- Bottom Stats Grid -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                    <div class="group text-center p-6 bg-gradient-to-br from-[#155D4F]/5 to-white rounded-xl border-2 border-[#155D4F]/20 hover:border-[#155D4F] shadow-md hover:shadow-xl transition-all duration-300">
+                        <div class="w-16 h-16 bg-gradient-to-br from-[#155D4F] to-[#0F3D26] rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg group-hover:rotate-12 transition-transform">
+                            <i class="fa fa-users text-white text-2xl"></i>
+                        </div>
+                        <div class="text-4xl font-bold text-[#155D4F] mb-2 font-heading">1000+</div>
+                        <div class="text-sm text-gray-600 font-body font-semibold">Pengguna Terdaftar</div>
+                    </div>
+
+                    <div class="group text-center p-6 bg-gradient-to-br from-[#DAAF49]/5 to-white rounded-xl border-2 border-[#DAAF49]/20 hover:border-[#DAAF49] shadow-md hover:shadow-xl transition-all duration-300">
+                        <div class="w-16 h-16 bg-gradient-to-br from-[#DAAF49] to-[#d4a030] rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg group-hover:rotate-12 transition-transform">
+                            <i class="fa fa-server text-white text-2xl"></i>
+                        </div>
+                        <div class="text-4xl font-bold text-[#DAAF49] mb-2 font-heading">99.9%</div>
+                        <div class="text-sm text-gray-600 font-body font-semibold">Uptime Server</div>
+                    </div>
+
+                    <div class="group text-center p-6 bg-gradient-to-br from-green-500/5 to-white rounded-xl border-2 border-green-500/20 hover:border-green-500 shadow-md hover:shadow-xl transition-all duration-300">
+                        <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg group-hover:rotate-12 transition-transform">
+                            <i class="fa fa-map-marked-alt text-white text-2xl"></i>
+                        </div>
+                        <div class="text-4xl font-bold text-green-600 mb-2 font-heading">25</div>
+                        <div class="text-sm text-gray-600 font-body font-semibold">Kecamatan Terintegrasi</div>
+                    </div>
+
+                    <div class="group text-center p-6 bg-gradient-to-br from-blue-500/5 to-white rounded-xl border-2 border-blue-500/20 hover:border-blue-500 shadow-md hover:shadow-xl transition-all duration-300">
+                        <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg group-hover:rotate-12 transition-transform">
+                            <i class="fa fa-clock text-white text-2xl"></i>
+                        </div>
+                        <div class="text-4xl font-bold text-blue-600 mb-2 font-heading">24/7</div>
+                        <div class="text-sm text-gray-600 font-body font-semibold">Layanan Aktif</div>
+                    </div>
+                </div>
+            </div>
         </section>
 
         <!-- Contact Section -->
