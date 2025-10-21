@@ -1057,6 +1057,33 @@ class AdminKkprController extends Controller
         }
     }
 
+    public function viewDraft($id)
+    {
+        try {
+            $model = Kkpr::findOrFail($id);
+
+            // Validasi apakah draft file ada
+            if (!$model->draft_file) {
+                abort(404, 'Draft file tidak ditemukan');
+            }
+
+            $filePath = public_path('uploads/berkas/kkpr/' . $model->id . '/' . $model->draft_file);
+
+            // Cek apakah file ada
+            if (!file_exists($filePath)) {
+                abort(404, 'File tidak ditemukan');
+            }
+
+            // Return file sebagai response
+            return response()->file($filePath, [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'inline; filename="' . $model->draft_file . '"'
+            ]);
+        } catch (\Exception $e) {
+            abort(404, 'Terjadi kesalahan: ' . $e->getMessage());
+        }
+    }
+
     public function cetakBerkasKkpr($id)
     {
         try {
