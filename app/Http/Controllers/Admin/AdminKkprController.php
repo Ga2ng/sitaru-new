@@ -930,6 +930,38 @@ class AdminKkprController extends Controller
         }
     }
 
+    public function tolakDokumen(Request $request)
+    {
+        try {
+            $model = Kkpr::findOrFail($request->id);
+
+            // Update proses ke 0 (Ditolak)
+            $model->update([
+                'proses' => 0,
+                'revisi' => 0
+            ]);
+
+            // Tambah riwayat untuk proses 0 (Ditolak)
+            Kkpr_riwayat::create([
+                'kkpr_id' => $model->id,
+                'status_id' => 0,
+                'status' => 'Ditolak',
+                'keterangan' => 'Permohonan KKPR ditolak dan tidak dapat diproses lebih lanjut',
+                'revisi_detail' => $request->alasan_tolak
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Dokumen berhasil ditolak'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
     public function kirimKabid($id)
     {
         try {

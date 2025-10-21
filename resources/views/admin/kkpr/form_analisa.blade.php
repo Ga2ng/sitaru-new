@@ -422,15 +422,21 @@
 
         <!-- Submit Button -->
         <div class="bg-white/80 backdrop-blur-sm rounded-xl p-6 shadow-lg border border-white/20">
-            <div class="flex items-center justify-end space-x-4">
-                <a href="{{ route('admin.kkpr.index') }}" class="px-6 py-3 text-gray-700 bg-gray-100 hover:bg-gray-200 font-semibold rounded-xl transition-colors duration-200">
-                    <i class="fas fa-times mr-2"></i>
-                    Batal
-                </a>
-                <button type="submit" class="px-6 py-3 bg-gradient-to-r from-[#185B3C] to-[#0F3D26] text-white font-semibold rounded-xl hover:shadow-lg transform hover:scale-105 transition-all duration-200">
-                    <i class="fas fa-save mr-2"></i>
-                    {{ $isEdit ? 'Update' : 'Simpan' }} Analisa
+            <div class="flex items-center justify-between">
+                <button type="button" onclick="tolakDokumen({{ $model->id }})" class="px-6 py-3 bg-gradient-to-r from-red-500 to-red-600 text-white font-semibold rounded-xl hover:shadow-lg transform hover:scale-105 transition-all duration-200">
+                    <i class="fas fa-times-circle mr-2"></i>
+                    Tolak Dokumen
                 </button>
+                <div class="flex items-center space-x-4">
+                    <a href="{{ route('admin.kkpr.index') }}" class="px-6 py-3 text-gray-700 bg-gray-100 hover:bg-gray-200 font-semibold rounded-xl transition-colors duration-200">
+                        <i class="fas fa-arrow-left mr-2"></i>
+                        Kembali
+                    </a>
+                    <button type="submit" class="px-6 py-3 bg-gradient-to-r from-[#185B3C] to-[#0F3D26] text-white font-semibold rounded-xl hover:shadow-lg transform hover:scale-105 transition-all duration-200">
+                        <i class="fas fa-save mr-2"></i>
+                        {{ $isEdit ? 'Update' : 'Simpan' }} Analisa
+                    </button>
+                </div>
             </div>
         </div>
     </form>
@@ -818,6 +824,118 @@
                         icon: 'error',
                         title: 'Error!',
                         text: 'Terjadi kesalahan saat menghapus dokumen'
+                    });
+                });
+            }
+        });
+    }
+
+    // Tolak Dokumen
+    function tolakDokumen(id) {
+        Swal.fire({
+            title: 'Tolak Dokumen?',
+            html: `
+                <div class="text-left space-y-4">
+                    <div class="p-4 bg-red-50 border border-red-200 rounded-lg">
+                        <p class="text-sm text-red-700 font-semibold mb-2">
+                            <i class="fas fa-exclamation-triangle mr-2"></i>
+                            PERINGATAN: Tindakan ini PERMANEN!
+                        </p>
+                        <p class="text-xs text-gray-600">
+                            Dokumen akan ditolak dan tidak dapat diproses lebih lanjut. 
+                            Status akan berubah menjadi <strong>DITOLAK</strong> dan pemohon harus mengajukan permohonan baru.
+                        </p>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block text-sm font-semibold text-gray-700">Alasan Penolakan <span class="text-red-500">*</span></label>
+                        <textarea id="alasanTolak" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent" 
+                                  rows="5" 
+                                  placeholder="Contoh: Lokasi kegiatan tidak sesuai dengan peruntukan dalam RTRW..."
+                                  required></textarea>
+                    </div>
+                </div>
+            `,
+            icon: 'error',
+            showCancelButton: true,
+            confirmButtonText: '<i class="fas fa-ban mr-2"></i>Ya, Tolak Dokumen',
+            cancelButtonText: '<i class="fas fa-times mr-2"></i>Batal',
+            confirmButtonColor: '#dc2626',
+            cancelButtonColor: '#6b7280',
+            width: '650px',
+            customClass: {
+                confirmButton: 'px-6 py-3 font-semibold',
+                cancelButton: 'px-6 py-3 font-semibold'
+            },
+            preConfirm: () => {
+                const alasan = document.getElementById('alasanTolak').value;
+                if (!alasan || alasan.trim() === '') {
+                    Swal.showValidationMessage('Alasan penolakan harus diisi!');
+                    return false;
+                }
+                return alasan;
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const alasan = result.value;
+                
+                // Loading
+                Swal.fire({
+                    title: 'Memproses...',
+                    text: 'Mohon tunggu sebentar',
+                    allowOutsideClick: false,
+                    showConfirmButton: false,
+                    willOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
+                fetch('{{ route("admin.kkpr.tolak.dokumen") }}', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        id: id,
+                        alasan_tolak: alasan
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Dokumen Ditolak!',
+                            html: `
+                                <div class="text-left space-y-2">
+                                    <p class="text-sm text-gray-700">Permohonan KKPR telah <strong class="text-red-600">DITOLAK</strong> dan tidak dapat diproses lebih lanjut.</p>
+                                    <div class="mt-4 p-3 bg-red-50 rounded-lg border border-red-200">
+                                        <p class="text-xs font-semibold text-red-800 mb-1">Alasan Penolakan:</p>
+                                        <p class="text-sm text-gray-700">${alasan}</p>
+                                    </div>
+                                </div>
+                            `,
+                            confirmButtonColor: '#185B3C',
+                            confirmButtonText: 'OK'
+                        }).then(() => {
+                            window.location.href = '{{ route("admin.kkpr.index") }}';
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal!',
+                            text: data.message || 'Terjadi kesalahan saat menolak dokumen',
+                            confirmButtonColor: '#ef4444'
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: 'Terjadi kesalahan saat memproses penolakan',
+                        confirmButtonColor: '#ef4444'
                     });
                 });
             }

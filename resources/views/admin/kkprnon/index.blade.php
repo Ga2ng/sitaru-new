@@ -331,6 +331,7 @@
                         <div class="col-span-1">
                             @php
                                 $statusConfig = [
+                                    0 => ['label' => 'Ditolak', 'color' => 'red', 'icon' => 'fa-times-circle'],
                                     1 => ['label' => 'Pengajuan', 'color' => 'blue', 'icon' => 'fa-file-alt'],
                                     2 => ['label' => 'Upload', 'color' => 'yellow', 'icon' => 'fa-upload'],
                                     3 => ['label' => 'Validasi', 'color' => 'orange', 'icon' => 'fa-check-circle'],
@@ -344,8 +345,13 @@
                                 ];
                                 $status = $statusConfig[$kkpr->proses] ?? ['label' => 'Unknown', 'color' => 'gray', 'icon' => 'fa-question'];
                             @endphp
-                            @if($kkpr->revisi == 1)
-                                <button onclick="openRiwayat({{ $kkpr->id }})" class="inline-flex items-center px-2 py-1 text-xs font-bold rounded-full bg-red-100 text-red-800 border-2 border-red-300 shadow-sm hover:bg-red-200 transition-colors cursor-pointer" title="Lihat Riwayat Proses">
+                            @if($kkpr->proses == 0)
+                                <button onclick="openRiwayat({{ $kkpr->id }})" class="inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800 border-2 border-red-400 shadow-sm hover:bg-red-200 transition-colors cursor-pointer" title="Lihat Riwayat Proses">
+                                    <i class="fas fa-times-circle mr-1"></i>
+                                    Ditolak
+                                </button>
+                            @elseif($kkpr->revisi == 1)
+                                <button onclick="openRiwayat({{ $kkpr->id }})" class="inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800 border-2 border-yellow-300 shadow-sm hover:bg-yellow-200 transition-colors cursor-pointer" title="Lihat Riwayat Proses">
                                     <i class="fas fa-exclamation-triangle mr-1"></i>
                                     Revisi
                                 </button>
@@ -464,8 +470,18 @@
                 Lihat Detail
             </a>`;
         
+        // Jika status ditolak (0), hanya tampilkan menu view-only
+        if (parseInt(status) == 0) {
+            menuItems += `
+                <div class="px-4 py-3 bg-red-50 border border-red-200 rounded-lg">
+                    <p class="text-xs font-semibold text-red-700">
+                        <i class="fas fa-ban mr-1"></i> DOKUMEN DITOLAK
+                    </p>
+                    <p class="text-xs text-gray-600 mt-1">Tidak dapat diproses lebih lanjut</p>
+                </div>`;
+        }
         // Jika status sudah selesai (10), hanya tampilkan menu view-only
-        if (parseInt(status) == 10) {
+        else if (parseInt(status) == 10) {
             menuItems += `
                 <a href="/admin/kkprnon/${id}/peta" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-600 transition-colors">
                     <i class="fas fa-map w-4 mr-3"></i>
@@ -583,10 +599,10 @@
             }
             
             // SEPARATOR untuk aksi berbahaya
-            if (parseInt(status) < 10) {
+            if (parseInt(status) < 10 && parseInt(status) != 0) {
                 menuItems += `<div class="border-t border-gray-200 my-1"></div>`;
                 
-                // Hapus - hanya jika belum selesai
+                // Hapus - hanya jika belum selesai dan tidak ditolak
                 menuItems += `
                     <button onclick="deleteKkpr(${id}); closeDropdownModal();" class="w-full flex items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors text-left">
                         <i class="fas fa-trash w-4 mr-3"></i>
@@ -759,6 +775,7 @@
         console.log('Content element:', content);
         
         const badgeConfig = {
+            0: { icon: 'fa-times-circle', color: '#dc2626', label: 'Ditolak' },
             1: { icon: 'fa-address-card', color: '#db3102', label: 'Pengajuan' },
             2: { icon: 'fa-upload', color: '#dbac02', label: 'Upload Dokumen' },
             3: { icon: 'fa-check-circle', color: '#9edb02', label: 'Validasi' },
@@ -775,11 +792,15 @@
         let html = '<div class="relative"><div class="absolute left-6 top-0 bottom-0 w-0.5 bg-gradient-to-b from-[#185B3C] via-gray-300 to-gray-200"></div><div class="space-y-6">';
         
         riwayat.forEach((r, index) => {
-            if (r.status_id <= model.proses) {
-                const isRevisi = r.status_id == model.proses && model.revisi == 1;
+            // Tampilkan semua riwayat termasuk yang ditolak
+            const shouldDisplay = r.status_id <= model.proses || r.status_id == 0;
+            
+            if (shouldDisplay) {
+                const isDitolak = r.status_id == 0;
+                const isRevisi = r.status_id == model.proses && model.revisi == 1 && !isDitolak;
                 const badge = badgeConfig[r.status_id] || { icon: 'fa-file', color: '#6c757d', label: 'Unknown' };
-                const badgeIcon = isRevisi ? 'fa-exclamation-circle' : badge.icon;
-                const badgeColor = isRevisi ? 'red' : badge.color;
+                const badgeIcon = isDitolak ? 'fa-times-circle' : (isRevisi ? 'fa-exclamation-circle' : badge.icon);
+                const badgeColor = isDitolak ? '#dc2626' : (isRevisi ? '#eab308' : badge.color);
                 
                 const date = new Date(r.updated_at);
                 const formattedDate = date.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
@@ -790,10 +811,10 @@
                     <div class="absolute left-0 w-12 h-12 rounded-full flex items-center justify-center shadow-lg transition-transform duration-300 group-hover:scale-110 z-10" style="background-color: ${badgeColor}">
                         <i class="fa ${badgeIcon} text-white text-lg"></i>
                     </div>
-                    <div class="${isRevisi ? 'bg-red-50 border-red-200' : 'bg-white border-gray-200'} rounded-xl p-4 shadow-md border transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+                    <div class="${isDitolak ? 'bg-red-50 border-red-300 border-2' : (isRevisi ? 'bg-yellow-50 border-yellow-200' : 'bg-white border-gray-200')} rounded-xl p-4 shadow-md border transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
                         <div class="flex items-start justify-between mb-3">
                             <div class="flex-1">
-                                <h4 class="font-bold text-gray-900 text-base mb-1">${r.status}</h4>
+                                <h4 class="font-bold ${isDitolak ? 'text-red-900' : 'text-gray-900'} text-base mb-1">${r.status}</h4>
                                 <div class="flex items-center space-x-3 text-xs text-gray-500">
                                     <div class="flex items-center">
                                         <i class="fa fa-calendar mr-1.5"></i>
@@ -805,20 +826,27 @@
                                     </div>
                                 </div>
                             </div>
-                            ${isRevisi ? 
-                                '<span class="px-3 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800 border border-red-300"><i class="fa fa-exclamation-circle mr-1"></i>Revisi</span>' :
-                                (r.status_id == model.proses ? 
-                                    '<span class="px-3 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800 border border-blue-300"><i class="fa fa-spinner mr-1"></i>Aktif</span>' :
-                                    '<span class="px-3 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800 border border-green-300"><i class="fa fa-check mr-1"></i>Selesai</span>')
+                            ${isDitolak ? 
+                                '<span class="px-3 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800 border-2 border-red-400"><i class="fa fa-ban mr-1"></i>Ditolak</span>' :
+                                (isRevisi ? 
+                                    '<span class="px-3 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800 border border-yellow-300"><i class="fa fa-exclamation-circle mr-1"></i>Revisi</span>' :
+                                    (r.status_id == model.proses ? 
+                                        '<span class="px-3 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800 border border-blue-300"><i class="fa fa-spinner mr-1"></i>Aktif</span>' :
+                                        '<span class="px-3 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800 border border-green-300"><i class="fa fa-check mr-1"></i>Selesai</span>'))
                             }
                         </div>
-                        <div class="${isRevisi ? 'bg-white/50' : 'bg-gray-50'} rounded-lg p-3">
+                        <div class="${isDitolak ? 'bg-white/70' : (isRevisi ? 'bg-white/50' : 'bg-gray-50')} rounded-lg p-3">
                             <p class="text-sm text-gray-700 leading-relaxed">${r.keterangan}</p>
-                            ${isRevisi && r.revisi_detail ? 
-                                `<div class="mt-3 p-3 bg-red-50 border border-red-200 rounded-lg">
-                                    <p class="text-xs font-semibold text-red-800 mb-1"><i class="fa fa-info-circle mr-1"></i>Detail Revisi:</p>
-                                    <p class="text-sm text-red-700">${r.revisi_detail}</p>
-                                </div>` : ''
+                            ${isDitolak && r.revisi_detail ? 
+                                `<div class="mt-3 p-3 bg-red-100 border-2 border-red-300 rounded-lg">
+                                    <p class="text-xs font-semibold text-red-900 mb-1"><i class="fa fa-ban mr-1"></i>Alasan Penolakan:</p>
+                                    <p class="text-sm text-red-800 font-medium">${r.revisi_detail}</p>
+                                </div>` : 
+                                (isRevisi && r.revisi_detail ? 
+                                    `<div class="mt-3 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                                        <p class="text-xs font-semibold text-yellow-800 mb-1"><i class="fa fa-info-circle mr-1"></i>Detail Revisi:</p>
+                                        <p class="text-sm text-yellow-700">${r.revisi_detail}</p>
+                                    </div>` : '')
                             }
                         </div>
                     </div>
