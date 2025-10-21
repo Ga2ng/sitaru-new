@@ -542,11 +542,11 @@
             if (canKepalaDinas == true && parseInt(status) == 8) {
                 menuItems += `
                     <div class="border-t border-gray-100"></div>
-                    <button onclick="persetujuanDokumen(${id}); closeDropdownModal();" class="w-full flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-cyan-50 hover:text-cyan-600 transition-colors text-left">
+                    <a href="/admin/kkpr/${id}/persetujuan-dokumen" class="w-full flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-cyan-50 hover:text-cyan-600 transition-colors">
                         <i class="fas fa-check-double w-4 mr-3"></i>
                         <span class="flex-1">Persetujuan Dokumen</span>
                         <span class="text-xs bg-cyan-100 text-cyan-700 px-2 py-0.5 rounded-full">Step 5</span>
-                    </button>`;
+                    </a>`;
             }
             
             // PROSES 9: Upload Draft - hanya dengan permission Upload Draft
@@ -1026,58 +1026,6 @@
                         icon: 'error',
                         title: 'Error!',
                         text: 'Terjadi kesalahan saat mengirim dokumen'
-                    });
-                });
-            }
-        });
-    }
-
-    // Persetujuan Dokumen
-    function persetujuanDokumen(id) {
-        Swal.fire({
-            title: 'Setujui Dokumen?',
-            text: "Dokumen akan disetujui dan siap untuk proses TTD",
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonColor: '#06B6D4',
-            cancelButtonColor: '#6B7280',
-            confirmButtonText: 'Ya, Setujui!',
-            cancelButtonText: 'Batal'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                fetch(`/admin/kkpr/persetujuan-dokumen/${id}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Berhasil!',
-                            text: 'Dokumen berhasil disetujui',
-                            timer: 2000,
-                            showConfirmButton: false
-                        }).then(() => {
-                            location.reload();
-                        });
-                    } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Gagal!',
-                            text: data.message || 'Terjadi kesalahan'
-                        });
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error!',
-                        text: 'Terjadi kesalahan saat menyetujui dokumen'
                     });
                 });
             }

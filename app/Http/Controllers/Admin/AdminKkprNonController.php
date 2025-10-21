@@ -453,10 +453,17 @@ class AdminKkprNonController extends Controller
 
         $riwayat = Kkpr_riwayat::where('kkpr_id', $model->id)->where('status_id', 1)->first();
         if(!$riwayat){
-            Kkpr_riwayat::create(['kkpr_id' =>$model->id, 'status_id' => '1', 'status' => 'Pengajuan', 'keterangan' => 'Pengajuan dilakukan oleh Pemohon']);
+            Kkpr_riwayat::create([
+                'kkpr_id' => $model->id, 
+                'status_id' => '1', 
+                'status' => 'Pengajuan', 
+                'keterangan' => 'Pengajuan dilakukan oleh Pemohon'
+            ]);
         }
         else{
-            Kkpr_riwayat::where('id', $riwayat->id)->update(array('keterangan' => 'Pengajuan dilakukan oleh Pemohon'));
+            Kkpr_riwayat::where('id', $riwayat->id)->update([
+                'keterangan' => 'Pengajuan dilakukan oleh Pemohon'
+            ]);
         }
 
         return redirect()->back()->withSuccess('Data berhasil disimpan kedalam sistem');
@@ -747,6 +754,7 @@ class AdminKkprNonController extends Controller
                 'penerima' => $myuser->name,
                 'tgl_terima' => date("Y-m-d"),
                 'jam_terima' => date("h:i:s"),
+                'revisi' => 0,
             ]);
 
             $riwayat = Kkpr_riwayat::where('kkpr_id', $model->id)->where('status_id', 3)->first();
@@ -758,7 +766,9 @@ class AdminKkprNonController extends Controller
                     'keterangan' => 'Data dan persyaratan untuk permohonan KKPR telah divalidasi'
                 ]);
             } else {
-                $riwayat->update(['keterangan' => 'Data dan persyaratan untuk permohonan KKPR telah divalidasi']);
+                $riwayat->update([
+                    'keterangan' => 'Data dan persyaratan untuk permohonan KKPR telah divalidasi'
+                ]);
             }
 
             return response()->json(['success' => true, 'message' => 'Validasi berhasil']);
@@ -1001,7 +1011,9 @@ class AdminKkprNonController extends Controller
                     'keterangan' => 'Dokumen hasil penilaian telah diupload'
                 ]);
             } else {
-                $riwayat->update(['keterangan' => 'Dokumen hasil penilaian telah diperbarui']);
+                $riwayat->update([
+                    'keterangan' => 'Dokumen hasil penilaian telah diperbarui'
+                ]);
             }
 
             $message = $model->proses == 10 ?
@@ -1073,7 +1085,7 @@ class AdminKkprNonController extends Controller
             $model = Kkpr::where('jenis', 'umk')->findOrFail($request->id);
 
             // Update data analisa
-            $updateData = [
+            $model->update([
                 'status_rencana' => $request->status_rencana,
                 'rencana_manfaat' => $request->rencana_manfaat,
                 'status_lsd' => $request->status_lsd,
@@ -1085,9 +1097,12 @@ class AdminKkprNonController extends Controller
                 'pertimbangan' => $request->pertimbangan,
                 'pemeriksa_teknis' => $request->pemeriksa_teknis,
                 'status_analisa' => 'analisa',
-            ];
-
-            $model->update($updateData);
+                'no_nib' => $request->no_nib,
+                'tgl_terbit' => $request->tgl_terbit,
+                'alamat_kegiatan' => $request->alamat_kegiatan,
+                'status_penggunaan_tanah' => $request->status_penggunaan_tanah,
+                'luas_dimohon' => $request->luas_dimohon,
+            ]);
 
             // Update KBLI jika ada
             if ($request->has('kode_kbli') && $request->has('judul_kbli')) {
@@ -1117,6 +1132,12 @@ class AdminKkprNonController extends Controller
                 if (!file_exists($folder . '/kml')) {
                     mkdir($folder . '/kml', 0755, true);
                 }
+                
+                // Hapus file lama jika ada
+                if ($model->f_kml && file_exists($folder . '/kml/' . $model->f_kml)) {
+                    unlink($folder . '/kml/' . $model->f_kml);
+                }
+                
                 $fKml = $request->file('f_kml');
                 $filename = 'kml.' . $fKml->getClientOriginalExtension();
                 $fKml->move($folder . '/kml', $filename);
@@ -1126,12 +1147,20 @@ class AdminKkprNonController extends Controller
 
             // Save GeoJSON
             $kml_geo = $request->get('kml_geojson');
-            if ($kml_geo != null) {
+            if ($kml_geo != null && $kml_geo != '') {
                 $dir_to_save = $folder . '/kml/';
                 if (!is_dir($dir_to_save)) {
                     mkdir($folder . '/kml/', 0755, true);
                 }
-                file_put_contents($dir_to_save . 'geojson.geojson', $kml_geo);
+                
+                // Hapus file geojson lama jika ada
+                if ($model->f_geojson && file_exists($dir_to_save . $model->f_geojson)) {
+                    unlink($dir_to_save . $model->f_geojson);
+                }
+                
+                // Simpan dengan proper encoding
+                $geojsonData = is_string($kml_geo) ? $kml_geo : json_encode($kml_geo);
+                file_put_contents($dir_to_save . 'geojson.geojson', $geojsonData);
                 $model->update(['f_geojson' => 'geojson.geojson']);
             }
 
@@ -1140,12 +1169,27 @@ class AdminKkprNonController extends Controller
                 if (!file_exists($folder . '/peta')) {
                     mkdir($folder . '/peta', 0755, true);
                 }
+                
+                // Hapus foto lama jika ada
+                if ($model->foto_peta && file_exists($folder . '/peta/' . $model->foto_peta)) {
+                    unlink($folder . '/peta/' . $model->foto_peta);
+                }
+                
                 $fPeta = $request->file('foto_peta');
                 $filename = 'peta.' . $fPeta->guessClientExtension();
                 $fPeta->move($folder . '/peta', $filename);
 
                 $model->update(['foto_peta' => $filename]);
             }
+
+            // Update proses status dan refresh model
+            $model->update([
+                'proses' => 7,
+                'revisi' => 0
+            ]);
+            
+            // Refresh model untuk memastikan perubahan tersimpan
+            $model->refresh();
 
             // Update riwayat
             $riwayat = Kkpr_riwayat::where('kkpr_id', $model->id)->where('status_id', 7)->first();
@@ -1157,11 +1201,10 @@ class AdminKkprNonController extends Controller
                     'keterangan' => 'Data KKPR Non telah dianalisa oleh analis'
                 ]);
             } else {
-                $riwayat->update(['keterangan' => 'Data KKPR Non telah dianalisa oleh analis']);
+                $riwayat->update([
+                    'keterangan' => 'Data KKPR Non telah diupdate oleh analis'
+                ]);
             }
-
-            // Update proses status
-            $model->update(['proses' => 7]);
 
             DB::commit();
 
@@ -1231,37 +1274,6 @@ class AdminKkprNonController extends Controller
             }
 
             return response()->json(['success' => true, 'message' => 'Berhasil dikirim ke Kabid']);
-        } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => $e->getMessage()]);
-        }
-    }
-
-    public function persetujuanDokumen($id)
-    {
-        try {
-            $model = Kkpr::where('jenis', 'umk')->findOrFail($id);
-
-            // Update status proses
-            $model->update([
-                'proses' => 9 // Update proses ke 9 (Proses TTE)
-            ]);
-
-            // Tambah riwayat
-            $riwayat = Kkpr_riwayat::where('kkpr_id', $model->id)->where('status_id', 9)->first();
-            if (!$riwayat) {
-                Kkpr_riwayat::create([
-                    'kkpr_id' => $model->id,
-                    'status_id' => '9',
-                    'status' => 'Persetujuan Dokumen',
-                    'keterangan' => 'Dokumen telah disetujui dan siap untuk proses TTD'
-                ]);
-            } else {
-                Kkpr_riwayat::where('id', $riwayat->id)->update([
-                    'keterangan' => 'Dokumen telah disetujui dan siap untuk proses TTD'
-                ]);
-            }
-
-            return response()->json(['success' => true, 'message' => 'Dokumen berhasil disetujui']);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => $e->getMessage()]);
         }
@@ -1353,6 +1365,102 @@ class AdminKkprNonController extends Controller
         } catch (\Exception $e) {
             return redirect()->back()
                 ->withError('Terjadi kesalahan saat generate PDF: ' . $e->getMessage());
+        }
+    }
+
+    // Persetujuan Dokumen - Menampilkan Page
+    public function persetujuanDokumen($id)
+    {
+        $model = Kkpr::findOrFail($id);
+        $kbli = Kbli::where('id_kkpr', $id)->where('jenis', 'UMK')->get();
+
+        $data = [
+            'model' => $model,
+            'kbli' => $kbli,
+        ];
+
+        return view($this->base_view . 'persetujuan_dokumen', $data);
+    }
+
+    // Persetujuan Dokumen - Revisi (Balik ke Proses 6)
+    public function persetujuanRevisi(Request $request)
+    {
+        try {
+            $model = Kkpr::findOrFail($request->id);
+
+            // Update status ke proses 6 (Survey) dan set revisi
+            $model->update([
+                'proses' => 6,
+                'revisi' => 1
+            ]);
+
+            // Update riwayat proses 8 (Analisa) dengan catatan revisi
+            $riwayat = Kkpr_riwayat::where('kkpr_id', $model->id)
+                ->where('status_id', 8)
+                ->first();
+            
+            if ($riwayat) {
+                $riwayat->update([
+                    'revisi_detail' => $request->catatan_revisi,
+                    'status' => 'Revisi',
+                    'keterangan' => 'Hasil analisa perlu diperbaiki. Silakan lakukan revisi sesuai catatan.'
+                ]);
+            }
+
+            // Tambah riwayat baru untuk proses kembali ke 6
+            Kkpr_riwayat::create([
+                'kkpr_id' => $model->id,
+                'status_id' => 6,
+                'status' => 'Survey',
+                'keterangan' => 'Dokumen dikembalikan untuk perbaikan hasil analisa',
+                'revisi_detail' => $request->catatan_revisi
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Dokumen berhasil direvisi dan dikembalikan ke tahap Survey'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    // Persetujuan Dokumen - Setuju (Lanjut ke Proses 9)
+    public function persetujuanSetuju(Request $request)
+    {
+        try {
+            $model = Kkpr::findOrFail($request->id);
+            $myuser = Auth::user();
+
+            // Update status ke proses 9 (Upload Draft)
+            $model->update([
+                'proses' => 9,
+                'revisi' => 0
+            ]);
+
+            // Tambah riwayat untuk proses 9
+            $riwayat = Kkpr_riwayat::where('kkpr_id', $model->id)->where('status_id', 9)->first();
+            if (!$riwayat) {
+                Kkpr_riwayat::create([
+                    'kkpr_id' => $model->id,
+                    'status_id' => 9,
+                    'status' => 'Persetujuan Dokumen',
+                    'keterangan' => 'Dokumen telah disetujui oleh Kepala Dinas. Menunggu upload draft dokumen oleh admin.'
+                ]);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Dokumen berhasil disetujui dan dilanjutkan ke tahap Upload Draft'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+            ], 500);
         }
     }
 

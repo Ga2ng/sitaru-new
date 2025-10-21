@@ -55,7 +55,9 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'permission:User'])-
             Route::post('kkpr/hapus-dokumen', [AdminKkprController::class, 'hapusDokumen'])->name('kkpr.hapus.dokumen');
             Route::post('kkpr/survey/{id}', [AdminKkprController::class, 'survey'])->name('kkpr.survey');
             Route::post('kkpr/kirim-kabid/{id}', [AdminKkprController::class, 'kirimKabid'])->name('kkpr.kirim.kabid');
-            Route::post('kkpr/persetujuan-dokumen/{id}', [AdminKkprController::class, 'persetujuanDokumen'])->name('kkpr.persetujuan.dokumen');
+            Route::get('kkpr/{id}/persetujuan-dokumen', [AdminKkprController::class, 'persetujuanDokumen'])->name('kkpr.persetujuan');
+            Route::post('kkpr/persetujuan/revisi', [AdminKkprController::class, 'persetujuanRevisi'])->name('kkpr.persetujuan.revisi');
+            Route::post('kkpr/persetujuan/setuju', [AdminKkprController::class, 'persetujuanSetuju'])->name('kkpr.persetujuan.setuju');
             Route::post('kkpr/upload-draft', [AdminKkprController::class, 'uploadDraft'])->name('kkpr.upload.draft');
             Route::get('kkpr/{kkpr}/cetak-berkas', [AdminKkprController::class, 'cetakBerkasKkpr'])->name('kkpr.cetak.berkas');
 
@@ -73,7 +75,9 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'permission:User'])-
             Route::post('kkprnon/hapus-dokumen', [AdminKkprNonController::class, 'hapusDokumenAnalisa'])->name('kkprnon.hapus.dokumen');
             Route::post('kkprnon/survey/{id}', [AdminKkprNonController::class, 'survey'])->name('kkprnon.survey');
             Route::post('kkprnon/kirim-kabid/{id}', [AdminKkprNonController::class, 'kirimKabid'])->name('kkprnon.kirim.kabid');
-            Route::post('kkprnon/persetujuan-dokumen/{id}', [AdminKkprNonController::class, 'persetujuanDokumen'])->name('kkprnon.persetujuan.dokumen');
+            Route::get('kkprnon/{id}/persetujuan-dokumen', [AdminKkprNonController::class, 'persetujuanDokumen'])->name('kkprnon.persetujuan');
+            Route::post('kkprnon/persetujuan/revisi', [AdminKkprNonController::class, 'persetujuanRevisi'])->name('kkprnon.persetujuan.revisi');
+            Route::post('kkprnon/persetujuan/setuju', [AdminKkprNonController::class, 'persetujuanSetuju'])->name('kkprnon.persetujuan.setuju');
             Route::post('kkprnon/upload-draft', [AdminKkprNonController::class, 'uploadDraft'])->name('kkprnon.upload.draft');
             Route::delete('kkprnon/{id}/delete-file/{fieldName}', [AdminKkprNonController::class, 'deleteFile'])->name('kkprnon.delete.file');
             Route::get('kkprnon/{kkprnon}/cetak-berkas', [AdminKkprNonController::class, 'cetakBerkasUmk'])->name('kkprnon.cetak.berkas');
