@@ -525,19 +525,19 @@
     // Open Upload Draft Modal
     function openUploadDraftModal(id) {
         document.getElementById('upload_draft_kkpr_id').value = id;
-        document.getElementById('upload-draft-modal').classList.remove('hidden');
-        document.getElementById('upload-draft-backdrop').classList.remove('hidden');
+        document.getElementById('upload-draft-modal').style.display = 'block';
+        document.getElementById('upload-draft-backdrop').style.display = 'block';
         document.body.style.overflow = 'hidden';
     }
 
     // Close Upload Draft Modal
     function closeUploadDraftModal() {
-        document.getElementById('upload-draft-modal').classList.add('hidden');
-        document.getElementById('upload-draft-backdrop').classList.add('hidden');
+        document.getElementById('upload-draft-modal').style.display = 'none';
+        document.getElementById('upload-draft-backdrop').style.display = 'none';
         document.getElementById('upload-draft-form').reset();
         document.getElementById('file-name-display').textContent = 'Belum ada file dipilih';
         document.getElementById('file-size-display').textContent = '';
-        document.getElementById('file-preview-section').classList.add('hidden');
+        document.getElementById('file-preview-section').style.display = 'none';
         document.body.style.overflow = 'auto';
     }
 
@@ -654,49 +654,49 @@
     </div>
 </div>
 
-<!-- Upload Draft Modal -->
-<div id="upload-draft-backdrop" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-[9998] transition-opacity" onclick="closeUploadDraftModal()"></div>
-<div id="upload-draft-modal" class="hidden fixed inset-0 z-[9999] overflow-y-auto">
-    <div class="flex min-h-full items-center justify-center p-4">
-        <div class="relative bg-white rounded-2xl shadow-2xl max-w-lg w-full transform transition-all">
+<!-- Upload Draft Modal - Inline CSS Version -->
+<div id="upload-draft-backdrop" style="display: none; position: fixed; top: 0; right: 0; bottom: 0; left: 0; background-color: rgba(0, 0, 0, 0.5); backdrop-filter: blur(4px); z-index: 9998; transition: opacity 0.15s;" onclick="closeUploadDraftModal()"></div>
+<div id="upload-draft-modal" style="display: none; position: fixed; top: 0; right: 0; bottom: 0; left: 0; z-index: 9999; overflow-y: auto;">
+    <div style="display: flex; min-height: 100%; align-items: center; justify-content: center; padding: 1rem;">
+        <div style="position: relative; background-color: #ffffff; border-radius: 1rem; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); max-width: 32rem; width: 100%; transform: translateY(0); transition: all 0.15s;">
             <!-- Modal Header -->
-            <div class="relative overflow-hidden bg-gradient-to-br from-emerald-500 via-emerald-600 to-teal-600 px-6 py-8 rounded-t-2xl">
-                <div class="absolute inset-0 bg-black/10"></div>
-                <div class="relative z-10 flex items-center justify-between">
-                    <div class="flex items-center space-x-4">
-                        <div class="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center shadow-lg">
-                            <i class="fas fa-file-upload text-3xl text-white"></i>
+            <div style="position: relative; overflow: hidden; background: linear-gradient(to bottom right, #10b981, #059669, #0d9488); padding: 2rem 1.5rem; border-radius: 1rem 1rem 0 0;">
+                <div style="position: absolute; top: 0; right: 0; bottom: 0; left: 0; background-color: rgba(0, 0, 0, 0.1);"></div>
+                <div style="position: relative; z-index: 10; display: flex; align-items: center; justify-content: space-between;">
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <div style="width: 3.5rem; height: 3.5rem; background-color: rgba(255, 255, 255, 0.2); backdrop-filter: blur(4px); border-radius: 0.75rem; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);">
+                            <i class="fas fa-file-upload" style="font-size: 1.875rem; color: #ffffff;"></i>
                         </div>
                         <div>
-                            <h3 class="text-2xl font-bold text-white">Upload Draft Dokumen</h3>
-                            <p class="text-sm text-white/80 mt-1">Upload dokumen hasil penilaian (PDF)</p>
+                            <h3 style="font-size: 1.5rem; font-weight: 700; color: #ffffff; margin: 0;">Upload Draft Dokumen</h3>
+                            <p style="font-size: 0.875rem; color: rgba(255, 255, 255, 0.8); margin: 0.25rem 0 0 0;">Upload dokumen hasil penilaian (PDF)</p>
                         </div>
                     </div>
-                    <button type="button" onclick="closeUploadDraftModal()" class="text-white/80 hover:text-white hover:bg-white/20 rounded-lg p-2 transition-all">
-                        <i class="fas fa-times text-xl"></i>
+                    <button type="button" onclick="closeUploadDraftModal()" style="color: rgba(255, 255, 255, 0.8); border: none; background: transparent; border-radius: 0.5rem; padding: 0.5rem; transition: all 0.15s; cursor: pointer;" onmouseover="this.style.color='#ffffff'; this.style.backgroundColor='rgba(255, 255, 255, 0.2)';" onmouseout="this.style.color='rgba(255, 255, 255, 0.8)'; this.style.backgroundColor='transparent';">
+                        <i class="fas fa-times" style="font-size: 1.25rem;"></i>
                     </button>
                 </div>
                 <!-- Decorative circles -->
-                <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-16 translate-x-16"></div>
-                <div class="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full translate-y-12 -translate-x-12"></div>
+                <div style="position: absolute; top: 0; right: 0; width: 8rem; height: 8rem; background-color: rgba(255, 255, 255, 0.1); border-radius: 50%; transform: translate(4rem, -4rem);"></div>
+                <div style="position: absolute; bottom: 0; left: 0; width: 6rem; height: 6rem; background-color: rgba(255, 255, 255, 0.1); border-radius: 50%; transform: translate(-3rem, 3rem);"></div>
             </div>
 
             <!-- Modal Body -->
-            <form id="upload-draft-form" action="{{ route('member.kkpr.upload.draft') }}" method="POST" enctype="multipart/form-data" class="p-6">
+            <form id="upload-draft-form" action="{{ route('member.kkpr.upload.draft') }}" method="POST" enctype="multipart/form-data" style="padding: 1.5rem;">
                 @csrf
                 <input type="hidden" name="kkpr_id" id="upload_draft_kkpr_id">
 
                 <!-- Upload Area -->
-                <div class="space-y-4">
+                <div style="display: flex; flex-direction: column; gap: 1rem;">
                     <!-- Info Box -->
-                    <div class="bg-gradient-to-r from-emerald-50 to-teal-50 border-l-4 border-emerald-500 rounded-lg p-4">
-                        <div class="flex items-start space-x-3">
-                            <i class="fas fa-info-circle text-emerald-600 mt-0.5"></i>
-                            <div class="flex-1">
-                                <p class="text-sm font-medium text-emerald-900">Informasi Upload</p>
-                                <ul class="text-xs text-emerald-700 mt-2 space-y-1 list-disc list-inside">
-                                    <li>Format file: <strong>PDF</strong></li>
-                                    <li>Ukuran maksimal: <strong>10 MB</strong></li>
+                    <div style="background: linear-gradient(to right, #d1fae5, #ccfbf1); border-left: 4px solid #10b981; border-radius: 0.5rem; padding: 1rem;">
+                        <div style="display: flex; align-items: flex-start; gap: 0.75rem;">
+                            <i class="fas fa-info-circle" style="color: #059669; margin-top: 0.125rem;"></i>
+                            <div style="flex: 1;">
+                                <p style="font-size: 0.875rem; font-weight: 500; color: #064e3b; margin: 0 0 0.5rem 0;">Informasi Upload</p>
+                                <ul style="font-size: 0.75rem; color: #047857; margin: 0; padding-left: 1.25rem; list-style: disc;">
+                                    <li style="margin-bottom: 0.25rem;">Format file: <strong>PDF</strong></li>
+                                    <li style="margin-bottom: 0.25rem;">Ukuran maksimal: <strong>10 MB</strong></li>
                                     <li>Dokumen akan otomatis menyelesaikan proses</li>
                                 </ul>
                             </div>
@@ -704,44 +704,44 @@
                     </div>
 
                     <!-- File Upload Area -->
-                    <div class="relative">
-                        <label class="block text-sm font-semibold text-gray-700 mb-3">
-                            <i class="fas fa-file-pdf mr-2 text-emerald-600"></i>
-                            Pilih File PDF <span class="text-red-500">*</span>
+                    <div style="position: relative;">
+                        <label style="display: block; font-size: 0.875rem; font-weight: 600; color: #374151; margin-bottom: 0.75rem;">
+                            <i class="fas fa-file-pdf" style="margin-right: 0.5rem; color: #059669;"></i>
+                            Pilih File PDF <span style="color: #ef4444;">*</span>
                         </label>
                         
-                        <div class="relative border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:border-emerald-500 transition-all duration-300 bg-gradient-to-br from-gray-50 to-gray-100">
+                        <div style="position: relative; border: 2px dashed #d1d5db; border-radius: 0.75rem; padding: 2rem; text-align: center; background: linear-gradient(to bottom right, #f9fafb, #e5e7eb); transition: border-color 0.3s;" onmouseover="this.style.borderColor='#10b981';" onmouseout="this.style.borderColor='#d1d5db';">
                             <input type="file" id="draft_file" name="draft_file" accept="application/pdf" required
-                                   class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+                                   style="position: absolute; top: 0; right: 0; bottom: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; z-index: 10;">
                             
-                            <div class="pointer-events-none">
-                                <div class="w-16 h-16 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
-                                    <i class="fas fa-cloud-upload-alt text-3xl text-white"></i>
+                            <div style="pointer-events: none;">
+                                <div style="width: 4rem; height: 4rem; background: linear-gradient(to bottom right, #10b981, #0d9488); border-radius: 1rem; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem auto; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);">
+                                    <i class="fas fa-cloud-upload-alt" style="font-size: 1.875rem; color: #ffffff;"></i>
                                 </div>
-                                <p class="text-base font-semibold text-gray-700 mb-1">Klik atau drag file ke sini</p>
-                                <p class="text-xs text-gray-500">PDF, maksimal 10 MB</p>
+                                <p style="font-size: 1rem; font-weight: 600; color: #374151; margin: 0 0 0.25rem 0;">Klik atau drag file ke sini</p>
+                                <p style="font-size: 0.75rem; color: #6b7280; margin: 0;">PDF, maksimal 10 MB</p>
                             </div>
                         </div>
 
                         <!-- File Preview -->
-                        <div id="file-preview-section" class="hidden mt-4 p-4 bg-white border-2 border-emerald-200 rounded-xl">
-                            <div class="flex items-center space-x-4">
-                                <div class="w-12 h-12 bg-gradient-to-br from-red-500 to-red-600 rounded-lg flex items-center justify-center flex-shrink-0 shadow-md">
-                                    <i class="fas fa-file-pdf text-2xl text-white"></i>
+                        <div id="file-preview-section" style="display: none; margin-top: 1rem; padding: 1rem; background-color: #ffffff; border: 2px solid #a7f3d0; border-radius: 0.75rem;">
+                            <div style="display: flex; align-items: center; gap: 1rem;">
+                                <div style="width: 3rem; height: 3rem; background: linear-gradient(to bottom right, #ef4444, #dc2626); border-radius: 0.5rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+                                    <i class="fas fa-file-pdf" style="font-size: 1.5rem; color: #ffffff;"></i>
                                 </div>
-                                <div class="flex-1 min-w-0">
-                                    <p class="text-sm font-semibold text-gray-900 truncate" id="file-name-display">Belum ada file dipilih</p>
-                                    <div class="flex items-center space-x-2 mt-1">
-                                        <span class="text-xs text-gray-500" id="file-size-display"></span>
-                                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">
-                                            <i class="fas fa-check-circle mr-1"></i>
+                                <div style="flex: 1; min-width: 0;">
+                                    <p style="font-size: 0.875rem; font-weight: 600; color: #111827; margin: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" id="file-name-display">Belum ada file dipilih</p>
+                                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-top: 0.25rem;">
+                                        <span style="font-size: 0.75rem; color: #6b7280;" id="file-size-display"></span>
+                                        <span style="display: inline-flex; align-items: center; padding: 0.125rem 0.5rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 500; background-color: #d1fae5; color: #065f46;">
+                                            <i class="fas fa-check-circle" style="margin-right: 0.25rem;"></i>
                                             Siap Upload
                                         </span>
                                     </div>
                                 </div>
-                                <button type="button" onclick="document.getElementById('draft_file').value=''; document.getElementById('file-preview-section').classList.add('hidden');" 
-                                        class="text-gray-400 hover:text-red-600 transition-colors">
-                                    <i class="fas fa-times-circle text-xl"></i>
+                                <button type="button" onclick="document.getElementById('draft_file').value=''; document.getElementById('file-preview-section').style.display='none';" 
+                                        style="color: #9ca3af; border: none; background: transparent; cursor: pointer; transition: color 0.15s; padding: 0.25rem;" onmouseover="this.style.color='#dc2626';" onmouseout="this.style.color='#9ca3af';">
+                                    <i class="fas fa-times-circle" style="font-size: 1.25rem;"></i>
                                 </button>
                             </div>
                         </div>
@@ -749,15 +749,15 @@
                 </div>
 
                 <!-- Modal Footer -->
-                <div class="flex items-center justify-end space-x-3 mt-6 pt-6 border-t border-gray-200">
+                <div style="display: flex; align-items: center; justify-content: flex-end; gap: 0.75rem; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #e5e7eb;">
                     <button type="button" onclick="closeUploadDraftModal()" 
-                            class="px-6 py-2.5 text-gray-700 bg-gray-100 hover:bg-gray-200 font-semibold rounded-xl transition-all duration-200">
-                        <i class="fas fa-times mr-2"></i>
+                            style="padding: 0.625rem 1.5rem; color: #374151; background-color: #f3f4f6; font-weight: 600; border-radius: 0.75rem; transition: all 0.2s; border: none; cursor: pointer;" onmouseover="this.style.backgroundColor='#e5e7eb';" onmouseout="this.style.backgroundColor='#f3f4f6';">
+                        <i class="fas fa-times" style="margin-right: 0.5rem;"></i>
                         Batal
                     </button>
                     <button type="submit" 
-                            class="px-6 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-xl hover:shadow-lg hover:scale-105 transition-all duration-200">
-                        <i class="fas fa-upload mr-2"></i>
+                            style="padding: 0.625rem 1.5rem; background: linear-gradient(to right, #10b981, #0d9488); color: #ffffff; font-weight: 600; border-radius: 0.75rem; transition: all 0.2s; border: none; cursor: pointer;" onmouseover="this.style.boxShadow='0 10px 15px -3px rgba(0, 0, 0, 0.1)'; this.style.transform='scale(1.05)';" onmouseout="this.style.boxShadow='none'; this.style.transform='scale(1)';">
+                        <i class="fas fa-upload" style="margin-right: 0.5rem;"></i>
                         Upload Dokumen
                     </button>
                 </div>
