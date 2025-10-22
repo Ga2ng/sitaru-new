@@ -868,6 +868,160 @@ class AdminKkprController extends Controller
         }
     }
 
+    public function editAnalisa($id)
+    {
+        $model = Kkpr::with(['user', 'kkpr_kbli'])->findOrFail($id);
+        
+        // Validasi: hanya bisa edit jika proses == 7 dan revisi != 1
+        // if ($model->proses == 7 ) {
+        //     return redirect()->route($this->path . '.index')
+        //         ->with('error', 'Tidak dapat mengedit analisa dalam kondisi ini');
+        // }
+        
+        $kbli = Kbli::where('id_kkpr', $id)->where('jenis', 'KKPR')->get();
+        
+        $data = [
+            'model' => $model,
+            'kbli' => $kbli,
+            'title' => 'Edit Analisa KKPR',
+            'isEdit' => true,
+            'analis' => User::permission('Analis')->get(),
+        ];
+
+        return view($this->base_view . 'form_analisa', $data);
+    }
+
+    public function updateAnalisa(Request $request, $id)
+    {
+        try {
+            DB::beginTransaction();
+
+            $model = Kkpr::findOrFail($id);
+            
+            // Validasi: hanya bisa edit jika proses == 7 dan revisi != 1
+            // if ($model->proses != 7 || $model->revisi == 1) {
+            //     return redirect()->route($this->path . '.index')
+            //         ->with('error', 'Tidak dapat mengedit analisa dalam kondisi ini');
+            // }
+
+            // Update data analisa
+            $model->update([
+                'status_rencana' => $request->status_rencana,
+                'rencana_manfaat' => $request->rencana_manfaat,
+                'status_lsd' => $request->status_lsd,
+                'kdb' => $request->kdb,
+                'klb' => $request->klb,
+                'kdh' => $request->kdh,
+                'gsb' => $request->gsb,
+                'tinggi_bangunan' => $request->tinggi_bangunan,
+                'pertimbangan' => $request->pertimbangan,
+                'pemeriksa_teknis' => $request->pemeriksa_teknis,
+                'no_nib' => $request->no_nib,
+                'tgl_terbit' => $request->tgl_terbit,
+                'alamat_kegiatan' => $request->alamat_kegiatan,
+                'status_penggunaan_tanah' => $request->status_penggunaan_tanah,
+                'luas_dimohon' => $request->luas_dimohon,
+            ]);
+
+            // Update KBLI jika ada
+            if ($request->has('kode_kbli') && $request->has('judul_kbli')) {
+                Kbli::where('id_kkpr', $model->id)->where('jenis', 'KKPR')->delete();
+
+                $kode_kbli = $request->get('kode_kbli');
+                $judul_kbli = $request->get('judul_kbli');
+
+                foreach ($kode_kbli as $key => $kode) {
+                    Kbli::create([
+                        'jenis' => 'KKPR',
+                        'id_kkpr' => $model->id,
+                        'kode_kbli' => $kode,
+                        'judul_kbli' => $judul_kbli[$key],
+                    ]);
+                }
+            }
+
+            // Handle file uploads
+            $folder = 'uploads/berkas/kkpr/' . $model->id;
+            if (!file_exists($folder)) {
+                mkdir($folder, 0755, true);
+            }
+
+            // Upload KML
+            if ($request->hasFile('f_kml')) {
+                if (!file_exists($folder . '/kml')) {
+                    mkdir($folder . '/kml', 0755, true);
+                }
+                
+                // Hapus file lama jika ada
+                if ($model->f_kml && file_exists($folder . '/kml/' . $model->f_kml)) {
+                    unlink($folder . '/kml/' . $model->f_kml);
+                }
+                
+                $fKml = $request->file('f_kml');
+                $filename = 'kml.' . $fKml->getClientOriginalExtension();
+                $fKml->move($folder . '/kml', $filename);
+
+                $model->update(['f_kml' => $filename]);
+            }
+
+            // Save GeoJSON
+            $kml_geo = $request->get('kml_geojson');
+            if ($kml_geo != null && $kml_geo != '') {
+                $dir_to_save = $folder . '/kml/';
+                if (!is_dir($dir_to_save)) {
+                    mkdir($folder . '/kml/', 0755, true);
+                }
+                
+                // Hapus file geojson lama jika ada
+                if ($model->f_geojson && file_exists($dir_to_save . $model->f_geojson)) {
+                    unlink($dir_to_save . $model->f_geojson);
+                }
+                
+                // Simpan dengan proper encoding
+                $geojsonData = is_string($kml_geo) ? $kml_geo : json_encode($kml_geo);
+                file_put_contents($dir_to_save . 'geojson.geojson', $geojsonData);
+                $model->update(['f_geojson' => 'geojson.geojson']);
+            }
+
+            // Upload Foto Peta
+            if ($request->hasFile('foto_peta')) {
+                if (!file_exists($folder . '/peta')) {
+                    mkdir($folder . '/peta', 0755, true);
+                }
+                
+                // Hapus foto lama jika ada
+                if ($model->foto_peta && file_exists($folder . '/peta/' . $model->foto_peta)) {
+                    unlink($folder . '/peta/' . $model->foto_peta);
+                }
+                
+                $fPeta = $request->file('foto_peta');
+                $filename = 'peta.' . $fPeta->guessClientExtension();
+                $fPeta->move($folder . '/peta', $filename);
+
+                $model->update(['foto_peta' => $filename]);
+            }
+
+            // Update riwayat
+            $riwayat = Kkpr_riwayat::where('kkpr_id', $model->id)->where('status_id', 7)->first();
+            if ($riwayat) {
+                $riwayat->update([
+                    'keterangan' => 'Data analisa KKPR telah diperbarui oleh analis'
+                ]);
+            }
+
+            DB::commit();
+
+            return redirect()->route($this->path . '.index')
+                ->with('success', 'Data analisa berhasil diperbarui');
+
+        } catch (\Exception $e) {
+            DB::rollback();
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
+    }
+
     public function hapusDokumen(Request $request)
     {
         try {

@@ -52,6 +52,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'permission:User'])-
             Route::post('kkpr/revisi', [AdminKkprController::class, 'validasiRevisi'])->name('kkpr.revisi');
             Route::get('kkpr/{kkpr}/analisa', [AdminKkprController::class, 'analisa'])->name('kkpr.analisa');
             Route::post('kkpr/analisa/store', [AdminKkprController::class, 'analisaStore'])->name('kkpr.analisa.store');
+            Route::get('kkpr/{kkpr}/edit-analisa', [AdminKkprController::class, 'editAnalisa'])->name('kkpr.edit.analisa');
+            Route::put('kkpr/{kkpr}/update-analisa', [AdminKkprController::class, 'updateAnalisa'])->name('kkpr.update.analisa');
             Route::post('kkpr/tolak-dokumen', [AdminKkprController::class, 'tolakDokumen'])->name('kkpr.tolak.dokumen');
             Route::post('kkpr/hapus-dokumen', [AdminKkprController::class, 'hapusDokumen'])->name('kkpr.hapus.dokumen');
             Route::post('kkpr/survey/{id}', [AdminKkprController::class, 'survey'])->name('kkpr.survey');
@@ -74,6 +76,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'permission:User'])-
             Route::post('kkprnon/revisi', [AdminKkprNonController::class, 'validasiRevisi'])->name('kkprnon.revisi');
             Route::get('kkprnon/{kkprnon}/analisa', [AdminKkprNonController::class, 'analisa'])->name('kkprnon.analisa');
             Route::post('kkprnon/analisa/store', [AdminKkprNonController::class, 'analisaStore'])->name('kkprnon.analisa.store');
+            Route::get('kkprnon/{kkprnon}/edit-analisa', [AdminKkprNonController::class, 'editAnalisa'])->name('kkprnon.edit.analisa');
+            Route::put('kkprnon/{kkprnon}/update-analisa', [AdminKkprNonController::class, 'updateAnalisa'])->name('kkprnon.update.analisa');
             Route::post('kkprnon/tolak-dokumen', [AdminKkprNonController::class, 'tolakDokumen'])->name('kkprnon.tolak.dokumen');
             Route::post('kkprnon/hapus-dokumen', [AdminKkprNonController::class, 'hapusDokumenAnalisa'])->name('kkprnon.hapus.dokumen');
             Route::post('kkprnon/survey/{id}', [AdminKkprNonController::class, 'survey'])->name('kkprnon.survey');

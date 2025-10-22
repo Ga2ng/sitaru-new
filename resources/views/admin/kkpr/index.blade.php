@@ -523,7 +523,16 @@
                         <span class="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">Step 1</span>
                     </a>`;
             }
-            
+
+            // Edit Analisa - jika proses == 7 dan revisi != 1
+            if (parseInt(status) == 7 && parseInt(revisi) != 1) {
+                menuItems += `
+                    <a href="/admin/kkpr/${id}/edit-analisa" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition-colors">
+                        <i class="fas fa-edit w-4 mr-3"></i>
+                        <span class="flex-1">Edit Analisa</span>
+                        <span class="text-xs bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-full">Edit</span>
+                    </a>`;
+            }
             // PROSES 2-5: Survey & Analisa - hanya untuk Analis
             if (canSurvey && parseInt(status) >= 3 && parseInt(status) < 7) {
                 menuItems += `<div class="border-t border-gray-100"></div>`;
