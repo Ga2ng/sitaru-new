@@ -78,1057 +78,969 @@
         </div>
     </div>
 
-    <!-- Map Container -->
+    <!-- Map Container with Modern Design -->
     <div class="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg border border-white/20 overflow-hidden">
         <!-- Map Header -->
         <div class="px-6 py-4 bg-gradient-to-r from-gray-50 to-gray-100 border-b border-gray-200">
             <div class="flex items-center justify-between">
                 <div class="flex items-center space-x-3">
                     <div class="w-8 h-8 bg-gradient-to-br from-[#185B3C] to-[#0F3D26] rounded-lg flex items-center justify-center">
-                        <i class="fas fa-map text-white text-sm"></i>
+                        <i class="fas fa-map-marked-alt text-white text-sm"></i>
                     </div>
                     <div>
                         <h3 class="text-lg font-bold text-gray-900">Peta Interaktif</h3>
-                        <p class="text-sm text-gray-600">Klik pada area untuk melihat informasi detail</p>
+                        <p class="text-sm text-gray-600">Eksplorasi tata ruang Banyuwangi</p>
                     </div>
                 </div>
                 <div class="flex items-center space-x-2">
-                    <button onclick="resetMapView()" class="flex items-center px-3 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-white/80 rounded-lg transition-colors">
-                        <i class="fas fa-redo mr-1 text-xs"></i>
-                        Reset View
+                    <button class="flex items-center px-3 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-white/80 rounded-lg transition-colors">
+                        <i class="fas fa-expand-arrows-alt mr-1 text-xs"></i>
+                        Fullscreen
+                    </button>
+                    <button class="flex items-center px-3 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-white/80 rounded-lg transition-colors">
+                        <i class="fas fa-download mr-1 text-xs"></i>
+                        Export
                     </button>
                 </div>
             </div>
         </div>
 
         <!-- Map Content -->
-        <div class="p-6">
-            <div id="map" class="w-full rounded-xl border border-gray-200 shadow-inner" style="height: 70vh; min-height: 500px;"></div>
-        </div>
-
-        <!-- Map Legend -->
-        <div class="px-6 py-4 bg-gradient-to-r from-gray-50 to-gray-100 border-t border-gray-200">
-            <h4 class="text-sm font-bold text-gray-900 mb-3">Legenda:</h4>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div class="flex items-center space-x-2">
-                    <div class="w-4 h-4 bg-yellow-500 rounded"></div>
-                    <span class="text-xs text-gray-700">KKPR Terbit Otomatis</span>
+        <div class="relative">
+            <div id='map' style='width: 100%; height: 75vh;'></div>
+            
+            <!-- Layer Control Panel -->
+            <div id="layers-control" class="absolute top-4 right-4 bg-white/95 backdrop-blur-sm p-4 rounded-xl shadow-lg border border-white/20 max-w-80 max-h-96 overflow-y-auto">
+                <div class="flex justify-between items-center mb-4">
+                    <h6 class="font-bold text-gray-900">Layer Control</h6>
+                    <button class="btn btn-sm btn-outline-primary" id="resetAllOpacity" title="Reset semua opacity ke 100%">
+                        <i class="fas fa-undo text-xs"></i>
+                    </button>
                 </div>
-                <div class="flex items-center space-x-2">
-                    <div class="w-4 h-4 bg-green-500 rounded"></div>
-                    <span class="text-xs text-gray-700">Persetujuan Bagi UMK</span>
+                
+                <!-- Koordinat Search -->
+                <div class="mb-4 p-3 bg-gray-50 rounded-lg">
+                    <label class="form-label font-semibold text-sm">Cari Koordinat</label>
+                    <div class="space-y-2">
+                        <input type="text" class="form-control form-control-sm" id="longitude" placeholder="Longitude">
+                        <input type="text" class="form-control form-control-sm" id="latitude" placeholder="Latitude">
+                        <div class="flex gap-2">
+                            <button class="btn btn-primary btn-sm flex-1" id="searchCoordinate">Cari</button>
+                            <button class="btn btn-secondary btn-sm flex-1" id="resetMap">Reset</button>
+                        </div>
+                    </div>
                 </div>
-                <div class="flex items-center space-x-2">
-                    <div class="w-4 h-4 bg-purple-300 rounded"></div>
-                    <span class="text-xs text-gray-700">Batas Kecamatan</span>
-                </div>
-                <div class="flex items-center space-x-2">
-                    <div class="w-4 h-4 bg-blue-300 rounded"></div>
-                    <span class="text-xs text-gray-700">Pola Ruang</span>
+                
+                <hr class="my-3">
+                
+                <!-- Layer Controls -->
+                <div class="space-y-3">
+                    <!-- Batas Kecamatan -->
+                    <div class="layer-item p-3 border rounded-lg bg-white/50">
+                        <div class="flex justify-between items-center mb-2">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="batasKecamatanCheck">
+                                <label class="form-check-label font-semibold text-sm" for="batasKecamatanCheck">Batas Kecamatan</label>
+                            </div>
+                        </div>
+                        <div class="opacity-control">
+                            <label class="form-label small mb-1">Opacity: <span id="batasKecamatanOpacity">100%</span></label>
+                            <input type="range" class="form-range opacity-slider" id="batasKecamatanOpacitySlider" min="0" max="100" value="100">
+                        </div>
+                    </div>
+                    
+                    <!-- LSD -->
+                    <div class="layer-item p-3 border rounded-lg bg-white/50">
+                        <div class="flex justify-between items-center mb-2">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="lsdCheck">
+                                <label class="form-check-label font-semibold text-sm" for="lsdCheck">LSD</label>
+                            </div>
+                        </div>
+                        <div class="opacity-control">
+                            <label class="form-label small mb-1">Opacity: <span id="lsdOpacity">100%</span></label>
+                            <input type="range" class="form-range opacity-slider" id="lsdOpacitySlider" min="0" max="100" value="100">
+                        </div>
+                    </div>
+                    
+                    <!-- RTRW 2024 -->
+                    <div class="layer-item p-3 border rounded-lg bg-white/50">
+                        <div class="flex justify-between items-center mb-2">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="rtrwCheck">
+                                <label class="form-check-label font-semibold text-sm" for="rtrwCheck">RTRW 2024</label>
+                            </div>
+                        </div>
+                        <div class="opacity-control">
+                            <label class="form-label small mb-1">Opacity: <span id="rtrwOpacity">100%</span></label>
+                            <input type="range" class="form-range opacity-slider" id="rtrwOpacitySlider" min="0" max="100" value="100">
+                        </div>
+                    </div>
+                    
+                    <!-- RDTR Glagah-Giri -->
+                    <div class="layer-item p-3 border rounded-lg bg-white/50">
+                        <div class="flex justify-between items-center mb-2">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="rdtrGlagahGiriCheck">
+                                <label class="form-check-label font-semibold text-sm" for="rdtrGlagahGiriCheck">RDTR Glagah-Giri</label>
+                            </div>
+                        </div>
+                        <div class="opacity-control">
+                            <label class="form-label small mb-1">Opacity: <span id="rdtrGlagahGiriOpacity">100%</span></label>
+                            <input type="range" class="form-range opacity-slider" id="rdtrGlagahGiriOpacitySlider" min="0" max="100" value="100">
+                        </div>
+                    </div>
+                    
+                    <!-- RDTR Licin -->
+                    <div class="layer-item p-3 border rounded-lg bg-white/50">
+                        <div class="flex justify-between items-center mb-2">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="rdtrLicinCheck">
+                                <label class="form-check-label font-semibold text-sm" for="rdtrLicinCheck">RDTR Licin</label>
+                            </div>
+                        </div>
+                        <div class="opacity-control">
+                            <label class="form-label small mb-1">Opacity: <span id="rdtrLicinOpacity">100%</span></label>
+                            <input type="range" class="form-range opacity-slider" id="rdtrLicinOpacitySlider" min="0" max="100" value="100">
+                        </div>
+                    </div>
+                    
+                    <!-- RDTR Kabat -->
+                    <div class="layer-item p-3 border rounded-lg bg-white/50">
+                        <div class="flex justify-between items-center mb-2">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="rdtrKabatCheck">
+                                <label class="form-check-label font-semibold text-sm" for="rdtrKabatCheck">RDTR Kabat</label>
+                            </div>
+                        </div>
+                        <div class="opacity-control">
+                            <label class="form-label small mb-1">Opacity: <span id="rdtrKabatOpacity">100%</span></label>
+                            <input type="range" class="form-range opacity-slider" id="rdtrKabatOpacitySlider" min="0" max="100" value="100">
+                        </div>
+                    </div>
+                    
+                    <!-- RDTR Rogojampi -->
+                    <div class="layer-item p-3 border rounded-lg bg-white/50">
+                        <div class="flex justify-between items-center mb-2">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="rdtrRogojampiCheck">
+                                <label class="form-check-label font-semibold text-sm" for="rdtrRogojampiCheck">RDTR Rogojampi</label>
+                            </div>
+                        </div>
+                        <div class="opacity-control">
+                            <label class="form-label small mb-1">Opacity: <span id="rdtrRogojampiOpacity">100%</span></label>
+                            <input type="range" class="form-range opacity-slider" id="rdtrRogojampiOpacitySlider" min="0" max="100" value="100">
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
 
-    <!-- Info Box -->
-    <div class="bg-blue-50 border border-blue-200 rounded-xl p-4">
-        <div class="flex items-start space-x-3">
-            <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
-                <i class="fas fa-info-circle text-blue-600 text-sm"></i>
+            <!-- Legend Panel -->
+            <div id="legend-panel" class="absolute top-4 left-4 bg-white/95 backdrop-blur-sm p-4 rounded-xl shadow-lg border border-white/20 max-w-72 max-h-96 overflow-y-auto">
+                <div class="font-bold text-lg text-gray-900 mb-3 flex items-center gap-2">
+                    <i class="fas fa-list-ul"></i>
+                    Legenda Peta
+                </div>
+                <div id="legend-content"></div>
             </div>
-            <div>
-                <h4 class="font-bold text-blue-900 mb-1">Tips Menggunakan Peta:</h4>
-                <ul class="text-sm text-blue-700 space-y-1">
-                    <li>• Gunakan kontrol layer di pojok kanan atas untuk mengubah basemap dan layer</li>
-                    <li>• Klik pada area berwarna untuk melihat informasi detail</li>
-                    <li>• Gunakan mouse scroll untuk zoom in/out</li>
-                    <li>• Gunakan search box untuk mencari lokasi spesifik</li>
-                </ul>
+
+            <!-- Info Zona Card -->
+            <div id="info-zona-container" class="absolute bottom-4 left-1/2 transform -translate-x-1/2 w-full max-w-4xl px-4">
+                <div id="info-zona-card" class="hidden bg-white/95 backdrop-blur-sm rounded-xl shadow-lg border border-white/20 overflow-hidden">
+                    <!-- Header -->
+                    <div id="info-zona-header" class="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-4 flex items-center gap-3">
+                        <span id="info-zona-color" class="w-6 h-6 rounded bg-gray-300"></span>
+                        <div>
+                            <div id="info-zona-title" class="font-semibold text-lg">Informasi Zona</div>
+                            <div id="info-zona-layer" class="text-sm opacity-90">-</div>
+                        </div>
+                    </div>
+                    <!-- Content -->
+                    <div class="p-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="bg-white rounded-lg p-4 border-l-4 border-blue-500">
+                                <div id="info-zona-namobj"></div>
+                            </div>
+                            <div class="bg-gray-50 rounded-lg p-4">
+                                <div class="font-semibold text-gray-900 mb-2 flex items-center gap-2">
+                                    <i class="fas fa-info-circle text-blue-500"></i>
+                                    Ringkasan Zona
+                                </div>
+                                <div id="info-zona-namobj-summary"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Leaflet CSS -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin="" />
-<link rel="stylesheet" href="https://unpkg.com/leaflet-geosearch@3.3.2/dist/geosearch.css" />
+<!-- OpenLayers CSS -->
+<link href="https://cdn.jsdelivr.net/npm/openlayers@4.6.5/dist/ol.min.css" rel="stylesheet">
+
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
 <style>
-    .info2 {
-        padding: 6px 8px;
-        font: 14px/16px Arial, Helvetica, sans-serif;
-        background: white;
-        box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-        border-radius: 5px;
-        width: 190px;
+    body {
+        font-family: 'Inter', sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+    
+    .font-heading { 
+        font-family: 'Poppins', sans-serif; 
+    }
+    
+    .font-body { 
+        font-family: 'Inter', sans-serif; 
+    }
+    
+    /* Layer Control Styling */
+    .layer-item {
+        transition: all 0.3s ease;
     }
 
-    .info2 h4 {
-        margin: 0 0 5px;
-        color: #777;
+    .layer-item:hover {
+        background: #f8f9fa !important;
+        transform: translateX(2px);
     }
 
-    .leaflet-control-layers {
-        max-height: 500px;
+    .opacity-control {
+        margin-top: 8px;
+    }
+
+    .opacity-slider {
+        height: 6px;
+        border-radius: 3px;
+        background: #dee2e6;
+        outline: none;
+        -webkit-appearance: none;
+    }
+
+    .opacity-slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: #185B3C;
+        cursor: pointer;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    .opacity-slider::-moz-range-thumb {
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: #185B3C;
+        cursor: pointer;
+        border: none;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    .form-range::-webkit-slider-track {
+        background: linear-gradient(to right, #185B3C 0%, #185B3C 50%, #dee2e6 50%, #dee2e6 100%);
+        border-radius: 3px;
+    }
+
+    #layers-control {
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .layer-controls {
+        max-height: 60vh;
         overflow-y: auto;
     }
 
-    .leaflet-popup-content {
-        margin: 10px;
+    .layer-controls::-webkit-scrollbar {
+        width: 6px;
     }
 
-    .leaflet-popup-content table {
-        width: 100%;
-        font-size: 12px;
+    .layer-controls::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 3px;
     }
 
-    .leaflet-popup-content table td {
-        padding: 4px;
+    .layer-controls::-webkit-scrollbar-thumb {
+        background: #c1c1c1;
+        border-radius: 3px;
+    }
+
+    .layer-controls::-webkit-scrollbar-thumb:hover {
+        background: #a8a8a8;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        #layers-control {
+            position: relative !important;
+            top: 20px !important;
+            right: auto !important;
+            margin: 0 auto 20px auto;
+            max-width: 100% !important;
+            max-height: none !important;
+        }
+        
+        .layer-controls {
+            max-height: 40vh;
+        }
+    }
+
+    /* Animation for layer items */
+    .layer-item {
+        animation: fadeInUp 0.3s ease-out;
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Hover effects for buttons */
+    #resetAllOpacity:hover {
+        transform: scale(1.05);
+        transition: transform 0.2s ease;
     }
 </style>
 
-<!-- Leaflet JS -->
-<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
-<script src="{{ url('/') }}/plugins/leaflet/layer/tile/Bing.js"></script>
-<script src="https://unpkg.com/leaflet.vectorgrid@latest/dist/Leaflet.VectorGrid.bundled.js"></script>
-<script src="https://unpkg.com/leaflet-geosearch@3.3.2/dist/geosearch.umd.js"></script>
+<!-- Include OpenLayers JS -->
+<script src="https://cdn.jsdelivr.net/npm/openlayers@4.6.5/dist/ol.min.js"></script>
 
-<!-- GeoJSON Data -->
-<script type="text/javascript" src="{{ url('/') }}/mapdata/R2.js"></script>
-<script type="text/javascript" src="{{ asset('mapdata/newgeo/BATAS_KECAMATAN.js') }}"></script>
-<script type="text/javascript" src="{{ asset('mapdata/newgeo/POLA_RUANG_BWI.js') }}"></script>
-<script type="text/javascript" src="{{ asset('mapdata/newgeo/POLA_RUANG_KETAPANG.js') }}"></script>
-<script type="text/javascript" src="{{ asset('mapdata/newgeo/LAND_USE.js') }}"></script>
-<script type="text/javascript" src="{{ asset('mapdata/newgeo/LSD_BANYUWANGI.js') }}"></script>
-<script type="text/javascript" src="{{ asset('mapdata/newgeo/RDTR_GLAGAH_GIRI.js') }}"></script>
+<script>
+    // Inisialisasi peta dengan center di Banyuwangi
+    var map = new ol.Map({
+        target: 'map',
+        layers: [
+            new ol.layer.Tile({
+                source: new ol.source.OSM()
+            })
+        ],
+        view: new ol.View({
+            // Koordinat center Banyuwangi
+            center: ol.proj.fromLonLat([114.3691, -8.2191]),
+            zoom: 10
+        })
+    });
 
-<script type="text/javascript">
-    var map = L.map('map').setView([-8.218079, 114.3290605], 13.6);
-    map.setMaxZoom(22);
+    // Layer WMS untuk batas kecamatan
+    var batasKecamatan = new ol.layer.Vector({
+        title: 'Batas Kecamatan',
+        source: new ol.source.Vector({
+            url: '{{ asset('mapdata/newgeo/BATAS KECAMATAN.geojson') }}',
+            format: new ol.format.GeoJSON()
+        }),
+        visible: false,
+        opacity: 1,
+        style: function(feature) {
+            return new ol.style.Style({
+                fill: new ol.style.Fill({
+                    color: feature.get('WARNA')
+                }),
+                stroke: new ol.style.Stroke({
+                    color: feature.get('WARNA'),
+                    width: 2
+                })
+            });
+        }
+    });
+
+    // Event listener untuk memastikan layer sudah ter-load
+    batasKecamatan.getSource().on('featuresloadend', function() {
+        console.log('Batas Kecamatan layer loaded');
+        batasKecamatan.setOpacity(1);
+    });
+
+    // Layer LSD
+    var lsdLayer = new ol.layer.Vector({
+        title: 'LSD',
+        source: new ol.source.Vector({
+            url: '{{ asset('mapdata/newgeo/LSD BANYUWANGI.geojson') }}',
+            format: new ol.format.GeoJSON()
+        }),
+        visible: false,
+        opacity: 1,
+        style: function(feature) {
+            var lsdType = feature.get('LSD');
+            var fillColor;
+            
+            if (lsdType === 'Lahan Sawah yang Dilindungi di Dalam Kawasan Hutan') {
+                fillColor = '#13a126';
+            } else if (lsdType === 'Lahan Sawah yang Dilindungi di Luar Kawasan Hutan') {
+                fillColor = '#b6fc60';
+            } else {
+                fillColor = '#d9faf4';
+            }
+            
+            return new ol.style.Style({
+                fill: new ol.style.Fill({
+                    color: fillColor,
+                    opacity: 0.5
+                }),
+                stroke: new ol.style.Stroke({
+                    color: 'black',
+                    width: 0,
+                    opacity: 0.2
+                })
+            });
+        }
+    });
+
+    lsdLayer.getSource().on('featuresloadend', function() {
+        console.log('LSD layer loaded');
+        lsdLayer.setOpacity(1);
+    });
+
+    // Layer RTRW 2024
+    var rtrwLayer = new ol.layer.Vector({
+        title: 'RTRW 2024',
+        source: new ol.source.Vector({
+            url: '{{ asset('mapdata/newgeo/RTRW BWI 24.geojson') }}',
+            format: new ol.format.GeoJSON()
+        }),
+        visible: false,
+        opacity: 1,
+        style: function(feature) {
+            return new ol.style.Style({
+                fill: new ol.style.Fill({
+                    color: feature.get('WARNA')
+                }),
+                stroke: new ol.style.Stroke({
+                    color: feature.get('WARNA'),
+                    width: 2
+                })
+            });
+        }
+    });
+
+    rtrwLayer.getSource().on('featuresloadend', function() {
+        console.log('RTRW layer loaded');
+        rtrwLayer.setOpacity(1);
+    });
+
+    // Layer RDTR Glagah-Giri
+    var rdtrGlagahGiri = new ol.layer.Vector({
+        title: 'RDTR Glagah-Giri',
+        source: new ol.source.Vector({
+            url: '{{ asset('mapdata/newgeo/RDTR GLAGAH GIRI.geojson') }}',
+            format: new ol.format.GeoJSON()
+        }),
+        visible: false,
+        opacity: 1,
+        style: function(feature) {
+            return new ol.style.Style({
+                fill: new ol.style.Fill({
+                    color: feature.get('WARNA')
+                }),
+                stroke: new ol.style.Stroke({
+                    color: feature.get('WARNA'),
+                    width: 2
+                })
+            });
+        }
+    });
+
+    rdtrGlagahGiri.getSource().on('featuresloadend', function() {
+        console.log('RDTR Glagah-Giri layer loaded');
+        rdtrGlagahGiri.setOpacity(1);
+    });
+
+    // Layer RDTR Licin
+    var rdtrLicin = new ol.layer.Vector({
+        title: 'RDTR Licin',
+        source: new ol.source.Vector({
+            url: '{{ asset('mapdata/newgeo/LICIN.geojson') }}',
+            format: new ol.format.GeoJSON()
+        }),
+        visible: false,
+        opacity: 1,
+        style: function(feature) {
+            return new ol.style.Style({
+                fill: new ol.style.Fill({
+                    color: feature.get('WARNA')
+                }),
+                stroke: new ol.style.Stroke({
+                    color: feature.get('WARNA'),
+                    width: 2
+                })
+            });
+        }
+    });
+
+    rdtrLicin.getSource().on('featuresloadend', function() {
+        console.log('RDTR Licin layer loaded');
+        rdtrLicin.setOpacity(1);
+    });
+
+    // Layer RDTR Kabat
+    var rdtrKabat = new ol.layer.Vector({
+        title: 'RDTR Kabat',
+        source: new ol.source.Vector({
+            url: '{{ asset('mapdata/newgeo/KABAT.geojson') }}',
+            format: new ol.format.GeoJSON()
+        }),
+        visible: false,
+        opacity: 1,
+        style: function(feature) {
+            return new ol.style.Style({
+                fill: new ol.style.Fill({
+                    color: feature.get('WARNA')
+                }),
+                stroke: new ol.style.Stroke({
+                    color: feature.get('WARNA'),
+                    width: 2
+                })
+            });
+        }
+    });
+
+    rdtrKabat.getSource().on('featuresloadend', function() {
+        console.log('RDTR Kabat layer loaded');
+        rdtrKabat.setOpacity(1);
+    });
+
+    // Layer RDTR Rogojampi
+    var rdtrRogojampi = new ol.layer.Vector({
+        title: 'RDTR Rogojampi', 
+        source: new ol.source.Vector({
+            url: '{{ asset('mapdata/newgeo/ROGOJAMPI.geojson') }}',
+            format: new ol.format.GeoJSON()
+        }),
+        visible: false,
+        opacity: 1,
+        style: function(feature) {
+            return new ol.style.Style({
+                fill: new ol.style.Fill({
+                    color: feature.get('WARNA')
+                }),
+                stroke: new ol.style.Stroke({
+                    color: feature.get('WARNA'),
+                    width: 2
+                })
+            });
+        }
+    });
+
+    rdtrRogojampi.getSource().on('featuresloadend', function() {
+        console.log('RDTR Rogojampi layer loaded');
+        rdtrRogojampi.setOpacity(1);
+    });
+
+    // Membuat layer untuk marker pencarian
+    var markerSource = new ol.source.Vector();
+    var markerLayer = new ol.layer.Vector({
+        source: markerSource,
+        style: new ol.style.Style({
+            image: new ol.style.Icon({
+                anchor: [0.5, 1],
+                src: '{{ asset("frontend/img/map-marker.png") }}',
+                scale: 0.5
+            })
+        }),
+        zIndex: 9999
+    });
+
+    // Simpan view awal untuk reset
+    var initialCenter = ol.proj.fromLonLat([114.3691, -8.2191]);
+    var initialZoom = 10;
+
+    // Fungsi untuk mencari koordinat
+    $('#searchCoordinate').on('click', function() {
+        var lon = parseFloat($('#longitude').val());
+        var lat = parseFloat($('#latitude').val());
+        
+        if (isNaN(lon) || isNaN(lat)) {
+            alert('Masukkan koordinat yang valid');
+            return;
+        }
+        
+        markerSource.clear();
+        
+        var marker = new ol.Feature({
+            geometry: new ol.geom.Point(ol.proj.fromLonLat([lon, lat]))
+        });
+        markerSource.addFeature(marker);
+        
+        map.getView().animate({
+            center: ol.proj.fromLonLat([lon, lat]),
+            zoom: 15,
+            duration: 1000
+        });
+        
+        setTimeout(function() {
+            markerLayer.setZIndex(9999);
+            map.render();
+        }, 1100);
+    });
+
+    // Fungsi untuk reset peta
+    $('#resetMap').on('click', function() {
+        markerSource.clear();
+        $('#longitude').val('');
+        $('#latitude').val('');
+        
+        map.getView().animate({
+            center: initialCenter,
+            zoom: initialZoom,
+            duration: 1000
+        });
+        
+        setTimeout(function() {
+            markerLayer.setZIndex(9999);
+            map.render();
+        }, 1100);
+    });
+
+    // Event listeners untuk checkbox layer control
+    $(document).ready(function() {
+        function ensureMarkerOnTop() {
+            markerLayer.setZIndex(9999);
+            map.render();
+        }
+        
+        $('#batasKecamatanCheck').on('change', function() {
+            batasKecamatan.setVisible(this.checked);
+            ensureMarkerOnTop();
+        });
+
+        $('#lsdCheck').on('change', function() {
+            lsdLayer.setVisible(this.checked);
+            ensureMarkerOnTop();
+        });
+
+        $('#rtrwCheck').on('change', function() {
+            rtrwLayer.setVisible(this.checked);
+            ensureMarkerOnTop();
+        });
+
+        $('#rdtrGlagahGiriCheck').on('change', function() {
+            rdtrGlagahGiri.setVisible(this.checked);
+            ensureMarkerOnTop();
+        });
+
+        $('#rdtrLicinCheck').on('change', function() {
+            rdtrLicin.setVisible(this.checked);
+            ensureMarkerOnTop();
+        });
+
+        $('#rdtrKabatCheck').on('change', function() {
+            rdtrKabat.setVisible(this.checked);
+            ensureMarkerOnTop();
+        });
+
+        $('#rdtrRogojampiCheck').on('change', function() {
+            rdtrRogojampi.setVisible(this.checked);
+            ensureMarkerOnTop();
+        });
+    });
+
+    // Event listeners untuk opacity sliders
+    $(document).ready(function() {
+        function ensureMarkerOnTop() {
+            markerLayer.setZIndex(9999);
+            map.render();
+        }
+        
+        function setLayerOpacity(layer, sliderId, labelId) {
+            try {
+                var opacity = parseFloat($(sliderId).val()) / 100;
+                layer.setOpacity(opacity);
+                $(labelId).text($(sliderId).val() + '%');
+                map.render();
+                ensureMarkerOnTop();
+            } catch (error) {
+                console.error('Error setting opacity:', error);
+            }
+        }
+
+        $('#batasKecamatanOpacitySlider').on('input', function() {
+            setLayerOpacity(batasKecamatan, '#batasKecamatanOpacitySlider', '#batasKecamatanOpacity');
+        });
+
+        $('#lsdOpacitySlider').on('input', function() {
+            setLayerOpacity(lsdLayer, '#lsdOpacitySlider', '#lsdOpacity');
+        });
+
+        $('#rtrwOpacitySlider').on('input', function() {
+            setLayerOpacity(rtrwLayer, '#rtrwOpacitySlider', '#rtrwOpacity');
+        });
+
+        $('#rdtrGlagahGiriOpacitySlider').on('input', function() {
+            setLayerOpacity(rdtrGlagahGiri, '#rdtrGlagahGiriOpacitySlider', '#rdtrGlagahGiriOpacity');
+        });
+
+        $('#rdtrLicinOpacitySlider').on('input', function() {
+            setLayerOpacity(rdtrLicin, '#rdtrLicinOpacitySlider', '#rdtrLicinOpacity');
+        });
+
+        $('#rdtrKabatOpacitySlider').on('input', function() {
+            setLayerOpacity(rdtrKabat, '#rdtrKabatOpacitySlider', '#rdtrKabatOpacity');
+        });
+
+        $('#rdtrRogojampiOpacitySlider').on('input', function() {
+            setLayerOpacity(rdtrRogojampi, '#rdtrRogojampiOpacitySlider', '#rdtrRogojampiOpacity');
+        });
+    });
+
+    // Reset semua opacity ke 100%
+    $('#resetAllOpacity').on('click', function() {
+        $('.opacity-slider').val(100);
+        
+        batasKecamatan.setOpacity(1);
+        lsdLayer.setOpacity(1);
+        rtrwLayer.setOpacity(1);
+        rdtrGlagahGiri.setOpacity(1);
+        rdtrLicin.setOpacity(1);
+        rdtrKabat.setOpacity(1);
+        rdtrRogojampi.setOpacity(1);
+        
+        $('.opacity-slider').each(function() {
+            var id = $(this).attr('id');
+            var labelId = id.replace('Slider', '');
+            $('#' + labelId).text('100%');
+        });
+        
+        markerLayer.setZIndex(9999);
+        map.render();
+    });
+
+    // Tambahkan layer ke peta
+    map.addLayer(batasKecamatan);
+    map.addLayer(rtrwLayer);
+    map.addLayer(rdtrGlagahGiri);
+    map.addLayer(rdtrLicin);
+    map.addLayer(rdtrKabat);
+    map.addLayer(rdtrRogojampi);
+    map.addLayer(lsdLayer);
+    map.addLayer(markerLayer);
+    markerLayer.setZIndex(9999);
+
+    // Hover effect untuk layer LSD
+    var highlightFeature = null;
     
-    var apiKey = 'AhvKoRFjoR5zfR1MPp51Tr745VT1OMnLgK5fv6QQ92_cgmq0RWnMSoThs1tL4hXC';
-    var opacity = 1;
-
-    var defaults = {
-        key: apiKey,
-        detectRetina: true
-    };
-
-    var baseLayers = {};
-    ['Aerial', 'AerialWithLabels', 'RoadOnDemand'].forEach(function(imagerySet) {
-        baseLayers[imagerySet] = L.bingLayer(L.extend({
-            imagerySet: imagerySet
-        }, defaults));
-    });
-
-    // Feature Groups
-    var batas_kecamatan = L.featureGroup().addTo(map);
-    var polru_bwi = L.featureGroup();
-    var polru_ktpg = L.featureGroup();
-    var land_use = L.featureGroup();
-    var lsd = L.featureGroup();
-    var rdtr = L.featureGroup();
-    var myUmk = L.featureGroup().addTo(map);
-    var myKkpr = L.featureGroup().addTo(map);
-
-    // ======== KECAMATAN ===========
-    var highlightKec;
-    var clearHighlightKec = function() {
-        if (highlightKec) {
-            vectorKec.resetFeatureStyle(highlightKec);
+    function getLSDHighlightStyle(lsdType) {
+        var fillColor;
+        if (lsdType === 'Lahan Sawah yang Dilindungi di Dalam Kawasan Hutan') {
+            fillColor = '#13a126';
+        } else if (lsdType === 'Lahan Sawah yang Dilindungi di Luar Kawasan Hutan') {
+            fillColor = '#b6fc60';
+        } else {
+            fillColor = '#d9faf4';
         }
-        highlightKec = null;
-    };
-    var vectorKec = L.vectorGrid.slicer(mykecamatan, {
-        rendererFactory: L.svg.tile,
-        vectorTileLayerStyles: {
-            sliced: function(properties, zoom) {
-                return {
-                    fillColor: '#d58df0',
-                    fillOpacity: 0.5,
-                    stroke: true,
-                    fill: true,
-                    color: 'black',
-                    opacity: 0.2,
-                    weight: 0,
-                }
-            }
-        },
-        maxZoom: 22,
-        interactive: true,
-        getFeatureId: function(f) {
-            return f.properties.Kecamatan;
-        },
-    }).on('mouseover', function(e) {
-        var properties = e.layer.properties;
-        clearHighlightKec();
-        highlightKec = properties.Kecamatan;
-        var style = {
-            fillColor: '#d58df0',
-            fillOpacity: 0.8,
-            stroke: true,
-            fill: true,
-            color: 'red',
-            opacity: 0.2,
-            weight: 2,
-        };
-        map.closePopup();
-        vectorKec.setFeatureStyle(properties.Kecamatan, style);
-    }).on('click', function(e) {
-        var properties = e.layer.properties;
-        var stringe = `<table class="table table-bordered border-primary">
-                            <tr>
-                                <td><strong>Kecamatan</strong></td>
-                                <td>${properties.Kecamatan}</td>
-                            </tr>
-                        </table>`;
-        L.popup()
-            .setContent(stringe)
-            .setLatLng(e.latlng)
-            .openOn(map);
-        clearHighlightKec();
-        highlightKec = properties.Kecamatan;
-        var style = {
-            fillColor: '#d58df0',
-            fillOpacity: 0.8,
-            stroke: true,
-            fill: true,
-            color: 'red',
-            weight: 2,
-        };
-        vectorKec.setFeatureStyle(properties.Kecamatan, style);
-        L.DomEvent.stopPropagation(e);
-    });
-    batas_kecamatan.addLayer(vectorKec);
-    map.on('click', clearHighlightKec);
-
-    // ======= BWI ==========
-    var highlightBwi;
-    var clearHighlightBwi = function() {
-        if (highlightBwi) {
-            vectorBwi.resetFeatureStyle(highlightBwi);
+        
+        return new ol.style.Style({
+            fill: new ol.style.Fill({
+                color: fillColor,
+                opacity: 0.8
+            }),
+            stroke: new ol.style.Stroke({
+                color: 'green',
+                width: 1,
+                opacity: 0.2
+            })
+        });
+    }
+    
+    map.on('pointermove', function(evt) {
+        if (evt.dragging) {
+            return;
         }
-        highlightBwi = null;
-    };
-    var vectorBwi = L.vectorGrid.slicer(my_polru_bwi, {
-        rendererFactory: L.svg.tile,
-        vectorTileLayerStyles: {
-            sliced: function(properties, zoom) {
-                var p = properties.KODE_BARU;
-                return {
-                    fillColor: p == 'I-1' ? '#009900' :
-                               p == 'I-4' ? '#666600' :
-                               p == 'Jalan' ? '#990000' :
-                               p == 'K-1' ? '#CC3300' :
-                               p == 'K-3' ? '#FFCC00' :
-                               p == 'KH-1' ? '#0033FF' :
-                               p == 'KH-4' ? '#00CCCC' :
-                               p == 'KT-1' ? '#666699' :
-                               p == 'KT-2' ? '#993366' :
-                               p == 'PL-1' ? '#CC0099' :
-                               p == 'PL-3' ? '#CC66CC' :
-                               p == 'PS-1' ? '#CCCCFF' :
-                               p == 'PS-2' ? '#CCFFFF' :
-                               p == 'R-2' ? '#6699CC' :
-                               p == 'R-3' ? '#66CCCC' :
-                               p == 'R-4' ? '#66FFCC' :
-                               p == 'RTH-1' ? '#9933CC' :
-                               p == 'RTH-2' ? '#9966CC' :
-                               p == 'RTH-3' ? '#99CCCC' :
-                               p == 'RTH-4' ? '#CC00CC' :
-                               p == 'SC' ? '#CC0099' :
-                               p == 'SPU 2-2' ? '#663399' :
-                               p == 'SPU-1' ? '#CC9933' :
-                               p == 'SPU-2' ? '#CCCC33' :
-                               p == 'SPU-3' ? '#CCFF33' :
-                               p == 'SPU-4' ? '#FF0033' :
-                               p == 'SPU-5' ? '#FF3333' :
-                               p == 'SPU-6' ? '#FF6633' :
-                               p == 'Sungai' ? '#660033' : '#FFFFCC',
-                    fillOpacity: 0.5,
-                    stroke: true,
-                    fill: true,
-                    color: 'black',
-                    opacity: 0.2,
-                    weight: 0,
-                }
-            }
-        },
-        maxZoom: 22,
-        interactive: true,
-        getFeatureId: function(f) {
-            return f.properties.KODE_BARU;
-        },
-    }).on('mouseover', function(e) {
-        var properties = e.layer.properties;
-        clearHighlightBwi();
-        highlightBwi = properties.KODE_BARU;
-        var p = properties.KODE_BARU;
-        var style = {
-            fillColor: p == 'I-1' ? '#009900' :
-                       p == 'I-4' ? '#666600' :
-                       p == 'Jalan' ? '#990000' :
-                       p == 'K-1' ? '#CC3300' :
-                       p == 'K-3' ? '#FFCC00' :
-                       p == 'KH-1' ? '#0033FF' :
-                       p == 'KH-4' ? '#00CCCC' :
-                       p == 'KT-1' ? '#666699' :
-                       p == 'KT-2' ? '#993366' :
-                       p == 'PL-1' ? '#CC0099' :
-                       p == 'PL-3' ? '#CC66CC' :
-                       p == 'PS-1' ? '#CCCCFF' :
-                       p == 'PS-2' ? '#CCFFFF' :
-                       p == 'R-2' ? '#6699CC' :
-                       p == 'R-3' ? '#66CCCC' :
-                       p == 'R-4' ? '#66FFCC' :
-                       p == 'RTH-1' ? '#9933CC' :
-                       p == 'RTH-2' ? '#9966CC' :
-                       p == 'RTH-3' ? '#99CCCC' :
-                       p == 'RTH-4' ? '#CC00CC' :
-                       p == 'SC' ? '#CC0099' :
-                       p == 'SPU 2-2' ? '#663399' :
-                       p == 'SPU-1' ? '#CC9933' :
-                       p == 'SPU-2' ? '#CCCC33' :
-                       p == 'SPU-3' ? '#CCFF33' :
-                       p == 'SPU-4' ? '#FF0033' :
-                       p == 'SPU-5' ? '#FF3333' :
-                       p == 'SPU-6' ? '#FF6633' :
-                       p == 'Sungai' ? '#660033' : '#FFFFCC',
-            fillOpacity: 0.8,
-            stroke: true,
-            fill: true,
-            color: 'red',
-            opacity: 0.2,
-            weight: 2,
-        };
-        map.closePopup();
-        vectorBwi.setFeatureStyle(properties.KODE_BARU, style);
-    }).on('click', function(e) {
-        var properties = e.layer.properties;
-        var stringe = `<table class="table table-bordered border-primary">
-                            <tr>
-                                <th>ZONA BARU</th>
-                                <td>${properties.ZONA_BARU}</td>
-                            </tr>
-                            <tr>
-                                <th>KODE</th>
-                                <td>${properties.KODE_BARU}</td>
-                            </tr>
-                            <tr>
-                                <th>LABEL</th>
-                                <td>${properties.LABEL}</td>
-                            </tr>
-                        </table>`;
-        L.popup()
-            .setContent(stringe)
-            .setLatLng(e.latlng)
-            .openOn(map);
-        clearHighlightBwi();
-        highlightBwi = properties.KODE_BARU;
-        var p = properties.KODE_BARU;
-        var style = {
-            fillColor: p == 'I-1' ? '#009900' :
-                       p == 'I-4' ? '#666600' :
-                       p == 'Jalan' ? '#990000' :
-                       p == 'K-1' ? '#CC3300' :
-                       p == 'K-3' ? '#FFCC00' :
-                       p == 'KH-1' ? '#0033FF' :
-                       p == 'KH-4' ? '#00CCCC' :
-                       p == 'KT-1' ? '#666699' :
-                       p == 'KT-2' ? '#993366' :
-                       p == 'PL-1' ? '#CC0099' :
-                       p == 'PL-3' ? '#CC66CC' :
-                       p == 'PS-1' ? '#CCCCFF' :
-                       p == 'PS-2' ? '#CCFFFF' :
-                       p == 'R-2' ? '#6699CC' :
-                       p == 'R-3' ? '#66CCCC' :
-                       p == 'R-4' ? '#66FFCC' :
-                       p == 'RTH-1' ? '#9933CC' :
-                       p == 'RTH-2' ? '#9966CC' :
-                       p == 'RTH-3' ? '#99CCCC' :
-                       p == 'RTH-4' ? '#CC00CC' :
-                       p == 'SC' ? '#CC0099' :
-                       p == 'SPU 2-2' ? '#663399' :
-                       p == 'SPU-1' ? '#CC9933' :
-                       p == 'SPU-2' ? '#CCCC33' :
-                       p == 'SPU-3' ? '#CCFF33' :
-                       p == 'SPU-4' ? '#FF0033' :
-                       p == 'SPU-5' ? '#FF3333' :
-                       p == 'SPU-6' ? '#FF6633' :
-                       p == 'Sungai' ? '#660033' : '#FFFFCC',
-            fillOpacity: 0.8,
-            stroke: true,
-            fill: true,
-            color: 'red',
-            weight: 2,
-        };
-        vectorBwi.setFeatureStyle(properties.KODE_BARU, style);
-        L.DomEvent.stopPropagation(e);
-    });
-    polru_bwi.addLayer(vectorBwi);
-    map.on('click', clearHighlightBwi);
-
-    // ============ Ketapang ==================
-    var highlightKtpg;
-    var clearHighlightKtpg = function() {
-        if (highlightKtpg) {
-            vectorKtpg.resetFeatureStyle(highlightKtpg);
+        
+        var pixel = map.getEventPixel(evt.originalEvent);
+        var hit = map.hasFeatureAtPixel(pixel);
+        map.getTargetElement().style.cursor = hit ? 'pointer' : '';
+        
+        if (highlightFeature) {
+            highlightFeature.setStyle(null);
+            highlightFeature = null;
         }
-        highlightKtpg = null;
-    };
-    var vectorKtpg = L.vectorGrid.slicer(my_ketapang, {
-        rendererFactory: L.svg.tile,
-        vectorTileLayerStyles: {
-            sliced: function(properties, zoom) {
-                var p = properties.kode;
-                return {
-                    fillColor: p == 'I-5' ? '#009900' :
-                               p == 'I-6' ? '#666600' :
-                               p == 'I-7' ? '#990000' :
-                               p == 'K-4' ? '#CC3300' :
-                               p == 'K-5' ? '#FFCC00' :
-                               p == 'K-6' ? '#0033FF' :
-                               p == 'KH-1' ? '#0033FF' :
-                               p == 'KH-2' ? '#00FA9A' :
-                               p == 'KH-3' ? '#66CDAA' :
-                               p == 'KH-4' ? '#00CCCC' :
-                               p == 'KH-5' ? '#AFEEEE' :
-                               p == 'KH-6' ? '#CD853F' :
-                               p == 'PL-1' ? '#CC0099' :
-                               p == 'PL-4' ? '#9370DB' :
-                               p == 'PS-1' ? '#CCCCFF' :
-                               p == 'PS-2' ? '#CCFFFF' :
-                               p == 'R-2' ? '#6699CC' :
-                               p == 'R-3' ? '#66CCCC' :
-                               p == 'R-4' ? '#66FFCC' :
-                               p == 'RTH-1' ? '#9933CC' :
-                               p == 'RTH-2' ? '#9966CC' :
-                               p == 'RTH-3' ? '#99CCCC' :
-                               p == 'RTH-4' ? '#CC00CC' :
-                               p == 'SPU-1' ? '#CC9933' :
-                               p == 'SPU-2' ? '#CCCC33' :
-                               p == 'SPU-7' ? '#FFFF00' :
-                               p == 'SPU-8' ? '#FF8C00' :
-                               p == 'SPU-9' ? '#FF1493' : '#FFFFCC',
-                    fillOpacity: 0.5,
-                    stroke: true,
-                    fill: true,
-                    color: 'black',
-                    opacity: 0.2,
-                    weight: 0,
-                }
-            }
-        },
-        maxZoom: 22,
-        interactive: true,
-        getFeatureId: function(f) {
-            return f.properties.luas;
-        },
-    }).on('mouseover', function(e) {
-        var properties = e.layer.properties;
-        clearHighlightKtpg();
-        highlightKtpg = properties.luas;
-        var p = properties.kode;
-        var style = {
-            fillColor: p == 'I-5' ? '#009900' :
-                       p == 'I-6' ? '#666600' :
-                       p == 'I-7' ? '#990000' :
-                       p == 'K-4' ? '#CC3300' :
-                       p == 'K-5' ? '#FFCC00' :
-                       p == 'K-6' ? '#0033FF' :
-                       p == 'KH-1' ? '#0033FF' :
-                       p == 'KH-2' ? '#00FA9A' :
-                       p == 'KH-3' ? '#66CDAA' :
-                       p == 'KH-4' ? '#00CCCC' :
-                       p == 'KH-5' ? '#AFEEEE' :
-                       p == 'KH-6' ? '#CD853F' :
-                       p == 'PL-1' ? '#CC0099' :
-                       p == 'PL-4' ? '#9370DB' :
-                       p == 'PS-1' ? '#CCCCFF' :
-                       p == 'PS-2' ? '#CCFFFF' :
-                       p == 'R-2' ? '#6699CC' :
-                       p == 'R-3' ? '#66CCCC' :
-                       p == 'R-4' ? '#66FFCC' :
-                       p == 'RTH-1' ? '#9933CC' :
-                       p == 'RTH-2' ? '#9966CC' :
-                       p == 'RTH-3' ? '#99CCCC' :
-                       p == 'RTH-4' ? '#CC00CC' :
-                       p == 'SPU-1' ? '#CC9933' :
-                       p == 'SPU-2' ? '#CCCC33' :
-                       p == 'SPU-7' ? '#FFFF00' :
-                       p == 'SPU-8' ? '#FF8C00' :
-                       p == 'SPU-9' ? '#FF1493' : '#FFFFCC',
-            fillOpacity: 0.8,
-            stroke: true,
-            fill: true,
-            color: 'red',
-            opacity: 0.2,
-            weight: 1,
-        };
-        map.closePopup();
-        vectorKtpg.setFeatureStyle(properties.luas, style);
-    }).on('click', function(e) {
-        var properties = e.layer.properties;
-        var stringe = `<table class="table table-bordered border-primary">
-                            <tr>
-                                <th>RENCANA</th>
-                                <td>${properties.rencana}</td>
-                            </tr>
-                            <tr>
-                                <th>LUAS</th>
-                                <td>${properties.luas}</td>
-                            </tr>
-                            <tr>
-                                <th>KODE</th>
-                                <td>${properties.kode}</td>
-                            </tr>
-                            <tr>
-                                <th>BLOK</th>
-                                <td>${properties.BLOK}</td>
-                            </tr>
-                            <tr>
-                                <th>SUB BLOK</th>
-                                <td>${properties.sub_blok}</td>
-                            </tr>
-                            <tr>
-                                <th>PRIORITAS</th>
-                                <td>${properties.Prioritas}</td>
-                            </tr>
-                            <tr>
-                                <th>KAWASAN</th>
-                                <td>${properties.Kawasan}</td>
-                            </tr>
-                        </table>`;
-        L.popup()
-            .setContent(stringe)
-            .setLatLng(e.latlng)
-            .openOn(map);
-        clearHighlightKtpg();
-        highlightKtpg = properties.luas;
-        var p = properties.kode;
-        var style = {
-            fillColor: p == 'I-5' ? '#009900' :
-                       p == 'I-6' ? '#666600' :
-                       p == 'I-7' ? '#990000' :
-                       p == 'K-4' ? '#CC3300' :
-                       p == 'K-5' ? '#FFCC00' :
-                       p == 'K-6' ? '#0033FF' :
-                       p == 'KH-1' ? '#0033FF' :
-                       p == 'KH-2' ? '#00FA9A' :
-                       p == 'KH-3' ? '#66CDAA' :
-                       p == 'KH-4' ? '#00CCCC' :
-                       p == 'KH-5' ? '#AFEEEE' :
-                       p == 'KH-6' ? '#CD853F' :
-                       p == 'PL-1' ? '#CC0099' :
-                       p == 'PL-4' ? '#9370DB' :
-                       p == 'PS-1' ? '#CCCCFF' :
-                       p == 'PS-2' ? '#CCFFFF' :
-                       p == 'R-2' ? '#6699CC' :
-                       p == 'R-3' ? '#66CCCC' :
-                       p == 'R-4' ? '#66FFCC' :
-                       p == 'RTH-1' ? '#9933CC' :
-                       p == 'RTH-2' ? '#9966CC' :
-                       p == 'RTH-3' ? '#99CCCC' :
-                       p == 'RTH-4' ? '#CC00CC' :
-                       p == 'SPU-1' ? '#CC9933' :
-                       p == 'SPU-2' ? '#CCCC33' :
-                       p == 'SPU-7' ? '#FFFF00' :
-                       p == 'SPU-8' ? '#FF8C00' :
-                       p == 'SPU-9' ? '#FF1493' : '#FFFFCC',
-            fillOpacity: 0.8,
-            stroke: true,
-            fill: true,
-            color: 'red',
-            weight: 1,
-        };
-        vectorKtpg.setFeatureStyle(properties.luas, style);
-        L.DomEvent.stopPropagation(e);
-    });
-    polru_ktpg.addLayer(vectorKtpg);
-    map.on('click', clearHighlightKtpg);
-
-    //==================== Landuse =====================
-    var highlightLanduse;
-    var clearHighlightLanduse = function() {
-        if (highlightLanduse) {
-            vectorLanduse.resetFeatureStyle(highlightLanduse);
-        }
-        highlightLanduse = null;
-    };
-    var vectorLanduse = L.vectorGrid.slicer(my_landus, {
-        rendererFactory: L.svg.tile,
-        vectorTileLayerStyles: {
-            sliced: function(properties, zoom) {
-                var p = properties.LAYER;
-                return {
-                    fillColor: p == 'LU perkebunan' ? '#6699CC' :
-                               p == 'LU tanah ladang' ? '#66CCCC' :
-                               p == 'LU semak belukar' ? '#66FFCC' :
-                               p == 'LU tanah rawa' ? '#9933CC' :
-                               p == 'LU sawah irigasi' ? '#9966CC' :
-                               p == 'LU hutan lindung' ? '#99CCCC' :
-                               p == 'LU padang rumput' ? '#CC00CC' :
-                               p == 'LU hutan produksi' ? '#CC9933' :
-                               p == 'LU pasir laut' ? '#CCCC33' :
-                               p == 'LU sawah tadah hujan' ? '#FFFF00' :
-                               p == 'LU tambak' ? '#FF8C00' :
-                               p == 'LU danau' ? '#FF1493' :
-                               p == 'LU tanggul pasir' ? '#CC0099' :
-                               p == 'LU permukiman' ? '#9370DB' :
-                               p == 'LU hutan konservasi' ? '#CCCCFF' :
-                               p == 'LU perairan payau' ? '#CCFFFF' : '#FFFFCC',
-                    fillOpacity: 0.8,
-                    stroke: true,
-                    fill: true,
-                    color: 'black',
-                    opacity: 0.2,
-                    weight: 0,
-                }
-            }
-        },
-        maxZoom: 22,
-        interactive: true,
-        getFeatureId: function(f) {
-            return f.properties.Luas;
-        },
-    }).on('mouseover', function(e) {
-        var properties = e.layer.properties;
-        clearHighlightLanduse();
-        highlightLanduse = properties.Luas;
-        var p = properties.LAYER;
-        var style = {
-            fillColor: p == 'LU perkebunan' ? '#6699CC' :
-                       p == 'LU tanah ladang' ? '#66CCCC' :
-                       p == 'LU semak belukar' ? '#66FFCC' :
-                       p == 'LU tanah rawa' ? '#9933CC' :
-                       p == 'LU sawah irigasi' ? '#9966CC' :
-                       p == 'LU hutan lindung' ? '#99CCCC' :
-                       p == 'LU padang rumput' ? '#CC00CC' :
-                       p == 'LU hutan produksi' ? '#CC9933' :
-                       p == 'LU pasir laut' ? '#CCCC33' :
-                       p == 'LU sawah tadah hujan' ? '#FFFF00' :
-                       p == 'LU tambak' ? '#FF8C00' :
-                       p == 'LU danau' ? '#FF1493' :
-                       p == 'LU tanggul pasir' ? '#CC0099' :
-                       p == 'LU permukiman' ? '#9370DB' :
-                       p == 'LU hutan konservasi' ? '#CCCCFF' :
-                       p == 'LU perairan payau' ? '#CCFFFF' : '#FFFFCC',
-            fillOpacity: 0.8,
-            stroke: true,
-            fill: true,
-            color: 'red',
-            opacity: 0.2,
-            weight: 1,
-        };
-        map.closePopup();
-        vectorLanduse.setFeatureStyle(properties.Luas, style);
-    }).on('click', function(e) {
-        var properties = e.layer.properties;
-        var stringe = `<table class="table table-bordered border-primary">
-                            <tr>
-                                <th>LAYER</th>
-                                <td>${properties.LAYER}</td>
-                            </tr>
-                            <tr>
-                                <th>LUAS</th>
-                                <td>${properties.Luas}</td>
-                            </tr>
-                        </table>`;
-        L.popup()
-            .setContent(stringe)
-            .setLatLng(e.latlng)
-            .openOn(map);
-        clearHighlightLanduse();
-        highlightLanduse = properties.Luas;
-        var p = properties.LAYER;
-        var style = {
-            fillColor: p == 'LU perkebunan' ? '#6699CC' :
-                       p == 'LU tanah ladang' ? '#66CCCC' :
-                       p == 'LU semak belukar' ? '#66FFCC' :
-                       p == 'LU tanah rawa' ? '#9933CC' :
-                       p == 'LU sawah irigasi' ? '#9966CC' :
-                       p == 'LU hutan lindung' ? '#99CCCC' :
-                       p == 'LU padang rumput' ? '#CC00CC' :
-                       p == 'LU hutan produksi' ? '#CC9933' :
-                       p == 'LU pasir laut' ? '#CCCC33' :
-                       p == 'LU sawah tadah hujan' ? '#FFFF00' :
-                       p == 'LU tambak' ? '#FF8C00' :
-                       p == 'LU danau' ? '#FF1493' :
-                       p == 'LU tanggul pasir' ? '#CC0099' :
-                       p == 'LU permukiman' ? '#9370DB' :
-                       p == 'LU hutan konservasi' ? '#CCCCFF' :
-                       p == 'LU perairan payau' ? '#CCFFFF' : '#FFFFCC',
-            fillOpacity: 0.5,
-            stroke: true,
-            fill: true,
-            color: 'red',
-            weight: 1,
-        };
-        vectorLanduse.setFeatureStyle(properties.Luas, style);
-        L.DomEvent.stopPropagation(e);
-    });
-    land_use.addLayer(vectorLanduse);
-    map.on('click', clearHighlightLanduse);
-
-    //========================= LSD ===============================
-    var highlightLsd;
-    var clearHighlightLSD = function() {
-        if (highlightLsd) {
-            vectorLsd.resetFeatureStyle(highlightLsd);
-        }
-        highlightLsd = null;
-    };
-    var vectorLsd = L.vectorGrid.slicer(mylsd, {
-        rendererFactory: L.svg.tile,
-        vectorTileLayerStyles: {
-            sliced: function(properties, zoom) {
-                var p = properties.LSD;
-                return {
-                    fillColor: p == 'Lahan Sawah yang Dilindungi di Dalam Kawasan Hutan' ? '#13a126' :
-                               p == 'Lahan Sawah yang Dilindungi di Luar Kawasan Hutan' ? '#b6fc60' : '#d9faf4',
-                    fillOpacity: 0.5,
-                    stroke: true,
-                    fill: true,
-                    color: 'black',
-                    opacity: 0.2,
-                    weight: 0,
-                }
-            }
-        },
-        maxZoom: 22,
-        interactive: true,
-        getFeatureId: function(f) {
-            return f.properties.LUAS;
-        },
-    }).on('mouseover', function(e) {
-        var properties = e.layer.properties;
-        clearHighlightLSD();
-        highlightLsd = properties.LUAS;
-        var p = properties.LSD;
-        var style = {
-            fillColor: p == 'Lahan Sawah yang Dilindungi di Dalam Kawasan Hutan' ? '#13a126' :
-                       p == 'Lahan Sawah yang Dilindungi di Luar Kawasan Hutan' ? '#b6fc60' : '#d9faf4',
-            fillOpacity: 0.8,
-            stroke: true,
-            fill: true,
-            color: 'green',
-            opacity: 0.2,
-            weight: 1,
-        };
-        map.closePopup();
-        vectorLsd.setFeatureStyle(properties.LUAS, style);
-    }).on('click', function(e) {
-        var properties = e.layer.properties;
-        var stringe = `<table class="table table-bordered border-primary">
-                            <tr>
-                                <th>LSD</th>
-                                <td>${properties.LSD}</td>
-                            </tr>
-                            <tr>
-                                <th>HUTAN</th>
-                                <td>${properties.HUTAN}</td>
-                            </tr>
-                        </table>`;
-        L.popup()
-            .setContent(stringe)
-            .setLatLng(e.latlng)
-            .openOn(map);
-        clearHighlightLSD();
-        highlightLsd = properties.LUAS;
-        var p = properties.LSD;
-        var style = {
-            fillColor: p == 'Lahan Sawah yang Dilindungi di Dalam Kawasan Hutan' ? '#13a126' :
-                       p == 'Lahan Sawah yang Dilindungi di Luar Kawasan Hutan' ? '#b6fc60' : '#d9faf4',
-            fillOpacity: 0.5,
-            stroke: true,
-            fill: true,
-            color: 'green',
-            weight: 1,
-        };
-        vectorLsd.setFeatureStyle(properties.LUAS, style);
-        L.DomEvent.stopPropagation(e);
-    });
-    lsd.addLayer(vectorLsd);
-    map.on('click', clearHighlightLSD);
-
-    //========================= RDTR ===============================
-    var highlightRdtr;
-    var clearHighlightRDTR = function() {
-        if (highlightRdtr) {
-            vectorRdtr.resetFeatureStyle(highlightRdtr);
-        }
-        highlightRdtr = null;
-    };
-    var vectorRdtr = L.vectorGrid.slicer(myrdtr, {
-        rendererFactory: L.svg.tile,
-        vectorTileLayerStyles: {
-            sliced: function(properties, zoom) {
-                var p = properties.NAMOBJ;
-                return {
-                    fillColor: p == 'Badan Air' ? '#6699CC' :
-                               p == 'Badan Jalan' ? '#66CCCC' :
-                               p == 'Cagar Budaya' ? '#66FFCC' :
-                               p == 'Hutan Lindung' ? '#9933CC' :
-                               p == 'Hutan Produksi Tetap' ? '#9966CC' :
-                               p == 'Kawasan Peruntukan Industri' ? '#99CCCC' :
-                               p == 'Pariwisata' ? '#CC00CC' :
-                               p == 'Pemakaman' ? '#CC9933' :
-                               p == 'Perdagangan dan Jasa Skala SWP' ? '#CCCC33' :
-                               p == 'Perdagangan dan Jasa Skala WP' ? '#FFFF00' :
-                               p == 'Pergudangan' ? '#FF8C00' :
-                               p == 'Perkantoran' ? '#FF1493' :
-                               p == 'Perkebunan' ? '#CC0099' :
-                               p == 'Perlindungan Setempat' ? '#9370DB' :
-                               p == 'Pertahanan dan Keamanan' ? '#CCCCFF' :
-                               p == 'Perumahan Kepadatan Rendah' ? '#00FFFF' :
-                               p == 'Perumahan Kepadatan Sedang' ? '#008080' :
-                               p == 'Peternakan' ? '#0000FF' :
-                               p == 'SPU Skala Kecamatan' ? '#800080' :
-                               p == 'SPU Skala Kelurahan' ? '#008000' :
-                               p == 'Taman Kecamatan' ? '#000080' :
-                               p == 'Taman Kelurahan' ? '#808000' :
-                               p == 'Taman Kota' ? '#00FF00' :
-                               p == 'Taman RT' ? '#FF00FF' :
-                               p == 'Taman RW' ? '#800000' :
-                               p == 'Tanaman Pangan' ? '#CCFFFF' : '#FFFFCC',
-                    fillOpacity: 0.5,
-                    stroke: true,
-                    fill: true,
-                    color: 'black',
-                    opacity: 0.2,
-                    weight: 0,
-                }
-            }
-        },
-        maxZoom: 22,
-        interactive: true,
-        getFeatureId: function(f) {
-            return f.properties.OBJECTID;
-        },
-    }).on('mouseover', function(e) {
-        var properties = e.layer.properties;
-        clearHighlightRDTR();
-        highlightRdtr = properties.OBJECTID;
-        var p = properties.NAMOBJ;
-        var style = {
-            fillColor: p == 'Badan Air' ? '#6699CC' :
-                       p == 'Badan Jalan' ? '#66CCCC' :
-                       p == 'Cagar Budaya' ? '#66FFCC' :
-                       p == 'Hutan Lindung' ? '#9933CC' :
-                       p == 'Hutan Produksi Tetap' ? '#9966CC' :
-                       p == 'Kawasan Peruntukan Industri' ? '#99CCCC' :
-                       p == 'Pariwisata' ? '#CC00CC' :
-                       p == 'Pemakaman' ? '#CC9933' :
-                       p == 'Perdagangan dan Jasa Skala SWP' ? '#CCCC33' :
-                       p == 'Perdagangan dan Jasa Skala WP' ? '#FFFF00' :
-                       p == 'Pergudangan' ? '#FF8C00' :
-                       p == 'Perkantoran' ? '#FF1493' :
-                       p == 'Perkebunan' ? '#CC0099' :
-                       p == 'Perlindungan Setempat' ? '#9370DB' :
-                       p == 'Pertahanan dan Keamanan' ? '#CCCCFF' :
-                       p == 'Perumahan Kepadatan Rendah' ? '#00FFFF' :
-                       p == 'Perumahan Kepadatan Sedang' ? '#008080' :
-                       p == 'Peternakan' ? '#0000FF' :
-                       p == 'SPU Skala Kecamatan' ? '#800080' :
-                       p == 'SPU Skala Kelurahan' ? '#008000' :
-                       p == 'Taman Kecamatan' ? '#000080' :
-                       p == 'Taman Kelurahan' ? '#808000' :
-                       p == 'Taman Kota' ? '#00FF00' :
-                       p == 'Taman RT' ? '#FF00FF' :
-                       p == 'Taman RW' ? '#800000' :
-                       p == 'Tanaman Pangan' ? '#CCFFFF' : '#FFFFCC',
-            fillOpacity: 0.8,
-            stroke: true,
-            fill: true,
-            color: 'green',
-            opacity: 0.2,
-            weight: 1,
-        };
-        map.closePopup();
-        vectorRdtr.setFeatureStyle(properties.OBJECTID, style);
-    }).on('click', function(e) {
-        var properties = e.layer.properties;
-        var stringe = `<table class="table table-bordered border-primary">
-                            <tr>
-                                <th>Nama Objek</th>
-                                <td>${properties.NAMOBJ}</td>
-                            </tr>
-                        </table>`;
-        L.popup()
-            .setContent(stringe)
-            .setLatLng(e.latlng)
-            .openOn(map);
-        clearHighlightRDTR();
-        highlightRdtr = properties.OBJECTID;
-        var p = properties.NAMOBJ;
-        var style = {
-            fillColor: p == 'Badan Air' ? '#6699CC' :
-                       p == 'Badan Jalan' ? '#66CCCC' :
-                       p == 'Cagar Budaya' ? '#66FFCC' :
-                       p == 'Hutan Lindung' ? '#9933CC' :
-                       p == 'Hutan Produksi Tetap' ? '#9966CC' :
-                       p == 'Kawasan Peruntukan Industri' ? '#99CCCC' :
-                       p == 'Pariwisata' ? '#CC00CC' :
-                       p == 'Pemakaman' ? '#CC9933' :
-                       p == 'Perdagangan dan Jasa Skala SWP' ? '#CCCC33' :
-                       p == 'Perdagangan dan Jasa Skala WP' ? '#FFFF00' :
-                       p == 'Pergudangan' ? '#FF8C00' :
-                       p == 'Perkantoran' ? '#FF1493' :
-                       p == 'Perkebunan' ? '#CC0099' :
-                       p == 'Perlindungan Setempat' ? '#9370DB' :
-                       p == 'Pertahanan dan Keamanan' ? '#CCCCFF' :
-                       p == 'Perumahan Kepadatan Rendah' ? '#00FFFF' :
-                       p == 'Perumahan Kepadatan Sedang' ? '#008080' :
-                       p == 'Peternakan' ? '#0000FF' :
-                       p == 'SPU Skala Kecamatan' ? '#800080' :
-                       p == 'SPU Skala Kelurahan' ? '#008000' :
-                       p == 'Taman Kecamatan' ? '#000080' :
-                       p == 'Taman Kelurahan' ? '#808000' :
-                       p == 'Taman Kota' ? '#00FF00' :
-                       p == 'Taman RT' ? '#FF00FF' :
-                       p == 'Taman RW' ? '#800000' :
-                       p == 'Tanaman Pangan' ? '#CCFFFF' : '#FFFFCC',
-            fillOpacity: 0.5,
-            stroke: true,
-            fill: true,
-            color: 'green',
-            weight: 1,
-        };
-        vectorRdtr.setFeatureStyle(properties.OBJECTID, style);
-        L.DomEvent.stopPropagation(e);
-    });
-    rdtr.addLayer(vectorRdtr);
-    map.on('click', clearHighlightRDTR);
-
-    // UMK & KKPR GeoJSON
-    var StyleUmk = {
-        "color": "#ffff00",
-        "weight": 2,
-        "opacity": 0.65
-    };
-
-    @foreach ($umk as $um)
-        @if($um->f_geojson != null)
-            $.ajax({
-                beforeSend: function(xhr) {
-                    if (xhr && xhr.overrideMimeType) {
-                        xhr.overrideMimeType('application/json;charset=utf-8');
-                    }
-                },
-                dataType: "json",
-                url: "{{ asset('uploads/berkas/umk/'.$um->id.'/kml/'.$um->f_geojson) }}",
-                success: function(data) {
-                    var geo_umk = L.geoJson(JSON.parse(data), {
-                        onEachFeature: function(feature, layer) {
-                            var stringe = `<table class="table table-sm">
-                                            <tr>
-                                                <td><strong>Pemohon</strong></td>
-                                                <td>{{ $um->user->name }}</td>
-                                            </tr>
-                                            <tr>
-                                                <td colspan="2">
-                                                    <a href="{{ route($umk_path . '.show', $um->id) }}" class="btn btn-sm btn-success w-100">
-                                                        <i class="fa fa-info"></i> Detail
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                        </table>`;
-                            layer.bindPopup(stringe);
-                            myUmk.addLayer(layer);
-                        },
-                        style: StyleUmk
-                    }).addTo(map);
+        
+        if (hit && lsdLayer.getVisible()) {
+            map.forEachFeatureAtPixel(pixel, function(feature, layer) {
+                if (layer === lsdLayer) {
+                    highlightFeature = feature;
+                    var lsdType = feature.get('LSD');
+                    feature.setStyle(getLSDHighlightStyle(lsdType));
+                    return true;
                 }
             });
-        @endif
-    @endforeach
-
-    var StyleKkpr = {
-        "color": "#42f583",
-        "weight": 2,
-        "opacity": 0.65
-    };
-
-    @foreach ($kkpr as $kr)
-        @if($kr->f_geojson != null)
-            $.ajax({
-                beforeSend: function(xhr) {
-                    if (xhr && xhr.overrideMimeType) {
-                        xhr.overrideMimeType('application/json;charset=utf-8');
-                    }
-                },
-                dataType: "json",
-                url: "{{ asset('uploads/berkas/kkpr/'.$kr->id.'/kml/'.$kr->f_geojson) }}",
-                success: function(data) {
-                    var geo_kkpr = L.geoJson(JSON.parse(data), {
-                        onEachFeature: function(feature, layer) {
-                            var stringe = `<table class="table table-sm">
-                                            <tr>
-                                                <td><strong>Pemohon</strong></td>
-                                                <td>{{ $kr->user->name }}</td>
-                                            </tr>
-                                            <tr>
-                                                <td colspan="2">
-                                                    <a href="{{ route($kkpr_path . '.show', $kr->id) }}" class="btn btn-sm btn-success w-100">
-                                                        <i class="fa fa-info"></i> Detail
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                        </table>`;
-                            layer.bindPopup(stringe);
-                            myKkpr.addLayer(layer);
-                        },
-                        style: StyleKkpr
-                    }).addTo(map);
-                }
-            });
-        @endif
-    @endforeach
-
-    // Search Control
-    const search = new GeoSearch.GeoSearchControl({
-        provider: new GeoSearch.OpenStreetMapProvider(),
-        style: 'bar',
-        showMarker: false,
-        searchLabel: 'Alamat, Jalan, Kabupaten, Kota, Negara',
-    });
-    map.addControl(search);
-
-    // Layers Control
-    map.attributionControl.setPrefix('');
-    baseLayers['AerialWithLabels'].addTo(map);
-    L.control.layers(
-        baseLayers, {
-            'Batas Kecamatan': batas_kecamatan,
-            'Pola Ruang BWI': polru_bwi,
-            'Pola Ruang Ketapang': polru_ktpg,
-            'Land Use': land_use,
-            'LSD': lsd,
-            'RDTR GLAGAH-GIRI': rdtr,
-            'UMK': myUmk,
-            'KKPR': myKkpr,
-        }, {
-            collapsed: false
         }
-    ).addTo(map);
+    });
 
-    function resetMapView() {
-        map.setView([-8.218079, 114.3290605], 13.6);
+    // Fungsi untuk menampilkan info zona
+    function showInfoZona(layerName, color, namobj, extra) {
+        $('#info-zona-title').text('Informasi ' + layerName);
+        $('#info-zona-layer').text('Detail zona tata ruang ' + layerName);
+        $('#info-zona-color').css('background', color);
+        
+        function infoRow(label, value) {
+            return '<div class="mb-3">'
+                +'<div class="flex items-center gap-2 mb-1">'
+                    +'<i class="fas fa-info-circle text-blue-500"></i>'
+                    +'<span class="text-blue-500 font-semibold">'+label+'</span>'
+                +'</div>'
+                +'<div class="ml-6 text-gray-700">'+value+'</div>'
+            +'</div>';
+        }
+        
+        let html = '';
+        if(extra && extra.type === 'kecamatan') {
+            html += infoRow('KECAMATAN', extra.kecamatan);
+            html += infoRow('LUAS (ha)', extra.luas);
+            $('#info-zona-namobj').html(html);
+            $('#info-zona-namobj-summary').html(html);
+        } else if(extra && extra.type === 'lsd') {
+            html += infoRow('LSD', extra.lsd);
+            html += infoRow('HUTAN', extra.hutan);
+            $('#info-zona-namobj').html(html);
+            $('#info-zona-namobj-summary').html(html);
+        } else {
+            html += infoRow('NAMOBJ', namobj || '-');
+            $('#info-zona-namobj').html(html);
+            $('#info-zona-namobj-summary').html(html);
+        }
+        $('#info-zona-card').removeClass('hidden');
     }
 
-    $(document).ready(function() {
-        map.invalidateSize(true);
+    // Map click handler untuk semua vector layer
+    map.on('singleclick', function(evt) {
+        var found = false;
+        var layers = [
+            {layer: batasKecamatan, name: 'Batas Kecamatan'},
+            {layer: lsdLayer, name: 'LSD'},
+            {layer: rtrwLayer, name: 'RTRW 2024'},
+            {layer: rdtrGlagahGiri, name: 'RDTR Glagah-Giri'},
+            {layer: rdtrLicin, name: 'RDTR Licin'},
+            {layer: rdtrKabat, name: 'RDTR Kabat'},
+            {layer: rdtrRogojampi, name: 'RDTR Rogojampi'}
+        ];
         
-        // Animate cards
-        const cards = document.querySelectorAll('.bg-white\\/80, .bg-gradient-to-br');
-        cards.forEach((card, index) => {
-            card.style.opacity = '0';
-            card.style.transform = 'translateY(20px)';
-            setTimeout(() => {
-                card.style.transition = 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
-                card.style.opacity = '1';
-                card.style.transform = 'translateY(0)';
-            }, index * 100);
+        map.forEachFeatureAtPixel(evt.pixel, function(feature, layerRef) {
+            for (var i=0; i<layers.length; i++) {
+                if (layerRef === layers[i].layer && layerRef.getVisible()) {
+                    var extra = null;
+                    var namobj = feature.get('NAMOBJ') || feature.get('namobj');
+                    if(feature.get('Kecamatan')) {
+                        extra = {
+                            type: 'kecamatan',
+                            kecamatan: feature.get('Kecamatan'),
+                            luas: feature.get('Luas') ? parseFloat(feature.get('Luas')).toFixed(2) : '-'
+                        };
+                        namobj = feature.get('Kecamatan');
+                    } else if(feature.get('LSD')) {
+                        extra = {
+                            type: 'lsd',
+                            lsd: feature.get('LSD'),
+                            hutan: feature.get('HUTAN') || '-'
+                        };
+                        namobj = feature.get('LSD');
+                    }
+                    if(!namobj) namobj = '-';
+                    var warna;
+                    if(layerRef === lsdLayer) {
+                        var lsdType = feature.get('LSD');
+                        if (lsdType === 'Lahan Sawah yang Dilindungi di Dalam Kawasan Hutan') {
+                            warna = '#13a126';
+                        } else if (lsdType === 'Lahan Sawah yang Dilindungi di Luar Kawasan Hutan') {
+                            warna = '#b6fc60';
+                        } else {
+                            warna = '#d9faf4';
+                        }
+                    } else {
+                        warna = feature.get('WARNA') || feature.get('warna') || '#eee';
+                    }
+                    showInfoZona(layers[i].name, warna, namobj, extra);
+                    found = true;
+                    return true;
+                }
+            }
+        });
+    });
+
+    // Handler klik pada peta untuk menampilkan marker dan mengisi input koordinat
+    map.on('singleclick', function(evt) {
+        var lonlat = ol.proj.toLonLat(evt.coordinate);
+        var lon = lonlat[0].toFixed(6);
+        var lat = lonlat[1].toFixed(6);
+        $('#longitude').val(lon);
+        $('#latitude').val(lat);
+        markerSource.clear();
+        var marker = new ol.Feature({
+            geometry: new ol.geom.Point(evt.coordinate)
+        });
+        markerSource.addFeature(marker);
+        markerLayer.setZIndex(9999);
+        map.render();
+    });
+
+    // Fungsi untuk update legenda sesuai layer aktif
+    function updateLegend() {
+        var legend = [];
+        var layers = [
+            {layer: batasKecamatan, name: 'Batas Kecamatan', utama: 'Kecamatan'},
+            {layer: lsdLayer, name: 'LSD', utama: 'LSD'},
+            {layer: rtrwLayer, name: 'RTRW 2024', utama: 'NAMOBJ'},
+            {layer: rdtrGlagahGiri, name: 'RDTR Glagah-Giri', utama: 'NAMOBJ'},
+            {layer: rdtrLicin, name: 'RDTR Licin', utama: 'NAMOBJ'},
+            {layer: rdtrKabat, name: 'RDTR Kabat', utama: 'NAMOBJ'},
+            {layer: rdtrRogojampi, name: 'RDTR Rogojampi', utama: 'NAMOBJ'}
+        ];
+        
+        for(var i=0;i<layers.length;i++){
+            var lyr = layers[i].layer;
+            if(lyr.getVisible()){
+                var feats = lyr.getSource().getFeatures();
+                if(feats.length>0){
+                    legend.push('<div class="font-semibold text-gray-900 mb-2">'+layers[i].name+'</div>');
+                    
+                    if(lyr === lsdLayer) {
+                        var lsdTypes = [
+                            {name: 'Lahan Sawah yang Dilindungi di Dalam Kawasan Hutan', color: '#13a126'},
+                            {name: 'Lahan Sawah yang Dilindungi di Luar Kawasan Hutan', color: '#b6fc60'},
+                            {name: 'Lainnya', color: '#d9faf4'}
+                        ];
+                        
+                        for(var k=0; k<lsdTypes.length; k++) {
+                            legend.push('<div class="flex items-center gap-2 mb-2">'
+                                +'<span class="w-6 h-6 rounded bg-gray-200 border-2 border-gray-400" style="background:'+lsdTypes[k].color+'"></span>'
+                                +'<span class="text-sm text-gray-700">'+lsdTypes[k].name+'</span>'
+                            +'</div>');
+                        }
+                    } else {
+                        for(var j=0;j<feats.length;j++){
+                            var f = feats[j];
+                            var warna = f.get('WARNA')||f.get('warna')||'#eee';
+                            var utama = f.get(layers[i].utama)||'-';
+                            legend.push('<div class="flex items-center gap-2 mb-2">'
+                                +'<span class="w-6 h-6 rounded bg-gray-200 border-2 border-gray-400" style="background:'+warna+'"></span>'
+                                +'<span class="text-sm text-gray-700">'+utama+'</span>'
+                            +'</div>');
+                        }
+                    }
+                }
+            }
+        }
+        
+        if(legend.length===0){
+            $('#legend-content').html('<span class="text-gray-500 text-sm">Tidak ada layer aktif</span>');
+        }else{
+            $('#legend-content').html(legend.join(''));
+        }
+    }
+    
+    // Update legenda saat layer diaktifkan/nonaktifkan
+    $(document).ready(function(){
+        updateLegend();
+        $('#batasKecamatanCheck,#lsdCheck,#rtrwCheck,#rdtrGlagahGiriCheck,#rdtrLicinCheck,#rdtrKabatCheck,#rdtrRogojampiCheck').on('change',function(){
+            setTimeout(updateLegend,300);
         });
     });
 </script>
