@@ -65,7 +65,7 @@
                         Nama Pelaku Usaha <span class="text-red-500">*</span>
                     </label>
                     <input type="text" id="nama_pemohon" name="nama_pemohon" 
-                           value="{{ old('nama_pemohon', $model->user->name) }}" 
+                           value="{{ old('nama_pemohon', $model->user ? $model->user->name : '') }}" 
                            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#185B3C] focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm" 
                            required readonly>
                 </div>
@@ -76,7 +76,7 @@
                         Nama Penanggung Jawab <span class="text-red-500">*</span>
                     </label>
                     <input type="text" id="nama_penanggung_jawab" name="nama_penanggung_jawab" 
-                           value="{{ old('nama_penanggung_jawab', $model->user->name) }}" 
+                           value="{{ old('nama_penanggung_jawab', $model->user ? $model->user->name : '') }}" 
                            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#185B3C] focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm" 
                            required>
                 </div>
@@ -87,7 +87,7 @@
                         NIB <span class="text-red-500">*</span>
                     </label>
                     <input type="text" id="no_nib" name="no_nib" 
-                           value="{{ old('no_nib', $model->no_nib) }}" 
+                           value="{{ old('no_nib', $model->no_nib ?? '') }}" 
                            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#185B3C] focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm" 
                            required>
                 </div>
@@ -98,7 +98,7 @@
                         Diterbitkan Tanggal <span class="text-red-500">*</span>
                     </label>
                     <input type="date" id="tgl_terbit" name="tgl_terbit" 
-                           value="{{ old('tgl_terbit', $model->tgl_terbit) }}" 
+                           value="{{ old('tgl_terbit', $model->tgl_terbit ?? '') }}" 
                            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#185B3C] focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm" 
                            required>
                 </div>
@@ -172,7 +172,7 @@
                         Lokasi Usaha <span class="text-red-500">*</span>
                     </label>
                     <input type="text" id="alamat_kegiatan" name="alamat_kegiatan" 
-                           value="{{ old('alamat_kegiatan', $model->alamat_kegiatan) }}" 
+                           value="{{ old('alamat_kegiatan', $model->alamat_kegiatan ?? '') }}" 
                            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#185B3C] focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm" 
                            required>
                 </div>
@@ -186,10 +186,10 @@
                             class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#185B3C] focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm" 
                             required>
                         <option value="">Pilih Status Penggunaan Lahan</option>
-                        <option value="Sudah Terbangun" {{ old('status_penggunaan_tanah', $model->status_penggunaan_tanah) == 'Sudah Terbangun' ? 'selected' : '' }}>Sudah Terbangun</option>
-                        <option value="Proses Pembangunan" {{ old('status_penggunaan_tanah', $model->status_penggunaan_tanah) == 'Proses Pembangunan' ? 'selected' : '' }}>Proses Pembangunan</option>
-                        <option value="Kosong" {{ old('status_penggunaan_tanah', $model->status_penggunaan_tanah) == 'Kosong' ? 'selected' : '' }}>Kosong</option>
-                        <option value="Terdapat Bangunan Lain" {{ old('status_penggunaan_tanah', $model->status_penggunaan_tanah) == 'Terdapat Bangunan Lain' ? 'selected' : '' }}>Terdapat Bangunan Lain</option>
+                        <option value="Sudah Terbangun" {{ old('status_penggunaan_tanah', $model->status_penggunaan_tanah ?? '') == 'Sudah Terbangun' ? 'selected' : '' }}>Sudah Terbangun</option>
+                        <option value="Proses Pembangunan" {{ old('status_penggunaan_tanah', $model->status_penggunaan_tanah ?? '') == 'Proses Pembangunan' ? 'selected' : '' }}>Proses Pembangunan</option>
+                        <option value="Kosong" {{ old('status_penggunaan_tanah', $model->status_penggunaan_tanah ?? '') == 'Kosong' ? 'selected' : '' }}>Kosong</option>
+                        <option value="Terdapat Bangunan Lain" {{ old('status_penggunaan_tanah', $model->status_penggunaan_tanah ?? '') == 'Terdapat Bangunan Lain' ? 'selected' : '' }}>Terdapat Bangunan Lain</option>
                     </select>
                 </div>
 
@@ -199,9 +199,42 @@
                         Luas tanah yang dimohon (m²) <span class="text-red-500">*</span>
                     </label>
                     <input type="number" id="luas_dimohon" name="luas_dimohon" 
-                           value="{{ old('luas_dimohon', $model->luas_dimohon) }}" 
+                           value="{{ old('luas_dimohon', $model->luas_dimohon ?? '') }}" 
                            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#185B3C] focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm" 
                            step="0.01" required>
+                </div>
+
+                <div class="space-y-2">
+                    <label for="atas_nama" class="block text-sm font-semibold text-gray-700">
+                        <i class="fas fa-user-circle mr-2 text-[#185B3C]"></i>
+                        Atas Nama <span class="text-red-500">*</span>
+                    </label>
+                    <input type="text" id="atas_nama" name="atas_nama" 
+                           value="{{ old('atas_nama', $model->atas_nama ?? '') }}" 
+                           class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#185B3C] focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm" 
+                           required>
+                </div>
+
+                <div class="space-y-2">
+                    <label for="no_sk" class="block text-sm font-semibold text-gray-700">
+                        <i class="fas fa-file-alt mr-2 text-[#185B3C]"></i>
+                        Nomor SK <span class="text-red-500">*</span>
+                    </label>
+                    <input type="text" id="no_sk" name="no_sk" 
+                           value="{{ old('no_sk', $model->no_sk ?? '') }}" 
+                           class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#185B3C] focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm" 
+                           required readonly>
+                </div>
+
+                <div class="space-y-2">
+                    <label for="tanggal_sk" class="block text-sm font-semibold text-gray-700">
+                        <i class="fas fa-calendar-alt mr-2 text-[#185B3C]"></i>
+                        Tanggal SK <span class="text-red-500">*</span>
+                    </label>
+                    <input type="date" id="tanggal_sk" name="tanggal_sk" 
+                           value="{{ old('tanggal_sk', $model->tanggal_sk ?? '') }}" 
+                           class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#185B3C] focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm" 
+                           required>
                 </div>
             </div>
         </div>
@@ -225,9 +258,9 @@
                             class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm" 
                             required>
                         <option value="">Pilih Status</option>
-                        <option value="Sesuai Bersyarat" {{ old('status_rencana', $model->status_rencana) == 'Sesuai Bersyarat' ? 'selected' : '' }}>Sesuai Bersyarat</option>
-                        <option value="Sesuai Sebagian" {{ old('status_rencana', $model->status_rencana) == 'Sesuai Sebagian' ? 'selected' : '' }}>Sesuai Sebagian</option>
-                        <option value="Tidak Sesuai" {{ old('status_rencana', $model->status_rencana) == 'Tidak Sesuai' ? 'selected' : '' }}>Tidak Sesuai</option>
+                        <option value="Sesuai Bersyarat" {{ old('status_rencana', $model->status_rencana ?? '') == 'Sesuai Bersyarat' ? 'selected' : '' }}>Sesuai Bersyarat</option>
+                        <option value="Sesuai Sebagian" {{ old('status_rencana', $model->status_rencana ?? '') == 'Sesuai Sebagian' ? 'selected' : '' }}>Sesuai Sebagian</option>
+                        <option value="Tidak Sesuai" {{ old('status_rencana', $model->status_rencana ?? '') == 'Tidak Sesuai' ? 'selected' : '' }}>Tidak Sesuai</option>
                     </select>
                 </div>
 
@@ -240,8 +273,8 @@
                             class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm" 
                             required>
                         <option value="">Pilih Status</option>
-                        <option value="Berada" {{ old('status_lsd', $model->status_lsd) == 'Berada' ? 'selected' : '' }}>Berada</option>
-                        <option value="Tidak Berada" {{ old('status_lsd', $model->status_lsd) == 'Tidak Berada' ? 'selected' : '' }}>Tidak Berada</option>
+                        <option value="Berada" {{ old('status_lsd', $model->status_lsd ?? '') == 'Berada' ? 'selected' : '' }}>Berada</option>
+                        <option value="Tidak Berada" {{ old('status_lsd', $model->status_lsd ?? '') == 'Tidak Berada' ? 'selected' : '' }}>Tidak Berada</option>
                     </select>
                 </div>
 
@@ -261,7 +294,7 @@
                         KDB - Koefisien Dasar Bangunan (maks %) <span class="text-red-500">*</span>
                     </label>
                     <input type="number" id="kdb" name="kdb" 
-                           value="{{ old('kdb', $model->kdb) }}" 
+                           value="{{ old('kdb', $model->kdb ?? '') }}" 
                            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm" 
                            step="0.01" required>
                 </div>
@@ -272,7 +305,7 @@
                         KLB - Koefisien Lantai Bangunan (maks) <span class="text-red-500">*</span>
                     </label>
                     <input type="number" id="klb" name="klb" 
-                           value="{{ old('klb', $model->klb) }}" 
+                           value="{{ old('klb', $model->klb ?? '') }}" 
                            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm" 
                            step="0.01" required>
                 </div>
@@ -283,9 +316,31 @@
                         KDH - Koefisien Daerah Hijau (min %) <span class="text-red-500">*</span>
                     </label>
                     <input type="number" id="kdh" name="kdh" 
-                           value="{{ old('kdh', $model->kdh) }}" 
+                           value="{{ old('kdh', $model->kdh ?? '') }}" 
                            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm" 
                            step="0.01" required>
+                </div>
+
+                <div class="space-y-2">
+                    <label for="ktb" class="block text-sm font-semibold text-gray-700">
+                        <i class="fas fa-percentage mr-2 text-purple-600"></i>
+                        KTB - Koefisien Tapak Basement (maks %) <span class="text-red-500">*</span>
+                    </label>
+                    <input type="number" id="ktb" name="ktb" 
+                           value="{{ old('ktb', $model->ktb ?? '') }}" 
+                           class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm" 
+                           step="0.01" required>
+                </div>
+
+                <div class="space-y-2">
+                    <label for="lokasi_rencana" class="block text-sm font-semibold text-gray-700">
+                        <i class="fas fa-map-marker-alt mr-2 text-purple-600"></i>
+                        Lokasi Rencana Tata Ruang <span class="text-red-500">*</span>
+                    </label>
+                    <input type="text" id="lokasi_rencana" name="lokasi_rencana" 
+                           value="{{ old('lokasi_rencana', $model->lokasi_rencana ?? '') }}" 
+                           class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm" 
+                           placeholder="Masukkan lokasi rencana tata ruang..." required>
                 </div>
 
                 <div class="space-y-2">
@@ -294,7 +349,7 @@
                         Garis Sempadan Bangunan (m) <span class="text-red-500">*</span>
                     </label>
                     <input type="number" id="gsb" name="gsb" 
-                           value="{{ old('gsb', $model->gsb) }}" 
+                           value="{{ old('gsb', $model->gsb ?? '') }}" 
                            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm" 
                            step="0.01" required>
                 </div>
@@ -305,7 +360,7 @@
                         Ketinggian Bangunan Maksimum (m) <span class="text-red-500">*</span>
                     </label>
                     <input type="number" id="tinggi_bangunan" name="tinggi_bangunan" 
-                           value="{{ old('tinggi_bangunan', $model->tinggi_bangunan) }}" 
+                           value="{{ old('tinggi_bangunan', $model->tinggi_bangunan ?? '') }}" 
                            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm" 
                            step="0.01" required>
                 </div>
@@ -391,14 +446,66 @@
             </div>
             
             <div class="grid grid-cols-1 gap-6">
-                <div class="space-y-2">
-                    <label for="pertimbangan" class="block text-sm font-semibold text-gray-700">
-                        <i class="fas fa-clipboard-check mr-2 text-orange-600"></i>
-                        Pertimbangan <span class="text-red-500">*</span>
-                    </label>
-                    <textarea id="pertimbangan" name="pertimbangan" rows="4" 
-                              class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm resize-none" 
-                              required>{{ old('pertimbangan', $model->pertimbangan) }}</textarea>
+                <!-- Dynamic Pertimbangan -->
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between">
+                        <label class="block text-sm font-semibold text-gray-700">
+                            <i class="fas fa-clipboard-check mr-2 text-orange-600"></i>
+                            Pertimbangan <span class="text-red-500">*</span>
+                        </label>
+                        <button type="button" id="add_pertimbangan" class="px-3 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors">
+                            <i class="fas fa-plus mr-1"></i>Tambah
+                        </button>
+                    </div>
+                    <div id="pertimbangan_list">
+                        @if(isset($pertimbangan) && is_array($pertimbangan) && count($pertimbangan) > 0)
+                            @foreach($pertimbangan as $index => $item)
+                                <div class="flex items-center space-x-2 mb-2 pertimbangan-item">
+                                    <input type="text" name="pertimbangan[]" value="{{ $item }}" 
+                                           class="flex-1 px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm" 
+                                           placeholder="Masukkan pertimbangan..." required>
+                                    @if($index > 0)
+                                        <button type="button" class="px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors remove-pertimbangan">
+                                            <i class="fas fa-minus"></i>
+                                        </button>
+                                    @endif
+                                </div>
+                            @endforeach
+                        @else
+                            <div class="flex items-center space-x-2 mb-2 pertimbangan-item">
+                                <input type="text" name="pertimbangan[]" value="{{ old('pertimbangan.0', '') }}" 
+                                       class="flex-1 px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm" 
+                                       placeholder="Masukkan pertimbangan..." required>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+
+                <!-- Dynamic Ketentuan Lain -->
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between">
+                        <label class="block text-sm font-semibold text-gray-700">
+                            <i class="fas fa-list-ul mr-2 text-orange-600"></i>
+                            Ketentuan Lain
+                        </label>
+                        <button type="button" id="add_ketentuan" class="px-3 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
+                            <i class="fas fa-plus mr-1"></i>Tambah
+                        </button>
+                    </div>
+                    <div id="ketentuan_list">
+                        @if(isset($ketentuan_lain) && is_array($ketentuan_lain) && count($ketentuan_lain) > 0)
+                            @foreach($ketentuan_lain as $index => $item)
+                                <div class="flex items-center space-x-2 mb-2 ketentuan-item">
+                                    <input type="text" name="ketentuan_lain[]" value="{{ $item }}" 
+                                           class="flex-1 px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm" 
+                                           placeholder="Masukkan ketentuan lain...">
+                                    <button type="button" class="px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors remove-ketentuan">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                </div>
+                            @endforeach
+                        @endif
+                    </div>
                 </div>
 
                 <div class="space-y-2">
@@ -411,7 +518,7 @@
                             required>
                         <option value="">Pilih Pemeriksa Teknis</option>
                         @foreach($analis as $anal)
-                            <option value="{{ $anal->id }}" {{ old('pemeriksa_teknis', $model->pemeriksa_teknis) == $anal->id ? 'selected' : '' }}>
+                            <option value="{{ $anal->id }}" {{ old('pemeriksa_teknis', $model->pemeriksa_teknis ?? '') == $anal->id ? 'selected' : '' }}>
                                 {{ $anal->name }}
                             </option>
                         @endforeach
@@ -462,6 +569,9 @@
         
         // KBLI Dynamic Rows
         initKBLIDynamic();
+        
+        // Dynamic Pertimbangan & Ketentuan
+        initDynamicFields();
         
         // Load existing KML if available
         @if(isset($model) && $model->f_geojson != null)
@@ -770,6 +880,54 @@
                 const button = e.target.classList.contains('btn_remove_kbli') ? e.target : e.target.parentElement;
                 const button_id = button.getAttribute('id');
                 document.getElementById('row_kbli_' + button_id).remove();
+            }
+        });
+    }
+
+    // Dynamic Fields for Pertimbangan & Ketentuan
+    function initDynamicFields() {
+        // Pertimbangan Dynamic
+        document.getElementById('add_pertimbangan').addEventListener('click', function() {
+            const container = document.getElementById('pertimbangan_list');
+            const newItem = document.createElement('div');
+            newItem.className = 'flex items-center space-x-2 mb-2 pertimbangan-item';
+            newItem.innerHTML = `
+                <input type="text" name="pertimbangan[]" 
+                       class="flex-1 px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm" 
+                       placeholder="Masukkan pertimbangan..." required>
+                <button type="button" class="px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors remove-pertimbangan">
+                    <i class="fas fa-minus"></i>
+                </button>
+            `;
+            container.appendChild(newItem);
+        });
+
+        // Ketentuan Dynamic
+        document.getElementById('add_ketentuan').addEventListener('click', function() {
+            const container = document.getElementById('ketentuan_list');
+            const newItem = document.createElement('div');
+            newItem.className = 'flex items-center space-x-2 mb-2 ketentuan-item';
+            newItem.innerHTML = `
+                <input type="text" name="ketentuan_lain[]" 
+                       class="flex-1 px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm" 
+                       placeholder="Masukkan ketentuan lain...">
+                <button type="button" class="px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors remove-ketentuan">
+                    <i class="fas fa-minus"></i>
+                </button>
+            `;
+            container.appendChild(newItem);
+        });
+
+        // Remove handlers
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('remove-pertimbangan') || e.target.parentElement.classList.contains('remove-pertimbangan')) {
+                const button = e.target.classList.contains('remove-pertimbangan') ? e.target : e.target.parentElement;
+                button.closest('.pertimbangan-item').remove();
+            }
+            
+            if (e.target.classList.contains('remove-ketentuan') || e.target.parentElement.classList.contains('remove-ketentuan')) {
+                const button = e.target.classList.contains('remove-ketentuan') ? e.target : e.target.parentElement;
+                button.closest('.ketentuan-item').remove();
             }
         });
     }

@@ -427,7 +427,7 @@
                 </div>
 
                 <div class="space-y-2">
-                    <label for="nib" class="block text-sm font-semibold text-gray-700">
+                    {{-- <label for="nib" class="block text-sm font-semibold text-gray-700">
                         <i class="fas fa-hashtag mr-2 text-orange-600"></i>
                         NIB <span class="text-red-500">*</span>
                     </label>
@@ -440,7 +440,7 @@
                             <span>{{ $message }}</span>
                         </div>
                     @enderror
-                </div>
+                </div> --}}
 
                 <div class="space-y-2">
                     <label for="no_nib" class="block text-sm font-semibold text-gray-700">

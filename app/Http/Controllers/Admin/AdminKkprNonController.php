@@ -1093,12 +1093,50 @@ class AdminKkprNonController extends Controller
         $model = Kkpr::with(['user', 'kkpr_kbli'])->where('jenis', 'umk')->findOrFail($id);
         $kbli = Kbli::where('id_kkpr', $id)->where('jenis', 'NON')->get();
         
+        // Auto-generate nomor SK jika belum ada
+        if (empty($model->no_sk)) {
+            $lastKkpr = Kkpr::where('jenis', 'umk')
+                ->whereNotNull('no_sk')
+                ->where('no_sk', '!=', '')
+                ->orderBy('id', 'desc')
+                ->first();
+            
+            $autoIncrement = $lastKkpr ? (intval(explode(' / ', $lastKkpr->no_sk)[1]) + 1) : 1;
+            $currentYear = date('Y');
+            $generatedNoSk = "645 / {$autoIncrement} / 429.115 / {$currentYear}";
+            
+            $model->no_sk = $generatedNoSk;
+            $model->save();
+        }
+        
+        // Parse pertimbangan dan ketentuan_lain dari JSON jika ada
+        $pertimbangan = [];
+        $ketentuan_lain = [];
+        
+        if (!empty($model->pertimbangan)) {
+            if (is_string($model->pertimbangan)) {
+                $pertimbangan = json_decode($model->pertimbangan, true) ?: [];
+            } else {
+                $pertimbangan = $model->pertimbangan;
+            }
+        }
+        
+        if (!empty($model->ketentuan_lain)) {
+            if (is_string($model->ketentuan_lain)) {
+                $ketentuan_lain = json_decode($model->ketentuan_lain, true) ?: [];
+            } else {
+                $ketentuan_lain = $model->ketentuan_lain;
+            }
+        }
+        
         $data = [
             'model' => $model,
             'kbli' => $kbli,
             'title' => 'Form Analisa KKPR Non',
             'isEdit' => $model->status_rencana != null ? true : false,
             'analis' => User::permission('Analis')->get(),
+            'pertimbangan' => $pertimbangan,
+            'ketentuan_lain' => $ketentuan_lain,
         ];
 
         return view($this->base_view . 'form_analisa', $data);
@@ -1111,6 +1149,18 @@ class AdminKkprNonController extends Controller
 
             $model = Kkpr::where('jenis', 'umk')->findOrFail($request->id);
 
+            // Process pertimbangan and ketentuan_lain as JSON
+            $pertimbangan = $request->get('pertimbangan', []);
+            $ketentuan_lain = $request->get('ketentuan_lain', []);
+            
+            // Filter out empty values
+            $pertimbangan = array_filter($pertimbangan, function($item) {
+                return !empty(trim($item));
+            });
+            $ketentuan_lain = array_filter($ketentuan_lain, function($item) {
+                return !empty(trim($item));
+            });
+
             // Update data analisa
             $model->update([
                 'status_rencana' => $request->status_rencana,
@@ -1119,9 +1169,12 @@ class AdminKkprNonController extends Controller
                 'kdb' => $request->kdb,
                 'klb' => $request->klb,
                 'kdh' => $request->kdh,
+                'ktb' => $request->ktb,
+                'lokasi_rencana' => $request->lokasi_rencana,
                 'gsb' => $request->gsb,
                 'tinggi_bangunan' => $request->tinggi_bangunan,
-                'pertimbangan' => $request->pertimbangan,
+                'pertimbangan' => json_encode($pertimbangan),
+                'ketentuan_lain' => json_encode($ketentuan_lain),
                 'pemeriksa_teknis' => $request->pemeriksa_teknis,
                 'status_analisa' => 'analisa',
                 'no_nib' => $request->no_nib,
@@ -1129,6 +1182,9 @@ class AdminKkprNonController extends Controller
                 'alamat_kegiatan' => $request->alamat_kegiatan,
                 'status_penggunaan_tanah' => $request->status_penggunaan_tanah,
                 'luas_dimohon' => $request->luas_dimohon,
+                'atas_nama' => $request->atas_nama,
+                'no_sk' => $request->no_sk,
+                'tanggal_sk' => $request->tanggal_sk,
             ]);
 
             // Update KBLI jika ada
@@ -1258,12 +1314,34 @@ class AdminKkprNonController extends Controller
         
         $kbli = Kbli::where('id_kkpr', $id)->where('jenis', 'NON')->get();
         
+        // Parse pertimbangan dan ketentuan_lain dari JSON jika ada
+        $pertimbangan = [];
+        $ketentuan_lain = [];
+        
+        if (!empty($model->pertimbangan)) {
+            if (is_string($model->pertimbangan)) {
+                $pertimbangan = json_decode($model->pertimbangan, true) ?: [];
+            } else {
+                $pertimbangan = $model->pertimbangan;
+            }
+        }
+        
+        if (!empty($model->ketentuan_lain)) {
+            if (is_string($model->ketentuan_lain)) {
+                $ketentuan_lain = json_decode($model->ketentuan_lain, true) ?: [];
+            } else {
+                $ketentuan_lain = $model->ketentuan_lain;
+            }
+        }
+        
         $data = [
             'model' => $model,
             'kbli' => $kbli,
             'title' => 'Edit Analisa KKPR Non',
             'isEdit' => true,
             'analis' => User::permission('Analis')->get(),
+            'pertimbangan' => $pertimbangan,
+            'ketentuan_lain' => $ketentuan_lain,
         ];
 
         return view($this->base_view . 'form_analisa', $data);
@@ -1282,6 +1360,18 @@ class AdminKkprNonController extends Controller
             //         ->with('error', 'Tidak dapat mengedit analisa dalam kondisi ini');
             // }
 
+            // Process pertimbangan and ketentuan_lain as JSON
+            $pertimbangan = $request->get('pertimbangan', []);
+            $ketentuan_lain = $request->get('ketentuan_lain', []);
+            
+            // Filter out empty values
+            $pertimbangan = array_filter($pertimbangan, function($item) {
+                return !empty(trim($item));
+            });
+            $ketentuan_lain = array_filter($ketentuan_lain, function($item) {
+                return !empty(trim($item));
+            });
+
             // Update data analisa
             $model->update([
                 'status_rencana' => $request->status_rencana,
@@ -1290,15 +1380,21 @@ class AdminKkprNonController extends Controller
                 'kdb' => $request->kdb,
                 'klb' => $request->klb,
                 'kdh' => $request->kdh,
+                'ktb' => $request->ktb,
+                'lokasi_rencana' => $request->lokasi_rencana,
                 'gsb' => $request->gsb,
                 'tinggi_bangunan' => $request->tinggi_bangunan,
-                'pertimbangan' => $request->pertimbangan,
+                'pertimbangan' => json_encode($pertimbangan),
+                'ketentuan_lain' => json_encode($ketentuan_lain),
                 'pemeriksa_teknis' => $request->pemeriksa_teknis,
                 'no_nib' => $request->no_nib,
                 'tgl_terbit' => $request->tgl_terbit,
                 'alamat_kegiatan' => $request->alamat_kegiatan,
                 'status_penggunaan_tanah' => $request->status_penggunaan_tanah,
                 'luas_dimohon' => $request->luas_dimohon,
+                'atas_nama' => $request->atas_nama,
+                'no_sk' => $request->no_sk,
+                'tanggal_sk' => $request->tanggal_sk,
             ]);
 
             // Update KBLI jika ada

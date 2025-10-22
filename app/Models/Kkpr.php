@@ -45,13 +45,18 @@ class Kkpr extends Model
     'analisa_status',
     'rencana_manfaat',
     'pertimbangan',
+    'lokasi_rencana',
     'status_analisa',
     'peta_analis',
     'pemeriksa_teknis',
     'kml_geojson',
     'draft_file',
     'status_rencana',
-    'foto_peta'
+    'foto_peta',
+    'ketentuan_lain',
+    'no_sk',
+    'tanggal_sk',
+    'atas_nama',
 ];
 
     protected $casts = [

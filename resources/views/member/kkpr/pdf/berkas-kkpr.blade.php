@@ -211,8 +211,14 @@
         <tr>
             <td style="width: 12%; padding: 3px; border: 1px dotted #333;"><strong>Nomor</strong></td>
             <td style="width: 2%; padding: 3px; border: 1px dotted #333;">:</td>
-            <td style="width: 35%; padding: 3px; border: 1px dotted #333;">645 / /429.115 / 2025</td>
-            <td style="width: 51%; padding: 3px; border: 1px dotted #333; text-align: right;"><strong>Banyuwangi, Oktober 2025</strong></td>
+            <td style="width: 35%; padding: 3px; border: 1px dotted #333;">{{ $model->no_sk ?? '-' }}</td>
+            <td style="width: 51%; padding: 3px; border: 1px dotted #333; text-align: right;"><strong>Banyuwangi, {{ \Carbon\Carbon::now()->locale('id')->translatedFormat('d F Y') }}</strong></td>
+        </tr>
+        <tr>
+            <td style="padding: 3px; border: 1px dotted #333;"><strong>Tanggal</strong></td>
+            <td style="padding: 3px; border: 1px dotted #333;">:</td>
+            <td style="padding: 3px; border: 1px dotted #333;">{{ $model->tanggal_sk ? \Carbon\Carbon::parse($model->tanggal_sk)->locale('id')->translatedFormat('d F Y') : '-' }}</td>
+            <td style="padding: 3px; border: 1px dotted #333;"></td>
         </tr>
         <tr>
             <td style="padding: 3px; border: 1px dotted #333;"><strong>Sifat</strong></td>
@@ -249,62 +255,72 @@
             <td class="label-col">a.</td>
             <td class="field-col">Nama Pelaku Usaha</td>
             <td class="colon-col">:</td>
-            <td class="value-col">{{ $model->atas_nama ?? 'PT BISMILLAH BERKAH ABADI' }}</td>
+            <td class="value-col">{{ strtoupper($model->user->name ?? '-') }}</td>
         </tr>
         <tr>
             <td class="label-col">b.</td>
             <td class="field-col">Nama Penanggung jawab</td>
             <td class="colon-col">:</td>
-            <td class="value-col">{{ strtoupper($model->user->name) }}</td>
+            <td class="value-col">{{ strtoupper($model->atas_nama ?? '-') }}</td>
         </tr>
         <tr>
             <td class="label-col">c.</td>
             <td class="field-col">NIB</td>
             <td class="colon-col">:</td>
-            <td class="value-col">{{ $model->no_nib ?? '1109250010578' }}</td>
+            <td class="value-col">{{ $model->no_nib ?? '-' }}</td>
         </tr>
         <tr>
             <td class="label-col">d.</td>
             <td class="field-col">Diterbitkan tanggal</td>
             <td class="colon-col">:</td>
-            <td class="value-col">{{ $model->tgl_terbit ?? '11 September 2025' }}</td>
+            <td class="value-col">{{ $model->tgl_terbit ?? '-' }}</td>
         </tr>
         <tr>
             <td class="label-col">e.</td>
             <td class="field-col">Kode KBLI</td>
             <td class="colon-col">:</td>
-            <td class="value-col">{{ $model->kkpr_kbli->first()->kode_kbli ?? '86903' }}</td>
+            <td class="value-col">{{ $model->kkpr_kbli && $model->kkpr_kbli->count() > 0 ? $model->kkpr_kbli->first()->kode_kbli : '-' }}</td>
         </tr>
         <tr>
             <td class="label-col">f.</td>
             <td class="field-col">Jenis KBLI</td>
             <td class="colon-col">:</td>
-            <td class="value-col">{{ $model->kkpr_kbli->first()->judul_kbli ?? 'Aktivitas Pelayanan Penunjang Kesehatan' }}</td>
+            <td class="value-col">{{ $model->kkpr_kbli && $model->kkpr_kbli->count() > 0 ? $model->kkpr_kbli->first()->judul_kbli : '-' }}</td>
         </tr>
         <tr>
             <td class="label-col">g.</td>
             <td class="field-col">Lokasi Usaha</td>
             <td class="colon-col">:</td>
-            <td class="value-col">{{ $kel->NAMA_KEL ?? 'Setail' }}, Kecamatan {{ $kec->NAMA_KEC ?? 'Genteng' }}</td>
+            <td class="value-col">{{ $kel ? $kel->NAMA_KEL : 'Setail' }}, Kecamatan {{ $kec ? $kec->NAMA_KEC : '-' }}</td>
         </tr>
         <tr>
             <td class="label-col">h.</td>
             <td class="field-col">Penggunaan Lahan saat ini</td>
             <td class="colon-col">:</td>
-            <td class="value-col">Lahan terdapat bangunan lama</td>
+            <td class="value-col">{{ $model->status_penggunaan_tanah ?? '-' }}</td>
         </tr>
         <tr>
             <td class="label-col">i.</td>
             <td class="field-col">Luas tanah yang dimohon</td>
             <td class="colon-col">:</td>
-            <td class="value-col">{{ $model->luas_dimohon ?? '474' }} m² pada Sertifikat Hak Milik Nomor {{ $model->no_sertifikat ?? '1308' }} Tahun {{ $model->thn_sertifikat ?? '2000' }} pada status sebidang tanah perumahan</td>
+            <td class="value-col">{{ $model->luas_dimohon ?? '-' }} m² pada Sertifikat Hak Milik Nomor {{ $model->no_sertifikat ?? '1308' }} Tahun {{ $model->thn_sertifikat ?? '2000' }} pada status sebidang tanah perumahan</td>
         </tr>
     </table>
 
     <!-- Section 2: Dinyatakan terhadap rencana tata ruang -->
-    <div class="section-title">2. Dinyatakan terhadap rencana tata ruang <span class="bold-underline">Sesuai Bersyarat</span> / <span class="strikethrough">Sesuai Sebagian</span> / <span class="strikethrough">Tidak Sesuai</span> dengan ketentuan:</div>
+    <div class="section-title" style="page-break-inside: avoid;">2. Dinyatakan terhadap rencana tata ruang 
+        @if($model->status_rencana == 'Sesuai Bersyarat')
+            <span class="bold-underline">Sesuai Bersyarat</span> / <span class="strikethrough">Sesuai Sebagian</span> / <span class="strikethrough">Tidak Sesuai</span>
+        @elseif($model->status_rencana == 'Sesuai Sebagian')
+            <span class="strikethrough">Sesuai Bersyarat</span> / <span class="bold-underline">Sesuai Sebagian</span> / <span class="strikethrough">Tidak Sesuai</span>
+        @elseif($model->status_rencana == 'Tidak Sesuai')
+            <span class="strikethrough">Sesuai Bersyarat</span> / <span class="strikethrough">Sesuai Sebagian</span> / <span class="bold-underline">Tidak Sesuai</span>
+        @else
+            <span class="bold-underline">Sesuai Bersyarat</span> / <span class="strikethrough">Sesuai Sebagian</span> / <span class="strikethrough">Tidak Sesuai</span>
+        @endif
+        dengan ketentuan:</div>
     
-    <table style="width: 100%;">
+    <table style="width: 100%; page-break-inside: avoid;">
         <tr>
             <td style="width: 60%; vertical-align: top;">
                 <table class="info-table">
@@ -312,55 +328,63 @@
                         <td class="label-col">a.</td>
                         <td class="field-col">Lokasi Rencana Tata Ruang</td>
                         <td class="colon-col">:</td>
-                        <td class="value-col">SBWP VI.A Blok VI.A.1</td>
+                        <td class="value-col">{{ $model->lokasi_rencana ?? '-' }}</td>
                     </tr>
                     <tr>
                         <td class="label-col">b.</td>
                         <td class="field-col">Rencana Pemanfataan Ruang</td>
                         <td class="colon-col">:</td>
-                        <td class="value-col">Perdagangan dan Jasa Skala Kota (K-1)</td>
+                        <td class="value-col">{{ $model->rencana_manfaat ?? '-' }}</td>
                     </tr>
                     <tr>
                         <td class="label-col">c.</td>
                         <td class="field-col">Status Lahan Sawah Dilindungi</td>
                         <td class="colon-col">:</td>
-                        <td class="value-col"><span class="bold-underline">Berada</span> / <span class="strikethrough">Tidak Berada</span></td>
+                        <td class="value-col">
+                            @if($model->status_lsd == 'Berada')
+                                <span class="bold-underline">Berada</span> / <span class="strikethrough">Tidak Berada</span>
+                            @elseif($model->status_lsd == 'Tidak Berada')
+                                <span class="strikethrough">Berada</span> / <span class="bold-underline">Tidak Berada</span>
+                            @else
+                                <span class="bold-underline">Berada</span> / <span class="strikethrough">Tidak Berada</span>
+                            @endif
+                        </td>
                     </tr>
                     <tr>
                         <td class="label-col">d.</td>
                         <td class="field-col">KDB (maks)</td>
                         <td class="colon-col">:</td>
-                        <td class="value-col">{{ $model->kdb ?? '60' }}%</td>
+                        <td class="value-col">{{ $model->kdb ?? '-' }}%</td>
                     </tr>
                     <tr>
                         <td class="label-col">e.</td>
                         <td class="field-col">KLB (maks)</td>
                         <td class="colon-col">:</td>
-                        <td class="value-col">{{ $model->klb ?? '2.4' }}</td>
+                        <td class="value-col">{{ $model->klb ?? '-' }}</td>
                     </tr>
                     <tr>
                         <td class="label-col">f.</td>
                         <td class="field-col">KDH (min)</td>
                         <td class="colon-col">:</td>
-                        <td class="value-col">{{ $model->kdh ?? '15' }}%</td>
+                        <td class="value-col">{{ $model->kdh ?? '-' }}%</td>
                     </tr>
                     <tr>
                         <td class="label-col">g.</td>
                         <td class="field-col">KTB (maks)</td>
                         <td class="colon-col">:</td>
-                        <td class="value-col">{{ $model->ktb ?? '60' }}%</td>
+                        <td class="value-col">{{ $model->ktb ?? '-' }}%</td>
                     </tr>
                     <tr>
                         <td class="label-col">h.</td>
                         <td class="field-col">Garis Sempadan Bangunan (min)</td>
                         <td class="colon-col">:</td>
-                        <td class="value-col">{{ $model->gsb ?? '10' }} meter (jalan kolektor primer)</td>
+                        <td class="value-col">{{ $model->gsb ?? '-' }} meter (jalan kolektor primer)</td>
                     </tr>
                     <tr>
                         <td class="label-col">i.</td>
                         <td class="field-col">Tinggi Bangunan (maks)</td>
                         <td class="colon-col">:</td>
-                        <td class="value-col">{{ $model->tinggi_bangunan ?? '20' }} meter</td>
+                        <td class="value-col">{{ $model->tinggi_bangunan ?? '-' }} meter</td>
                     </tr>
                 </table>
             </td>
@@ -368,20 +392,20 @@
                 <!-- Map Section -->
                 <div class="map-container">
                     @if($fotoPetaBase64)
-                        <div style="border: 1px solid #ccc; padding: 10px; background-color: #f9f9f9; text-align: center;">
+                        <div style="border: 1px solid #ccc; padding: 5px; background-color: #f9f9f9; text-align: center;">
                             <img src="{{ $fotoPetaBase64 }}" 
                                  alt="Peta Lokasi Permohonan" 
-                                 style="max-width: 100%; max-height: 400px; border: 1px solid #ddd;">
+                                 style="max-width: 100%; max-height: 150px; width: auto; height: auto; border: 1px solid #ddd; object-fit: contain;">
                         </div>
                     @else
-                        <div style="border: 1px solid #ccc; padding: 10px; background-color: #f9f9f9; min-height: 200px;">
-                            <div style="text-align: center; color: #666; font-size: 10pt;">
+                        <div style="border: 1px solid #ccc; padding: 5px; background-color: #f9f9f9; min-height: 100px;">
+                            <div style="text-align: center; color: #666; font-size: 8pt;">
                                 [PETA LOKASI PERMOHONAN]<br>
                                 <small>Peta tidak tersedia</small>
                             </div>
                         </div>
                     @endif
-                    <div class="map-caption">
+                    <div class="map-caption" style="font-size: 8pt; margin-top: 5px;">
                         <strong>Peta Lokasi Permohonan terhadap arahan pemanfaatan ruang yang di setujui</strong>
                     </div>
                 </div>
@@ -399,23 +423,55 @@
         <div style="margin: 10px 0;">
             <strong>b. Surat Keputusan Menteri Agraria Dan Tata Ruang/ Kepala Badan Pertanahan Nasional Nomor 1589/SK-Hk.02.01/XII/2021 Tentang Penetapan Peta Lahan Sawah Yang Dilindungi Pada Kabupaten/Kota</strong>
         </div>
+        @php
+            // Decode JSON data for pertimbangan and ketentuan_lain
+            $pertimbangan = [];
+            $ketentuan_lain = [];
+            
+            if (!empty($model->pertimbangan)) {
+                if (is_string($model->pertimbangan)) {
+                    $decoded = json_decode($model->pertimbangan, true);
+                    $pertimbangan = is_array($decoded) ? $decoded : [];
+                } elseif (is_array($model->pertimbangan)) {
+                    $pertimbangan = $model->pertimbangan;
+                } else {
+                    $pertimbangan = [];
+                }
+            }
+            
+            if (!empty($model->ketentuan_lain)) {
+                if (is_string($model->ketentuan_lain)) {
+                    $decoded = json_decode($model->ketentuan_lain, true);
+                    $ketentuan_lain = is_array($decoded) ? $decoded : [];
+                } elseif (is_array($model->ketentuan_lain)) {
+                    $ketentuan_lain = $model->ketentuan_lain;
+                } else {
+                    $ketentuan_lain = [];
+                }
+            }
+        @endphp
+
+        @if(!empty($pertimbangan))
         <div style="margin: 10px 0;">
-            <strong>c. Ketentuan penggunaan lahan untuk kegiatan Kode KBLI {{ $model->kkpr_kbli->first()->kode_kbli ?? '86903' }} pada zona perdagangan dan jasa skala kota (K-1):</strong>
+            <strong>c. Ketentuan penggunaan lahan untuk kegiatan Kode KBLI {{ $model->kkpr_kbli && $model->kkpr_kbli->count() > 0 ? $model->kkpr_kbli->first()->kode_kbli : '-' }} pada {{ $model->rencana_manfaat ?? '-' }}:</strong>
             <ol style="margin: 10px 0; padding-left: 20px;">
-                <li>Berkoordinasi dengan instansi teknis terkait dengan Persetujuan Teknis Analisis mengenai Dampak Lalu Lintas sesuai dengan kekewenangan dan ketentuan yang berlaku</li>
-                <li>Mendapatkan rekomendasi garis sempadan sungai/saluran dari instansi teknis terkait sesuai dengan ketentuan</li>
-                <li>Wajib mendapatkan rekomendasi/izin dari instansi terkait sesuai dengan ketentuan peraturan yang berlaku</li>
-                <li>Tampak bangunan depan mengikuti kearifan lokal Kabupaten Banyuwangi</li>
-                <li>Wajib mencukupi dan menyediakan parkir kendaraan, kebutuhan aksesibilitas, kebutuhan ruang loading, unloading dan/atau tempat penampungan barang didalam kavling/persil di dalam kavling/persil</li>
+                @foreach($pertimbangan as $index => $item)
+                    <li>{{ $item }}</li>
+                @endforeach
             </ol>
         </div>
+        @endif
+
+        @if(!empty($ketentuan_lain))
         <div style="margin: 10px 0;">
             <strong>d. Keterangan lain yang dianggap perlu:</strong>
             <ol style="margin: 10px 0; padding-left: 20px;">
-                <li>Surat ini hanya menunjukan informasi peruntukan rencana penggunaan ruang yang diperbolehkan sesuai dengan rencana umum/rinci tata ruang dan bukan menyatakan bukti kepemilikan hak atas tanah.</li>
-                <li>Surat ini dianggap tidak berlaku apabila di kemudian hari terjadi sengketa atas tanah, kepemilikan, dan keterangan yang diajukan dalam permohonan ini ternyata tidak benar ataupun dipalsukan di kemudian hari.</li>
+                @foreach($ketentuan_lain as $index => $item)
+                    <li>{{ $item }}</li>
+                @endforeach
             </ol>
         </div>
+        @endif
     </div>
 
     <!-- Signature Section -->
