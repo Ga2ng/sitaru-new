@@ -116,8 +116,8 @@
                     <button class="btn btn-sm btn-outline-primary" id="resetAllOpacity" title="Reset semua opacity ke 100%">
                         <i class="fas fa-undo text-xs"></i>
                     </button>
-                </div>
-                
+        </div>
+
                 <!-- Koordinat Search -->
                 <div class="mb-4 p-3 bg-gray-50 rounded-lg">
                     <label class="form-label font-semibold text-sm">Cari Koordinat</label>
@@ -127,8 +127,8 @@
                         <div class="flex gap-2">
                             <button class="btn btn-primary btn-sm flex-1" id="searchCoordinate">Cari</button>
                             <button class="btn btn-secondary btn-sm flex-1" id="resetMap">Reset</button>
-                        </div>
-                    </div>
+                </div>
+                </div>
                 </div>
                 
                 <hr class="my-3">
@@ -141,21 +141,21 @@
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="batasKecamatanCheck">
                                 <label class="form-check-label font-semibold text-sm" for="batasKecamatanCheck">Batas Kecamatan</label>
-                            </div>
-                        </div>
+                </div>
+            </div>
                         <div class="opacity-control">
                             <label class="form-label small mb-1">Opacity: <span id="batasKecamatanOpacity">100%</span></label>
                             <input type="range" class="form-range opacity-slider" id="batasKecamatanOpacitySlider" min="0" max="100" value="100">
-                        </div>
-                    </div>
-                    
+        </div>
+    </div>
+
                     <!-- LSD -->
                     <div class="layer-item p-3 border rounded-lg bg-white/50">
                         <div class="flex justify-between items-center mb-2">
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="lsdCheck">
                                 <label class="form-check-label font-semibold text-sm" for="lsdCheck">LSD</label>
-                            </div>
+            </div>
                         </div>
                         <div class="opacity-control">
                             <label class="form-label small mb-1">Opacity: <span id="lsdOpacity">100%</span></label>
@@ -250,11 +250,11 @@
                     <!-- Header -->
                     <div id="info-zona-header" class="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-4 flex items-center gap-3">
                         <span id="info-zona-color" class="w-6 h-6 rounded bg-gray-300"></span>
-                        <div>
+            <div>
                             <div id="info-zona-title" class="font-semibold text-lg">Informasi Zona</div>
                             <div id="info-zona-layer" class="text-sm opacity-90">-</div>
-                        </div>
-                    </div>
+            </div>
+        </div>
                     <!-- Content -->
                     <div class="p-6">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -842,7 +842,7 @@
                 opacity: 0.8
             }),
             stroke: new ol.style.Stroke({
-                color: 'green',
+            color: 'green',
                 width: 1,
                 opacity: 0.2
             })

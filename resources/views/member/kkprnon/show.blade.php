@@ -5,7 +5,7 @@
 
 @section('content')
 @php
-    $img_path = url('/uploads/berkas/kkpr/').'/'.$model->id.'/';
+    $img_path = url('/uploads/berkas/umk/').'/'.$model->id.'/';
     $prop = \DB::table('setup_prop')->where('NO_PROP', 35)->first();
     $kab = \DB::table('setup_kab')->where('NO_PROP', 35)->where('NO_KAB', 10)->first();
     $kec = \DB::table('setup_kec')->where('NO_PROP', 35)->where('NO_KAB', 10)->where('NO_KEC', $model->NO_KEC)->first();
@@ -402,91 +402,6 @@
 
                         <!-- Table Rows -->
                         <div class="divide-y divide-gray-100">
-                            <!-- KTP Pemohon -->
-                            <div class="px-6 py-4 hover:bg-gradient-to-r hover:from-green-50 hover:to-transparent transition-all duration-300 group">
-                                <div class="grid grid-cols-12 gap-4 items-center">
-                                    <div class="col-span-6">
-                                        <div class="flex items-center space-x-3">
-                                            <div class="w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
-                                                <i class="fas fa-id-card text-white text-sm"></i>
-                </div>
-                <div>
-                                                <p class="font-bold text-gray-900 text-sm">KTP Pemohon</p>
-                                                <p class="text-xs text-gray-500">Dokumen wajib</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-span-3">
-                                        @if ($model->user->ktp != null)
-                                            <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-green-100 to-green-200 text-green-800 border border-green-300">
-                                                <i class="fas fa-check-circle mr-1 text-xs"></i>
-                                                Terupload
-                                            </span>
-                                        @else
-                                            <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-800 border border-yellow-300">
-                                                <i class="fas fa-clock mr-1 text-xs"></i>
-                                                Belum Upload
-                                            </span>
-                                        @endif
-                                    </div>
-                                    <div class="col-span-3">
-                                        <div class="flex items-center space-x-1">
-                                            @if ($model->user->ktp != null)
-                                                <a target="_blank" href="{{ asset('uploads/images/ktp/' . $model->user->ktp) }}" class="p-2 text-gray-400 hover:text-[#185B3C] hover:bg-[#185B3C]/10 rounded-lg transition-all duration-200 hover:scale-105" title="Lihat Dokumen">
-                                                    <i class="fas fa-eye text-xs"></i>
-                                                </a>
-                                            @else
-                                                <span class="p-2 text-gray-300" title="Dokumen Kosong">
-                                                    <i class="fas fa-eye-slash text-xs"></i>
-                    </span>
-                                            @endif
-                                        </div>
-                                    </div>
-                </div>
-            </div>
-
-                            <!-- KTP Pemilik -->
-                            <div class="px-6 py-4 hover:bg-gradient-to-r hover:from-blue-50 hover:to-transparent transition-all duration-300 group">
-                                <div class="grid grid-cols-12 gap-4 items-center">
-                                    <div class="col-span-6">
-                                        <div class="flex items-center space-x-3">
-                                            <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
-                                                <i class="fas fa-id-card text-white text-sm"></i>
-                </div>
-                <div>
-                                                <p class="font-bold text-gray-900 text-sm">KTP Pemilik</p>
-                                                <p class="text-xs text-gray-500">Dokumen wajib</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-span-3">
-                                        @if ($model->ktp_pemilik != null)
-                                            <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-green-100 to-green-200 text-green-800 border border-green-300">
-                                                <i class="fas fa-check-circle mr-1 text-xs"></i>
-                                                Terupload
-                                            </span>
-                                        @else
-                                            <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-800 border border-yellow-300">
-                                                <i class="fas fa-clock mr-1 text-xs"></i>
-                                                Belum Upload
-                                            </span>
-                                        @endif
-                                    </div>
-                                    <div class="col-span-3">
-                                        <div class="flex items-center space-x-1">
-                                            @if ($model->ktp_pemilik != null)
-                                                <a target="_blank" href="{{ asset('uploads/images/ktp/pemilik/' . $model->id . '/' . $model->ktp_pemilik) }}" class="p-2 text-gray-400 hover:text-[#185B3C] hover:bg-[#185B3C]/10 rounded-lg transition-all duration-200 hover:scale-105" title="Lihat Dokumen">
-                                                    <i class="fas fa-eye text-xs"></i>
-                                                </a>
-                                            @else
-                                                <span class="p-2 text-gray-300" title="Dokumen Kosong">
-                                                    <i class="fas fa-eye-slash text-xs"></i>
-                                                </span>
-                                            @endif
-                                        </div>
-                                    </div>
-                                </div>
-            </div>
 
                             <!-- Dokumen Kepemilikan -->
                             <div class="px-6 py-4 hover:bg-gradient-to-r hover:from-[#185B3C]/5 hover:to-transparent transition-all duration-300 group">
@@ -518,7 +433,7 @@
                                     <div class="col-span-3">
                                         <div class="flex items-center space-x-1">
                                             @if ($model->dok_kepemilikan != null)
-                                                <a target="_blank" href="{{ asset('uploads/berkas/kkpr/'.$model->id. '/dokumen_kepemilikan/' .$model->dok_kepemilikan) }}" class="p-2 text-gray-400 hover:text-[#185B3C] hover:bg-[#185B3C]/10 rounded-lg transition-all duration-200 hover:scale-105" title="Lihat Dokumen">
+                                                <a target="_blank" href="{{ asset('uploads/berkas/umk/'.$model->id. '/dokumen_kepemilikan/' .$model->dok_kepemilikan) }}" class="p-2 text-gray-400 hover:text-[#185B3C] hover:bg-[#185B3C]/10 rounded-lg transition-all duration-200 hover:scale-105" title="Lihat Dokumen">
                                                     <i class="fas fa-eye text-xs"></i>
                                                 </a>
                                             @else
@@ -531,16 +446,59 @@
                                 </div>
                             </div>
 
-                            <!-- F KTP -->
+                            <!-- Surat Pernyataan Mandiri -->
+                            <div class="px-6 py-4 hover:bg-gradient-to-r hover:from-blue-50 hover:to-transparent transition-all duration-300 group">
+                                <div class="grid grid-cols-12 gap-4 items-center">
+                                    <div class="col-span-6">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
+                                                <i class="fas fa-file-contract text-white text-sm"></i>
+                                            </div>
+                                            <div>
+                                                <p class="font-bold text-gray-900 text-sm">Surat Pernyataan Mandiri</p>
+                                                <p class="text-xs text-gray-500">Dokumen wajib</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-span-3">
+                                        @if ($model->dok_kepemilikan != null)
+                                            <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-green-100 to-green-200 text-green-800 border border-green-300">
+                                                <i class="fas fa-check-circle mr-1 text-xs"></i>
+                                                Terupload
+                                            </span>
+                                        @else
+                                            <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-800 border border-yellow-300">
+                                                <i class="fas fa-clock mr-1 text-xs"></i>
+                                                Belum Upload
+                                            </span>
+                                        @endif
+                                    </div>
+                                    <div class="col-span-3">
+                                        <div class="flex items-center space-x-1">
+                                            @if ($model->dok_kepemilikan != null)
+                                                <a target="_blank" href="{{ asset('uploads/berkas/umk/'.$model->id. '/dok_kepemilikan/' .$model->dok_kepemilikan) }}" class="p-2 text-gray-400 hover:text-[#185B3C] hover:bg-[#185B3C]/10 rounded-lg transition-all duration-200 hover:scale-105" title="Lihat Dokumen">
+                                                    <i class="fas fa-eye text-xs"></i>
+                                                </a>
+                                            @else
+                                                <span class="p-2 text-gray-300" title="Dokumen Kosong">
+                                                    <i class="fas fa-eye-slash text-xs"></i>
+                                                </span>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+            </div>
+
+                            <!-- KTP Pemohon -->
                             <div class="px-6 py-4 hover:bg-gradient-to-r hover:from-green-50 hover:to-transparent transition-all duration-300 group">
                                 <div class="grid grid-cols-12 gap-4 items-center">
                                     <div class="col-span-6">
                                         <div class="flex items-center space-x-3">
                                             <div class="w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
                                                 <i class="fas fa-id-card text-white text-sm"></i>
-                </div>
+        </div>
                 <div>
-                                                <p class="font-bold text-gray-900 text-sm">KTP (F_KTP)</p>
+                                                <p class="font-bold text-gray-900 text-sm">KTP Pemohon</p>
                                                 <p class="text-xs text-gray-500">Dokumen wajib</p>
                                             </div>
                                         </div>
@@ -561,33 +519,33 @@
                                     <div class="col-span-3">
                                         <div class="flex items-center space-x-1">
                                             @if ($model->f_ktp != null)
-                                                <a target="_blank" href="{{ asset('uploads/berkas/kkpr/'.$model->id. '/f_ktp/' .$model->f_ktp) }}" class="p-2 text-gray-400 hover:text-[#185B3C] hover:bg-[#185B3C]/10 rounded-lg transition-all duration-200 hover:scale-105" title="Lihat Dokumen">
+                                                <a target="_blank" href="{{ asset('uploads/berkas/umk/'.$model->id. '/f_ktp/' .$model->f_ktp) }}" class="p-2 text-gray-400 hover:text-[#185B3C] hover:bg-[#185B3C]/10 rounded-lg transition-all duration-200 hover:scale-105" title="Lihat Dokumen">
                                                     <i class="fas fa-eye text-xs"></i>
                                                 </a>
                                             @else
                                                 <span class="p-2 text-gray-300" title="Dokumen Kosong">
                                                     <i class="fas fa-eye-slash text-xs"></i>
-                                                </span>
+                    </span>
                                             @endif
-                </div>
-            </div>
-        </div>
-    </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
-                            <!-- Sertifikat -->
+                            <!-- Sertifikat Tanah -->
                             <div class="px-6 py-4 hover:bg-gradient-to-r hover:from-purple-50 hover:to-transparent transition-all duration-300 group">
                                 <div class="grid grid-cols-12 gap-4 items-center">
                                     <div class="col-span-6">
                                         <div class="flex items-center space-x-3">
                                             <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
                                                 <i class="fas fa-certificate text-white text-sm"></i>
-                                            </div>
-                                            <div>
+                </div>
+                <div>
                                                 <p class="font-bold text-gray-900 text-sm">Sertifikat Tanah</p>
                                                 <p class="text-xs text-gray-500">Dokumen wajib</p>
                                             </div>
                                         </div>
-            </div>
+                                    </div>
                                     <div class="col-span-3">
                                         @if ($model->f_sertifikat != null)
                                             <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-green-100 to-green-200 text-green-800 border border-green-300">
@@ -600,37 +558,37 @@
                                                 Belum Upload
                                             </span>
                                         @endif
-        </div>
+                                    </div>
                                     <div class="col-span-3">
                                         <div class="flex items-center space-x-1">
                                             @if ($model->f_sertifikat != null)
-                                                <a target="_blank" href="{{ asset('uploads/berkas/kkpr/'.$model->id. '/f_sertifikat/' .$model->f_sertifikat) }}" class="p-2 text-gray-400 hover:text-[#185B3C] hover:bg-[#185B3C]/10 rounded-lg transition-all duration-200 hover:scale-105" title="Lihat Dokumen">
+                                                <a target="_blank" href="{{ asset('uploads/berkas/umk/'.$model->id. '/f_sertifikat/' .$model->f_sertifikat) }}" class="p-2 text-gray-400 hover:text-[#185B3C] hover:bg-[#185B3C]/10 rounded-lg transition-all duration-200 hover:scale-105" title="Lihat Dokumen">
                                                     <i class="fas fa-eye text-xs"></i>
-                                </a>
-                            @else
+                                                </a>
+                                            @else
                                                 <span class="p-2 text-gray-300" title="Dokumen Kosong">
                                                     <i class="fas fa-eye-slash text-xs"></i>
                                                 </span>
-                            @endif
+                                            @endif
                                         </div>
                                     </div>
-        </div>
-    </div>
+                                </div>
+                            </div>
 
-                            <!-- Siteplan -->
+                            <!-- Siteplan/Denah Lokasi -->
                             <div class="px-6 py-4 hover:bg-gradient-to-r hover:from-orange-50 hover:to-transparent transition-all duration-300 group">
                                 <div class="grid grid-cols-12 gap-4 items-center">
                                     <div class="col-span-6">
                                         <div class="flex items-center space-x-3">
                                             <div class="w-10 h-10 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
                                                 <i class="fas fa-map text-white text-sm"></i>
-            </div>
-                                            <div>
+                </div>
+                <div>
                                                 <p class="font-bold text-gray-900 text-sm">Siteplan/Denah Lokasi</p>
                                                 <p class="text-xs text-gray-500">Dokumen wajib</p>
-        </div>
-        </div>
-    </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                     <div class="col-span-3">
                                         @if ($model->f_siteplan != null)
                                             <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-green-100 to-green-200 text-green-800 border border-green-300">
@@ -647,14 +605,100 @@
                                     <div class="col-span-3">
                                         <div class="flex items-center space-x-1">
                                             @if ($model->f_siteplan != null)
-                                                <a target="_blank" href="{{ asset('uploads/berkas/kkpr/'.$model->id. '/f_siteplan/' .$model->f_siteplan) }}" class="p-2 text-gray-400 hover:text-[#185B3C] hover:bg-[#185B3C]/10 rounded-lg transition-all duration-200 hover:scale-105" title="Lihat Dokumen">
+                                                <a target="_blank" href="{{ asset('uploads/berkas/umk/'.$model->id. '/f_siteplan/' .$model->f_siteplan) }}" class="p-2 text-gray-400 hover:text-[#185B3C] hover:bg-[#185B3C]/10 rounded-lg transition-all duration-200 hover:scale-105" title="Lihat Dokumen">
                                                     <i class="fas fa-eye text-xs"></i>
                                                 </a>
                                             @else
                                                 <span class="p-2 text-gray-300" title="Dokumen Kosong">
                                                     <i class="fas fa-eye-slash text-xs"></i>
                                                 </span>
-    @endif
+                                            @endif
+                                        </div>
+                                    </div>
+                </div>
+            </div>
+
+                            <!-- Akta Perusahaan -->
+                            <div class="px-6 py-4 hover:bg-gradient-to-r hover:from-indigo-50 hover:to-transparent transition-all duration-300 group">
+                                <div class="grid grid-cols-12 gap-4 items-center">
+                                    <div class="col-span-6">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-10 h-10 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
+                                                <i class="fas fa-building text-white text-sm"></i>
+                                            </div>
+                <div>
+                                                <p class="font-bold text-gray-900 text-sm">Akta Perusahaan</p>
+                                                <p class="text-xs text-gray-500">Dokumen wajib</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-span-3">
+                                        @if ($model->f_akta != null)
+                                            <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-green-100 to-green-200 text-green-800 border border-green-300">
+                                                <i class="fas fa-check-circle mr-1 text-xs"></i>
+                                                Terupload
+                                            </span>
+                                        @else
+                                            <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-800 border border-yellow-300">
+                                                <i class="fas fa-clock mr-1 text-xs"></i>
+                                                Belum Upload
+                                            </span>
+                                        @endif
+                </div>
+                                    <div class="col-span-3">
+                                        <div class="flex items-center space-x-1">
+                                            @if ($model->f_akta != null)
+                                                <a target="_blank" href="{{ asset('uploads/berkas/umk/'.$model->id. '/f_akta/' .$model->f_akta) }}" class="p-2 text-gray-400 hover:text-[#185B3C] hover:bg-[#185B3C]/10 rounded-lg transition-all duration-200 hover:scale-105" title="Lihat Dokumen">
+                                                    <i class="fas fa-eye text-xs"></i>
+                                                </a>
+                                            @else
+                                                <span class="p-2 text-gray-300" title="Dokumen Kosong">
+                                                    <i class="fas fa-eye-slash text-xs"></i>
+                                                </span>
+                @endif
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Dokumen NIB -->
+                            <div class="px-6 py-4 hover:bg-gradient-to-r hover:from-teal-50 hover:to-transparent transition-all duration-300 group">
+                                <div class="grid grid-cols-12 gap-4 items-center">
+                                    <div class="col-span-6">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-10 h-10 bg-gradient-to-br from-teal-500 to-teal-600 rounded-xl flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
+                                                <i class="fas fa-file-invoice text-white text-sm"></i>
+                                            </div>
+                <div>
+                                                <p class="font-bold text-gray-900 text-sm">Dokumen NIB</p>
+                                                <p class="text-xs text-gray-500">Dokumen wajib</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-span-3">
+                                        @if ($model->f_nib != null)
+                                            <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-green-100 to-green-200 text-green-800 border border-green-300">
+                                                <i class="fas fa-check-circle mr-1 text-xs"></i>
+                                                Terupload
+                                            </span>
+                                        @else
+                                            <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-800 border border-yellow-300">
+                                                <i class="fas fa-clock mr-1 text-xs"></i>
+                                                Belum Upload
+                                            </span>
+                                        @endif
+                </div>
+                                    <div class="col-span-3">
+                                        <div class="flex items-center space-x-1">
+                                            @if ($model->f_nib != null)
+                                                <a target="_blank" href="{{ asset('uploads/berkas/umk/'.$model->id. '/f_nib/' .$model->f_nib) }}" class="p-2 text-gray-400 hover:text-[#185B3C] hover:bg-[#185B3C]/10 rounded-lg transition-all duration-200 hover:scale-105" title="Lihat Dokumen">
+                                                    <i class="fas fa-eye text-xs"></i>
+                                                </a>
+                                            @else
+                                                <span class="p-2 text-gray-300" title="Dokumen Kosong">
+                                                    <i class="fas fa-eye-slash text-xs"></i>
+                                                </span>
+                @endif
                                         </div>
                                     </div>
                                 </div>
@@ -668,12 +712,12 @@
                                             <div class="w-10 h-10 bg-gradient-to-br from-pink-500 to-pink-600 rounded-xl flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
                                                 <i class="fas fa-map-marked-alt text-white text-sm"></i>
                                             </div>
-                                            <div>
+                <div>
                                                 <p class="font-bold text-gray-900 text-sm">KML File</p>
                                                 <p class="text-xs text-gray-500">File koordinat</p>
                                             </div>
                                         </div>
-            </div>
+                                    </div>
                                     <div class="col-span-3">
                                         @if ($model->f_kml != null)
                                             <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-green-100 to-green-200 text-green-800 border border-green-300">
@@ -686,54 +730,11 @@
                                                 Belum Upload
                                             </span>
                                         @endif
-        </div>
+                                    </div>
                                     <div class="col-span-3">
                                         <div class="flex items-center space-x-1">
                                             @if ($model->f_kml != null)
-                                                <a target="_blank" href="{{ asset('uploads/berkas/kkpr/'.$model->id. '/kml/' .$model->f_kml) }}" class="p-2 text-gray-400 hover:text-[#185B3C] hover:bg-[#185B3C]/10 rounded-lg transition-all duration-200 hover:scale-105" title="Lihat Dokumen">
-                                                    <i class="fas fa-eye text-xs"></i>
-                                                </a>
-                                            @else
-                                                <span class="p-2 text-gray-300" title="Dokumen Kosong">
-                                                    <i class="fas fa-eye-slash text-xs"></i>
-                    </span>
-                                            @endif
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Foto Utara -->
-                            <div class="px-6 py-4 hover:bg-gradient-to-r hover:from-purple-50 hover:to-transparent transition-all duration-300 group">
-                                <div class="grid grid-cols-12 gap-4 items-center">
-                                    <div class="col-span-6">
-                                        <div class="flex items-center space-x-3">
-                                            <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
-                                                <i class="fas fa-camera text-white text-sm"></i>
-                </div>
-                <div>
-                                                <p class="font-bold text-gray-900 text-sm">Foto Utara</p>
-                                                <p class="text-xs text-gray-500">Dokumen wajib</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-span-3">
-                                        @if ($model->foto_utara != null)
-                                            <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-green-100 to-green-200 text-green-800 border border-green-300">
-                                                <i class="fas fa-check-circle mr-1 text-xs"></i>
-                                                Terupload
-                                            </span>
-                                        @else
-                                            <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-800 border border-yellow-300">
-                                                <i class="fas fa-clock mr-1 text-xs"></i>
-                                                Belum Upload
-                                            </span>
-                                        @endif
-                                    </div>
-                                    <div class="col-span-3">
-                                        <div class="flex items-center space-x-1">
-                                            @if ($model->foto_utara != null)
-                                                <a target="_blank" href="{{ asset('uploads/berkas/kkpr/' . $model->id . '/' . $model->foto_utara) }}" class="p-2 text-gray-400 hover:text-[#185B3C] hover:bg-[#185B3C]/10 rounded-lg transition-all duration-200 hover:scale-105" title="Lihat Dokumen">
+                                                <a target="_blank" href="{{ asset('uploads/berkas/umk/'.$model->id. '/kml/' .$model->f_kml) }}" class="p-2 text-gray-400 hover:text-[#185B3C] hover:bg-[#185B3C]/10 rounded-lg transition-all duration-200 hover:scale-105" title="Lihat Dokumen">
                                                     <i class="fas fa-eye text-xs"></i>
                                                 </a>
                                             @else
@@ -746,141 +747,6 @@
                                 </div>
                             </div>
 
-                            <!-- Foto Selatan -->
-                            <div class="px-6 py-4 hover:bg-gradient-to-r hover:from-orange-50 hover:to-transparent transition-all duration-300 group">
-                                <div class="grid grid-cols-12 gap-4 items-center">
-                                    <div class="col-span-6">
-                                        <div class="flex items-center space-x-3">
-                                            <div class="w-10 h-10 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
-                                                <i class="fas fa-camera text-white text-sm"></i>
-                </div>
-                <div>
-                                                <p class="font-bold text-gray-900 text-sm">Foto Selatan</p>
-                                                <p class="text-xs text-gray-500">Dokumen wajib</p>
-                                            </div>
-                </div>
-            </div>
-                                    <div class="col-span-3">
-                                        @if ($model->foto_selatan != null)
-                                            <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-green-100 to-green-200 text-green-800 border border-green-300">
-                                                <i class="fas fa-check-circle mr-1 text-xs"></i>
-                                                Terupload
-                                            </span>
-                                        @else
-                                            <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-800 border border-yellow-300">
-                                                <i class="fas fa-clock mr-1 text-xs"></i>
-                                                Belum Upload
-                                            </span>
-                                        @endif
-                </div>
-                                    <div class="col-span-3">
-                                        <div class="flex items-center space-x-1">
-                                            @if ($model->foto_selatan != null)
-                                                <a target="_blank" href="{{ asset('uploads/berkas/kkpr/' . $model->id . '/' . $model->foto_selatan) }}" class="p-2 text-gray-400 hover:text-[#185B3C] hover:bg-[#185B3C]/10 rounded-lg transition-all duration-200 hover:scale-105" title="Lihat Dokumen">
-                                                    <i class="fas fa-eye text-xs"></i>
-                                                </a>
-                                            @else
-                                                <span class="p-2 text-gray-300" title="Dokumen Kosong">
-                                                    <i class="fas fa-eye-slash text-xs"></i>
-                                                </span>
-                @endif
-                                        </div>
-                                    </div>
-                </div>
-            </div>
-
-                            <!-- Foto Barat -->
-                            <div class="px-6 py-4 hover:bg-gradient-to-r hover:from-indigo-50 hover:to-transparent transition-all duration-300 group">
-                                <div class="grid grid-cols-12 gap-4 items-center">
-                                    <div class="col-span-6">
-                                        <div class="flex items-center space-x-3">
-                                            <div class="w-10 h-10 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
-                                                <i class="fas fa-camera text-white text-sm"></i>
-                                            </div>
-                <div>
-                                                <p class="font-bold text-gray-900 text-sm">Foto Barat</p>
-                                                <p class="text-xs text-gray-500">Dokumen wajib</p>
-                                            </div>
-                                        </div>
-                </div>
-                                    <div class="col-span-3">
-                                        @if ($model->foto_barat != null)
-                                            <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-green-100 to-green-200 text-green-800 border border-green-300">
-                                                <i class="fas fa-check-circle mr-1 text-xs"></i>
-                                                Terupload
-                                            </span>
-                                        @else
-                                            <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-800 border border-yellow-300">
-                                                <i class="fas fa-clock mr-1 text-xs"></i>
-                                                Belum Upload
-                                            </span>
-                @endif
-                </div>
-                                    <div class="col-span-3">
-                                        <div class="flex items-center space-x-1">
-                                            @if ($model->foto_barat != null)
-                                                <a target="_blank" href="{{ asset('uploads/berkas/kkpr/' . $model->id . '/' . $model->foto_barat) }}" class="p-2 text-gray-400 hover:text-[#185B3C] hover:bg-[#185B3C]/10 rounded-lg transition-all duration-200 hover:scale-105" title="Lihat Dokumen">
-                                                    <i class="fas fa-eye text-xs"></i>
-                                                </a>
-                                            @else
-                                                <span class="p-2 text-gray-300" title="Dokumen Kosong">
-                                                    <i class="fas fa-eye-slash text-xs"></i>
-                                                </span>
-                @endif
-            </div>
-        </div>
-                                </div>
-                            </div>
-
-                            <!-- Foto Timur -->
-                            <div class="px-6 py-4 hover:bg-gradient-to-r hover:from-teal-50 hover:to-transparent transition-all duration-300 group">
-                                <div class="grid grid-cols-12 gap-4 items-center">
-                                    <div class="col-span-6">
-                                        <div class="flex items-center space-x-3">
-                                            <div class="w-10 h-10 bg-gradient-to-br from-teal-500 to-teal-600 rounded-xl flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
-                                                <i class="fas fa-camera text-white text-sm"></i>
-                                            </div>
-                <div>
-                                                <p class="font-bold text-gray-900 text-sm">Foto Timur</p>
-                                                <p class="text-xs text-gray-500">Dokumen wajib</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-span-3">
-                                        @if ($model->foto_timur != null)
-                                            <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-green-100 to-green-200 text-green-800 border border-green-300">
-                                                <i class="fas fa-check-circle mr-1 text-xs"></i>
-                                                Terupload
-                                            </span>
-                                        @else
-                                            <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-800 border border-yellow-300">
-                                                <i class="fas fa-clock mr-1 text-xs"></i>
-                                                Belum Upload
-                                            </span>
-                                        @endif
-                </div>
-                                    <div class="col-span-3">
-                                        <div class="flex items-center space-x-1">
-                                            @if ($model->foto_timur != null)
-                                                <a target="_blank" href="{{ asset('uploads/berkas/kkpr/' . $model->id . '/' . $model->foto_timur) }}" class="p-2 text-gray-400 hover:text-[#185B3C] hover:bg-[#185B3C]/10 rounded-lg transition-all duration-200 hover:scale-105" title="Lihat Dokumen">
-                                                    <i class="fas fa-eye text-xs"></i>
-                                                </a>
-                                            @else
-                                                <span class="p-2 text-gray-300" title="Dokumen Kosong">
-                                                    <i class="fas fa-eye-slash text-xs"></i>
-                                                </span>
-                @endif
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
 <!-- Modal Koordinat -->
 <div class="modal fade" id="modal-kor" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;" tabindex="-1">
@@ -914,10 +780,19 @@
         }
     }
 
-    // Function koordinat tidak digunakan - disabled
-    // function open_koordinat(id) {
-    //     // Route member.kkprnon.koordinat tidak ada
-    // }
+    function open_koordinat(id) {
+        modal = $('#modal-kor').modal('show');
+        $.ajax({
+            url: '{{ route("member.kkprnon.koordinat", "") }}/' + id,
+            type: "GET",
+            success: function(data) {
+                $('#modal-kor .modal-content').html(data);
+            },
+            error: function() {
+                alert('Gagal memuat data koordinat');
+            }
+        });
+    }
 
     function showTab(tabName) {
         // Hide all tab contents
@@ -955,5 +830,7 @@
     });
 </script>
 @endsection
+
+
 
 

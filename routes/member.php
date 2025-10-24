@@ -50,7 +50,8 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/kkprnon/{id}/delete-file/{fieldName}', [MemberKkprNonController::class, 'deleteFile'])->name('kkprnon.delete.file');
         Route::get('/kkprnon/{id}/cetak-berkas', [MemberKkprNonController::class, 'cetakBerkasUmk'])->name('kkprnon.cetak.berkas');
         Route::get('/kkprnon/{id}/peta', [MemberKkprNonController::class, 'peta'])->name('kkprnon.peta');
-        
+        Route::get('/kkprnon/{id}/koordinat', [MemberKkprNonController::class, 'koordinat'])->name('kkprnon.koordinat');
+
         // Upload Draft Route for KKPR Non (member yang punya permission bisa upload)
         Route::post('/kkprnon/upload-draft', [MemberKkprNonController::class, 'uploadDraft'])->name('kkprnon.upload.draft');
     });

@@ -148,8 +148,8 @@
     function loadKMLFromFolder() {
         setTimeout(function() {
             if(window.kkprMap) {
-                // Try to load KML file first - using kkpr_non path for UMK
-                const kmlPath = '{{ url("uploads/berkas/kkpr_non/" . $model->id . "/kml/kml.kml") }}';
+                // Try to load KML file first - using umk path for UMK
+                const kmlPath = '{{ url("uploads/berkas/umk/" . $model->id . "/kml/kml.kml") }}';
                 
                 fetch(kmlPath)
                     .then(response => {
@@ -199,6 +199,8 @@
                         console.error('Error loading KML from folder:', error);
                         // Try to load GeoJSON as fallback
                         loadExistingGeoJSONFromFolder();
+                        // Also try to load coordinates from database
+                        loadExistingCoordinates();
                     });
             }
         }, 1000);
@@ -206,7 +208,7 @@
 
     // Load GeoJSON file directly from berkas/id/kml folder as fallback
     function loadExistingGeoJSONFromFolder() {
-        const geoJsonPath = '{{ url("uploads/berkas/kkpr_non/" . $model->id . "/kml/geojson.geojson") }}';
+        const geoJsonPath = '{{ url("uploads/berkas/umk/" . $model->id . "/kml/geojson.geojson") }}';
         
         fetch(geoJsonPath)
             .then(response => {
@@ -247,6 +249,8 @@
             })
             .catch(error => {
                 console.error('Error loading GeoJSON from folder:', error);
+                // Try to load coordinates from database as final fallback
+                loadExistingCoordinates();
             });
     }
 
@@ -254,7 +258,7 @@
     function loadExistingCoordinates() {
         setTimeout(function() {
             if(window.kkprMap) {
-                const coordinates = @json($model->kkpr_koordinat->where('jenis', 'UMK')->map(function($k) { return [$k->lati, $k->longi]; }));
+                const coordinates = @json($model->kkpr_koordinat->where('jenis', 'KKPR')->map(function($k) { return [$k->lati, $k->longi]; }));
                 
                 if(coordinates.length > 0) {
                     const latLngs = coordinates.map(coord => L.latLng(coord[0], coord[1]));
@@ -286,7 +290,7 @@
 
     // Load existing KML from GeoJSON
     function loadExistingKML() {
-        const geoJsonPath = '{{ url("uploads/berkas/kkpr_non/" . $model->id . "/kml/" . ($model->f_geojson ?? "")) }}';
+        const geoJsonPath = '{{ url("uploads/berkas/umk/" . $model->id . "/kml/" . ($model->f_geojson ?? "")) }}';
         
         fetch(geoJsonPath)
             .then(response => {
@@ -340,7 +344,7 @@
     // Load existing KML file and convert to GeoJSON
     function loadExistingKMLFromKML() {
         @if(isset($model) && $model->f_kml)
-            const kmlPath = '{{ asset("uploads/berkas/kkpr_non/".$model->id."/kml/".$model->f_kml) }}';
+            const kmlPath = '{{ asset("uploads/berkas/umk/".$model->id."/kml/".$model->f_kml) }}';
             
             fetch(kmlPath)
                 .then(response => {
