@@ -7,7 +7,6 @@ use App\Models\Informasi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use Intervention\Image\Facades\Image;
 
 class AdminInformasiController extends Controller
 {
@@ -47,9 +46,19 @@ class AdminInformasiController extends Controller
     {
         $request->validate([
             'nama' => 'required|string|max:255',
-            'deskripsi' => 'required|string',
-            'photo' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'deskripsi' => 'required|string|max:191',
+            'konten' => 'required|string',
+            'photo' => 'required|image|mimes:jpeg,png,jpg|max:10240',
             'status' => 'in:aktif,pending',
+        ], [
+            'nama.required' => 'Nama informasi harus diisi!',
+            'deskripsi.required' => 'Deskripsi singkat harus diisi!',
+            'deskripsi.max' => 'Deskripsi singkat maksimal 191 karakter!',
+            'konten.required' => 'Konten lengkap harus diisi!',
+            'photo.required' => 'Gambar harus diupload!',
+            'photo.image' => 'File harus berupa gambar!',
+            'photo.mimes' => 'Format gambar harus JPG, PNG, atau JPEG!',
+            'photo.max' => 'Ukuran gambar maksimal 10MB!',
         ]);
 
         $data = $request->except('photo');
@@ -57,6 +66,7 @@ class AdminInformasiController extends Controller
         $data['dilihat'] = 0;
         $data['status'] = $request->status ?? 'pending';
 
+        // Handle photo upload
         if ($request->hasFile('photo')) {
             $data['photo'] = $this->savePhoto($request->file('photo'), $data['slug']);
         }
@@ -91,9 +101,18 @@ class AdminInformasiController extends Controller
     {
         $request->validate([
             'nama' => 'required|string|max:255',
-            'deskripsi' => 'required|string',
-            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'deskripsi' => 'required|string|max:191',
+            'konten' => 'required|string',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:10240',
             'status' => 'in:aktif,pending',
+        ], [
+            'nama.required' => 'Nama informasi harus diisi!',
+            'deskripsi.required' => 'Deskripsi singkat harus diisi!',
+            'deskripsi.max' => 'Deskripsi singkat maksimal 191 karakter!',
+            'konten.required' => 'Konten lengkap harus diisi!',
+            'photo.image' => 'File harus berupa gambar!',
+            'photo.mimes' => 'Format gambar harus JPG, PNG, atau JPEG!',
+            'photo.max' => 'Ukuran gambar maksimal 10MB!',
         ]);
 
         $informasi = Informasi::findOrFail($id);
@@ -146,42 +165,24 @@ class AdminInformasiController extends Controller
     {
         $fileName = $slug . '_' . time() . '.' . $photo->getClientOriginalExtension();
         
-        // Create directories if they don't exist
-        $directories = ['informasi/large', 'informasi/medium', 'informasi/small'];
-        foreach ($directories as $dir) {
-            if (!Storage::exists('public/images/' . $dir)) {
-                Storage::makeDirectory('public/images/' . $dir);
-            }
+        // Create directory if it doesn't exist
+        $uploadPath = public_path('uploads/images/informasi');
+        if (!file_exists($uploadPath)) {
+            mkdir($uploadPath, 0755, true);
         }
 
-        // Save large image
-        $largeImage = Image::make($photo)->resize(800, null, function ($constraint) {
-            $constraint->aspectRatio();
-        });
-        Storage::put('public/images/informasi/large/' . $fileName, $largeImage->encode());
-
-        // Save medium image
-        $mediumImage = Image::make($photo)->fit(600, 400);
-        Storage::put('public/images/informasi/medium/' . $fileName, $mediumImage->encode());
-
-        // Save small image
-        $smallImage = Image::make($photo)->resize(100, 100, function ($constraint) {
-            $constraint->aspectRatio();
-        });
-        Storage::put('public/images/informasi/small/' . $fileName, $smallImage->encode());
+        // Save original image to public/uploads/images/informasi
+        $photo->move($uploadPath, $fileName);
 
         return $fileName;
     }
 
+
     protected function deletePhoto($filename)
     {
-        $directories = ['informasi/large', 'informasi/medium', 'informasi/small'];
-        
-        foreach ($directories as $dir) {
-            $path = 'public/images/' . $dir . '/' . $filename;
-            if (Storage::exists($path)) {
-                Storage::delete($path);
-            }
+        $path = public_path('uploads/images/informasi/' . $filename);
+        if (file_exists($path)) {
+            unlink($path);
         }
     }
 }

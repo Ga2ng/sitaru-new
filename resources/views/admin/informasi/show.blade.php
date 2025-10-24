@@ -4,7 +4,7 @@
 @section('subtitle', 'Detail informasi dan pengumuman')
 
 @section('content')
-<div class="max-w-4xl mx-auto space-y-6">
+<div class="max-w-7xl mx-auto space-y-6">
     <!-- Hero Section with Gradient -->
     <div class="relative overflow-hidden bg-gradient-to-br from-[#185B3C] via-[#0F3D26] to-[#185B3C] rounded-xl p-6 text-white">
         <div class="absolute inset-0 bg-black/10"></div>
@@ -109,33 +109,17 @@
             
             @if($informasi->photo)
                 <div class="space-y-4">
-                    <!-- Large Image -->
+                    <!-- Main Image -->
                     <div>
-                        <h4 class="text-sm font-medium text-gray-700 mb-2">Gambar Besar (800px)</h4>
-                        <div class="w-full h-48 bg-gray-100 rounded-lg overflow-hidden">
-                            <img src="{{ Storage::url('images/informasi/large/' . $informasi->photo) }}" 
+                        <h4 class="text-sm font-medium text-gray-700 mb-2">Gambar Informasi</h4>
+                        <div class="w-full h-64 bg-gray-100 rounded-lg overflow-hidden shadow-lg">
+                            <img src="{{ asset('uploads/images/informasi/' . $informasi->photo) }}" 
                                  alt="{{ $informasi->nama }}" 
                                  class="w-full h-full object-cover">
                         </div>
-                    </div>
-                    
-                    <!-- Medium Image -->
-                    <div>
-                        <h4 class="text-sm font-medium text-gray-700 mb-2">Gambar Medium (600x400)</h4>
-                        <div class="w-full h-32 bg-gray-100 rounded-lg overflow-hidden">
-                            <img src="{{ Storage::url('images/informasi/medium/' . $informasi->photo) }}" 
-                                 alt="{{ $informasi->nama }}" 
-                                 class="w-full h-full object-cover">
-                        </div>
-                    </div>
-                    
-                    <!-- Small Image -->
-                    <div>
-                        <h4 class="text-sm font-medium text-gray-700 mb-2">Gambar Kecil (100px)</h4>
-                        <div class="w-24 h-24 bg-gray-100 rounded-lg overflow-hidden">
-                            <img src="{{ Storage::url('images/informasi/small/' . $informasi->photo) }}" 
-                                 alt="{{ $informasi->nama }}" 
-                                 class="w-full h-full object-cover">
+                        <div class="mt-2 text-xs text-gray-500">
+                            <p><strong>Nama file:</strong> {{ $informasi->photo }}</p>
+                            <p><strong>Format:</strong> {{ pathinfo($informasi->photo, PATHINFO_EXTENSION) }}</p>
                         </div>
                     </div>
                 </div>
@@ -158,16 +142,31 @@
                 <i class="fas fa-align-left text-white text-sm"></i>
             </div>
             <div>
-                <h3 class="text-lg font-bold text-gray-900">Isi Informasi</h3>
-                <p class="text-sm text-gray-600">Konten lengkap informasi</p>
+                <h3 class="text-lg font-bold text-gray-900">Konten Lengkap</h3>
+                <p class="text-sm text-gray-600">Deskripsi singkat dan konten lengkap informasi</p>
             </div>
         </div>
         
-        <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
-            <div class="prose max-w-none">
-                <h4 class="text-lg font-semibold text-gray-900 mb-3">{{ $informasi->nama }}</h4>
-                <div class="text-gray-700 leading-relaxed whitespace-pre-line">
+        <div class="space-y-6">
+            <!-- Deskripsi Singkat -->
+            <div class="bg-blue-50 rounded-lg p-4 border border-blue-200">
+                <h4 class="text-sm font-semibold text-blue-900 mb-2 flex items-center">
+                    <i class="fas fa-info-circle mr-2"></i>
+                    Deskripsi Singkat
+                </h4>
+                <div class="text-blue-800 leading-relaxed">
                     {{ $informasi->deskripsi }}
+                </div>
+            </div>
+            
+            <!-- Konten Lengkap -->
+            <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                <h4 class="text-sm font-semibold text-gray-900 mb-2 flex items-center">
+                    <i class="fas fa-file-alt mr-2"></i>
+                    Konten Lengkap
+                </h4>
+                <div class="text-gray-700 leading-relaxed whitespace-pre-line">
+                    {{ $informasi->konten }}
                 </div>
             </div>
         </div>

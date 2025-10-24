@@ -209,7 +209,7 @@
                         <div class="col-span-2">
                             <div class="w-16 h-16 bg-gray-100 rounded-lg overflow-hidden flex items-center justify-center">
                                 @if($informasi->photo)
-                                    <img src="{{ Storage::url('images/informasi/small/' . $informasi->photo) }}" 
+                                    <img src="{{ asset('uploads/images/informasi/' . $informasi->photo) }}" 
                                          alt="{{ $informasi->nama }}" 
                                          class="w-full h-full object-cover">
                                 @else
