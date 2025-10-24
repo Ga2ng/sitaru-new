@@ -258,7 +258,7 @@
     function loadExistingCoordinates() {
         setTimeout(function() {
             if(window.kkprMap) {
-                const coordinates = @json($model->kkpr_koordinat->where('jenis', 'KKPR')->map(function($k) { return [$k->lati, $k->longi]; }));
+                const coordinates = @json($model->kkpr_koordinat->where('jenis', 'UMK')->map(function($k) { return [$k->lati, $k->longi]; }));
                 
                 if(coordinates.length > 0) {
                     const latLngs = coordinates.map(coord => L.latLng(coord[0], coord[1]));

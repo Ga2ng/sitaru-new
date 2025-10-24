@@ -149,7 +149,7 @@
         setTimeout(function() {
             if(window.kkprMap) {
                 // Try to load KML file first - using kkpr_non path for UMK
-                const kmlPath = '{{ url("uploads/berkas/kkpr_non/" . $model->id . "/kml/kml.kml") }}';
+                const kmlPath = '{{ url("uploads/berkas/umk/" . $model->id . "/kml/kml.kml") }}';
                 
                 fetch(kmlPath)
                     .then(response => {
@@ -206,7 +206,7 @@
 
     // Load GeoJSON file directly from berkas/id/kml folder as fallback
     function loadExistingGeoJSONFromFolder() {
-        const geoJsonPath = '{{ url("uploads/berkas/kkpr_non/" . $model->id . "/kml/geojson.geojson") }}';
+        const geoJsonPath = '{{ url("uploads/berkas/umk/" . $model->id . "/kml/geojson.geojson") }}';
         
         fetch(geoJsonPath)
             .then(response => {
@@ -286,7 +286,7 @@
 
     // Load existing KML from GeoJSON
     function loadExistingKML() {
-        const geoJsonPath = '{{ url("uploads/berkas/kkpr_non/" . $model->id . "/kml/" . ($model->f_geojson ?? "")) }}';
+        const geoJsonPath = '{{ url("uploads/berkas/umk/" . $model->id . "/kml/" . ($model->f_geojson ?? "")) }}';
         
         fetch(geoJsonPath)
             .then(response => {
@@ -340,7 +340,7 @@
     // Load existing KML file and convert to GeoJSON
     function loadExistingKMLFromKML() {
         @if(isset($model) && $model->f_kml)
-            const kmlPath = '{{ asset("uploads/berkas/kkpr_non/".$model->id."/kml/".$model->f_kml) }}';
+            const kmlPath = '{{ asset("uploads/berkas/umk/".$model->id."/kml/".$model->f_kml) }}';
             
             fetch(kmlPath)
                 .then(response => {
