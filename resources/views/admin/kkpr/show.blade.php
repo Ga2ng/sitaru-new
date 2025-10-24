@@ -50,6 +50,7 @@
             <i class="fas fa-arrow-left mr-2"></i>
             Kembali
         </a>
+        @if($model->proses < 3)
         <a href="{{ route('admin.kkpr.edit', $model->id) }}" class="inline-flex items-center px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
             <i class="fas fa-edit mr-2"></i>
             Edit
@@ -58,6 +59,7 @@
             <i class="fas fa-trash mr-2"></i>
             Hapus
         </button>
+        @endif
     </div>
 
     <!-- Stats Cards with Glassmorphism -->
@@ -369,9 +371,9 @@
                             {{ $model->alamat_kegiatan ?? 'N/A' }}, {{ ucFirst(strToLower($kel->NAMA_KEL ?? '')) }} Kecamatan {{ ucFirst(strToLower($kec->NAMA_KEC ?? '')) }} Kabupaten {{ ucFirst(strToLower($kab->NAMA_KAB ?? '')) }}.
                         </p>
                         <div class="mt-4 flex items-center space-x-4">
-                            <button onclick="open_koordinat({{ $model->id }})" class="inline-flex items-center px-4 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition-colors">
+                            <a href="{{ route('admin.kkpr.peta', $model->id) }}" class="inline-flex items-center px-4 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition-colors">
                                 <i class="fas fa-search mr-2"></i> Lihat Koordinat
-                            </button>
+                            </a>
                         </div>
                     </div>
                 </div>
