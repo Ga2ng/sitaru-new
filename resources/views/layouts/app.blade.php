@@ -207,7 +207,7 @@
 
                 <!-- Navigation Menu -->
                 <div class="px-4 py-6">
-                    @role('admin|superadmin')
+                    @role('admin')
                     <!-- MENU Section - Admin -->
                     @cannot('OPD Eksternal')
                     <div class="nav-section-title">MENU</div>
@@ -224,12 +224,12 @@
                     <div class="nav-section-title">LAYANAN</div>
                     
                     <div class="space-y-1">
-                        @cannot('Tim FPR')
+                        {{-- @cannot('Tim FPR') --}}
                         <a href="{{ route('admin.kkpr.index') }}" class="nav-item flex items-center space-x-3 px-3 py-2.5 text-sm font-medium {{ request()->is('admin/kkpr') || request()->is('admin/kkpr/*') ? 'active' : '' }}">
                             <i class="fas fa-file-alt w-4 h-4"></i>
                             <span>KKPR Terbit Otomatis</span>
                         </a>
-                        @endcannot
+                        {{-- @endcannot --}}
 
                         <a href="{{ route('admin.kkprnon.index') }}" class="nav-item flex items-center space-x-3 px-3 py-2.5 text-sm font-medium {{ request()->is('admin/kkprnon*') ? 'active' : '' }}">
                             <i class="fas fa-file-contract w-4 h-4"></i>

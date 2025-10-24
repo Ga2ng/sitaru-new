@@ -51,14 +51,16 @@
             Kembali
         </a>
         @if($model->proses < 3)
-        <a href="{{ route('admin.kkprnon.edit', $model->id) }}" class="inline-flex items-center px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
-            <i class="fas fa-edit mr-2"></i>
-            Edit
-        </a>
-        <button onclick="deleteKkprNon({{ $model->id }})" class="inline-flex items-center px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors">
-            <i class="fas fa-trash mr-2"></i>
-            Hapus
-        </button>
+            @can('OPD eksternal')
+                <a href="{{ route('admin.kkprnon.edit', $model->id) }}" class="inline-flex items-center px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
+                    <i class="fas fa-edit mr-2"></i>
+                    Edit
+                </a>
+                <button onclick="deleteKkprNon({{ $model->id }})" class="inline-flex items-center px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors">
+                    <i class="fas fa-trash mr-2"></i>
+                    Hapus
+                </button>
+            @endcan
         @endif
     </div>
 

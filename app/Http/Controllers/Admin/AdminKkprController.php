@@ -97,7 +97,7 @@ class AdminKkprController extends Controller
         $selesai = Kkpr::where('deleted', 0)->where('jenis', 'non_umk')->where('proses', 10)->count();
 
         $data = [
-            'title' => 'Persetujuan UMK',
+            'title' => 'Persetujuan KKPR',
             'kkprs' => $kkprs,
             'totalKkpr' => $totalKkpr,
             'pengajuan' => $pengajuan,
