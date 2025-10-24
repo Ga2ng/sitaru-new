@@ -237,6 +237,28 @@
                 </div>
                 </div>
             </div>
+
+                        <!-- KBLI Section -->
+                        @if($model->kkpr_kbli && $model->kkpr_kbli->count() > 0)
+                        <div class="bg-gradient-to-r from-green-50 to-green-100 rounded-lg p-4">
+                            <div class="flex items-center space-x-3 mb-3">
+                                <div class="w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-list text-white text-sm"></i>
+                                </div>
+                                <h4 class="font-semibold text-gray-900">KBLI</h4>
+                            </div>
+                            <div class="space-y-2">
+                                @foreach($model->kkpr_kbli as $kbli)
+                                <div class="bg-white rounded-lg p-3 border border-green-200">
+                                    <div class="flex items-center justify-between">
+                                        <span class="font-mono text-sm font-semibold text-green-700">{{ $kbli->kode_kbli }}</span>
+                                        <span class="text-xs text-gray-500">{{ $kbli->judul_kbli }}</span>
+                                    </div>
+                                </div>
+                                @endforeach
+                            </div>
+                        </div>
+                        @endif
         </div>
 
                     <!-- Right Column -->
@@ -748,6 +770,11 @@
                                     </div>
                                 </div>
                             </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
 
 
 <!-- Modal Koordinat -->

@@ -2575,10 +2575,13 @@
                     }
                 }, 1000);
                 
-                // Smooth scroll to form
-                $('html, body').animate({
-                    scrollTop: $('#kkprForm').offset().top - 100
-                }, 1000);
+                // Hide verification section and scroll to top of form
+                $('#verification-container').closest('.bg-white\\/80').slideUp(500);
+                setTimeout(function() {
+                    $('html, body').animate({
+                        scrollTop: $('#kkprForm').offset().top - 50
+                    }, 800);
+                }, 500);
             }, 300);
         });
         

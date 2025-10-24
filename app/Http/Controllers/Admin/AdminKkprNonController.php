@@ -466,7 +466,7 @@ class AdminKkprNonController extends Controller
             ]);
         }
 
-        return redirect()->back()->withSuccess('Data berhasil disimpan kedalam sistem');
+        return redirect()->route($this->path . '.index')->withSuccess('Data berhasil disimpan kedalam sistem');
     }
 
     public function edit($id)
