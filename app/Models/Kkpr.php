@@ -57,6 +57,7 @@ class Kkpr extends Model
     'no_sk',
     'tanggal_sk',
     'atas_nama',
+    'tim_fpr',
 ];
 
     protected $casts = [

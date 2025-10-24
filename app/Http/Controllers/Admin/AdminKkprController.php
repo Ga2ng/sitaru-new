@@ -43,20 +43,18 @@ class AdminKkprController extends Controller
             ->where('deleted', 0)
             ->where('jenis', 'non_umk');
 
-        // Filter berdasarkan role - DISABLED untuk menampilkan semua data
-        // Semua role bisa melihat semua data di index
-        // if (Gate::allows('Kabid')) {
-        //     $query->where('proses', 8);
-        // } elseif (Gate::allows('Kadin PTSP')) {
-        //     $query->where('proses', 9);
-        // } elseif (Gate::allows('Analis')) {
-        //     $query->where(function ($q) {
-        //         $q->where('proses', 7)
-        //           ->orWhere('proses', 8)
-        //           ->orWhere('status_analisa', 'survey')
-        //           ->orWhere('status_analisa', 'analisa');
-        //     });
-        // }
+        // Filter berdasarkan role
+        if (Gate::allows('Tim FPR')) {
+            // Jika user memiliki permission Tim FPR, hanya tampilkan data yang ditugaskan ke Tim FPR
+            $query->where('tim_fpr', 1);
+        } else {
+            // Jika user selain Tim FPR, hanya tampilkan data yang belum ditugaskan ke Tim FPR
+            $query->where(function($q) {
+                $q->whereNull('tim_fpr')
+                  ->orWhere('tim_fpr', 0);
+            });
+        }
+        // Filter lainnya tetap disabled untuk role lain
 
         // Filter berdasarkan pencarian
         if ($request->has('search') && $request->search != '') {
@@ -1465,6 +1463,26 @@ class AdminKkprController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Dokumen berhasil disetujui dan dilanjutkan ke tahap Upload Draft'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function tugaskanTimFpr($id)
+    {
+        try {
+            $kkpr = Kkpr::findOrFail($id);
+            
+            // Update tim_fpr menjadi 1
+            $kkpr->update(['tim_fpr' => 1]);
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Berhasil ditugaskan ke TIM FPR'
             ]);
         } catch (\Exception $e) {
             return response()->json([

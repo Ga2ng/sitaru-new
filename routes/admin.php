@@ -64,6 +64,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'permission:User'])-
             Route::post('kkpr/upload-draft', [AdminKkprController::class, 'uploadDraft'])->name('kkpr.upload.draft');
             Route::get('kkpr/{kkpr}/view-draft', [AdminKkprController::class, 'viewDraft'])->name('kkpr.view.draft');
             Route::get('kkpr/{kkpr}/cetak-berkas', [AdminKkprController::class, 'cetakBerkasKkpr'])->name('kkpr.cetak.berkas');
+            Route::post('kkpr/tugaskan-tim-fpr/{id}', [AdminKkprController::class, 'tugaskanTimFpr'])->name('kkpr.tugaskan.tim.fpr');
 
             // KKPR Non Berusaha Management Routes
             Route::resource('kkprnon', AdminKkprNonController::class);

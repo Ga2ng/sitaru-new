@@ -372,9 +372,10 @@
                                         'kepala_dinas' => auth()->user()->can('Kepala Dinas'),
                                         'upload_draft' => auth()->user()->can('Upload Draft'),
                                         'opd_eksternal' => auth()->user()->can('OPD Eksternal'),
+                                        'tim_fpr' => auth()->user()->can('Tim FPR'),
                                     ];
                                 @endphp
-                            <button id="btn-aksi-{{ $kkpr->id }}" onclick="toggleDropdown({{ $kkpr->id }}, {{ $kkpr->proses }}, {{ $kkpr->revisi }}, {{ $can['verifikator'] ? 'true' : 'false' }}, {{ $can['analis'] ? 'true' : 'false' }}, {{ $can['pimpinan'] ? 'true' : 'false' }}, {{ $can['kabid'] ? 'true' : 'false' }}, {{ $can['kepala_dinas'] ? 'true' : 'false' }}, {{ $can['upload_draft'] ? 'true' : 'false' }}, {{ $can['opd_eksternal'] ? 'true' : 'false' }})" class="inline-flex items-center space-x-1.5 px-3 py-1.5 text-xs font-medium text-gray-700 bg-white hover:bg-[#185B3C]/10 hover:text-[#185B3C] border border-gray-300 rounded-lg transition-all duration-200 hover:scale-105" title="Aksi">
+                            <button id="btn-aksi-{{ $kkpr->id }}" onclick="toggleDropdown({{ $kkpr->id }}, {{ $kkpr->proses }}, {{ $kkpr->revisi }}, {{ $can['verifikator'] ? 'true' : 'false' }}, {{ $can['analis'] ? 'true' : 'false' }}, {{ $can['pimpinan'] ? 'true' : 'false' }}, {{ $can['kabid'] ? 'true' : 'false' }}, {{ $can['kepala_dinas'] ? 'true' : 'false' }}, {{ $can['upload_draft'] ? 'true' : 'false' }}, {{ $can['opd_eksternal'] ? 'true' : 'false' }}, {{ $can['tim_fpr'] ? 'true' : 'false' }})" class="inline-flex items-center space-x-1.5 px-3 py-1.5 text-xs font-medium text-gray-700 bg-white hover:bg-[#185B3C]/10 hover:text-[#185B3C] border border-gray-300 rounded-lg transition-all duration-200 hover:scale-105" title="Aksi">
                                 <i class="fas fa-cog"></i>
                                 <span>Aksi</span>
                                 <i class="fas fa-chevron-down text-xs"></i>
@@ -437,7 +438,7 @@
         alert('Fitur export akan segera tersedia');
     }
 
-    function toggleDropdown(id, status, revisi, canValidate, canSurvey, canPimpinan, canKabid, canKepalaDinas, canUploadDraft, isExternal) {
+    function toggleDropdown(id, status, revisi, canValidate, canSurvey, canPimpinan, canKabid, canKepalaDinas, canUploadDraft, isExternal, canTimFpr) {
         const button = event.currentTarget;
         const chevron = button.querySelector('.fa-chevron-down');
         const modal = document.getElementById('dropdown-menu-modal');
@@ -554,6 +555,16 @@
                         <span class="flex-1">Analisa</span>
                         <span class="text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full">Step 3</span>
                     </a>`;
+            }
+            
+            // Tugaskan ke TIM FPR - setara dengan survey dan analisa, tapi tidak untuk user yang sudah memiliki permission Tim FPR
+            if (canSurvey && !canTimFpr && parseInt(status) >= 3 && parseInt(status) < 7) {
+                menuItems += `
+                    <button onclick="tugaskanTimFpr(${id}); closeDropdownModal();" class="w-full flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-600 transition-colors text-left">
+                        <i class="fas fa-users w-4 mr-3"></i>
+                        <span class="flex-1">Tugaskan ke TIM FPR</span>
+                        <span class="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">TIM FPR</span>
+                    </button>`;
             }
             
             // PROSES 7: Kirim Kabid - hanya untuk Pimpinan dan Kabid setelah analisa
@@ -1015,6 +1026,58 @@
                         icon: 'error',
                         title: 'Error!',
                         text: 'Terjadi kesalahan saat update status survey'
+                    });
+                });
+            }
+        });
+    }
+
+    // Tugaskan ke TIM FPR
+    function tugaskanTimFpr(id) {
+        Swal.fire({
+            title: 'Tugaskan ke TIM FPR?',
+            text: "Permohonan akan ditugaskan ke TIM FPR untuk diproses",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#10B981',
+            cancelButtonColor: '#6B7280',
+            confirmButtonText: 'Ya, Tugaskan!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch(`/admin/kkpr/tugaskan-tim-fpr/${id}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: 'Permohonan berhasil ditugaskan ke TIM FPR',
+                            timer: 2000,
+                            showConfirmButton: false
+                        }).then(() => {
+                            location.reload();
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal!',
+                            text: data.message || 'Terjadi kesalahan saat menugaskan ke TIM FPR'
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: 'Terjadi kesalahan saat menugaskan ke TIM FPR'
                     });
                 });
             }
