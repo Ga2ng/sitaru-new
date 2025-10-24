@@ -4,7 +4,7 @@
 @section('subtitle', 'Buat slider baru untuk website')
 
 @section('content')
-<div class="max-w-4xl mx-auto space-y-6">
+<div class="max-w-7xl mx-auto space-y-6">
     <!-- Hero Section with Gradient -->
     <div class="relative overflow-hidden bg-gradient-to-br from-[#185B3C] via-[#0F3D26] to-[#185B3C] rounded-xl p-6 text-white">
         <div class="absolute inset-0 bg-black/10"></div>
@@ -34,6 +34,33 @@
         <div class="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-y-16 translate-x-16"></div>
         <div class="absolute bottom-0 left-0 w-24 h-24 bg-white/5 rounded-full translate-y-12 -translate-x-12"></div>
     </div>
+
+    <!-- Notifications -->
+    @if(session('success'))
+    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-4 flex items-center">
+        <i class="fas fa-check-circle mr-2"></i>
+        {{ session('success') }}
+    </div>
+    @endif
+
+    @if(session('error') || $errors->any())
+    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-4">
+        <div class="flex items-center mb-2">
+            <i class="fas fa-exclamation-circle mr-2"></i>
+            <strong>Terjadi kesalahan:</strong>
+        </div>
+        @if(session('error'))
+            <p class="text-sm">{{ session('error') }}</p>
+        @endif
+        @if($errors->any())
+            <ul class="list-disc list-inside text-sm mt-2">
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        @endif
+    </div>
+    @endif
 
     <!-- Back Button -->
     <div class="flex items-center space-x-4">
@@ -66,6 +93,21 @@
                     @enderror
                 </div>
 
+                <!-- Deskripsi -->
+                <div>
+                    <label for="deskripsi" class="block text-sm font-medium text-gray-700 mb-2">
+                        Deskripsi Slider
+                    </label>
+                    <textarea id="deskripsi" 
+                              name="deskripsi" 
+                              rows="3"
+                              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#185B3C] focus:border-transparent transition-colors @error('deskripsi') border-red-500 @enderror"
+                              placeholder="Masukkan deskripsi slider">{{ old('deskripsi') }}</textarea>
+                    @error('deskripsi')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
                 <!-- Link -->
                 <div>
                     <label for="link" class="block text-sm font-medium text-gray-700 mb-2">
@@ -87,25 +129,47 @@
                     <label for="photo" class="block text-sm font-medium text-gray-700 mb-2">
                         Gambar Slider <span class="text-red-500">*</span>
                     </label>
-                    <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg hover:border-[#185B3C] transition-colors">
-                        <div class="space-y-1 text-center">
-                            <div class="mx-auto h-12 w-12 text-gray-400">
-                                <i class="fas fa-cloud-upload-alt text-3xl"></i>
+                    
+                    <!-- Upload Area -->
+                    <div class="border-2 border-gray-300 border-dashed rounded-lg hover:border-[#185B3C] transition-colors p-8">
+                        <div class="space-y-4 text-center">
+                            <div class="mx-auto h-16 w-16 text-gray-400">
+                                <i class="fas fa-cloud-upload-alt text-4xl"></i>
                             </div>
-                            <div class="flex text-sm text-gray-600">
-                                <label for="photo" class="relative cursor-pointer bg-white rounded-md font-medium text-[#185B3C] hover:text-[#0F3D26] focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-[#185B3C]">
-                                    <span>Upload file</span>
-                                    <input id="photo" name="photo" type="file" class="sr-only" accept="image/*" onchange="previewImage(this)" required>
-                                </label>
-                                <p class="pl-1">atau drag and drop</p>
+                            <div class="space-y-2">
+                                <div class="text-lg font-medium text-gray-700">
+                                    <label for="photo" class="relative cursor-pointer bg-[#185B3C] text-white px-6 py-3 rounded-lg font-medium hover:bg-[#0F3D26] focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-[#185B3C] transition-colors inline-block">
+                                        <i class="fas fa-upload mr-2"></i>
+                                        Pilih File Gambar
+                                        <input id="photo" name="photo" type="file" class="sr-only" accept="image/jpeg,image/jpg,image/png" onchange="previewImage(this)" required>
+                                    </label>
+                                </div>
+                                <p class="text-sm text-gray-600">atau drag and drop file di sini</p>
                             </div>
-                            <p class="text-xs text-gray-500">PNG, JPG, GIF hingga 2MB</p>
+                            <div class="text-xs text-gray-500 space-y-1">
+                                <p><strong>Format yang didukung:</strong> JPG, PNG, JPEG</p>
+                                <p><strong>Ukuran maksimal:</strong> 10 MB</p>
+                                <p><strong>Resolusi disarankan:</strong> 1920x1080 px atau lebih</p>
+                            </div>
                         </div>
                     </div>
                     
                     <!-- Image Preview -->
-                    <div id="imagePreview" class="mt-4 hidden">
-                        <img id="previewImg" src="" alt="Preview" class="max-w-xs mx-auto rounded-lg shadow-md">
+                    <div id="imagePreview" class="mt-6 hidden">
+                        <div class="text-center mb-4">
+                            <span class="text-sm font-medium text-gray-700">Preview Gambar:</span>
+                        </div>
+                        <div class="flex justify-center">
+                            <div class="relative">
+                                <img id="previewImg" src="" alt="Preview" class="max-w-md max-h-64 rounded-lg shadow-lg border border-gray-200">
+                                <div class="absolute top-2 right-2">
+                                    <button type="button" onclick="removeImage()" class="bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-red-600 transition-colors">
+                                        <i class="fas fa-times text-sm"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="fileInfo" class="mt-2 text-center text-sm text-gray-600"></div>
                     </div>
                     
                     @error('photo')
@@ -148,12 +212,39 @@
         const file = input.files[0];
         const preview = document.getElementById('imagePreview');
         const previewImg = document.getElementById('previewImg');
+        const fileInfo = document.getElementById('fileInfo');
         
         if (file) {
+            // Validate file type
+            const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+            if (!allowedTypes.includes(file.type)) {
+                alert('Format file tidak didukung! Hanya JPG, PNG, dan JPEG yang diperbolehkan.');
+                input.value = '';
+                return;
+            }
+            
+            // Validate file size (10MB = 10 * 1024 * 1024 bytes)
+            const maxSize = 10 * 1024 * 1024;
+            if (file.size > maxSize) {
+                alert('Ukuran file terlalu besar! Maksimal 10MB.');
+                input.value = '';
+                return;
+            }
+            
             const reader = new FileReader();
             reader.onload = function(e) {
                 previewImg.src = e.target.result;
                 preview.classList.remove('hidden');
+                
+                // Show file info
+                const fileSize = (file.size / 1024 / 1024).toFixed(2);
+                fileInfo.innerHTML = `
+                    <div class="bg-gray-50 rounded-lg p-3 inline-block">
+                        <p><strong>Nama file:</strong> ${file.name}</p>
+                        <p><strong>Ukuran:</strong> ${fileSize} MB</p>
+                        <p><strong>Format:</strong> ${file.type}</p>
+                    </div>
+                `;
             }
             reader.readAsDataURL(file);
         } else {
@@ -161,7 +252,87 @@
         }
     }
 
+    function removeImage() {
+        const input = document.getElementById('photo');
+        const preview = document.getElementById('imagePreview');
+        
+        input.value = '';
+        preview.classList.add('hidden');
+    }
+
+    // Auto-hide notifications
     document.addEventListener('DOMContentLoaded', function() {
+        // Auto-hide success notifications after 5 seconds
+        const successNotifications = document.querySelectorAll('.bg-green-100');
+        successNotifications.forEach(notification => {
+            setTimeout(() => {
+                notification.style.transition = 'opacity 0.5s ease-out';
+                notification.style.opacity = '0';
+                setTimeout(() => {
+                    notification.remove();
+                }, 500);
+            }, 5000);
+        });
+
+        // Auto-hide error notifications after 8 seconds
+        const errorNotifications = document.querySelectorAll('.bg-red-100');
+        errorNotifications.forEach(notification => {
+            setTimeout(() => {
+                notification.style.transition = 'opacity 0.5s ease-out';
+                notification.style.opacity = '0';
+                setTimeout(() => {
+                    notification.remove();
+                }, 500);
+            }, 8000);
+        });
+    });
+
+    // Drag and drop functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const uploadArea = document.querySelector('.border-dashed');
+        const fileInput = document.getElementById('photo');
+        
+        // Prevent default drag behaviors
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, preventDefaults, false);
+            document.body.addEventListener(eventName, preventDefaults, false);
+        });
+        
+        // Highlight drop area when item is dragged over it
+        ['dragenter', 'dragover'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, highlight, false);
+        });
+        
+        ['dragleave', 'drop'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, unhighlight, false);
+        });
+        
+        // Handle dropped files
+        uploadArea.addEventListener('drop', handleDrop, false);
+        
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        
+        function highlight(e) {
+            uploadArea.classList.add('border-[#185B3C]', 'bg-green-50');
+        }
+        
+        function unhighlight(e) {
+            uploadArea.classList.remove('border-[#185B3C]', 'bg-green-50');
+        }
+        
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            
+            if (files.length > 0) {
+                fileInput.files = files;
+                previewImage(fileInput);
+            }
+        }
+        
         // Staggered animation for cards
         const cards = document.querySelectorAll('.bg-white\\/80, .bg-gradient-to-br');
         cards.forEach((card, index) => {

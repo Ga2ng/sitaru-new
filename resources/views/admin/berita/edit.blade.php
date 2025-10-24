@@ -35,6 +35,33 @@
         <div class="absolute bottom-0 left-0 w-24 h-24 bg-white/5 rounded-full translate-y-12 -translate-x-12"></div>
     </div>
 
+    <!-- Notifications -->
+    @if(session('success'))
+    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-4 flex items-center">
+        <i class="fas fa-check-circle mr-2"></i>
+        {{ session('success') }}
+    </div>
+    @endif
+
+    @if(session('error') || $errors->any())
+    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-4">
+        <div class="flex items-center mb-2">
+            <i class="fas fa-exclamation-circle mr-2"></i>
+            <strong>Terjadi kesalahan:</strong>
+        </div>
+        @if(session('error'))
+            <p class="text-sm">{{ session('error') }}</p>
+        @endif
+        @if($errors->any())
+            <ul class="list-disc list-inside text-sm mt-2">
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        @endif
+    </div>
+    @endif
+
     <!-- Back Button -->
     <div class="flex items-center space-x-4">
         <a href="{{ route('admin.berita.index') }}" class="flex items-center px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-white/80 rounded-lg transition-colors border border-gray-200">
@@ -281,6 +308,33 @@
         input.value = '';
         preview.classList.add('hidden');
     }
+
+    // Auto-hide notifications
+    document.addEventListener('DOMContentLoaded', function() {
+        // Auto-hide success notifications after 5 seconds
+        const successNotifications = document.querySelectorAll('.bg-green-100');
+        successNotifications.forEach(notification => {
+            setTimeout(() => {
+                notification.style.transition = 'opacity 0.5s ease-out';
+                notification.style.opacity = '0';
+                setTimeout(() => {
+                    notification.remove();
+                }, 500);
+            }, 5000);
+        });
+
+        // Auto-hide error notifications after 8 seconds
+        const errorNotifications = document.querySelectorAll('.bg-red-100');
+        errorNotifications.forEach(notification => {
+            setTimeout(() => {
+                notification.style.transition = 'opacity 0.5s ease-out';
+                notification.style.opacity = '0';
+                setTimeout(() => {
+                    notification.remove();
+                }, 500);
+            }, 8000);
+        });
+    });
 
     // Drag and drop functionality
     document.addEventListener('DOMContentLoaded', function() {

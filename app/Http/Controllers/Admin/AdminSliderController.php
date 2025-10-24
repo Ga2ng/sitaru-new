@@ -5,9 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Slider;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use Intervention\Image\Facades\Image;
 
 class AdminSliderController extends Controller
 {
@@ -47,9 +45,18 @@ class AdminSliderController extends Controller
     {
         $request->validate([
             'judul' => 'required|string|max:255',
+            'deskripsi' => 'nullable|string|max:191',
             'link' => 'nullable|url',
-            'photo' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'photo' => 'required|image|mimes:jpeg,png,jpg|max:10240',
             'status' => 'boolean',
+        ], [
+            'judul.required' => 'Judul slider harus diisi!',
+            'deskripsi.max' => 'Deskripsi maksimal 191 karakter!',
+            'link.url' => 'Link harus berupa URL yang valid!',
+            'photo.required' => 'Gambar slider harus diupload!',
+            'photo.image' => 'File harus berupa gambar!',
+            'photo.mimes' => 'Format gambar harus JPG, PNG, atau JPEG!',
+            'photo.max' => 'Ukuran gambar maksimal 10MB!',
         ]);
 
         $data = $request->except('photo');
@@ -90,9 +97,17 @@ class AdminSliderController extends Controller
     {
         $request->validate([
             'judul' => 'required|string|max:255',
+            'deskripsi' => 'nullable|string|max:191',
             'link' => 'nullable|url',
-            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:10240',
             'status' => 'boolean',
+        ], [
+            'judul.required' => 'Judul slider harus diisi!',
+            'deskripsi.max' => 'Deskripsi maksimal 191 karakter!',
+            'link.url' => 'Link harus berupa URL yang valid!',
+            'photo.image' => 'File harus berupa gambar!',
+            'photo.mimes' => 'Format gambar harus JPG, PNG, atau JPEG!',
+            'photo.max' => 'Ukuran gambar maksimal 10MB!',
         ]);
 
         $slider = Slider::findOrFail($id);
@@ -144,44 +159,23 @@ class AdminSliderController extends Controller
     {
         $fileName = $slug . '_' . time() . '.' . $photo->getClientOriginalExtension();
         
-        // Create directories if they don't exist
-        $directories = ['slider/large', 'slider/medium', 'slider/small'];
-        foreach ($directories as $dir) {
-            if (!Storage::exists('public/images/' . $dir)) {
-                Storage::makeDirectory('public/images/' . $dir);
-            }
+        // Create directory if it doesn't exist
+        $uploadPath = public_path('uploads/images/slider');
+        if (!file_exists($uploadPath)) {
+            mkdir($uploadPath, 0755, true);
         }
 
-        // Save large image
-        $largeImage = Image::make($photo)->resize(800, null, function ($constraint) {
-            $constraint->aspectRatio();
-        });
-        Storage::put('public/images/slider/large/' . $fileName, $largeImage->encode());
-
-        // Save medium image
-        $mediumImage = Image::make($photo)->resize(400, null, function ($constraint) {
-            $constraint->aspectRatio();
-        });
-        Storage::put('public/images/slider/medium/' . $fileName, $mediumImage->encode());
-
-        // Save small image
-        $smallImage = Image::make($photo)->resize(100, 100, function ($constraint) {
-            $constraint->aspectRatio();
-        });
-        Storage::put('public/images/slider/small/' . $fileName, $smallImage->encode());
+        // Save original image to public/uploads/images/slider
+        $photo->move($uploadPath, $fileName);
 
         return $fileName;
     }
 
     protected function deletePhoto($filename)
     {
-        $directories = ['slider/large', 'slider/medium', 'slider/small'];
-        
-        foreach ($directories as $dir) {
-            $path = 'public/images/' . $dir . '/' . $filename;
-            if (Storage::exists($path)) {
-                Storage::delete($path);
-            }
+        $path = public_path('uploads/images/slider/' . $filename);
+        if (file_exists($path)) {
+            unlink($path);
         }
     }
 }
