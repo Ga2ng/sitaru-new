@@ -4,7 +4,7 @@
 @section('subtitle', 'Detail informasi berita')
 
 @section('content')
-<div class="max-w-4xl mx-auto space-y-6">
+<div class="max-w-7xl mx-auto space-y-6">
     <!-- Hero Section with Gradient -->
     <div class="relative overflow-hidden bg-gradient-to-br from-[#185B3C] via-[#0F3D26] to-[#185B3C] rounded-xl p-6 text-white">
         <div class="absolute inset-0 bg-black/10"></div>
@@ -43,138 +43,123 @@
         </a>
     </div>
 
-    <!-- Berita Information Cards -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <!-- Berita Details -->
-        <div class="bg-white/80 backdrop-blur-sm rounded-xl p-6 shadow-lg border border-white/20">
-            <div class="flex items-center space-x-3 mb-6">
-                <div class="w-10 h-10 bg-gradient-to-br from-[#185B3C] to-[#0F3D26] rounded-lg flex items-center justify-center shadow-md">
-                    <i class="fas fa-info-circle text-white text-sm"></i>
-                </div>
-                <div>
-                    <h3 class="text-lg font-bold text-gray-900">Informasi Berita</h3>
-                    <p class="text-sm text-gray-600">Detail informasi berita</p>
-                </div>
+    <!-- Main Content Card -->
+    <div class="bg-white/80 backdrop-blur-sm rounded-xl p-6 shadow-lg border border-white/20">
+        <div class="flex items-center space-x-3 mb-6">
+            <div class="w-10 h-10 bg-gradient-to-br from-[#185B3C] to-[#0F3D26] rounded-lg flex items-center justify-center shadow-md">
+                <i class="fas fa-newspaper text-white text-sm"></i>
             </div>
-            
-            <div class="space-y-4">
-                <div class="flex items-center justify-between py-3 border-b border-gray-100">
-                    <span class="text-sm font-medium text-gray-500">Judul</span>
-                    <span class="text-sm font-semibold text-gray-900">{{ $berita->nama }}</span>
-                </div>
-                
-                <div class="flex items-center justify-between py-3 border-b border-gray-100">
-                    <span class="text-sm font-medium text-gray-500">Slug</span>
-                    <span class="text-sm font-semibold text-gray-900">{{ $berita->slug }}</span>
-                </div>
-                
-                <div class="flex items-center justify-between py-3 border-b border-gray-100">
-                    <span class="text-sm font-medium text-gray-500">Kategori</span>
-                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
-                        {{ $berita->kategori->nama ?? 'N/A' }}
-                    </span>
-                </div>
-                
-                <div class="flex items-center justify-between py-3 border-b border-gray-100">
-                    <span class="text-sm font-medium text-gray-500">Status</span>
-                    @if($berita->status === 'aktif')
-                        <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-green-100 to-green-200 text-green-800 border border-green-300">
-                            <i class="fas fa-check-circle mr-1 text-xs"></i>
-                            Aktif
-                        </span>
-                    @else
-                        <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-800 border border-yellow-300">
-                            <i class="fas fa-clock mr-1 text-xs"></i>
-                            Pending
-                        </span>
-                    @endif
-                </div>
-                
-                <div class="flex items-center justify-between py-3 border-b border-gray-100">
-                    <span class="text-sm font-medium text-gray-500">Dilihat</span>
-                    <span class="text-sm font-semibold text-gray-900">{{ $berita->dilihat ?? 0 }} kali</span>
-                </div>
-                
-                <div class="flex items-center justify-between py-3">
-                    <span class="text-sm font-medium text-gray-500">Tanggal Dibuat</span>
-                    <span class="text-sm font-semibold text-gray-900">{{ $berita->created_at->format('d M Y, H:i') }} WIB</span>
-                </div>
+            <div>
+                <h3 class="text-lg font-bold text-gray-900">Detail Berita</h3>
+                <p class="text-sm text-gray-600">Informasi lengkap berita</p>
             </div>
         </div>
-
-        <!-- Image Preview -->
-        <div class="bg-white/80 backdrop-blur-sm rounded-xl p-6 shadow-lg border border-white/20">
-            <div class="flex items-center space-x-3 mb-6">
-                <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center shadow-md">
-                    <i class="fas fa-image text-white text-sm"></i>
-                </div>
-                <div>
-                    <h3 class="text-lg font-bold text-gray-900">Preview Gambar</h3>
-                    <p class="text-sm text-gray-600">Tampilan gambar berita</p>
+        
+        <div class="space-y-6">
+            <!-- Judul Berita -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Judul Berita</label>
+                <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                    <h2 class="text-xl font-bold text-gray-900">{{ $berita->nama }}</h2>
                 </div>
             </div>
-            
-            @if($berita->photo)
-                <div class="space-y-4">
-                    <!-- Large Image -->
-                    <div>
-                        <h4 class="text-sm font-medium text-gray-700 mb-2">Gambar Besar (800px)</h4>
-                        <div class="w-full h-48 bg-gray-100 rounded-lg overflow-hidden">
-                            <img src="{{ Storage::url('images/berita/large/' . $berita->photo) }}" 
-                                 alt="{{ $berita->nama }}" 
-                                 class="w-full h-full object-cover">
-                        </div>
-                    </div>
-                    
-                    <!-- Medium Image -->
-                    <div>
-                        <h4 class="text-sm font-medium text-gray-700 mb-2">Gambar Medium (600x400)</h4>
-                        <div class="w-full h-32 bg-gray-100 rounded-lg overflow-hidden">
-                            <img src="{{ Storage::url('images/berita/medium/' . $berita->photo) }}" 
-                                 alt="{{ $berita->nama }}" 
-                                 class="w-full h-full object-cover">
-                        </div>
-                    </div>
-                    
-                    <!-- Small Image -->
-                    <div>
-                        <h4 class="text-sm font-medium text-gray-700 mb-2">Gambar Kecil (100px)</h4>
-                        <div class="w-24 h-24 bg-gray-100 rounded-lg overflow-hidden">
-                            <img src="{{ Storage::url('images/berita/small/' . $berita->photo) }}" 
-                                 alt="{{ $berita->nama }}" 
-                                 class="w-full h-full object-cover">
-                        </div>
+
+            <!-- Kategori dan Status -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Kategori</label>
+                    <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                        <span class="inline-flex px-3 py-1 text-sm font-semibold rounded-full bg-blue-100 text-blue-800">
+                            {{ $berita->kategori->nama ?? 'N/A' }}
+                        </span>
                     </div>
                 </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                    <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                        @if($berita->status === 'aktif')
+                            <span class="inline-flex px-3 py-1 text-sm font-semibold rounded-full bg-gradient-to-r from-green-100 to-green-200 text-green-800 border border-green-300">
+                                <i class="fas fa-check-circle mr-2 text-sm"></i>
+                                Aktif
+                            </span>
+                        @else
+                            <span class="inline-flex px-3 py-1 text-sm font-semibold rounded-full bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-800 border border-yellow-300">
+                                <i class="fas fa-clock mr-2 text-sm"></i>
+                                Pending
+                            </span>
+                        @endif
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gambar Berita -->
+            @if($berita->photo)
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Gambar Berita</label>
+                <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                    <div class="flex justify-center">
+                        <img src="{{ asset('uploads/images/berita/' . $berita->photo) }}" 
+                             alt="{{ $berita->nama }}" 
+                             class="max-w-full max-h-96 rounded-lg shadow-lg border border-gray-200">
+                    </div>
+                    <div class="mt-3 text-center text-sm text-gray-600">
+                        <p><strong>Nama file:</strong> {{ $berita->photo }}</p>
+                        <p><strong>Format:</strong> {{ pathinfo($berita->photo, PATHINFO_EXTENSION) }}</p>
+                    </div>
+                </div>
+            </div>
             @else
-                <div class="text-center py-8">
-                    <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <i class="fas fa-image text-gray-400 text-xl"></i>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Gambar Berita</label>
+                <div class="bg-gray-50 rounded-lg p-8 border border-gray-200 text-center">
+                    <div class="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-image text-gray-400 text-2xl"></i>
                     </div>
                     <h3 class="text-lg font-semibold text-gray-900 mb-2">Tidak ada gambar</h3>
                     <p class="text-gray-500">Berita ini belum memiliki gambar.</p>
                 </div>
+            </div>
             @endif
-        </div>
-    </div>
 
-    <!-- Content Section -->
-    <div class="bg-white/80 backdrop-blur-sm rounded-xl p-6 shadow-lg border border-white/20">
-        <div class="flex items-center space-x-3 mb-6">
-            <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg flex items-center justify-center shadow-md">
-                <i class="fas fa-align-left text-white text-sm"></i>
-            </div>
+            <!-- Deskripsi Singkat -->
             <div>
-                <h3 class="text-lg font-bold text-gray-900">Isi Berita</h3>
-                <p class="text-sm text-gray-600">Konten lengkap berita</p>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Deskripsi Singkat</label>
+                <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                    <div class="text-gray-700 leading-relaxed">
+                        {{ $berita->deskripsi }}
+                    </div>
+                </div>
             </div>
-        </div>
-        
-        <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
-            <div class="prose max-w-none">
-                <h4 class="text-lg font-semibold text-gray-900 mb-3">{{ $berita->nama }}</h4>
-                <div class="text-gray-700 leading-relaxed whitespace-pre-line">
-                    {{ $berita->deskripsi }}
+
+            <!-- Konten Lengkap -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Konten Lengkap</label>
+                <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                    <div class="text-gray-700 leading-relaxed whitespace-pre-line">
+                        {{ $berita->konten }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Informasi Tambahan -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Dilihat</label>
+                    <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                        <span class="text-lg font-semibold text-gray-900">{{ $berita->dilihat ?? 0 }} kali</span>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Tanggal Dibuat</label>
+                    <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                        <span class="text-sm font-semibold text-gray-900">{{ $berita->created_at->format('d M Y, H:i') }} WIB</span>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Terakhir Diupdate</label>
+                    <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                        <span class="text-sm font-semibold text-gray-900">{{ $berita->updated_at->format('d M Y, H:i') }} WIB</span>
+                    </div>
                 </div>
             </div>
         </div>

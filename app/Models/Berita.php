@@ -21,28 +21,12 @@ class Berita extends Model
         'dilihat',
     ];
 
-    public function getLargeImageAttribute()
+    public function getImageUrlAttribute()
     {
         if ($this->photo == '') {
-            return 'http://placehold.it/800x400';
+            return asset('images/no-image.png');
         } else {
-            return url('uploads/images/berita/large/' . $this->photo);
-        }
-    }
-    public function getMediumImageAttribute()
-    {
-        if ($this->photo == '') {
-            return 'http://placehold.it/600x400';
-        } else {
-            return url('uploads/images/berita/medium/' . $this->photo);
-        }
-    }
-    public function getSmallImageAttribute()
-    {
-        if ($this->photo == '') {
-            return 'http://placehold.it/100x100';
-        } else {
-            return url('uploads/images/berita/small/' . $this->photo);
+            return asset('uploads/images/berita/' . $this->photo);
         }
     }
 

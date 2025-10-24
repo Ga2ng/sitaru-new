@@ -212,7 +212,7 @@
                         <div class="col-span-2">
                             <div class="w-16 h-16 bg-gray-100 rounded-lg overflow-hidden flex items-center justify-center">
                                 @if($berita->photo)
-                                    <img src="{{ Storage::url('images/berita/small/' . $berita->photo) }}" 
+                                    <img src="{{ asset('uploads/images/berita/' . $berita->photo) }}" 
                                          alt="{{ $berita->nama }}" 
                                          class="w-full h-full object-cover">
                                 @else

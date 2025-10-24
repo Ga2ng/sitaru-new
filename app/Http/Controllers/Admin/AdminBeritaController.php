@@ -6,9 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Berita;
 use App\Models\Kategori;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use Intervention\Image\Facades\Image;
 
 class AdminBeritaController extends Controller
 {
@@ -50,10 +48,22 @@ class AdminBeritaController extends Controller
     {
         $request->validate([
             'nama' => 'required|string|max:255',
-            'deskripsi' => 'required|string',
-            'kategori_id' => 'required|exists:kategoris,id',
-            'photo' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'deskripsi' => 'required|string|max:191',
+            'konten' => 'required|string',
+            'kategori_id' => 'required|exists:kategori,id',
+            'photo' => 'required|image|mimes:jpeg,png,jpg|max:10240',
             'status' => 'in:aktif,pending',
+        ], [
+            'nama.required' => 'Nama berita harus diisi!',
+            'deskripsi.required' => 'Deskripsi singkat harus diisi!',
+            'deskripsi.max' => 'Deskripsi singkat maksimal 191 karakter!',
+            'konten.required' => 'Konten lengkap harus diisi!',
+            'kategori_id.required' => 'Kategori harus dipilih!',
+            'kategori_id.exists' => 'Kategori yang dipilih tidak valid!',
+            'photo.required' => 'Gambar harus diupload!',
+            'photo.image' => 'File harus berupa gambar!',
+            'photo.mimes' => 'Format gambar harus JPG, PNG, atau JPEG!',
+            'photo.max' => 'Ukuran gambar maksimal 10MB!',
         ]);
 
         $data = $request->except('photo');
@@ -97,10 +107,21 @@ class AdminBeritaController extends Controller
     {
         $request->validate([
             'nama' => 'required|string|max:255',
-            'deskripsi' => 'required|string',
-            'kategori_id' => 'required|exists:kategoris,id',
-            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'deskripsi' => 'required|string|max:191',
+            'konten' => 'required|string',
+            'kategori_id' => 'required|exists:kategori,id',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:10240',
             'status' => 'in:aktif,pending',
+        ], [
+            'nama.required' => 'Nama berita harus diisi!',
+            'deskripsi.required' => 'Deskripsi singkat harus diisi!',
+            'deskripsi.max' => 'Deskripsi singkat maksimal 191 karakter!',
+            'konten.required' => 'Konten lengkap harus diisi!',
+            'kategori_id.required' => 'Kategori harus dipilih!',
+            'kategori_id.exists' => 'Kategori yang dipilih tidak valid!',
+            'photo.image' => 'File harus berupa gambar!',
+            'photo.mimes' => 'Format gambar harus JPG, PNG, atau JPEG!',
+            'photo.max' => 'Ukuran gambar maksimal 10MB!',
         ]);
 
         $berita = Berita::findOrFail($id);
@@ -153,42 +174,23 @@ class AdminBeritaController extends Controller
     {
         $fileName = $slug . '_' . time() . '.' . $photo->getClientOriginalExtension();
         
-        // Create directories if they don't exist
-        $directories = ['berita/large', 'berita/medium', 'berita/small'];
-        foreach ($directories as $dir) {
-            if (!Storage::exists('public/images/' . $dir)) {
-                Storage::makeDirectory('public/images/' . $dir);
-            }
+        // Create directory if it doesn't exist
+        $uploadPath = public_path('uploads/images/berita');
+        if (!file_exists($uploadPath)) {
+            mkdir($uploadPath, 0755, true);
         }
 
-        // Save large image
-        $largeImage = Image::make($photo)->resize(800, null, function ($constraint) {
-            $constraint->aspectRatio();
-        });
-        Storage::put('public/images/berita/large/' . $fileName, $largeImage->encode());
-
-        // Save medium image
-        $mediumImage = Image::make($photo)->fit(600, 400);
-        Storage::put('public/images/berita/medium/' . $fileName, $mediumImage->encode());
-
-        // Save small image
-        $smallImage = Image::make($photo)->resize(100, 100, function ($constraint) {
-            $constraint->aspectRatio();
-        });
-        Storage::put('public/images/berita/small/' . $fileName, $smallImage->encode());
+        // Save original image to public/uploads/images/berita
+        $photo->move($uploadPath, $fileName);
 
         return $fileName;
     }
 
     protected function deletePhoto($filename)
     {
-        $directories = ['berita/large', 'berita/medium', 'berita/small'];
-        
-        foreach ($directories as $dir) {
-            $path = 'public/images/' . $dir . '/' . $filename;
-            if (Storage::exists($path)) {
-                Storage::delete($path);
-            }
+        $path = public_path('uploads/images/berita/' . $filename);
+        if (file_exists($path)) {
+            unlink($path);
         }
     }
 }
