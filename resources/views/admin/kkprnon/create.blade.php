@@ -44,8 +44,121 @@
         </a>
     </div>
 
+    <!-- Verifikasi Persetujuan UMK -->
+    <div class="bg-white/80 backdrop-blur-sm rounded-xl p-6 shadow-lg border border-white/20">
+        <div class="flex items-center space-x-3 mb-6">
+            <div class="w-8 h-8 bg-gradient-to-br from-[#185B3C] to-[#0F3D26] rounded-lg flex items-center justify-center">
+                <i class="fas fa-check-circle text-white text-sm"></i>
+            </div>
+            <h3 class="text-lg font-bold text-gray-900">VERIFIKASI PERSETUJUAN UMK</h3>
+        </div>
+        
+        <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+            <div class="flex items-start space-x-3">
+                <i class="fas fa-exclamation-triangle text-yellow-600 mt-1"></i>
+                <div>
+                    <h4 class="font-semibold text-yellow-800 mb-2">Penting!</h4>
+                    <p class="text-sm text-yellow-700">Sebelum melanjutkan pengisian form, pastikan Anda telah membaca dan menyetujui ketentuan berikut:</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="space-y-4" id="verification-container">
+            <div class="flex items-start space-x-3">
+                <input type="checkbox" id="verification1" name="verification[]" value="badan_hukum" class="mt-1 form-checkbox h-4 w-4 text-[#185B3C] border-gray-300 rounded focus:ring-[#185B3C] focus:ring-2 verification-checkbox">
+                <label for="verification1" class="text-sm text-gray-700 verification-label">
+                    <span class="font-semibold">Apakah pengajuan anda untuk badan hukum?</span>
+                    <p class="text-xs text-gray-500 mt-1">Pastikan pengajuan ini ditujukan untuk badan hukum yang sah.</p>
+                </label>
+            </div>
+            
+            <div class="flex items-start space-x-3">
+                <input type="checkbox" id="verification2" name="verification[]" value="risiko_rendah" class="mt-1 form-checkbox h-4 w-4 text-[#185B3C] border-gray-300 rounded focus:ring-[#185B3C] focus:ring-2 verification-checkbox">
+                <label for="verification2" class="text-sm text-gray-700 verification-label">
+                    <span class="font-semibold">Apakah tingkat risiko kegiatan usaha anda rendah?</span>
+                    <p class="text-xs text-gray-500 mt-1">Kegiatan usaha harus memiliki tingkat risiko yang rendah.</p>
+                </label>
+            </div>
+            
+            <div class="flex items-start space-x-3">
+                <input type="checkbox" id="verification3" name="verification[]" value="kategori_umk" class="mt-1 form-checkbox h-4 w-4 text-[#185B3C] border-gray-300 rounded focus:ring-[#185B3C] focus:ring-2 verification-checkbox">
+                <label for="verification3" class="text-sm text-gray-700 verification-label">
+                    <span class="font-semibold">Apakah anda termasuk kategori usaha mikro, kecil dan menengah?</span>
+                    <p class="text-xs text-gray-500 mt-1">Usaha harus memenuhi kriteria UMK sesuai peraturan yang berlaku.</p>
+                </label>
+            </div>
+        </div>
+        
+        <div class="mt-6 p-4 bg-red-50 border border-red-200 rounded-lg" id="verification-error" style="display: none;">
+            <div class="flex items-center space-x-2">
+                <i class="fas fa-times-circle text-red-600"></i>
+                <span class="text-sm text-red-700 font-semibold">Anda harus menyetujui semua ketentuan untuk melanjutkan!</span>
+            </div>
+        </div>
+        
+        <div class="mt-6 flex justify-end">
+            <button type="button" id="continueBtn" class="px-6 py-3 bg-gradient-to-r from-[#185B3C] to-[#0F3D26] text-white font-semibold rounded-xl hover:shadow-lg transform hover:scale-105 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
+                <i class="fas fa-arrow-right mr-2"></i>
+                Lanjutkan ke Form
+            </button>
+        </div>
+        
+        <!-- Status Konfirmasi -->
+        <div id="confirmation-status" class="mt-6 p-4 bg-green-50 border border-green-200 rounded-lg hidden">
+            <div class="flex items-center space-x-3">
+                <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                    <i class="fas fa-check text-white text-sm"></i>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-green-800">Verifikasi Selesai!</h4>
+                    <p class="text-sm text-green-700">Semua ketentuan UMK telah disetujui dan dikonfirmasi.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Konfirmasi -->
+    <div id="confirmationModal" class="fixed inset-0 bg-black bg-opacity-50 items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-xl p-6 max-w-md w-full mx-4 transform transition-all duration-300 scale-95 opacity-0" id="modalContent">
+            <div class="flex items-center space-x-3 mb-4">
+                <div class="w-10 h-10 bg-gradient-to-br from-[#185B3C] to-[#0F3D26] rounded-full flex items-center justify-center">
+                    <i class="fas fa-check text-white"></i>
+                </div>
+                <h3 class="text-lg font-bold text-gray-900">Konfirmasi Persetujuan</h3>
+            </div>
+            
+            <div class="mb-6">
+                <p class="text-gray-700 mb-4">Anda telah menyetujui semua ketentuan UMK:</p>
+                <ul class="space-y-2 text-sm text-gray-600">
+                    <li class="flex items-center space-x-2">
+                        <i class="fas fa-check text-green-500"></i>
+                        <span>Pengajuan untuk badan hukum</span>
+                    </li>
+                    <li class="flex items-center space-x-2">
+                        <i class="fas fa-check text-green-500"></i>
+                        <span>Tingkat risiko kegiatan usaha rendah</span>
+                    </li>
+                    <li class="flex items-center space-x-2">
+                        <i class="fas fa-check text-green-500"></i>
+                        <span>Termasuk kategori UMK</span>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="flex space-x-3">
+                <button type="button" id="cancelModal" class="flex-1 px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">
+                    Batal
+                </button>
+                <button type="button" id="confirmModal" class="flex-1 px-4 py-2 bg-gradient-to-r from-[#185B3C] to-[#0F3D26] text-white rounded-lg hover:shadow-lg transition-all">
+                    <i class="fas fa-arrow-right mr-2"></i>
+                    Lanjutkan
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Form -->
-    <form method="POST" action="{{ route('admin.kkprnon.store') }}" enctype="multipart/form-data" class="space-y-6" id="kkprForm">
+    <form method="POST" action="{{ route('admin.kkprnon.store') }}" enctype="multipart/form-data" class="space-y-6" id="kkprForm" style="display: none;">
         @csrf
         
         <!-- Informasi Pemohon -->
@@ -1178,9 +1291,8 @@
             console.log(`Element ${id}:`, element ? 'FOUND' : 'NOT FOUND', element);
         });
         
-        // Initialize Leaflet Map
-        console.log('Initializing Leaflet Map...');
-        initMap();
+        // Map will be initialized after form is shown
+        console.log('Map initialization will be done after form is shown...');
         
         // Dynamic form functionality
         console.log('Initializing dynamic forms...');
@@ -1231,6 +1343,22 @@
 
     // Initialize Leaflet Map
     function initMap() {
+        // Check if map container exists and is visible
+        const mapContainer = document.getElementById('mapKu');
+        if (!mapContainer) {
+            console.error('Map container not found!');
+            return;
+        }
+        
+        // Check if container is visible (not hidden)
+        if (mapContainer.offsetWidth === 0 || mapContainer.offsetHeight === 0) {
+            console.log('Map container is hidden, delaying initialization...');
+            setTimeout(initMap, 500);
+            return;
+        }
+        
+        console.log('Initializing map with container:', mapContainer);
+        
         // Initialize map centered on Banyuwangi
         const map = L.map('mapKu').setView([-8.2191, 114.3691], 10);
         
@@ -1733,6 +1861,7 @@
         
         return allCoords;
     }
+
 
      // Update coordinates from drawn items
      function updateCoordinatesFromDraw() {
@@ -2436,6 +2565,90 @@
             }
         });
     }
+
+    // Verifikasi checkbox validation
+    $(document).ready(function() {
+        // Check all checkboxes are checked
+        function checkAllVerifications() {
+            var allChecked = $('input[name="verification[]"]:checked').length === 3;
+            $('#continueBtn').prop('disabled', !allChecked);
+            if (allChecked) {
+                $('#verification-error').hide();
+            }
+        }
+        
+        // Check on checkbox change
+        $('input[name="verification[]"]').on('change', function() {
+            checkAllVerifications();
+        });
+        
+        // Initial check
+        checkAllVerifications();
+        
+        // Continue button click - show modal
+        $('#continueBtn').on('click', function() {
+            var allChecked = $('input[name="verification[]"]:checked').length === 3;
+            if (allChecked) {
+                // Show modal with animation
+                $('#confirmationModal').removeClass('hidden').addClass('flex');
+                setTimeout(function() {
+                    $('#modalContent').removeClass('scale-95 opacity-0').addClass('scale-100 opacity-100');
+                }, 10);
+            } else {
+                $('#verification-error').show();
+            }
+        });
+        
+        // Modal cancel button
+        $('#cancelModal').on('click', function() {
+            $('#modalContent').removeClass('scale-100 opacity-100').addClass('scale-95 opacity-0');
+            setTimeout(function() {
+                $('#confirmationModal').addClass('hidden').removeClass('flex');
+            }, 300);
+        });
+        
+        // Modal confirm button - show form with fade in
+        $('#confirmModal').on('click', function() {
+            // Hide modal with animation
+            $('#modalContent').removeClass('scale-100 opacity-100').addClass('scale-95 opacity-0');
+            setTimeout(function() {
+                $('#confirmationModal').addClass('hidden').removeClass('flex');
+                
+                // Disable all verification elements
+                $('.verification-checkbox').prop('disabled', true).addClass('opacity-50 cursor-not-allowed');
+                $('.verification-label').addClass('opacity-50');
+                $('#continueBtn').prop('disabled', true).addClass('opacity-50 cursor-not-allowed');
+                
+                // Show confirmation status
+                $('#confirmation-status').removeClass('hidden').hide().fadeIn(500);
+                
+                // Show form with fade in animation
+                $('#kkprForm').removeClass('hidden').hide().fadeIn(800);
+                
+                // Initialize map after form is shown
+                setTimeout(function() {
+                    if (typeof initMap === 'function') {
+                        initMap();
+                    }
+                }, 1000);
+                
+                // Smooth scroll to form
+                $('html, body').animate({
+                    scrollTop: $('#kkprForm').offset().top - 100
+                }, 1000);
+            }, 300);
+        });
+        
+        // Close modal when clicking outside
+        $('#confirmationModal').on('click', function(e) {
+            if (e.target === this) {
+                $('#modalContent').removeClass('scale-100 opacity-100').addClass('scale-95 opacity-0');
+                setTimeout(function() {
+                    $('#confirmationModal').addClass('hidden').removeClass('flex');
+                }, 300);
+            }
+        });
+    });
 </script>
 @endsection
 
