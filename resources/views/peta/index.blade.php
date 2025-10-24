@@ -455,24 +455,29 @@
             </div>
 
             <!-- Info Zona Card -->
-            <div id="info-zona-container" class="absolute bottom-4 left-1/2 transform -translate-x-1/2 w-full max-w-4xl px-4">
+            <div id="info-zona-container" class="absolute bottom-4 left-1/2 transform -translate-x-1/2 w-full max-w-2xl px-4">
                 <div id="info-zona-card" class="hidden bg-white/95 backdrop-blur-sm rounded-xl shadow-lg border border-white/20 overflow-hidden">
                     <!-- Header -->
-                    <div id="info-zona-header" class="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-4 flex items-center gap-3">
-                        <span id="info-zona-color" class="w-6 h-6 rounded bg-gray-300"></span>
-                        <div>
-                            <div id="info-zona-title" class="font-semibold text-lg">Informasi Zona</div>
-                            <div id="info-zona-layer" class="text-sm opacity-90">-</div>
+                    <div id="info-zona-header" class="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-3 flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <span id="info-zona-color" class="w-5 h-5 rounded bg-gray-300"></span>
+                            <div>
+                                <div id="info-zona-title" class="font-semibold text-base">Informasi Zona</div>
+                                <div id="info-zona-layer" class="text-xs opacity-90">-</div>
+                            </div>
                         </div>
+                        <button id="close-info-zona" class="text-white hover:text-gray-200 transition-colors p-1">
+                            <i class="fas fa-times text-lg"></i>
+                        </button>
                     </div>
                     <!-- Content -->
-                    <div class="p-6">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div class="bg-white rounded-lg p-4 border-l-4 border-blue-500">
+                    <div class="p-4">
+                        <div class="grid grid-cols-1 gap-4">
+                            <div class="bg-white rounded-lg p-3 border-l-4 border-blue-500">
                                 <div id="info-zona-namobj"></div>
                             </div>
-                            <div class="bg-gray-50 rounded-lg p-4">
-                                <div class="font-semibold text-gray-900 mb-2 flex items-center gap-2">
+                            <div class="bg-gray-50 rounded-lg p-3">
+                                <div class="font-semibold text-gray-900 mb-2 flex items-center gap-2 text-sm">
                                     <i class="fas fa-info-circle text-blue-500"></i>
                                     Ringkasan Zona
                                 </div>
@@ -1072,12 +1077,12 @@
         $('#info-zona-color').css('background', color);
         
         function infoRow(label, value) {
-            return '<div class="mb-3">'
+            return '<div class="mb-2">'
                 +'<div class="flex items-center gap-2 mb-1">'
-                    +'<i class="fas fa-info-circle text-blue-500"></i>'
-                    +'<span class="text-blue-500 font-semibold">'+label+'</span>'
+                    +'<i class="fas fa-info-circle text-blue-500 text-xs"></i>'
+                    +'<span class="text-blue-500 font-semibold text-sm">'+label+'</span>'
                 +'</div>'
-                +'<div class="ml-6 text-gray-700">'+value+'</div>'
+                +'<div class="ml-5 text-gray-700 text-sm">'+value+'</div>'
             +'</div>';
         }
         
@@ -1226,6 +1231,20 @@
         }
     }
     
+    // Event listener untuk tombol close modal
+    $(document).ready(function(){
+        $('#close-info-zona').on('click', function() {
+            $('#info-zona-card').addClass('hidden');
+        });
+        
+        // Close modal saat klik di luar area modal
+        $(document).on('click', function(e) {
+            if (!$(e.target).closest('#info-zona-card, #info-zona-container').length) {
+                $('#info-zona-card').addClass('hidden');
+            }
+        });
+    });
+
     // Update legenda saat layer diaktifkan/nonaktifkan
     $(document).ready(function(){
         updateLegend();
