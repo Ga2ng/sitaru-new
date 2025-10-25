@@ -9,6 +9,12 @@
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700&family=poppins:400,500,600,700,800&display=swap" rel="stylesheet" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        
+         <!-- Leaflet CSS -->
+         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+         
+         <!-- Swiper CSS -->
+         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     
@@ -88,6 +94,64 @@
         .traditional-border {
             border-image: linear-gradient(45deg, #155D4F, #DAAF49, #155D4F) 1;
         }
+        
+         /* Line clamp utilities */
+         .line-clamp-2 {
+             display: -webkit-box;
+             -webkit-line-clamp: 2;
+             -webkit-box-orient: vertical;
+             overflow: hidden;
+         }
+         
+         .line-clamp-3 {
+             display: -webkit-box;
+             -webkit-line-clamp: 3;
+             -webkit-box-orient: vertical;
+             overflow: hidden;
+         }
+         
+         /* Swiper Custom Styles */
+         .swiper {
+             padding: 20px 0 60px 0;
+         }
+         
+         .swiper-slide {
+             height: auto;
+         }
+         
+         .swiper-button-next,
+         .swiper-button-prev {
+             color: #155D4F;
+             background: white;
+             border-radius: 50%;
+             width: 50px;
+             height: 50px;
+             box-shadow: 0 4px 12px rgba(21, 93, 79, 0.15);
+             transition: all 0.3s ease;
+         }
+         
+         .swiper-button-next:hover,
+         .swiper-button-prev:hover {
+             background: #155D4F;
+             color: white;
+             transform: scale(1.1);
+         }
+         
+         .swiper-button-next:after,
+         .swiper-button-prev:after {
+             font-size: 18px;
+             font-weight: bold;
+         }
+         
+         .swiper-pagination-bullet {
+             background: #155D4F;
+             opacity: 0.3;
+         }
+         
+         .swiper-pagination-bullet-active {
+             background: #155D4F;
+             opacity: 1;
+         }
             </style>
     </head>
 <body class="font-body antialiased">
@@ -97,8 +161,18 @@
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between items-center h-16">
                     <div class="flex items-center">
-                        <h1 class="text-2xl font-bold text-primary font-heading">SITARU</h1>
-                        <div class="ml-2 w-1 h-6 bg-gradient-to-b from-primary to-accent"></div>
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 bg-white rounded-lg shadow-md flex items-center justify-center overflow-hidden">
+                                <img src="{{ asset('images/logo_bwi.png') }}" 
+                                     alt="Logo SITARU" 
+                                     class="w-8 h-8 object-contain">
+                            </div>
+                            <div class="flex flex-col">
+                                <h1 class="text-2xl font-bold text-primary font-heading">SITARU</h1>
+                                <p class="text-xs text-gray-600 font-body -mt-1">Sistem Informasi Tata Ruang</p>
+                            </div>
+                        </div>
+                        <div class="ml-3 w-1 h-6 bg-gradient-to-b from-primary to-accent"></div>
                     </div>
                     <div class="hidden md:block">
                         <div class="ml-10 flex items-baseline space-x-4">
@@ -133,7 +207,7 @@
                         <div class="w-16 h-1 bg-gradient-to-r from-accent to-primary mx-auto mb-4"></div>
                         <h1 class="text-4xl md:text-6xl font-bold text-white mb-4 font-heading">
                             Selamat Datang di <span class="text-[#DAAF49] relative">
-                                SITARU
+                                SITARU 
                                 <div class="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-accent to-transparent"></div>
                             </span>
                         </h1>
@@ -278,9 +352,9 @@
                                     <i class="fa fa-info-circle text-white text-xl"></i>
                                 </div>
                                 <div>
-                                    <h3 class="text-xl font-bold text-[#155D4F] mb-2 font-heading">Apa itu SITARU?</h3>
+                                    <h3 class="text-xl font-bold text-[#155D4F] mb-2 font-heading">Apa itu SITARU ?</h3>
                                     <p class="text-gray-600 font-body leading-relaxed">
-                                        <span class="text-[#155D4F] font-semibold">SITARU</span> adalah platform digital terintegrasi yang dirancang khusus untuk memudahkan akses berbagai layanan penataan ruang dan kesesuaian kegiatan pemanfaatan ruang (KKPR).
+                                        <span class="text-[#155D4F] font-semibold">SITARU </span> adalah platform digital terintegrasi yang dirancang khusus untuk memudahkan akses berbagai layanan penataan ruang dan kesesuaian kegiatan pemanfaatan ruang (KKPR).
                                     </p>
                                 </div>
                             </div>
@@ -464,58 +538,339 @@
             </div>
         </section>
 
-        <!-- Contact Section -->
-        <section id="kontak" class="py-20 section-accent relative">
-            <div class="absolute inset-0 traditional-pattern opacity-30"></div>
+        <!-- Berita Section -->
+        @if(isset($berita) && $berita && $berita->count() > 0)
+        <section class="py-20 bg-white relative overflow-hidden">
+            <div class="absolute inset-0 traditional-pattern opacity-10"></div>
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-                <div class="text-center mb-20">
+                <!-- Header -->
+                <div class="text-center mb-16">
                     <div class="inline-block mb-6">
                         <div class="w-20 h-1 bg-gradient-to-r from-primary to-accent mx-auto mb-4"></div>
-                        <h2 class="text-3xl md:text-4xl font-bold text-primary mb-4 font-heading">Hubungi Kami</h2>
+                        <h2 class="text-3xl md:text-4xl font-bold text-primary mb-4 font-heading">Berita Terkini</h2>
                         <div class="w-16 h-1 bg-gradient-to-r from-accent to-primary mx-auto"></div>
                     </div>
-                    <p class="text-lg text-gray-600 font-body">Ada pertanyaan? Tim support kami siap membantu Anda</p>
-                                </div>
+                    <p class="text-lg text-gray-600 max-w-2xl mx-auto font-body">Informasi dan berita terbaru seputar penataan ruang</p>
+                </div>
 
-                <div class="grid md:grid-cols-3 gap-8">
-                    <div class="text-center p-8 bg-white rounded-xl card-shadow border border-accent hover:shadow-xl transition-all duration-300">
-                        <div class="w-16 h-16 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center mx-auto mb-6 relative">
-                            <div class="absolute inset-0 bg-gradient-to-br from-accent/20 to-transparent rounded-lg"></div>
-                            <svg class="w-8 h-8 text-[#DAAF49] relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                            </svg>
-                        </div>
-                        <h3 class="text-lg font-semibold text-primary mb-2 font-heading">Email</h3>
-                        <p class="text-gray-600 font-body">info@sitaru.com</p>
-                                </div>
+                 <!-- Swiper Carousel -->
+                 <div class="swiper beritaSwiper">
+                     <div class="swiper-wrapper">
+                         @foreach($berita as $item)
+                         <div class="swiper-slide">
+                             <article class="group bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 h-full">
+                                 <!-- Image -->
+                                 <div class="relative overflow-hidden aspect-video">
+                                     <img src="{{ asset('uploads/images/berita/' . $item->photo) }}" 
+                                         alt="{{ $item->nama }}" 
+                                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'; this.onerror=null;">
+                                     <div class="w-full h-full bg-gray-200 flex items-center justify-center text-gray-500 font-medium text-sm" style="display: none;">
+                                         Image Not Found
+                                     </div>
+                                     <div class="absolute top-4 left-4">
+                                         <span class="inline-block bg-primary text-white px-3 py-1 rounded-lg text-xs font-medium">
+                                             Berita
+                                         </span>
+                                     </div>
+                                 </div>
+                                 
+                                 <!-- Content -->
+                                 <div class="p-6">
+                                     <!-- Date -->
+                                     <div class="flex items-center text-sm text-gray-500 mb-3">
+                                         <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                         </svg>
+                                         {{ $item->created_at->format('d M Y') }}
+                                     </div>
 
-                    <div class="text-center p-8 bg-white rounded-xl card-shadow border border-accent hover:shadow-xl transition-all duration-300">
-                        <div class="w-16 h-16 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center mx-auto mb-6 relative">
-                            <div class="absolute inset-0 bg-gradient-to-br from-accent/20 to-transparent rounded-lg"></div>
-                            <svg class="w-8 h-8 text-[#DAAF49] relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
-                            </svg>
-                                </div>
-                        <h3 class="text-lg font-semibold text-primary mb-2 font-heading">Telepon</h3>
-                        <p class="text-gray-600 font-body">(021) 1234-5678</p>
-                                </div>
+                                     <!-- Title -->
+                                     <h3 class="text-lg font-semibold text-gray-900 mb-3 line-clamp-2 group-hover:text-primary transition-colors leading-snug">
+                                         {{ $item->nama }}
+                                     </h3>
 
-                    <div class="text-center p-8 bg-white rounded-xl card-shadow border border-accent hover:shadow-xl transition-all duration-300">
-                        <div class="w-16 h-16 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center mx-auto mb-6 relative">
-                            <div class="absolute inset-0 bg-gradient-to-br from-accent/20 to-transparent rounded-lg"></div>
-                            <svg class="w-8 h-8 text-[#DAAF49] relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                    </svg>
-                                </div>
-                        <h3 class="text-lg font-semibold text-primary mb-2 font-heading">Alamat</h3>
-                        <p class="text-gray-600 font-body">Jakarta, Indonesia</p>
-                                </div>
-                            </div>
-                        </div>
+                                     <!-- Description -->
+                                     <p class="text-gray-600 text-sm leading-relaxed mb-4 line-clamp-3">
+                                         {{ Str::limit(strip_tags($item->deskripsi), 120) }}
+                                     </p>
+                                     
+                                     <!-- Footer -->
+                                     <div class="flex items-center justify-between pt-4 border-t border-gray-100">
+                                         <div class="flex items-center text-sm text-gray-500">
+                                             <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                             </svg>
+                                             {{ $item->dilihat ?? 0 }}
+                                         </div>
+                                         
+                                         <a href="#" class="inline-flex items-center text-primary font-medium text-sm hover:gap-2 gap-1 transition-all">
+                                             Selengkapnya
+                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                             </svg>
+                                         </a>
+                                     </div>
+                                 </div>
+                             </article>
+                         </div>
+                         @endforeach
+                     </div>
+                     
+                     <!-- Navigation -->
+                     <div class="swiper-button-next berita-next"></div>
+                     <div class="swiper-button-prev berita-prev"></div>
+                     
+                     <!-- Pagination -->
+                     <div class="swiper-pagination berita-pagination"></div>
+                 </div>
+
+                <!-- View All Button -->
+                {{-- <div class="text-center mt-12">
+                    <a href="#" class="inline-flex items-center px-8 py-3 bg-gradient-to-r from-primary to-accent text-white font-medium rounded-lg hover:shadow-lg transition-all duration-300">
+                        Lihat Semua Berita
+                        <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                        </svg>
+                    </a>
+                </div> --}}
+            </div>
         </section>
+        @endif
 
-        <!-- Footer -->
+        <!-- Informasi Section -->
+        @if(isset($informasi) && $informasi && $informasi->count() > 0)
+        <section class="py-20 section-accent relative">
+            <div class="absolute inset-0 traditional-pattern opacity-20"></div>
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                <!-- Header -->
+                <div class="text-center mb-16">
+                    <div class="inline-block mb-6">
+                        <div class="w-20 h-1 bg-gradient-to-r from-primary to-accent mx-auto mb-4"></div>
+                        <h2 class="text-3xl md:text-4xl font-bold text-primary mb-4 font-heading">Informasi Penting</h2>
+                        <div class="w-16 h-1 bg-gradient-to-r from-accent to-primary mx-auto"></div>
+                    </div>
+                    <p class="text-lg text-gray-600 max-w-2xl mx-auto font-body">Informasi penting dan pengumuman terkini</p>
+                </div>
+
+                 <!-- Swiper Carousel -->
+                 <div class="swiper informasiSwiper">
+                     <div class="swiper-wrapper">
+                         @foreach($informasi as $item)
+                         <div class="swiper-slide">
+                             <article class="group bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 h-full">
+                                 <!-- Image -->
+                                 <div class="relative overflow-hidden aspect-video">
+                                     <img src="{{ asset('uploads/images/informasi/' . $item->photo) }}" 
+                                         alt="{{ $item->nama }}" 
+                                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'; this.onerror=null;">
+                                     <div class="w-full h-full bg-gray-200 flex items-center justify-center text-gray-500 font-medium text-sm" style="display: none;">
+                                         Image Not Found
+                                     </div>
+                                     <div class="absolute top-4 left-4">
+                                         <span class="inline-block bg-gradient-to-r from-blue-500 to-blue-600 text-white px-3 py-1 rounded-lg text-xs font-medium shadow-lg">
+                                             Informasi
+                                         </span>
+                                     </div>
+                                 </div>
+                                 
+                                 <!-- Content -->
+                                 <div class="p-6">
+                                     <!-- Date -->
+                                     <div class="flex items-center text-sm text-gray-500 mb-3">
+                                         <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                         </svg>
+                                         {{ $item->created_at->format('d M Y') }}
+                                     </div>
+
+                                     <!-- Title -->
+                                     <h3 class="text-lg font-semibold text-gray-900 mb-3 line-clamp-2 group-hover:text-accent transition-colors leading-snug">
+                                         {{ $item->nama }}
+                                     </h3>
+
+                                     <!-- Description -->
+                                     <p class="text-gray-600 text-sm leading-relaxed mb-4 line-clamp-3">
+                                         {{ Str::limit(strip_tags($item->deskripsi), 120) }}
+                                     </p>
+                                     
+                                     <!-- Footer -->
+                                     <div class="flex items-center justify-between pt-4 border-t border-gray-100">
+                                         <div class="flex items-center text-sm text-gray-500">
+                                             <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                             </svg>
+                                             {{ $item->dilihat ?? 0 }}
+                                         </div>
+                                         
+                                         <a href="#" class="inline-flex items-center text-accent font-medium text-sm hover:gap-2 gap-1 transition-all">
+                                             Selengkapnya
+                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                             </svg>
+                                         </a>
+                                     </div>
+                                 </div>
+                             </article>
+                         </div>
+                         @endforeach
+                     </div>
+                     
+                     <!-- Navigation -->
+                     <div class="swiper-button-next informasi-next"></div>
+                     <div class="swiper-button-prev informasi-prev"></div>
+                     
+                     <!-- Pagination -->
+                     <div class="swiper-pagination informasi-pagination"></div>
+                 </div>
+
+                <!-- View All Button -->
+                {{-- <div class="text-center mt-12">
+                    <a href="#" class="inline-flex items-center px-8 py-3 bg-gradient-to-r from-accent to-primary text-white font-medium rounded-lg hover:shadow-lg transition-all duration-300">
+                        Lihat Semua Informasi
+                        <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                        </svg>
+                    </a>
+                </div> --}}
+            </div>
+        </section>
+         @endif
+
+         <!-- Contact Section -->
+         <section id="kontak" class="py-20 section-accent relative">
+             <div class="absolute inset-0 traditional-pattern opacity-30"></div>
+             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                 <!-- Header -->
+                 <div class="text-center mb-16">
+                     <div class="inline-block mb-6">
+                         <div class="w-20 h-1 bg-gradient-to-r from-primary to-accent mx-auto mb-4"></div>
+                         <h2 class="text-3xl md:text-4xl font-bold text-primary mb-4 font-heading">Hubungi Kami</h2>
+                         <div class="w-16 h-1 bg-gradient-to-r from-accent to-primary mx-auto"></div>
+                     </div>
+                     <p class="text-lg text-gray-600 font-body">Ada pertanyaan? Tim support kami siap membantu Anda</p>
+                 </div>
+
+                 <!-- Main Layout -->
+                 <div class="grid lg:grid-cols-3 gap-8">
+                     
+                     <!-- Contact Info Cards -->
+                     <div class="space-y-6">
+                         <!-- Email -->
+                         <div class="bg-white rounded-xl p-6 card-shadow border border-accent hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                             <div class="flex items-center gap-4 mb-3">
+                                 <div class="w-12 h-12 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center shadow-md flex-shrink-0">
+                                     <svg class="w-6 h-6 text-[#DAAF49]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                                     </svg>
+                                 </div>
+                                 <h3 class="text-lg font-semibold text-primary font-heading">Email</h3>
+                             </div>
+                             <p class="text-gray-600 font-body text-sm ml-16">{{ $settings->email ?? 'info@sitaru.com' }}</p>
+                         </div>
+
+                         <!-- Phone -->
+                         <div class="bg-white rounded-xl p-6 card-shadow border border-accent hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                             <div class="flex items-center gap-4 mb-3">
+                                 <div class="w-12 h-12 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center shadow-md flex-shrink-0">
+                                     <svg class="w-6 h-6 text-[#DAAF49]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+                                     </svg>
+                                 </div>
+                                 <h3 class="text-lg font-semibold text-primary font-heading">Telepon</h3>
+                             </div>
+                             <p class="text-gray-600 font-body text-sm ml-16">{{ $settings->phone ?? '(021) 1234-5678' }}</p>
+                         </div>
+
+                         <!-- Address -->
+                         <div class="bg-white rounded-xl p-6 card-shadow border border-accent hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                             <div class="flex items-center gap-4 mb-3">
+                                 <div class="w-12 h-12 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center shadow-md flex-shrink-0">
+                                     <svg class="w-6 h-6 text-[#DAAF49]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                     </svg>
+                                 </div>
+                                 <h3 class="text-lg font-semibold text-primary font-heading">Alamat</h3>
+                             </div>
+                             <div class="text-gray-600 font-body text-sm ml-16 space-y-1">
+                                 <p>{{ $settings->address ?? 'Jakarta, Indonesia' }}</p>
+                                 @if($settings->kelurahan)
+                                     <p>{{ $settings->kelurahan }}</p>
+                                 @endif
+                                 @if($settings->kecamatan)
+                                     <p>{{ $settings->kecamatan }}</p>
+                                 @endif
+                                 @if($settings->kabupaten)
+                                     <p>{{ $settings->kabupaten }}</p>
+                                 @endif
+                                 @if($settings->poscode)
+                                     <p class="font-semibold text-primary mt-2">Kode Pos: {{ $settings->poscode }}</p>
+                                 @endif
+                             </div>
+                         </div>
+                     </div>
+
+                     <!-- Map Section -->
+                     <div class="lg:col-span-2">
+                         <div class="bg-white rounded-xl p-6 card-shadow border border-accent h-full">
+                             <div class="flex items-center gap-4 mb-6">
+                                 <div class="w-12 h-12 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center shadow-md flex-shrink-0">
+                                     <svg class="w-6 h-6 text-[#DAAF49]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path>
+                                     </svg>
+                                 </div>
+                                 <div>
+                                     <h3 class="text-xl font-bold text-primary font-heading">Lokasi Kami</h3>
+                                     <p class="text-sm text-gray-600 font-body">Temukan kami di peta interaktif</p>
+                                 </div>
+                             </div>
+
+                             @if($settings->lat && $settings->lang)
+                                 <!-- Map -->
+                                 <div id="contactMap" class="w-full h-80 rounded-lg border-2 border-gray-200 mb-6"></div>
+
+                                 <!-- Coordinates -->
+                                 <div class="bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg p-5">
+                                     <div class="grid md:grid-cols-2 gap-4">
+                                         <div class="flex items-center gap-3">
+                                             <div class="w-3 h-3 bg-green-500 rounded-full shadow-lg flex-shrink-0"></div>
+                                             <div class="flex items-center gap-2">
+                                                 <span class="font-semibold text-gray-700 font-body text-sm">Latitude:</span>
+                                                 <span class="font-mono text-gray-600 text-sm">{{ $settings->lat }}</span>
+                                             </div>
+                                         </div>
+                                         <div class="flex items-center gap-3">
+                                             <div class="w-3 h-3 bg-blue-500 rounded-full shadow-lg flex-shrink-0"></div>
+                                             <div class="flex items-center gap-2">
+                                                 <span class="font-semibold text-gray-700 font-body text-sm">Longitude:</span>
+                                                 <span class="font-mono text-gray-600 text-sm">{{ $settings->lang }}</span>
+                                             </div>
+                                         </div>
+                                     </div>
+                                 </div>
+                             @else
+                                 <div class="h-80 bg-gray-100 rounded-lg flex items-center justify-center border-2 border-gray-200">
+                                     <div class="text-center text-gray-500">
+                                         <svg class="w-16 h-16 mx-auto mb-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path>
+                                         </svg>
+                                         <p class="text-sm font-medium">Koordinat tidak tersedia</p>
+                                         <p class="text-xs text-gray-400 mt-1">Silakan tambahkan koordinat di pengaturan</p>
+                                     </div>
+                                 </div>
+                             @endif
+                         </div>
+                     </div>
+
+                 </div>
+             </div>
+         </section>
+
+         <!-- Footer -->
         <footer class="footer-gradient text-white py-20 relative overflow-hidden" style="background: linear-gradient(135deg, #155D4F 0%, #1a6b5c 50%, #DAAF49 100%) !important;">
             <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
             <div class="absolute inset-0 traditional-pattern opacity-5"></div>
@@ -523,11 +878,11 @@
                 <div class="grid md:grid-cols-4 gap-12">
                     <div class="md:col-span-2">
                         <div class="flex items-center mb-6">
-                            <h3 class="text-3xl font-bold font-heading">SITARU</h3>
+                            <h3 class="text-3xl font-bold font-heading">SITARU </h3>
                             <div class="ml-3 w-16 h-1 bg-gradient-to-r from-white to-[#DAAF49]"></div>
                         </div>
                         <p class="text-white/90 font-body text-lg leading-relaxed mb-6 max-w-md">
-                            Sistem Informasi Terpadu yang menghubungkan tradisi dengan teknologi modern untuk kemudahan akses layanan digital.
+                            {!! $settings->footer ?? 'Sistem Informasi Terpadu yang menghubungkan tradisi dengan teknologi modern untuk kemudahan akses layanan digital.' !!}
                         </p>
                         <div class="flex space-x-4">
                             <a href="#" class="w-12 h-12 bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-[#DAAF49] hover:scale-110 transition-all duration-300 group">
@@ -599,5 +954,99 @@
             </div>
         </footer>
         </div>
+
+         <!-- Leaflet JS -->
+         <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+         
+         <!-- Swiper JS -->
+         <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+        
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // Initialize contact map if coordinates are available
+                @if($settings && $settings->lat && $settings->lang)
+                    const contactMap = L.map('contactMap').setView([{{ $settings->lat }}, {{ $settings->lang }}], 15);
+                    
+                    // Add OpenStreetMap tiles
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                        maxZoom: 19
+                    }).addTo(contactMap);
+                    
+                    // Add marker
+                    const marker = L.marker([{{ $settings->lat }}, {{ $settings->lang }}]).addTo(contactMap);
+                    
+                    // Add popup with address info
+                    const addressInfo = `
+                        <div class="p-2">
+                            <h4 class="font-semibold text-gray-900 mb-2">Lokasi i' }}</h4>
+                            <p class="text-sm text-gray-600 mb-2">{{ $settings->address ?? '' }}</p>
+                            @if($settings->kecamatan && $settings->kabupaten)
+                                <p class="text-sm text-gray-600">{{ $settings->kecamatan }}, {{ $settings->kabupaten }}</p>
+                            @endif
+                        </div>
+                    `;
+                     marker.bindPopup(addressInfo).openPopup();
+                 @endif
+                 
+                 // Initialize Berita Swiper
+                 const beritaSwiper = new Swiper('.beritaSwiper', {
+                     slidesPerView: 1,
+                     spaceBetween: 20,
+                     loop: true,
+                     autoplay: {
+                         delay: 5000,
+                         disableOnInteraction: false,
+                     },
+                     pagination: {
+                         el: '.berita-pagination',
+                         clickable: true,
+                     },
+                     navigation: {
+                         nextEl: '.berita-next',
+                         prevEl: '.berita-prev',
+                     },
+                     breakpoints: {
+                         640: {
+                             slidesPerView: 2,
+                             spaceBetween: 20,
+                         },
+                         1024: {
+                             slidesPerView: 3,
+                             spaceBetween: 30,
+                         },
+                     },
+                 });
+                 
+                 // Initialize Informasi Swiper
+                 const informasiSwiper = new Swiper('.informasiSwiper', {
+                     slidesPerView: 1,
+                     spaceBetween: 20,
+                     loop: true,
+                     autoplay: {
+                         delay: 6000,
+                         disableOnInteraction: false,
+                     },
+                     pagination: {
+                         el: '.informasi-pagination',
+                         clickable: true,
+                     },
+                     navigation: {
+                         nextEl: '.informasi-next',
+                         prevEl: '.informasi-prev',
+                     },
+                     breakpoints: {
+                         640: {
+                             slidesPerView: 2,
+                             spaceBetween: 20,
+                         },
+                         1024: {
+                             slidesPerView: 3,
+                             spaceBetween: 30,
+                         },
+                     },
+                 });
+             });
+         </script>
     </body>
 </html>

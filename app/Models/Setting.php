@@ -11,4 +11,10 @@ class Setting extends Model
 
     public $timestamps = false;
     protected $fillable = ['site_name', 'email', 'phone', 'address', 'poscode', 'kabupaten', 'kecamatan', 'kelurahan', 'lang', 'lat', 'place_id', 'footer', 'm_keyword', 'm_desc', 'm_auth', 'home_info', 'berita', 'newsletter'];
+    
+    protected $casts = [
+        'home_info' => 'boolean',
+        'berita' => 'boolean',
+        'newsletter' => 'boolean'
+    ];
 }

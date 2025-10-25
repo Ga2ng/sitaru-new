@@ -332,7 +332,7 @@
 
                 <div class="space-y-4">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-3">Informasi AP</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-3">Informasi </label>
                         <div class="flex space-x-4">
                             <label class="flex items-center">
                                 <input type="radio" 

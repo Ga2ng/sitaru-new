@@ -9,9 +9,7 @@ use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [App\Http\Controllers\WelcomeController::class, 'index']);
 
 // Cek Status KKPR (Public - No Middleware)
 Route::prefix('cek-status')->name('cek-status.')->group(function () {
