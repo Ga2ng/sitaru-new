@@ -17,9 +17,7 @@ Route::prefix('cek-status')->name('cek-status.')->group(function () {
     Route::post('/search', [App\Http\Controllers\CekStatusController::class, 'search'])->name('search');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
 // Peta Route
 Route::get('/peta', [PetaController::class, 'index'])->name('peta.index');

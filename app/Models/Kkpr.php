@@ -141,5 +141,16 @@ class Kkpr extends Model
         return $this->belongsTo(User::class, 'pemeriksa_teknis');
     }
 
+    // Scope untuk filter berdasarkan jenis
+    public function scopeKkpr($query)
+    {
+        return $query->where('jenis', 'non_umk');
+    }
+
+    public function scopeUmk($query)
+    {
+        return $query->where('jenis', 'umk');
+    }
+
 }
 

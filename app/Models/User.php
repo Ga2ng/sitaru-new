@@ -101,4 +101,9 @@ class User extends Authenticatable
             ? url('uploads/images/ktp/' . $this->ktp)
             : 'http://placehold.it/160x160';
     }
+
+    public function kkpr()
+    {
+        return $this->hasMany(Kkpr::class, 'user_id');
+    }
 }
