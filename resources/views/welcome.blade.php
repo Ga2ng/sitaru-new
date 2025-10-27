@@ -110,6 +110,16 @@
              overflow: hidden;
          }
          
+         /* Leaflet Map Styles */
+         #contactMap {
+             height: 320px !important;
+             width: 100%;
+             z-index: 0;
+         }
+         .leaflet-container {
+             font-family: 'Inter', sans-serif;
+         }
+         
          /* Swiper Custom Styles */
          .swiper {
              padding: 20px 0 60px 0;
@@ -163,7 +173,7 @@
                     <div class="flex items-center">
                         <div class="flex items-center space-x-3">
                             <div class="w-10 h-10 bg-white rounded-lg shadow-md flex items-center justify-center overflow-hidden">
-                                <img src="{{ asset('images/logo_bwi.png') }}" 
+                                <img src="{{ asset('images/maskot.png') }}" 
                                      alt="Logo SITARU" 
                                      class="w-8 h-8 object-contain">
                             </div>
@@ -213,8 +223,7 @@
                         </h1>
                     </div>
                     <p class="text-xl text-gray-100 mb-8 max-w-3xl mx-auto font-body leading-relaxed">
-                        <span class="text-[#DAAF49] font-semibold">Sistem Informasi Terpadu</span> yang memudahkan Anda mengakses berbagai layanan digital dengan cepat, aman, dan efisien.
-                    </p>
+                        <span class="text-[#DAAF49] font-semibold">Sistem Informasi Penataan Ruang</span> Kabupaten Banyuwangi</p>
                     <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
                         <!-- Button 1: Mulai Sekarang -->
                         <a href="{{ route('login') }}" class="group btn-primary text-white px-10 py-4 rounded-xl font-bold text-lg shadow-2xl relative overflow-hidden transform hover:scale-105 transition-all duration-300">
@@ -268,8 +277,8 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                             </svg>
                         </div>
-                        <h3 class="text-xl font-semibold text-primary mb-4 font-heading">KKPR</h3>
-                        <p class="text-gray-600 mb-4 font-body">Kelengkapan Kependudukan dan Pencatatan Sipil untuk berbagai keperluan administrasi kependudukan.</p>
+                        <h3 class="text-xl font-semibold text-primary mb-4 font-heading">Penilaian KKPR Terbit Otomatis dan Persetujuan Bagi UMK</h3>
+                        <p class="text-gray-600 mb-4 font-body">Validasikan kesesuaian kegiatan penataan ruang terbit otomatis dan persetujuan bagi UMK anda</p>
                         <a href="/layanan/kkpr" class="text-primary font-medium hover:text-accent transition-colors relative group">
                             Akses Layanan 
                             <span class="inline-block transform group-hover:translate-x-1 transition-transform">→</span>
@@ -283,7 +292,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path>
                             </svg>
                         </div>
-                        <h3 class="text-xl font-semibold text-primary mb-4 font-heading">Peta Bumi ATR</h3>
+                        <h3 class="text-xl font-semibold text-primary mb-4 font-heading">Peta Bhumi ATR</h3>
                         <p class="text-gray-600 mb-4 font-body">Akses peta bumi dan informasi geospasial dari Badan Pertanahan Nasional untuk referensi data tanah.</p>
                         <a href="https://bhumi.atrbpn.go.id/peta" target="_blank" class="text-primary font-medium hover:text-accent transition-colors relative group">
                             Kunjungi Peta 
@@ -340,22 +349,36 @@
                         <h2 class="text-3xl md:text-5xl font-bold text-[#155D4F] mb-4 font-heading">Tentang SITARU</h2>
                         <div class="w-16 h-1 bg-gradient-to-r from-[#DAAF49] to-[#155D4F] mx-auto"></div>
                     </div>
-                    <p class="text-lg text-gray-600 max-w-3xl mx-auto font-body">Sistem Informasi Terpadu Penataan Ruang</p>
+                    <p class="text-lg text-gray-600 max-w-3xl mx-auto font-body">Sistem Informasi Penataan Ruang</p>
+                    <br><br>
                 </div>
 
-                <div class="grid lg:grid-cols-2 gap-12 items-center mb-16">
+                <div class="grid lg:grid-cols-2 gap-12 items-start mb-16">
                     <!-- Left Column: Description -->
                     <div class="space-y-6">
-                        <div class="bg-gradient-to-br from-[#155D4F]/5 to-[#DAAF49]/5 rounded-2xl p-8 border border-[#DAAF49]/20 shadow-lg">
-                            <div class="flex items-start space-x-4 mb-6">
-                                <div class="w-12 h-12 bg-gradient-to-br from-[#155D4F] to-[#0F3D26] rounded-xl flex items-center justify-center shadow-lg flex-shrink-0">
-                                    <i class="fa fa-info-circle text-white text-xl"></i>
+                        <div class="relative overflow-hidden bg-gradient-to-br from-[#155D4F]/5 to-[#DAAF49]/5 rounded-2xl p-8 border border-[#DAAF49]/20 shadow-lg h-full">
+                            <div class="absolute top-0 left-0 w-24 h-24 bg-[#155D4F]/10 rounded-full -translate-y-12 -translate-x-12"></div>
+                            <div class="absolute bottom-0 right-0 w-32 h-32 bg-[#DAAF49]/10 rounded-full translate-y-16 translate-x-16"></div>
+                            
+                            <div class="relative z-10 text-center">
+                                <div class="w-24 h-24 bg-gradient-to-br from-[#155D4F] to-[#0F3D26] rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-xl">
+                                    <i class="fa fa-info-circle text-white text-4xl"></i>
                                 </div>
-                                <div>
-                                    <h3 class="text-xl font-bold text-[#155D4F] mb-2 font-heading">Apa itu SITARU ?</h3>
-                                    <p class="text-gray-600 font-body leading-relaxed">
-                                        <span class="text-[#155D4F] font-semibold">SITARU </span> adalah platform digital terintegrasi yang dirancang khusus untuk memudahkan akses berbagai layanan penataan ruang dan kesesuaian kegiatan pemanfaatan ruang (KKPR).
-                                    </p>
+                                <h3 class="text-2xl font-bold text-[#155D4F] mb-4 font-heading">Apa itu SITARU ?</h3>
+                                <p class="text-gray-600 font-body leading-relaxed mb-8">
+                                    <span class="text-[#155D4F] font-semibold">SITARU </span> adalah platform digital yang dirancang khusus untuk memudahkan akses berbagai informasi penataan ruang serta layanan penilaian kesesuaian kegiatan pemanfaatan ruang di Kabupaten Banyuwangi.
+                                </p>
+                                
+                                <!-- Info Stats -->
+                                <div class="grid grid-cols-2 gap-4 mt-6">
+                                    <div class="bg-white/60 backdrop-blur-sm rounded-xl p-4 border border-[#155D4F]/20">
+                                        <i class="fa fa-map-marked-alt text-[#155D4F] text-2xl mb-2"></i>
+                                        <p class="text-xs text-gray-700 font-semibold">Banyuwangi</p>
+                                    </div>
+                                    <div class="bg-white/60 backdrop-blur-sm rounded-xl p-4 border border-[#DAAF49]/20">
+                                        <i class="fa fa-globe text-[#DAAF49] text-2xl mb-2"></i>
+                                        <p class="text-xs text-gray-700 font-semibold">Digital</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -368,7 +391,7 @@
                                 <div>
                                     <h3 class="text-xl font-bold text-[#155D4F] mb-2 font-heading">Tujuan Kami</h3>
                                     <p class="text-gray-600 font-body leading-relaxed">
-                                        Memberikan layanan publik yang cepat, transparan, dan efisien dengan memanfaatkan teknologi terkini untuk mendukung pembangunan berkelanjutan.
+                                        Memberikan layanan publik yang cepat, transparan, dan efisien dengan memanfaatkan teknologi terkini untuk mendukung pembangunan berkelanjutan di Kabupaten Banyuwangi.
                                     </p>
                                 </div>
                             </div>
@@ -413,10 +436,10 @@
                             
                             <div class="relative z-10 text-center text-white">
                                 <div class="w-24 h-24 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-xl">
-                                    <i class="fa fa-building text-5xl text-[#DAAF49]"></i>
+                                    <i class="fa fa-map-marked-alt text-4xl text-[#DAAF49]"></i>
                                 </div>
-                                <h3 class="text-2xl font-bold mb-4 font-heading">Platform Terpadu</h3>
-                                <p class="text-white/90 mb-8 leading-relaxed">Solusi digital untuk pengelolaan penataan ruang yang efektif dan efisien</p>
+                                <h3 class="text-2xl font-bold mb-4 font-heading">Informasi Penataan Ruang</h3>
+                                <p class="text-white/90 mb-8 leading-relaxed">Informasi penataan ruang yang efektif dan efisien</p>
                                 
                                 <!-- Mini Stats -->
                                 <div class="grid grid-cols-2 gap-4">
@@ -464,42 +487,9 @@
                                 <div class="text-xs text-gray-600 font-body">Digital</div>
                             </div>
                         </div>
-
-                        <!-- Feature Badges -->
-                        <div class="bg-gradient-to-br from-gray-50 to-white rounded-2xl p-6 border border-gray-200 shadow-lg">
-                            <h4 class="text-lg font-bold text-[#155D4F] mb-4 font-heading flex items-center">
-                                <i class="fa fa-star text-[#DAAF49] mr-2"></i>
-                                Keunggulan Platform
-                            </h4>
-                            <div class="space-y-3">
-                                <div class="flex items-center space-x-3">
-                                    <div class="w-8 h-8 bg-gradient-to-br from-[#155D4F] to-[#0F3D26] rounded-lg flex items-center justify-center shadow-md">
-                                        <i class="fa fa-mobile-alt text-white text-sm"></i>
-                                    </div>
-                                    <span class="text-sm text-gray-700 font-body">Responsive di semua perangkat</span>
-                                </div>
-                                <div class="flex items-center space-x-3">
-                                    <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center shadow-md">
-                                        <i class="fa fa-database text-white text-sm"></i>
-                                    </div>
-                                    <span class="text-sm text-gray-700 font-body">Database terintegrasi & real-time</span>
-                                </div>
-                                <div class="flex items-center space-x-3">
-                                    <div class="w-8 h-8 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg flex items-center justify-center shadow-md">
-                                        <i class="fa fa-lock text-white text-sm"></i>
-                                    </div>
-                                    <span class="text-sm text-gray-700 font-body">Keamanan data terjamin</span>
-                                </div>
-                                <div class="flex items-center space-x-3">
-                                    <div class="w-8 h-8 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center shadow-md">
-                                        <i class="fa fa-sync text-white text-sm"></i>
-                                    </div>
-                                    <span class="text-sm text-gray-700 font-body">Update otomatis & monitoring</span>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
+                <br><br>
 
                 <!-- Bottom Stats Grid -->
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
@@ -560,12 +550,12 @@
                          <div class="swiper-slide">
                              <article class="group bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 h-full">
                                  <!-- Image -->
-                                 <div class="relative overflow-hidden aspect-video">
+                                 <div class="relative overflow-hidden h-48 w-full">
                                      <img src="{{ asset('uploads/images/berita/' . $item->photo) }}" 
                                          alt="{{ $item->nama }}" 
-                                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                         class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                                          onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'; this.onerror=null;">
-                                     <div class="w-full h-full bg-gray-200 flex items-center justify-center text-gray-500 font-medium text-sm" style="display: none;">
+                                     <div class="absolute inset-0 w-full h-full bg-gray-200 flex items-center justify-center text-gray-400 text-xs" style="display: none;">
                                          Image Not Found
                                      </div>
                                      <div class="absolute top-4 left-4">
@@ -661,12 +651,12 @@
                          <div class="swiper-slide">
                              <article class="group bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 h-full">
                                  <!-- Image -->
-                                 <div class="relative overflow-hidden aspect-video">
+                                 <div class="relative overflow-hidden h-48 w-full">
                                      <img src="{{ asset('uploads/images/informasi/' . $item->photo) }}" 
                                          alt="{{ $item->nama }}" 
-                                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                         class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                                          onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'; this.onerror=null;">
-                                     <div class="w-full h-full bg-gray-200 flex items-center justify-center text-gray-500 font-medium text-sm" style="display: none;">
+                                     <div class="absolute inset-0 w-full h-full bg-gray-200 flex items-center justify-center text-gray-400 text-xs" style="display: none;">
                                          Image Not Found
                                      </div>
                                      <div class="absolute top-4 left-4">
@@ -827,11 +817,11 @@
                                      <h3 class="text-xl font-bold text-primary font-heading">Lokasi Kami</h3>
                                      <p class="text-sm text-gray-600 font-body">Temukan kami di peta interaktif</p>
                                  </div>
-                             </div>
+                            </div>
 
-                             @if($settings->lat && $settings->lang)
-                                 <!-- Map -->
-                                 <div id="contactMap" class="w-full h-80 rounded-lg border-2 border-gray-200 mb-6"></div>
+                            @if(isset($settings) && $settings && $settings->lat && $settings->lang)
+                                <!-- Map -->
+                                <div id="contactMap" class="w-full h-80 rounded-lg border-2 border-gray-200 mb-6"></div>
 
                                  <!-- Coordinates -->
                                  <div class="bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg p-5">
@@ -962,31 +952,77 @@
          <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
         
         <script>
+            // Wait for Leaflet to be fully loaded
             document.addEventListener('DOMContentLoaded', function() {
+                console.log('DOM loaded');
+                
+                // Check if Leaflet is available
+                if (typeof L === 'undefined') {
+                    console.error('Leaflet library is not loaded!');
+                    return;
+                }
+                
+                console.log('Leaflet loaded successfully', L.version);
+                
+                // Fix Leaflet default icon paths
+                delete L.Icon.Default.prototype._getIconUrl;
+                L.Icon.Default.mergeOptions({
+                    iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+                    iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
+                    shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+                    iconSize: [25, 41],
+                    iconAnchor: [12, 41],
+                    popupAnchor: [1, -34],
+                    shadowSize: [41, 41]
+                });
+                
                 // Initialize contact map if coordinates are available
-                @if($settings && $settings->lat && $settings->lang)
-                    const contactMap = L.map('contactMap').setView([{{ $settings->lat }}, {{ $settings->lang }}], 15);
+                @if(isset($settings) && $settings && $settings->lat && $settings->lang)
+                    const mapElement = document.getElementById('contactMap');
                     
-                    // Add OpenStreetMap tiles
-                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                        attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-                        maxZoom: 19
-                    }).addTo(contactMap);
-                    
-                    // Add marker
-                    const marker = L.marker([{{ $settings->lat }}, {{ $settings->lang }}]).addTo(contactMap);
-                    
-                    // Add popup with address info
-                    const addressInfo = `
-                        <div class="p-2">
-                            <h4 class="font-semibold text-gray-900 mb-2">Lokasi i' }}</h4>
-                            <p class="text-sm text-gray-600 mb-2">{{ $settings->address ?? '' }}</p>
-                            @if($settings->kecamatan && $settings->kabupaten)
-                                <p class="text-sm text-gray-600">{{ $settings->kecamatan }}, {{ $settings->kabupaten }}</p>
-                            @endif
-                        </div>
-                    `;
-                     marker.bindPopup(addressInfo).openPopup();
+                    if (mapElement) {
+                        console.log('Initializing map with coordinates:', {{ $settings->lat }}, {{ $settings->lang }});
+                        
+                        const contactMap = L.map('contactMap', {
+                            zoomControl: true,
+                            scrollWheelZoom: true
+                        }).setView([{{ $settings->lat }}, {{ $settings->lang }}], 15);
+                        
+                        console.log('Map created:', contactMap);
+                        
+                        // Add OpenStreetMap tiles
+                        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                            attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                            maxZoom: 19
+                        }).addTo(contactMap);
+                        
+                        console.log('TileLayer added');
+                        
+                        // Add marker
+                        const marker = L.marker([{{ $settings->lat }}, {{ $settings->lang }}]).addTo(contactMap);
+                        
+                        console.log('Marker added:', marker);
+                        
+                        // Add popup with address info
+                        @php
+                            $popupContent = '<div class="p-2">';
+                            $popupContent .= '<h4 class="font-semibold text-gray-900 mb-2">Lokasi Kami</h4>';
+                            $popupContent .= '<p class="text-sm text-gray-600 mb-2">' . ($settings->address ?? '') . '</p>';
+                            if($settings->kecamatan && $settings->kabupaten) {
+                                $popupContent .= '<p class="text-sm text-gray-600">' . $settings->kecamatan . ', ' . $settings->kabupaten . '</p>';
+                            }
+                            $popupContent .= '</div>';
+                        @endphp
+                        const addressInfo = `{!! addslashes($popupContent) !!}`;
+                        
+                        console.log('Popup content:', addressInfo);
+                        
+                        marker.bindPopup(addressInfo).openPopup();
+                        
+                        console.log('Map initialization complete');
+                    } else {
+                        console.error('Map container "contactMap" not found!');
+                    }
                  @endif
                  
                  // Initialize Berita Swiper
