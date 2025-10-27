@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
-@section('title', 'Admin Persetujuan Bagi UMK')
-@section('subtitle', 'Penilaian Persetujuan Bagi UMK')
+@section('title', 'SITARU - Persetujuan Bagi UMK')
+@section('subtitle', 'Penilaian untuk Persetujuan Bagi UMK')
 
 @section('content')
 <!-- SweetAlert2 CSS -->
@@ -14,8 +14,8 @@
         <div class="relative z-10">
             <div class="flex items-center justify-between">
                 <div>
-                    <h1 class="text-2xl font-bold mb-1">Admin Persetujuan Bagi UMK</h1>
-                    <p class="text-sm text-white/90 mb-4">Penilaian Persetujuan Bagi UMK - Kelola semua permohonan dengan mudah</p>
+                <h1 class="text-2xl font-bold mb-1">Persetujuan Bagi UMK</h1>
+                <p class="text-sm text-white/90 mb-4">Penilaian Persetujuan Bagi UMK atas kesesuaian kegiatan pemanfaatan ruang</p>
                     <div class="flex items-center space-x-4">
                         <div class="flex items-center space-x-2">
                             <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
@@ -805,11 +805,14 @@
         
         let html = '<div class="relative"><div class="absolute left-6 top-0 bottom-0 w-0.5 bg-gradient-to-b from-[#185B3C] via-gray-300 to-gray-200"></div><div class="space-y-6">';
         
-        riwayat.forEach((r, index) => {
-            // Tampilkan semua riwayat termasuk yang ditolak
-            const shouldDisplay = r.status_id <= model.proses || r.status_id == 0;
+        // Generate all process steps from 1 to 10
+        for (let statusId = 1; statusId <= 10; statusId++) {
+            // Find existing riwayat for this status_id
+            const existingRiwayat = riwayat.find(r => r.status_id == statusId);
             
-            if (shouldDisplay) {
+            if (existingRiwayat) {
+                // Display existing riwayat
+                const r = existingRiwayat;
                 const isDitolak = r.status_id == 0;
                 const isRevisi = r.status_id == model.proses && model.revisi == 1 && !isDitolak;
                 const badge = badgeConfig[r.status_id] || { icon: 'fa-file', color: '#6c757d', label: 'Unknown' };
@@ -865,8 +868,111 @@
                         </div>
                     </div>
                 </div>`;
+            } else {
+                // Display placeholder for missing riwayat
+                const badge = badgeConfig[statusId] || { icon: 'fa-file', color: '#6c757d', label: 'Unknown' };
+                const isCompleted = statusId < model.proses;
+                const isCurrent = statusId == model.proses;
+                const isPending = statusId > model.proses;
+                
+                let statusText, statusClass, statusIcon, statusColor;
+                
+                if (isCompleted) {
+                    statusText = 'Selesai';
+                    statusClass = 'bg-green-100 text-green-800 border-green-300';
+                    statusIcon = 'fa-check';
+                    statusColor = '#10b981';
+                } else if (isCurrent) {
+                    statusText = 'Aktif';
+                    statusClass = 'bg-blue-100 text-blue-800 border-blue-300';
+                    statusIcon = 'fa-spinner';
+                    statusColor = '#3b82f6';
+                } else {
+                    statusText = 'Belum Dilakukan';
+                    statusClass = 'bg-gray-100 text-gray-600 border-gray-300';
+                    statusIcon = 'fa-clock';
+                    statusColor = '#6b7280';
+                }
+                
+                html += `
+                <div class="relative pl-16 group">
+                    <div class="absolute left-0 w-12 h-12 rounded-full flex items-center justify-center shadow-lg transition-transform duration-300 group-hover:scale-110 z-10" style="background-color: ${statusColor}">
+                        <i class="fa ${badge.icon} text-white text-lg"></i>
+                    </div>
+                    <div class="bg-white border-gray-200 rounded-xl p-4 shadow-md border transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+                        <div class="flex items-start justify-between mb-3">
+                            <div class="flex-1">
+                                <h4 class="font-bold text-gray-900 text-base mb-1">${badge.label}</h4>
+                                <div class="flex items-center space-x-3 text-xs text-gray-500">
+                                    <div class="flex items-center">
+                                        <i class="fa fa-info-circle mr-1.5"></i>
+                                        <span>${isPending ? 'Menunggu proses sebelumnya' : 'Proses sistem'}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <span class="px-3 py-1 text-xs font-semibold rounded-full ${statusClass} border">
+                                <i class="fa ${statusIcon} mr-1"></i>${statusText}
+                            </span>
+                        </div>
+                        <div class="bg-gray-50 rounded-lg p-3">
+                            <p class="text-sm text-gray-700 leading-relaxed">
+                                ${isPending ? 
+                                    'Proses ini akan dilakukan setelah proses sebelumnya selesai' : 
+                                    (isCompleted ? 
+                                        'Proses ini telah diselesaikan oleh sistem' : 
+                                        'Proses ini sedang berjalan')
+                                }
+                            </p>
+                        </div>
+                    </div>
+                </div>`;
             }
-        });
+        }
+        
+        // Handle rejected status (status_id = 0) if exists
+        const rejectedRiwayat = riwayat.find(r => r.status_id == 0);
+        if (rejectedRiwayat) {
+            const r = rejectedRiwayat;
+            const date = new Date(r.updated_at);
+            const formattedDate = date.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
+            const formattedTime = date.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            
+            html += `
+            <div class="relative pl-16 group">
+                <div class="absolute left-0 w-12 h-12 rounded-full flex items-center justify-center shadow-lg transition-transform duration-300 group-hover:scale-110 z-10" style="background-color: #dc2626">
+                    <i class="fa fa-times-circle text-white text-lg"></i>
+                </div>
+                <div class="bg-red-50 border-red-300 border-2 rounded-xl p-4 shadow-md transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+                    <div class="flex items-start justify-between mb-3">
+                        <div class="flex-1">
+                            <h4 class="font-bold text-red-900 text-base mb-1">${r.status}</h4>
+                            <div class="flex items-center space-x-3 text-xs text-gray-500">
+                                <div class="flex items-center">
+                                    <i class="fa fa-calendar mr-1.5"></i>
+                                    <span>${formattedDate}</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="fa fa-clock mr-1.5"></i>
+                                    <span>${formattedTime}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <span class="px-3 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800 border-2 border-red-400">
+                            <i class="fa fa-ban mr-1"></i>Ditolak
+                        </span>
+                    </div>
+                    <div class="bg-white/70 rounded-lg p-3">
+                        <p class="text-sm text-gray-700 leading-relaxed">${r.keterangan}</p>
+                        ${r.revisi_detail ? 
+                            `<div class="mt-3 p-3 bg-red-100 border-2 border-red-300 rounded-lg">
+                                <p class="text-xs font-semibold text-red-900 mb-1"><i class="fa fa-ban mr-1"></i>Alasan Penolakan:</p>
+                                <p class="text-sm text-red-800 font-medium">${r.revisi_detail}</p>
+                            </div>` : ''
+                        }
+                    </div>
+                </div>
+            </div>`;
+        }
         
         html += '</div></div>';
         console.log('Generated HTML length:', html.length);

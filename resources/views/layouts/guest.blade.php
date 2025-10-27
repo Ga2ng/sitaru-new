@@ -853,8 +853,8 @@
                         <div class="logo-container">
                             <h1 class="title-main" style="color: #FFFFFF; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">SITARU</h1>
                             <div class="traditional-accent" style="background: #DAAF49; box-shadow: 0 0 20px rgba(218, 175, 73, 0.5);"></div>
-                            <p class="subtitle" style="color: #F7F8F9; text-shadow: 1px 1px 2px rgba(0,0,0,0.3);">Sistem Informasi Terpadu</p>
-                            <p class="tagline" style="color: #FFFFFF; text-shadow: 1px 1px 2px rgba(0,0,0,0.3);">Menggabungkan Tradisi & Teknologi Modern<br>untuk Kemajuan Bersama</p>
+                            <p class="subtitle" style="color: #F7F8F9; text-shadow: 1px 1px 2px rgba(0,0,0,0.3);">Sistem Informasi Penataan Ruang</p>
+                            <p class="tagline" style="color: #FFFFFF; text-shadow: 1px 1px 2px rgba(0,0,0,0.3);">Kabupaten Banyuwangi</p>
                         </div>
                         
                         <!-- Enhanced Maskot Display - Poster Style -->

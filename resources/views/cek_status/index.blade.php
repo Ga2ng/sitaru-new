@@ -161,9 +161,9 @@
                             @endif
 
                             <div class="text-center">
-                                <button type="submit" class="btn-primary text-white px-12 py-4 rounded-xl font-semibold text-lg shadow-xl relative overflow-hidden">
-                                    <span class="relative z-10">
-                                        <i class="fa fa-search mr-2"></i>
+                                <button type="submit" class="btn-primary text-white px-10 py-4 rounded-xl font-semibold text-lg shadow-xl relative overflow-hidden">
+                                    <span class="relative z-10 flex items-center justify-center">
+                                        <i class="fa fa-search mr-2 group-hover:rotate-90 transition-transform duration-300"></i>
                                         Cek Status
                                     </span>
                                 </button>
@@ -171,6 +171,7 @@
                         </div>
                     </form>
                 </div>
+                <br>    
 
                 <!-- Info Cards -->
                 <div class="grid md:grid-cols-3 gap-6 mt-12">

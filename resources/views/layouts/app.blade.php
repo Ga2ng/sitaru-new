@@ -196,11 +196,13 @@
                 <!-- Logo Section -->
                 <div class="p-4 border-b border-gray-100">
                     <div class="flex items-center space-x-3">
-                        <div class="w-8 h-8 logo-container rounded-lg flex items-center justify-center">
-                            <i class="fas fa-building text-white text-sm"></i>
-                        </div>
+                        <img src="{{ asset('images/maskot.png') }}" alt="Logo" class="h-10 w-auto group-hover:scale-105 transition-transform duration-300">
                         <div>
-                            <h1 class="text-lg font-semibold text-gray-900">SITARU</h1>
+                            <h1 class="text-2xl font-bold text-[#155D4F] font-heading group-hover:text-[#0F3D26] transition-colors">SITARU</h1>
+                            <div class="flex items-center space-x-2">
+                                <p class="text-xs text-gray-600 font-body">Kabupaten Banyuwangi</p>
+                                <div class="w-1 h-4 bg-gradient-to-b from-[#155D4F] to-[#DAAF49] rounded-full"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -237,14 +239,14 @@
                         </a>
                         
 
-                        @cannot('OPD Eksternal')
+                        <!-- @cannot('OPD Eksternal')
                         @can('Pengaduan')
                         <a href="{{ route('admin.pengaduan.index') }}" class="nav-item flex items-center space-x-3 px-3 py-2.5 text-sm font-medium {{ request()->is('admin/pengaduan*') ? 'active' : '' }}">
                             <i class="fas fa-bullhorn w-4 h-4"></i>
                             <span>Pengaduan</span>
                         </a>
                         @endcan
-                        @endcannot
+                        @endcannot -->
                     </div>
 
                     <!-- INFORMASI Section - Admin -->
@@ -280,12 +282,12 @@
                         </a>
                         @endcan
 
-                        @can('Kontak')
+                        <!-- @can('Kontak')
                         <a href="{{ route('admin.kontak.index') }}" class="nav-item flex items-center space-x-3 px-3 py-2.5 text-sm font-medium {{ request()->is('admin/kontak*') ? 'active' : '' }}">
                             <i class="fas fa-phone w-4 h-4"></i>
                             <span>Kontak Pengaduan</span>
                         </a>
-                        @endcan
+                        @endcan -->
                     </div>
                     @endcannot
 
