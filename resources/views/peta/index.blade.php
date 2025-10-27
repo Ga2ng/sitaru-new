@@ -360,7 +360,7 @@
                     </div>
                     
                     <!-- LSD -->
-                    <div class="layer-item p-3 border rounded-lg bg-white/50">
+                    <!-- <div class="layer-item p-3 border rounded-lg bg-white/50">
                         <div class="flex justify-between items-center mb-2">
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="lsdCheck">
@@ -371,7 +371,7 @@
                             <label class="form-label small mb-1">Opacity: <span id="lsdOpacity">100%</span></label>
                             <input type="range" class="form-range opacity-slider" id="lsdOpacitySlider" min="0" max="100" value="100">
                         </div>
-                    </div>
+                    </div> -->
                     
                     <!-- RTRW 2024 -->
                     <div class="layer-item p-3 border rounded-lg bg-white/50">

@@ -332,7 +332,7 @@
             <i class="fas fa-exclamation-circle mr-3 text-xl"></i>
             Revisi Dokumen
         </button>
-        <button type="button" onclick="setujuiDokumen({{ $model->id }})" class="inline-flex items-center px-8 py-4 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-xl hover:from-emerald-600 hover:to-teal-700 transition-all shadow-lg hover:shadow-xl font-bold text-lg">
+        <button type="button" onclick="setujuiDokumen({{ $model->id }})" class="inline-flex items-center px-8 py-4 bg-gradient-to-r from-green-500 to-teal-600 text-white rounded-xl hover:from-emerald-600 hover:to-teal-700 transition-all shadow-lg hover:shadow-xl font-bold text-lg">
             <i class="fas fa-check-circle mr-3 text-xl"></i>
             Setujui Dokumen
         </button>
