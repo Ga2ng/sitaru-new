@@ -31,7 +31,7 @@ class AdminKkprNonController extends Controller
     public function index(Request $request)
     {
         $query = Kkpr::with(['user', 'kabupaten', 'kecamatan', 'kelurahan'])
-            ->where('deleted', 0)
+            // ->where('deleted', 0)
             ->where('jenis', 'umk');
 
         // Filter berdasarkan role - DISABLED untuk menampilkan semua data
@@ -1770,6 +1770,34 @@ class AdminKkprNonController extends Controller
                 'success' => false,
                 'message' => 'Terjadi kesalahan: ' . $e->getMessage()
             ], 500);
+        }
+    }
+
+    public function confirmPencabutan($id)
+    {
+        try {
+            $model = Kkpr::where('jenis', 'umk')->findOrFail($id);
+            
+            // Validasi hanya untuk deleted = 1
+            if($model->deleted != 1){
+                return response()->json(['success' => false, 'message' => 'Data tidak dalam status request pencabutan'], 400);
+            }
+            
+            // Update deleted = 2 (dikonfirmasi)
+            $model->update(['deleted' => 2]);
+            
+            // Catat di riwayat
+            \App\Models\Kkpr_riwayat::create([
+                'kkpr_id' => $model->id,
+                'status_id' => 0, // status_id 0 untuk pencabutan
+                'status' => 'Pencabutan Dikonfirmasi',
+                'keterangan' => 'Admin mengkonfirmasi pencabutan permohonan',
+                'revisi_detail' => 'Permohonan telah dicabut dan tidak dapat diproses lebih lanjut'
+            ]);
+            
+            return response()->json(['success' => true, 'message' => 'Pencabutan berhasil dikonfirmasi']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Terjadi kesalahan: ' . $e->getMessage()], 500);
         }
     }
 

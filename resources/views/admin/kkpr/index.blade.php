@@ -345,7 +345,17 @@
                                 ];
                                 $status = $statusConfig[$kkpr->proses] ?? ['label' => 'Unknown', 'color' => 'gray', 'icon' => 'fa-question'];
                             @endphp
-                            @if($kkpr->proses == 0)
+                            @if($kkpr->deleted == 1)
+                                <button onclick="openRiwayat({{ $kkpr->id }})" class="inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full bg-orange-100 text-orange-800 border-2 border-orange-300 shadow-sm hover:bg-orange-200 transition-colors cursor-pointer" title="Request Pencabutan">
+                                    <i class="fas fa-times-circle mr-1"></i>
+                                    Pencabutan
+                                </button>
+                            @elseif($kkpr->deleted == 2)
+                                <button onclick="openRiwayat({{ $kkpr->id }})" class="inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800 border-2 border-gray-300 shadow-sm hover:bg-gray-200 transition-colors cursor-pointer" title="Pencabutan Dikonfirmasi">
+                                    <i class="fas fa-ban mr-1"></i>
+                                    Dicabut
+                                </button>
+                            @elseif($kkpr->proses == 0)
                                 <button onclick="openRiwayat({{ $kkpr->id }})" class="inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800 border-2 border-red-400 shadow-sm hover:bg-red-200 transition-colors cursor-pointer" title="Lihat Riwayat Proses">
                                     <i class="fas fa-times-circle mr-1"></i>
                                     Ditolak
@@ -375,7 +385,7 @@
                                         'tim_fpr' => auth()->user()->can('Tim FPR'),
                                     ];
                                 @endphp
-                            <button id="btn-aksi-{{ $kkpr->id }}" onclick="toggleDropdown({{ $kkpr->id }}, {{ $kkpr->proses }}, {{ $kkpr->revisi }}, {{ $can['verifikator'] ? 'true' : 'false' }}, {{ $can['analis'] ? 'true' : 'false' }}, {{ $can['pimpinan'] ? 'true' : 'false' }}, {{ $can['kabid'] ? 'true' : 'false' }}, {{ $can['kepala_dinas'] ? 'true' : 'false' }}, {{ $can['upload_draft'] ? 'true' : 'false' }}, {{ $can['opd_eksternal'] ? 'true' : 'false' }}, {{ $can['tim_fpr'] ? 'true' : 'false' }})" class="inline-flex items-center space-x-1.5 px-3 py-1.5 text-xs font-medium text-gray-700 bg-white hover:bg-[#185B3C]/10 hover:text-[#185B3C] border border-gray-300 rounded-lg transition-all duration-200 hover:scale-105" title="Aksi">
+                            <button id="btn-aksi-{{ $kkpr->id }}" onclick="toggleDropdown({{ $kkpr->id }}, {{ $kkpr->proses }}, {{ $kkpr->revisi }}, {{ $can['verifikator'] ? 'true' : 'false' }}, {{ $can['analis'] ? 'true' : 'false' }}, {{ $can['pimpinan'] ? 'true' : 'false' }}, {{ $can['kabid'] ? 'true' : 'false' }}, {{ $can['kepala_dinas'] ? 'true' : 'false' }}, {{ $can['upload_draft'] ? 'true' : 'false' }}, {{ $can['opd_eksternal'] ? 'true中添加 ' : 'false' }}, {{ $can['tim_fpr'] ? 'true' : 'false' }}, {{ $kkpr->deleted ?? 0 }})" class="inline-flex items-center space-x-1.5 px-3 py-1.5 text-xs font-medium text-gray-700 bg-white hover:bg-[Mak](../10 hover:text-[#185B3C] border border-gray-300 rounded-lg transition-all duration-200 hover:scale-105াবে" title="Aksi">
                                 <i class="fas fa-cog"></i>
                                 <span>Aksi</span>
                                 <i class="fas fa-chevron-down text-xs"></i>
@@ -438,7 +448,7 @@
         alert('Fitur export akan segera tersedia');
     }
 
-    function toggleDropdown(id, status, revisi, canValidate, canSurvey, canPimpinan, canKabid, canKepalaDinas, canUploadDraft, isExternal, canTimFpr) {
+    function toggleDropdown(id, status, revisi, canValidate, canSurvey, canPimpinan, canKabid, canKepalaDinas, canUploadDraft, isExternal, canTimFpr, deleted) {
         const button = event.currentTarget;
         const chevron = button.querySelector('.fa-chevron-down');
         const modal = document.getElementById('dropdown-menu-modal');
@@ -470,8 +480,35 @@
                 Lihat Detail
             </a>`;
         
+        // Check if deleted status (pencabutan)
+        const isDeleted = parseInt(deleted) > 0;
+        const isRequestPencabutan = parseInt(deleted) == 1;
+        
+        // Button konfirmasi pencabutan jika deleted = 1
+        if (isRequestPencabutan) {
+            menuItems += `
+                <div class="border-t border-orange-200 my-1"></div>
+                <button onclick="confirmPencabutan(${id}); closeDropdownModal();" class="w-full flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-colors text-left">
+                    <i class="fas fa-check-circle w-4 mr-3"></i>
+                    Konfirmasi Pencabutan
+                </button>
+                <div class="px-4 py-2 bg-orange-50 border-l-4 border-orange-300">
+                    <p class="text-xs text-orange-700 font-semibold">Request Pencabutan</p>
+                    <p class="text-xs text-orange-600 mt-1">Menunggu konfirmasi admin</p>
+                </div>`;
+        }
+        // Jika sudah dicabut (deleted = 2)
+        else if (parseInt(deleted) == 2) {
+            menuItems += `
+                <div class="px-4 py-3 bg-gray-100 border border-gray-300 rounded-lg">
+                    <p class="text-xs font-semibold text-gray-700">
+                        <i class="fas fa-ban mr-1"></i> PERMOHONAN DICABUT
+                    </p>
+                    <p class="text-xs text-gray-600 mt-1">Tidak dapat diproses lebih lanjut</p>
+                </div>`;
+        }
         // Jika status ditolak (0), hanya tampilkan menu view-only
-        if (parseInt(status) == 0) {
+        else if (parseInt(status) == 0) {
             menuItems += `
                 <div class="px-4 py-3 bg-red-50 border border-red-200 rounded-lg">
                     <p class="text-xs font-semibold text-red-700">
@@ -696,6 +733,48 @@
         chevron.style.transition = 'transform 0.2s';
     }
 
+    // Konfirmasi Pencabutan
+    function confirmPencabutan(id) {
+        Swal.fire({
+            title: 'Konfirmasi Pencabutan?',
+            text: "Permohonan akan dicabut dan tidak dapat diproses lagi!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#f59e0b',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Ya, Konfirmasi!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch(`/admin/kkpr/${id}/confirm-pencabutan`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: 'Pencabutan berhasil dikonfirmasi',
+                            timer: 2000,
+                            showConfirmButton: false
+                        }).then(() => location.reload());
+                    } else {
+                        Swal.fire('Error!', data.message || 'Gagal mengkonfirmasi pencabutan', 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    Swal.fire('Error!', 'Terjadi kesalahan', 'error');
+                });
+            }
+        });
+    }
+
     function closeDropdownModal() {
         const modal = document.getElementById('dropdown-menu-modal');
         const allChevrons = document.querySelectorAll('[onclick^="toggleDropdown"] .fa-chevron-down');
@@ -799,6 +878,8 @@
         
         const badgeConfig = {
             0: { icon: 'fa-times-circle', color: '#dc2626', label: 'Ditolak' },
+            'pencabutan-request': { icon: 'fa-exclamation-triangle', color: '#f59e0b', label: 'Request Pencabutan' },
+            'pencabutan-confirmed': { icon: 'fa-ban', color: '#6b7280', label: 'Pencabutan Dikonfirmasi' },
             1: { icon: 'fa-address-card', color: '#db3102', label: 'Pengajuan' },
             2: { icon: 'fa-upload', color: '#dbac02', label: 'Upload Dokumen' },
             3: { icon: 'fa-check-circle', color: '#9edb02', label: 'Validasi' },
@@ -814,10 +895,69 @@
         
         let html = '<div class="relative"><div class="absolute left-6 top-0 bottom-0 w-0.5 bg-gradient-to-b from-[#185B3C] via-gray-300 to-gray-200"></div><div class="space-y-6">';
         
+        // Cek dan tampilkan riwayat pencabutan jika ada (status_id = 0)
+        const pencabutanRiwayat = riwayat.filter(r => r.status_id == 0 && (r.status.includes('Pencabutan') || r.status.includes('pencabutan')));
+        
+        // Tampilkan hanya 1 riwayat pencabutan terakhir (yang paling baru)
+        if (pencabutanRiwayat.length > 0) {
+            const latestPencabutan = pencabutanRiwayat.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))[0];
+            
+            const r = latestPencabutan;
+            const isRequest = r.status.includes('Request');
+            const badge = isRequest ? badgeConfig['pencabutan-request'] : badgeConfig['pencabutan-confirmed'];
+            const bgColor = isRequest ? 'bg-orange-50 border-orange-300' : 'bg-gray-100 border-gray-300';
+            const textColor = isRequest ? 'text-orange-900' : 'text-gray-900';
+            
+            const date = new Date(r.updated_at);
+            const formattedDate = date.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
+            const formattedTime = date.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+            
+            html += `
+                <div class="relative pl-16 group">
+                    <div class="absolute left-0 w-12 h-12 rounded-full flex items-center justify-center shadow-lg transition-transform duration-300 group-hover:scale-110 z-10" style="background-color: ${badge.color}">
+                        <i class="fa ${badge.icon} text-white text-lg"></i>
+                    </div>
+                    <div class="${bgColor} border-2 rounded-xl p-4 shadow-md transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+                        <div class="flex items-start justify-between mb-3">
+                            <div class="flex-1">
+                                <h4 class="font-bold ${textColor} text-base mb-1">${r.status}</h4>
+                                <div class="flex items-center space-x-3 text-xs text-gray-600">
+                                    <div class="flex items-center">
+                                        <i class="fa fa-calendar mr-1.5"></i>
+                                        <span>${formattedDate}</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <i class="fa fa-clock mr-1.5"></i>
+                                        <span>${formattedTime}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <span class="px-3 py-1 text-xs font-semibold rounded-full ${isRequest ? 'bg-orange-100 text-orange-800 border-2 border-orange-400' : 'bg-gray-100 text-gray-700 border-2 border-gray-400'}">
+                                <i class="fa ${badge.icon} mr-1"></i>${badge.label}
+                            </span>
+                        </div>
+                        <div class="bg-white/70 rounded-lg p-3">
+                            <p class="text-sm text-gray-700 leading-relaxed mb-2">${r.keterangan}</p>
+                            ${r.revisi_detail ? 
+                                `<div class="mt-3 p-3 ${isRequest ? 'bg-orange-100 border-2 border-orange-300' : 'bg-gray-50 border-2 border-gray-200'} rounded-lg">
+                                    <p class="text-xs font-semibold ${isRequest ? 'text-orange-900' : 'text-gray-800'} mb-1">
+                                        <i class="fa fa-info-circle mr-1"></i>${isRequest ? 'Alasan Pencabutan:' : 'Konfirmasi:'}
+                                    </p>
+                                    <p class="text-sm ${isRequest ? 'text-orange-800' : 'text-gray-700'} font-medium">${r.revisi_detail}</p>
+                                </div>` : ''
+                            }
+                        </div>
+                    </div>
+                </div>`;
+        }
+        
         // Generate all process steps from 1 to 10
         for (let statusId = 1; statusId <= 10; statusId++) {
             // Find existing riwayat for this status_id
             const existingRiwayat = riwayat.find(r => r.status_id == statusId);
+            
+            // Skip pending steps if there's pencabutan
+            const hasPencabutan = pencabutanRiwayat.length > 0;
             
             if (existingRiwayat) {
                 // Display existing riwayat
@@ -878,6 +1018,11 @@
                     </div>
                 </div>`;
             } else {
+                // Skip placeholder if there's pencabutan and status is pending
+                if (hasPencabutan && statusId > model.proses) {
+                    continue; // Skip pending steps when there's pencabutan
+                }
+                
                 // Display placeholder for missing riwayat
                 const badge = badgeConfig[statusId] || { icon: 'fa-file', color: '#6c757d', label: 'Unknown' };
                 const isCompleted = statusId < model.proses;

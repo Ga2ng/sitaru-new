@@ -65,6 +65,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'permission:User'])-
             Route::get('kkpr/{kkpr}/view-draft', [AdminKkprController::class, 'viewDraft'])->name('kkpr.view.draft');
             Route::get('kkpr/{kkpr}/cetak-berkas', [AdminKkprController::class, 'cetakBerkasKkpr'])->name('kkpr.cetak.berkas');
             Route::post('kkpr/tugaskan-tim-fpr/{id}', [AdminKkprController::class, 'tugaskanTimFpr'])->name('kkpr.tugaskan.tim.fpr');
+            Route::post('kkpr/{id}/confirm-pencabutan', [AdminKkprController::class, 'confirmPencabutan'])->name('kkpr.confirm.pencabutan');
 
             // KKPR Non Berusaha Management Routes
             Route::resource('kkprnon', AdminKkprNonController::class);
@@ -90,6 +91,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'permission:User'])-
             Route::get('kkprnon/{kkprnon}/view-draft', [AdminKkprNonController::class, 'viewDraft'])->name('kkprnon.view.draft');
             Route::delete('kkprnon/{id}/delete-file/{fieldName}', [AdminKkprNonController::class, 'deleteFile'])->name('kkprnon.delete.file');
             Route::get('kkprnon/{kkprnon}/cetak-berkas', [AdminKkprNonController::class, 'cetakBerkasUmk'])->name('kkprnon.cetak.berkas');
+            Route::post('kkprnon/{id}/confirm-pencabutan', [AdminKkprNonController::class, 'confirmPencabutan'])->name('kkprnon.confirm.pencabutan');
 
     // Pengaduan Management Routes
     Route::resource('pengaduan', AdminPengaduanController::class);

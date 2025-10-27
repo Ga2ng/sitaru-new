@@ -33,6 +33,9 @@ Route::middleware(['auth'])->group(function () {
         // View Draft Route for KKPR
         Route::get('/kkpr/{id}/view-draft', [MemberKkprController::class, 'viewDraft'])->name('kkpr.view.draft');
         
+        // Request Pencabutan Route for KKPR
+        Route::post('/kkpr/{id}/request-pencabutan', [MemberKkprController::class, 'requestPencabutan'])->name('kkpr.request.pencabutan');
+        
         // Member KKPR Non Routes
         Route::get('/kkprnon', [MemberKkprNonController::class, 'index'])->name('kkprnon.index');
         Route::get('/kkprnon/create', [MemberKkprNonController::class, 'create'])->name('kkprnon.create');
@@ -60,5 +63,8 @@ Route::middleware(['auth'])->group(function () {
         
         // View Draft Route for KKPR Non
         Route::get('/kkprnon/{id}/view-draft', [MemberKkprNonController::class, 'viewDraft'])->name('kkprnon.view.draft');
+        
+        // Request Pencabutan Route for KKPR Non
+        Route::post('/kkprnon/{id}/request-pencabutan', [MemberKkprNonController::class, 'requestPencabutan'])->name('kkprnon.request.pencabutan');
     });
 });

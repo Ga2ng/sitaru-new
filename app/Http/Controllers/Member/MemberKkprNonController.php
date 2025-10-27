@@ -24,7 +24,7 @@ class MemberKkprNonController extends Controller
         $user = Auth::user();
         $permohonan = Kkpr::where('user_id', $user->id)
             ->where('jenis', 'umk')
-            ->where('deleted', 0)
+            // ->where('deleted', 0)
             ->with(['user', 'kkpr_kbli', 'kkpr_koordinat'])
             ->orderBy('updated_at', 'desc')
             ->get();
@@ -782,6 +782,44 @@ class MemberKkprNonController extends Controller
             ]);
         } catch (\Exception $e) {
             abort(404, 'Terjadi kesalahan: ' . $e->getMessage());
+        }
+    }
+
+    public function requestPencabutan(Request $request, $id)
+    {
+        try {
+            $request->validate([
+                'alasan_pencabutan' => 'required|string'
+            ]);
+
+            $model = Kkpr::where('jenis', 'umk')->findOrFail($id);
+            $user = Auth::user();
+
+            // Authorization check
+            if($model->user_id != $user->id){
+                return response()->json(['success' => false, 'message' => 'Anda Tidak Berhak Mengakses Data Ini'], 403);
+            }
+
+            // Validasi: hanya bisa request pencabutan jika belum diverifikasi (proses < 3)
+            if($model->proses >= 3){
+                return response()->json(['success' => false, 'message' => 'Pencabutan hanya bisa dilakukan sebelum diverifikasi'], 400);
+            }
+
+            // Update deleted = 1
+            $model->update(['deleted' => 1]);
+
+            // Catat di riwayat
+            Kkpr_riwayat::create([
+                'kkpr_id' => $model->id,
+                'status_id' => 0, // status_id 0 untuk pencabutan
+                'status' => 'Request Pencabutan',
+                'keterangan' => 'Member mengajukan pencabutan permohonan',
+                'revisi_detail' => $request->alasan_pencabutan
+            ]);
+
+            return response()->json(['success' => true, 'message' => 'Request pencabutan telah dikirim dan sedang menunggu konfirmasi']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Terjadi kesalahan: ' . $e->getMessage()], 500);
         }
     }
 
