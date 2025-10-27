@@ -56,7 +56,6 @@ class MemberKkprNonController extends Controller
         $req['status_penggunaan_tanah'] = $request->get('status_penggunaan_tanah');
         $req['jenis_kegiatan'] = $request->get('jenis_kegiatan');
         $req['jenis_kegiatan_lainnya'] = $request->get('jenis_kegiatan_lainnya');
-        $req['nib'] = $request->get('nib');
         $req['alamat_kegiatan'] = $request->get('alamat_kegiatan');
         $req['NO_KEC'] = $request->get('NO_KEC');
         $req['NO_KEL'] = $request->get('NO_KEL');
@@ -70,6 +69,9 @@ class MemberKkprNonController extends Controller
         $req['luas_lantai'] = $request->get('luas_lantai');
         $req['fungsi'] = $request->get('fungsi');
         $req['no_nib'] = $request->get('no_nib');
+        $req['badan_hukum'] = $request->get('badan_hukum');
+        $req['risiko_kegiatan'] = $request->get('risiko_kegiatan');
+        $req['kategori_umk'] = $request->get('kategori_umk');
         $req['tgl_terbit'] = $request->get('tgl_terbit');
         $req['tgl_surat'] = $request->get('tgl_surat');
         

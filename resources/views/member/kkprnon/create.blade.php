@@ -64,28 +64,42 @@
         </div>
         
         <div class="space-y-4" id="verification-container">
-            <div class="flex items-start space-x-3">
-                <input type="checkbox" id="verification1" name="verification[]" value="badan_hukum" class="mt-1 form-checkbox h-4 w-4 text-[#185B3C] border-gray-300 rounded focus:ring-[#185B3C] focus:ring-2 verification-checkbox">
-                <label for="verification1" class="text-sm text-gray-700 verification-label">
-                    <span class="font-semibold">Apakah pengajuan anda untuk badan hukum?</span>
-                    <p class="text-xs text-gray-500 mt-1">Pastikan pengajuan ini ditujukan untuk badan hukum yang sah.</p>
+            <div class="space-y-2">
+                <label for="verification1" class="text-sm font-semibold text-gray-700">
+                    Status Pemohon <span class="text-red-500">*</span>
                 </label>
+                <p class="text-xs text-gray-500">Pilih status pemohon yang sesuai dengan pengajuan Anda.</p>
+                <select id="verification1" name="badan_hukum" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#185B3C] focus:border-transparent text-sm">
+                    <option value="">-- Pilih Status Pemohon --</option>
+                    <option value="badan_hukum">Badan Hukum</option>
+                    <option value="perorangan">Perorangan</option>
+                </select>
             </div>
             
-            <div class="flex items-start space-x-3">
-                <input type="checkbox" id="verification2" name="verification[]" value="risiko_rendah" class="mt-1 form-checkbox h-4 w-4 text-[#185B3C] border-gray-300 rounded focus:ring-[#185B3C] focus:ring-2 verification-checkbox">
-                <label for="verification2" class="text-sm text-gray-700 verification-label">
-                    <span class="font-semibold">Apakah tingkat risiko kegiatan usaha anda rendah?</span>
-                    <p class="text-xs text-gray-500 mt-1">Kegiatan usaha harus memiliki tingkat risiko yang rendah.</p>
+            <div class="space-y-2">
+                <label for="verification2" class="text-sm font-semibold text-gray-700">
+                    Tingkat Risiko Kegiatan Usaha <span class="text-red-500">*</span>
                 </label>
+                <p class="text-xs text-gray-500">Pilih tingkat risiko sesuai dengan karakteristik kegiatan usaha Anda.</p>
+                <select id="verification2" name="risiko_kegiatan" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#185B3C] focus:border-transparent text-sm">
+                    <option value="">-- Pilih Tingkat Risiko --</option>
+                    <option value="rendah">Rendah</option>
+                    <option value="menengah">Menengah</option>
+                    <option value="tinggi">Tinggi</option>
+                </select>
             </div>
             
-            <div class="flex items-start space-x-3">
-                <input type="checkbox" id="verification3" name="verification[]" value="kategori_umk" class="mt-1 form-checkbox h-4 w-4 text-[#185B3C] border-gray-300 rounded focus:ring-[#185B3C] focus:ring-2 verification-checkbox">
-                <label for="verification3" class="text-sm text-gray-700 verification-label">
-                    <span class="font-semibold">Apakah anda termasuk kategori usaha mikro, kecil dan menengah?</span>
-                    <p class="text-xs text-gray-500 mt-1">Usaha harus memenuhi kriteria UMK sesuai peraturan yang berlaku.</p>
+            <div class="space-y-2">
+                <label for="verification3" class="text-sm font-semibold text-gray-700">
+                    Kategori Usaha <span class="text-red-500">*</span>
                 </label>
+                <p class="text-xs text-gray-500">Pilih kategori usaha sesuai dengan klasifikasi UMK yang berlaku.</p>
+                <select id="verification3" name="kategori_umk" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#185B3C] focus:border-transparent text-sm">
+                    <option value="">-- Pilih Kategori Usaha --</option>
+                    <option value="mikro">Mikro</option>
+                    <option value="kecil">Kecil</option>
+                    <option value="menengah">Menengah</option>
+                </select>
             </div>
         </div>
         
@@ -475,22 +489,6 @@
                            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm" 
                            required>
                     @error('tgl_terbit')
-                        <div class="flex items-center space-x-2 text-red-600 text-sm mt-1">
-                            <i class="fas fa-exclamation-circle text-xs"></i>
-                            <span>{{ $message }}</span>
-                        </div>
-                    @enderror
-                </div>
-
-                <div class="space-y-2">
-                    <label for="nib" class="block text-sm font-semibold text-gray-700">
-                        <i class="fas fa-hashtag mr-2 text-orange-600"></i>
-                        NIB <span class="text-red-500">*</span>
-                    </label>
-                    <input type="text" id="nib" name="nib" value="{{ old('nib') }}" 
-                           class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm" 
-                           placeholder="NIB" required>
-                    @error('nib')
                         <div class="flex items-center space-x-2 text-red-600 text-sm mt-1">
                             <i class="fas fa-exclamation-circle text-xs"></i>
                             <span>{{ $message }}</span>
@@ -2509,19 +2507,22 @@
         });
     }
 
-    // Verifikasi checkbox validation
+    // Verifikasi select validation
     $(document).ready(function() {
-        // Check all checkboxes are checked
+        // Check all selects are filled
         function checkAllVerifications() {
-            var allChecked = $('input[name="verification[]"]:checked').length === 3;
-            $('#continueBtn').prop('disabled', !allChecked);
-            if (allChecked) {
+            var verification1 = $('#verification1').val() !== '';
+            var verification2 = $('#verification2').val() !== '';
+            var verification3 = $('#verification3').val() !== '';
+            var allFilled = verification1 && verification2 && verification3;
+            $('#continueBtn').prop('disabled', !allFilled);
+            if (allFilled) {
                 $('#verification-error').hide();
             }
         }
         
-        // Check on checkbox change
-        $('input[name="verification[]"]').on('change', function() {
+        // Check on select change
+        $('#verification1, #verification2, #verification3').on('change', function() {
             checkAllVerifications();
         });
         
@@ -2530,8 +2531,11 @@
         
         // Continue button click - show modal
         $('#continueBtn').on('click', function() {
-            var allChecked = $('input[name="verification[]"]:checked').length === 3;
-            if (allChecked) {
+            var verification1 = $('#verification1').val() !== '';
+            var verification2 = $('#verification2').val() !== '';
+            var verification3 = $('#verification3').val() !== '';
+            var allFilled = verification1 && verification2 && verification3;
+            if (allFilled) {
                 // Show modal with animation
                 $('#confirmationModal').removeClass('hidden').addClass('flex');
                 setTimeout(function() {
@@ -2558,8 +2562,7 @@
                 $('#confirmationModal').addClass('hidden').removeClass('flex');
                 
                 // Disable all verification elements
-                $('.verification-checkbox').prop('disabled', true).addClass('opacity-50 cursor-not-allowed');
-                $('.verification-label').addClass('opacity-50');
+                $('#verification1, #verification2, #verification3').prop('disabled', true).addClass('opacity-50 cursor-not-allowed');
                 $('#continueBtn').prop('disabled', true).addClass('opacity-50 cursor-not-allowed');
                 
                 // Show confirmation status

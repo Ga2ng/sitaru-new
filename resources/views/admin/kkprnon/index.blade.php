@@ -382,11 +382,11 @@
                                         'kepala_dinas' => auth()->user()->can('Kepala Dinas'),
                                         'upload_draft' => auth()->user()->can('Upload Draft'),
                                         'opd_eksternal' => auth()->user()->can('OPD Eksternal'),
-
+                                        'tim_fpr' => auth()->user()->can('Tim FPR'),
                                     ];
                                     // dd(auth()->user()->can('Kepala Dinas' ) ? 'true' : 'false');
                                 @endphp
-                            <button id="btn-aksi-{{ $kkpr->id }}" onclick="toggleDropdown({{ $kkpr->id }}, {{ $kkpr->proses }}, {{ $kkpr->revisi }}, {{ $can['verifikator'] ? 'true' : 'false' }}, {{ $can['analis'] ? 'true' : 'false' }}, {{ $can['pimpinan'] ? 'true' : 'false' }}, {{ $can['kabid'] ? 'true' : 'false' }}, {{ $can['kepala_dinas'] ? 'true' : 'false' }}, {{ $can['upload_draft'] ? 'true' : 'false' }}, {{ $can['opd_eksternal'] ? 'true' : 'false' }})" class="inline-flex items-center space-x-1.5 px-3 py-1.5 text-xs font-medium text-gray-700 bg-white hover:bg-[#185B3C]/10 hover:text-[#185B3C] border border-gray-300 rounded-lg transition-all duration-200 hover:scale-105" title="Aksi">
+                            <button id="btn-aksi-{{ $kkpr->id }}" onclick="toggleDropdown({{ $kkpr->id }}, {{ $kkpr->proses }}, {{ $kkpr->revisi }}, {{ $can['verifikator'] ? 'true' : 'false' }}, {{ $can['analis'] ? 'true' : 'false' }}, {{ $can['pimpinan'] ? 'true' : 'false' }}, {{ $can['kabid'] ? 'true' : 'false' }}, {{ $can['kepala_dinas'] ? 'true' : 'false' }}, {{ $can['upload_draft'] ? 'true' : 'false' }}, {{ $can['opd_eksternal'] ? 'true' : 'false' }}, {{ $can['tim_fpr'] ? 'true' : 'false' }}, {{ $kkpr->deleted ?? 0 }})" class="inline-flex items-center space-x-1.5 px-3 py-1.5 text-xs font-medium text-gray-700 bg-white hover:bg-[#185B3C]/10 hover:text-[#185B3C] border border-gray-300 rounded-lg transition-all duration-200 hover:scale-105" title="Aksi">
                                 <i class="fas fa-cog"></i>
                                 <span>Aksi</span>
                                 <i class="fas fa-chevron-down text-xs"></i>
@@ -448,7 +448,7 @@
         alert('Fitur export akan segera tersedia');
     }
 
-    function toggleDropdown(id, status, revisi, canValidate, canSurvey, canPimpinan, canKabid, canKepalaDinas, canUploadDraft, isExternal, deleted) {
+    function toggleDropdown(id, status, revisi, canValidate, canSurvey, canPimpinan, canKabid, canKepalaDinas, canUploadDraft, isExternal, canTimFpr, deleted) {
         const button = event.currentTarget;
         const chevron = button.querySelector('.fa-chevron-down');
         const modal = document.getElementById('dropdown-menu-modal');

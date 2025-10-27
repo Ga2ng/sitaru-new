@@ -322,26 +322,44 @@
                     <p class="text-xs text-gray-600 mt-1">Tidak dapat diproses lebih lanjut</p>
                 </div>`;
         }
-        // Edit - hanya muncul jika status = 1 (Pengajuan) atau revisi = 1 DAN tidak ada pencabutan
-        else if (status == 1 || revisi == 1) {
+        // Jika status sudah selesai (10), hanya tampilkan menu view-only
+        else if (parseInt(status) == 10) {
             menuItems += `
+                <a href="/member/kkprnon/${id}/view-draft" target="_blank" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-600 transition-colors">
+                    <i class="fas fa-file-contract w-4 mr-3"></i>
+                    Lihat Draft
+                </a>
+                <a href="/member/kkprnon/${id}/peta" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-600 transition-colors">
+                    <i class="fas fa-map w-4 mr-3"></i>
+                    Lihat Peta
+                </a>
+                <a href="/member/kkprnon/${id}/cetak-berkas" target="_blank" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
+                    <i class="fas fa-file-pdf w-4 mr-3"></i>
+                    Cetak Berkas
+                </a>`;
+        } else {
+            // Menu normal untuk status belum selesai
+            
+            // Edit - hanya muncul jika status = 1 (Pengajuan) atau revisi = 1
+            if (parseInt(status) == 1 || parseInt(revisi) == 1) {
+                menuItems += `
                 <a href="/member/kkprnon/${id}/edit" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
                     <i class="fas fa-edit w-4 mr-3"></i>
                     Edit
                 </a>`;
         }
         
-        // Cetak Berkas - hanya setelah analisa (proses >= 7)
-        if (status >= 7) {
-            menuItems += `
+            // Cetak Berkas - hanya setelah analisa (proses >= 7)
+            if (parseInt(status) >= 7) {
+                menuItems += `
                 <a href="/member/kkprnon/${id}/cetak-berkas" target="_blank" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
                     <i class="fas fa-file-pdf w-4 mr-3"></i>
                     Cetak Berkas
                 </a>`;
         }
         
-        // Lihat Peta - selalu tersedia
-        menuItems += `
+            // Lihat Peta - selalu tersedia
+            menuItems += `
             <a href="/member/kkprnon/${id}/peta" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-600 transition-colors">
                 <i class="fas fa-map w-4 mr-3"></i>
                 Lihat Peta
@@ -353,9 +371,9 @@
         //             Cetak PDF
         //         </a>`;
         
-        // Upload Draft - hanya dengan permission Upload Draft dan sudah persetujuan dokumen (status >= 9)
-        if (canUploadDraft === 'true' && parseInt(status) >= 9 && parseInt(status) < 10) {
-            menuItems += `
+            // Upload Draft - hanya dengan permission Upload Draft dan sudah persetujuan dokumen (status >= 9)
+            if (canUploadDraft === 'true' && parseInt(status) >= 9 && parseInt(status) < 10) {
+                menuItems += `
                 <button onclick="openUploadDraftModal(${id}); closeDropdownModal();" class="w-full flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 transition-colors text-left">
                     <i class="fas fa-file-upload w-4 mr-3"></i>
                     Upload Draft
@@ -371,13 +389,14 @@
                 </a>`;
         }
         
-        // Request Pencabutan - hanya untuk proses < 3 (sebelum diverifikasi)
-        if (parseInt(status) < 3) {
-            menuItems += `
+            // Request Pencabutan - hanya untuk proses < 3 (sebelum diverifikasi)
+            if (parseInt(status) < 3) {
+                menuItems += `
                 <button onclick="openPencabutanModal(${id}); closeDropdownModal();" class="w-full flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-colors text-left">
                     <i class="fas fa-times-circle w-4 mr-3"></i>
                     Request Pencabutan
                 </button>`;
+            }
         }
         
         menuItems += `
@@ -841,6 +860,14 @@
                 const formData = new FormData(this);
                 const id = formData.get('kkpr_id');
                 
+                // Disable submit button and change text
+                const submitBtn = this.querySelector('button[type="submit"]');
+                const originalText = submitBtn.innerHTML;
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin" style="margin-right: 0.5rem;"></i>Loading...';
+                }
+                
                 fetch(`/member/kkprnon/${id}/request-pencabutan`, {
                     method: 'POST',
                     body: formData,
@@ -850,6 +877,12 @@
                 })
                 .then(response => response.json())
                 .then(data => {
+                    // Re-enable submit button
+                    if (submitBtn) {
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = originalText;
+                    }
+                    
                     if (data.success || data.message) {
                         Swal.fire({
                             icon: 'success',
@@ -863,6 +896,11 @@
                     }
                 })
                 .catch(error => {
+                    // Re-enable submit button on error
+                    if (submitBtn) {
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = originalText;
+                    }
                     console.error('Error:', error);
                     Swal.fire('Error!', 'Terjadi kesalahan', 'error');
                 });

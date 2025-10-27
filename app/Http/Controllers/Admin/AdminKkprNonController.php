@@ -175,7 +175,6 @@ class AdminKkprNonController extends Controller
         $req['user_id']           = $user->id;
         $req['jenis']             = 'umk';
         $req['fungsi']            = $request->get('fungsi');
-        $req['nib']               = $request->get('nib');
         $req['alamat_kegiatan']   = $request->get('alamat_kegiatan');
         $req['NO_KEC']            = $request->get('NO_KEC');
         $req['NO_KEL']            = $request->get('NO_KEL');
@@ -190,6 +189,9 @@ class AdminKkprNonController extends Controller
         $req['tgl_surat']         = $request->get('tgl_surat');
         $req['tgl_terbit']        = $request->get('tgl_terbit');
         $req['no_nib']            = $request->get('no_nib');
+        $req['badan_hukum']       = $request->get('badan_hukum');
+        $req['risiko_kegiatan']   = $request->get('risiko_kegiatan');
+        $req['kategori_umk']      = $request->get('kategori_umk');
 
         $model = Kkpr::create($req);
 

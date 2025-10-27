@@ -810,6 +810,29 @@
                 const formData = new FormData(this);
                 const id = formData.get('kkpr_id');
                 
+                // Create manual loading overlay
+                const loadingOverlay = document.createElement('div');
+                loadingOverlay.id = 'loading-overlay';
+                loadingOverlay.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 99999; display: flex; align-items: center; justify-content: center;';
+                loadingOverlay.innerHTML = `
+                    <div style="background: white; padding: 30px; border-radius: 10px; text-align: center;">
+                        <div class="spinner-border text-primary" role="status" style="width: 50px; height: 50px;">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p style="margin-top: 20px; font-size: 16px; font-weight: 600;">Mohon Tunggu...</p>
+                        <p style="color: #666;">Sedang mengirim request pencabutan</p>
+                    </div>
+                `;
+                document.body.appendChild(loadingOverlay);
+                
+                // Disable submit button and change text
+                const submitBtn = this.querySelector('button[type="submit"]');
+                const originalText = submitBtn.innerHTML;
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin" style="margin-right: 0.5rem;"></i>Loading...';
+                }
+                
                 fetch(`/member/kkpr/${id}/request-pencabutan`, {
                     method: 'POST',
                     body: formData,
@@ -819,6 +842,12 @@
                 })
                 .then(response => response.json())
                 .then(data => {
+                    // Re-enable submit button
+                    if (submitBtn) {
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = originalText;
+                    }
+                    
                     if (data.success || data.message) {
                         Swal.fire({
                             icon: 'success',
@@ -832,6 +861,11 @@
                     }
                 })
                 .catch(error => {
+                    // Re-enable submit button on error
+                    if (submitBtn) {
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = originalText;
+                    }
                     console.error('Error:', error);
                     Swal.fire('Error!', 'Terjadi kesalahan', 'error');
                 });
