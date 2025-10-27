@@ -107,10 +107,10 @@
             <i class="fas fa-plus mr-2"></i>
             Buat Permohonan Baru
         </a>
-        <a href="{{ route('member.kkprnon.cetak.daftar') }}" target="_blank" class="inline-flex items-center px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
+        {{-- <a href="{{ route('member.kkprnon.cetak.daftar') }}" target="_blank" class="inline-flex items-center px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
             <i class="fas fa-file-pdf mr-2"></i>
             Cetak Daftar PDF
-        </a>
+        </a> --}}
     </div>
 
     <!-- Data Table -->
@@ -315,11 +315,11 @@
                 Lihat Peta
             </a>`;
         
-        menuItems += `
-                <a href="/member/kkprnon/cetak/${id}" target="_blank" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-600 transition-colors">
-                    <i class="fas fa-file-pdf w-4 mr-3"></i>
-                    Cetak PDF
-                </a>`;
+        // menuItems += `
+        //         <a href="/member/kkprnon/cetak/${id}" target="_blank" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-600 transition-colors">
+        //             <i class="fas fa-file-pdf w-4 mr-3"></i>
+        //             Cetak PDF
+        //         </a>`;
         
         // Upload Draft - hanya dengan permission Upload Draft dan sudah persetujuan dokumen (status >= 9)
         if (canUploadDraft === 'true' && parseInt(status) >= 9 && parseInt(status) < 10) {
@@ -330,11 +330,25 @@
                 </button>`;
         }
         
-        menuItems += `
+        // Lihat Draft - setelah selesai (status == 10)
+        if (parseInt(status) == 10) {
+            menuItems += `
+                <a href="/member/kkprnon/${id}/view-draft" target="_blank" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-600 transition-colors">
+                    <i class="fas fa-file-contract w-4 mr-3"></i>
+                    Lihat Draft
+                </a>`;
+        }
+        
+        // Hapus - tidak tersedia untuk status selesai
+        if (parseInt(status) < 10) {
+            menuItems += `
                 <button onclick="deleteKkpr(${id}); closeDropdownModal();" class="w-full flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors text-left">
                     <i class="fas fa-trash w-4 mr-3"></i>
                     Hapus
-                </button>
+                </button>`;
+        }
+        
+        menuItems += `
             </div>
         `;
         

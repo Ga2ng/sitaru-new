@@ -30,6 +30,9 @@ Route::middleware(['auth'])->group(function () {
         // Upload Draft Route for KKPR (member yang punya permission bisa upload)
         Route::post('/kkpr/upload-draft', [MemberKkprController::class, 'uploadDraft'])->name('kkpr.upload.draft');
         
+        // View Draft Route for KKPR
+        Route::get('/kkpr/{id}/view-draft', [MemberKkprController::class, 'viewDraft'])->name('kkpr.view.draft');
+        
         // Member KKPR Non Routes
         Route::get('/kkprnon', [MemberKkprNonController::class, 'index'])->name('kkprnon.index');
         Route::get('/kkprnon/create', [MemberKkprNonController::class, 'create'])->name('kkprnon.create');
@@ -54,5 +57,8 @@ Route::middleware(['auth'])->group(function () {
 
         // Upload Draft Route for KKPR Non (member yang punya permission bisa upload)
         Route::post('/kkprnon/upload-draft', [MemberKkprNonController::class, 'uploadDraft'])->name('kkprnon.upload.draft');
+        
+        // View Draft Route for KKPR Non
+        Route::get('/kkprnon/{id}/view-draft', [MemberKkprNonController::class, 'viewDraft'])->name('kkprnon.view.draft');
     });
 });

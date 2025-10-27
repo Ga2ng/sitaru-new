@@ -107,10 +107,10 @@
             <i class="fas fa-plus mr-2"></i>
             Buat Permohonan Baru
         </a>
-        <a href="{{ route('member.kkpr.cetak.daftar') }}" target="_blank" class="inline-flex items-center px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
+        {{-- <a href="{{ route('member.kkpr.cetak.daftar') }}" target="_blank" class="inline-flex items-center px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
             <i class="fas fa-file-pdf mr-2"></i>
             Cetak Daftar PDF
-        </a>
+        </a> --}}
     </div>
 
     <!-- Data Table -->
@@ -293,6 +293,10 @@
         // Jika status sudah selesai (10), hanya tampilkan menu view-only
         if (parseInt(status) == 10) {
             menuItems += `
+                <a href="/member/kkpr/${id}/view-draft" target="_blank" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-600 transition-colors">
+                    <i class="fas fa-file-contract w-4 mr-3"></i>
+                    Lihat Draft
+                </a>
                 <a href="/member/kkpr/${id}/peta" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-600 transition-colors">
                     <i class="fas fa-map w-4 mr-3"></i>
                     Lihat Peta
@@ -330,11 +334,11 @@
                 </a>`;
             
             // Cetak PDF - menu tambahan
-            menuItems += `
-                <a href="/member/kkpr/cetak/${id}" target="_blank" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-600 transition-colors">
-                    <i class="fas fa-file-pdf w-4 mr-3"></i>
-                    Cetak PDF
-                </a>`;
+            // menuItems += `
+            //     <a href="/member/kkpr/cetak/${id}" target="_blank" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-600 transition-colors">
+            //         <i class="fas fa-file-pdf w-4 mr-3"></i>
+            //         Cetak PDF
+            //     </a>`;
             
             // Upload Draft - hanya dengan permission Upload Draft dan sudah persetujuan dokumen (status >= 9)
             if (canUploadDraft === 'true' && parseInt(status) >= 9 && parseInt(status) < 10) {
