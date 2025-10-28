@@ -1164,6 +1164,21 @@ class AdminKkprNonController extends Controller
                 return !empty(trim($item));
             });
 
+            // Process pemeriksa_teknis as array
+            $pemeriksa_teknis = $request->get('pemeriksa_teknis', []);
+            $pemeriksa_teknis = array_filter($pemeriksa_teknis, function($item) {
+                return !empty($item);
+            });
+
+            // Convert first pemeriksa ID to name if it's numeric
+            if (!empty($pemeriksa_teknis) && is_numeric($pemeriksa_teknis[0])) {
+                $firstPemeriksaId = $pemeriksa_teknis[0];
+                $firstPemeriksa = \App\Models\User::find($firstPemeriksaId);
+                if ($firstPemeriksa) {
+                    $pemeriksa_teknis[0] = $firstPemeriksa->name;
+                }
+            }
+
             // Update data analisa
             $model->update([
                 'status_rencana' => $request->status_rencana,
@@ -1174,11 +1189,12 @@ class AdminKkprNonController extends Controller
                 'kdh' => $request->kdh,
                 'ktb' => $request->ktb,
                 'lokasi_rencana' => $request->lokasi_rencana,
+                'luas_disetujui' => $request->luas_disetujui,
                 'gsb' => $request->gsb,
                 'tinggi_bangunan' => $request->tinggi_bangunan,
                 'pertimbangan' => json_encode($pertimbangan),
                 'ketentuan_lain' => json_encode($ketentuan_lain),
-                'pemeriksa_teknis' => $request->pemeriksa_teknis,
+                'pemeriksa_teknis' => json_encode($pemeriksa_teknis),
                 'status_analisa' => 'analisa',
                 'no_nib' => $request->no_nib,
                 'tgl_terbit' => $request->tgl_terbit,
@@ -1378,6 +1394,21 @@ class AdminKkprNonController extends Controller
                 return !empty(trim($item));
             });
 
+            // Process pemeriksa_teknis as array
+            $pemeriksa_teknis = $request->get('pemeriksa_teknis', []);
+            $pemeriksa_teknis = array_filter($pemeriksa_teknis, function($item) {
+                return !empty($item);
+            });
+
+            // Convert first pemeriksa ID to name if it's numeric
+            if (!empty($pemeriksa_teknis) && is_numeric($pemeriksa_teknis[0])) {
+                $firstPemeriksaId = $pemeriksa_teknis[0];
+                $firstPemeriksa = \App\Models\User::find($firstPemeriksaId);
+                if ($firstPemeriksa) {
+                    $pemeriksa_teknis[0] = $firstPemeriksa->name;
+                }
+            }
+
             // Update data analisa
             $model->update([
                 'status_rencana' => $request->status_rencana,
@@ -1388,11 +1419,12 @@ class AdminKkprNonController extends Controller
                 'kdh' => $request->kdh,
                 'ktb' => $request->ktb,
                 'lokasi_rencana' => $request->lokasi_rencana,
+                'luas_disetujui' => $request->luas_disetujui,
                 'gsb' => $request->gsb,
                 'tinggi_bangunan' => $request->tinggi_bangunan,
                 'pertimbangan' => json_encode($pertimbangan),
                 'ketentuan_lain' => json_encode($ketentuan_lain),
-                'pemeriksa_teknis' => $request->pemeriksa_teknis,
+                'pemeriksa_teknis' => json_encode($pemeriksa_teknis),
                 'no_nib' => $request->no_nib,
                 'tgl_terbit' => $request->tgl_terbit,
                 'alamat_kegiatan' => $request->alamat_kegiatan,

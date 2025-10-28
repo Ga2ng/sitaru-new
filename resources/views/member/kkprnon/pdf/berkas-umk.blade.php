@@ -1,16 +1,116 @@
 <!DOCTYPE html>
-<html lang="id">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Berkas UMK - {{ $model->id }}</title>
-    <style>
-        body {
-            font-family: 'DejaVu Sans', sans-serif;
+    <meta charset="utf-8">
+    <title>BERKAS UMK</title>
+    <style type="text/css">
+        body { 
+            width:100% !important;
+            margin:0 !important;
+            padding:0 !important;
+            line-height: 1.4; 
+            font-family: Arial, "Helvetica Neue", Helvetica, sans-serif; 
+            color: #000; 
+            background: none; 
+            font-size: 11pt; 
+        }
+
+        table, th, td { 
+            vertical-align: top; 
+            border-collapse: collapse;
+        }
+
+        table{
+            width:100%;
+        }
+
+        .page_break { 
+            page-break-before: always; 
+        }
+
+        .header-table {
+            border: 1px solid black;
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .header-table td {
+            border: 1px solid black;
+            padding: 5px;
+        }
+
+        .info-table {
+            width: 100%;
+            margin-bottom: 5px;
+            font-size: 9pt;
+        }
+
+        .info-table td {
+            padding: 1px 0;
+        }
+
+        .label-col {
+            width: 4%;
+        }
+
+        .field-col {
+            width: 45%;
+        }
+
+        .colon-col {
+            width: 2%;
+        }
+
+        .value-col {
+            width: 49%;
+        }
+
+        .map-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .map-caption {
             font-size: 10pt;
-            line-height: 1.4;
-            margin: 0;
-            padding: 20px;
+            margin-top: 10px;
+        }
+
+        .signature-table {
+            width: 100%;
+            margin-top: 30px;
+        }
+
+        .signature-left {
+            width: 60%;
+        }
+
+        .signature-right {
+            width: 40%;
+            text-align: right;
+        }
+
+        .signature-block {
+            margin-bottom: 20px;
+        }
+
+        .signature-name {
+            font-weight: bold;
+            text-decoration: underline;
+        }
+
+        .dotted-line {
+            border-bottom: 1px dotted #000;
+            min-height: 20px;
+        }
+
+        .bold-underline {
+            font-weight: bold;
+            text-decoration: underline;
+        }
+
+        .strikethrough {
+            text-decoration: line-through;
         }
 
         .center {
@@ -21,10 +121,22 @@
             text-align: justify;
         }
 
+        .right {
+            text-align: right;
+        }
+
+        .left {
+            text-align: left;
+        }
+
+        .logo {
+            width: 120px;
+            height: auto;
+        }
+
         .title {
-            font-size: 16pt;
             font-weight: bold;
-            margin: 20px 0;
+            font-size: 12pt;
         }
 
         .subtitle {
@@ -59,99 +171,6 @@
         .footer-info {
             margin-top: 30px;
             font-size: 10pt;
-        }
-
-        .header-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 10px 0;
-        }
-
-        .header-table td {
-            border: 1px solid black;
-            padding: 5px;
-        }
-
-        .info-table {
-            width: 100%;
-            margin-bottom: 5px;
-            font-size: 9pt;
-        }
-
-        .info-table td {
-            padding: 1px 0;
-        }
-
-        .label-col {
-            width: 4%;
-        }
-
-        .field-col {
-            width: 25%;
-        }
-
-        .colon-col {
-            width: 2%;
-        }
-
-        .value-col {
-            width: 69%;
-        }
-
-        .signature-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 30px;
-        }
-
-        .signature-left {
-            width: 50%;
-            vertical-align: top;
-            padding-right: 20px;
-        }
-
-        .signature-right {
-            width: 50%;
-            vertical-align: top;
-            padding-left: 20px;
-        }
-
-        .signature-block {
-            text-align: center;
-        }
-
-        .signature-name {
-            font-weight: bold;
-            font-size: 12pt;
-        }
-
-        .dotted-line {
-            border-bottom: 1px dotted #333;
-            padding-bottom: 5px;
-            margin-bottom: 10px;
-        }
-
-        .bold-underline {
-            text-decoration: underline;
-            font-weight: bold;
-        }
-
-        .strikethrough {
-            text-decoration: line-through;
-        }
-
-        .page_break {
-            page-break-before: always;
-        }
-
-        .map-container {
-            margin: 10px 0;
-        }
-
-        .map-caption {
-            text-align: center;
-            font-size: 9pt;
-            margin-top: 5px;
         }
     </style>
 </head>
@@ -220,16 +239,16 @@
         </tr>
     </table>
 
-    <div style="margin: 10px 0; font-size: 10pt;">
+    <div style="margin: 20px 0;">
         <strong>Yth. Sdr. {{ strtoupper($model->user->name) }}<br>Di Banyuwangi</strong>
     </div>
 
-    <div class="justify" style="margin: 10px 0; font-size: 10pt;">
+    <div class="justify" style="margin: 20px 0;">
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Dengan hormat disampaikan hasil penilaian kesesuaian rencana penggunaan lahan an. <strong>{{ strtoupper($model->user->name) }}</strong> terhadap peraturan rencana tata ruang dengan rincian sebagai berikut:
     </div>
 
     <!-- Section 1: Persetujuan Kegiatan Pemanfaatan Ruang Bagi UMK -->
-    <div class="section-title" style="font-size: 10pt; margin: 8px 0;">1. Persetujuan Kegiatan Pemanfaatan Ruang Bagi UMK dengan rincian informasi sebagai berikut:</div>
+    <div class="section-title">1. Persetujuan Kegiatan Pemanfaatan Ruang Bagi UMK dengan rincian informasi sebagai berikut:</div>
     
     <table class="info-table">
         <tr>
@@ -290,16 +309,20 @@
 
     <!-- Section 2: Dinyatakan terhadap rencana tata ruang -->
     <div class="section-title" style="page-break-inside: avoid;">2. Dinyatakan terhadap rencana tata ruang 
-        @if($model->status_rencana == 'Sesuai Bersyarat')
-            <span class="bold-underline">Sesuai Bersyarat</span> / <span class="strikethrough">Sesuai Sebagian</span> / <span class="strikethrough">Tidak Sesuai</span>
-        @elseif($model->status_rencana == 'Sesuai Sebagian')
-            <span class="strikethrough">Sesuai Bersyarat</span> / <span class="bold-underline">Sesuai Sebagian</span> / <span class="strikethrough">Tidak Sesuai</span>
-        @elseif($model->status_rencana == 'Tidak Sesuai')
-            <span class="strikethrough">Sesuai Bersyarat</span> / <span class="strikethrough">Sesuai Sebagian</span> / <span class="bold-underline">Tidak Sesuai</span>
+        @if($model->status_rencana == 'disetujui_seluruhnya')
+            <span class="bold-underline">Disetujui Seluruhnya</span>
+        @elseif($model->status_rencana == 'disetujui_sebagian')
+            <span class="bold-underline">Disetujui Sebagian</span>
         @else
-            <span class="bold-underline">Sesuai Bersyarat</span> / <span class="strikethrough">Sesuai Sebagian</span> / <span class="strikethrough">Tidak Sesuai</span>
+            <span class="bold-underline">Disetujui Seluruhnya</span>
         @endif
         dengan ketentuan:</div>
+    
+    @if($model->status_rencana == 'disetujui_sebagian' && $model->luas_disetujui)
+    <div style="margin-bottom: 10px; font-size: 12px;">
+        <strong>Luas Lahan yang Disetujui:</strong> {{ $model->luas_disetujui }} m²
+    </div>
+    @endif
     
     <table style="width: 100%; page-break-inside: avoid;">
         <tr>
@@ -397,11 +420,11 @@
     <!-- Section 3: Dengan mempertimbangkan -->
     <div class="section-title">3. Dengan mempertimbangkan:</div>
     
-    <div class="consideration-list" style="font-size: 9pt;">
-        <div style="margin: 5px 0;">
+    <div class="consideration-list">
+        <div style="margin: 10px 0;">
             <strong>a. Peraturan Bupati Banyuwangi Nomor 55 Tahun 2024 tentang Rencana Detail Tata Ruang Wilayah Perencanaan Genteng Tahun 2024-2044</strong>
         </div>
-        <div style="margin: 5px 0;">
+        <div style="margin: 10px 0;">
             <strong>b. Surat Keputusan Menteri Agraria Dan Tata Ruang/ Kepala Badan Pertanahan Nasional Nomor 1589/SK-Hk.02.01/XII/2021 Tentang Penetapan Peta Lahan Sawah Yang Dilindungi Pada Kabupaten/Kota</strong>
         </div>
         @php
@@ -433,9 +456,9 @@
         @endphp
 
         @if(!empty($pertimbangan))
-        <div style="margin: 5px 0;">
+        <div style="margin: 10px 0;">
             <strong>c. Ketentuan penggunaan lahan untuk kegiatan Kode KBLI {{ $model->kkpr_kbli && $model->kkpr_kbli->count() > 0 ? $model->kkpr_kbli->first()->kode_kbli : '-' }} pada {{ $model->rencana_manfaat ?? '-' }}:</strong>
-            <ol style="margin: 5px 0; padding-left: 20px; font-size: 8pt;">
+            <ol style="margin: 10px 0; padding-left: 20px;">
                 @foreach($pertimbangan as $index => $item)
                     <li>{{ $item }}</li>
                 @endforeach
@@ -444,9 +467,9 @@
         @endif
 
         @if(!empty($ketentuan_lain))
-        <div style="margin: 5px 0;">
+        <div style="margin: 10px 0;">
             <strong>d. Keterangan lain yang dianggap perlu:</strong>
-            <ol style="margin: 5px 0; padding-left: 20px; font-size: 8pt;">
+            <ol style="margin: 10px 0; padding-left: 20px;">
                 @foreach($ketentuan_lain as $index => $item)
                     <li>{{ $item }}</li>
                 @endforeach
@@ -456,23 +479,23 @@
     </div>
 
     <!-- Signature Section -->
-    <table class="signature-table" style="font-size: 9pt;">
+    <table class="signature-table">
         <tr>
             <td class="signature-left">
                 <div class="signature-block">
                     <div><strong>Mengetahui,</strong></div>
-                    <div style="text-align: center; margin: 10px 0;">
+                    <div style="text-align: center; margin: 20px 0;">
                         <strong>Plt. KEPALA DINAS PEKERJAAN UMUM CIPTA KARYA PERUMAHAN DAN PERMUKIMAN KABUPATEN BANYUWANGI</strong>
                     </div>
-                    <div style="margin: 15px 0;">
-                        <div class="dotted-line" style="margin-bottom: 5px;">
+                    <div style="margin: 30px 0;">
+                        <div class="dotted-line" style="margin-bottom: 10px;">
                             <strong>Reni Carica Ratriyani</strong><br>
                             NIP. 19900110 201502 2 002
                         </div>
                         <div><strong>Pemeriksa Teknis</strong></div>
                     </div>
-                    <div style="margin: 15px 0;">
-                        <div class="dotted-line" style="margin-bottom: 5px;">
+                    <div style="margin: 30px 0;">
+                        <div class="dotted-line" style="margin-bottom: 10px;">
                             <strong>Ir. BAYU HADIYANTO, ST, M.Si</strong><br>
                             NIP. 19751004 200312 1 004
                         </div>
@@ -482,7 +505,7 @@
             </td>
             <td class="signature-right">
                 <div class="signature-block">
-                    <div class="dotted-line" style="margin-bottom: 5px;">
+                    <div class="dotted-line" style="margin-bottom: 10px;">
                         <div class="signature-name">SUYANTO WASPO TONDO WICAKSONO</div>
                         <div>Pembina Utama Muda</div>
                         <div>NIP. 19700421 198903 1 001</div>

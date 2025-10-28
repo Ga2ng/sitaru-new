@@ -309,16 +309,20 @@
 
     <!-- Section 2: Dinyatakan terhadap rencana tata ruang -->
     <div class="section-title" style="page-break-inside: avoid;">2. Dinyatakan terhadap rencana tata ruang 
-        @if($model->status_rencana == 'Sesuai Bersyarat')
-            <span class="bold-underline">Sesuai Bersyarat</span> / <span class="strikethrough">Sesuai Sebagian</span> / <span class="strikethrough">Tidak Sesuai</span>
-        @elseif($model->status_rencana == 'Sesuai Sebagian')
-            <span class="strikethrough">Sesuai Bersyarat</span> / <span class="bold-underline">Sesuai Sebagian</span> / <span class="strikethrough">Tidak Sesuai</span>
-        @elseif($model->status_rencana == 'Tidak Sesuai')
-            <span class="strikethrough">Sesuai Bersyarat</span> / <span class="strikethrough">Sesuai Sebagian</span> / <span class="bold-underline">Tidak Sesuai</span>
+        @if($model->status_rencana == 'disetujui_seluruhnya')
+            <span class="bold-underline">Disetujui Seluruhnya</span>
+        @elseif($model->status_rencana == 'disetujui_sebagian')
+            <span class="bold-underline">Disetujui Sebagian</span>
         @else
-            <span class="bold-underline">Sesuai Bersyarat</span> / <span class="strikethrough">Sesuai Sebagian</span> / <span class="strikethrough">Tidak Sesuai</span>
+            <span class="bold-underline">Disetujui Seluruhnya</span>
         @endif
         dengan ketentuan:</div>
+    
+    @if($model->status_rencana == 'disetujui_sebagian' && $model->luas_disetujui)
+    <div style="margin-bottom: 10px; font-size: 12px;">
+        <strong>Luas Lahan yang Disetujui:</strong> {{ $model->luas_disetujui }} m²
+    </div>
+    @endif
     
     <table style="width: 100%; page-break-inside: avoid;">
         <tr>

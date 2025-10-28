@@ -250,21 +250,6 @@
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="space-y-2">
-                    <label for="status_rencana" class="block text-sm font-semibold text-gray-700">
-                        <i class="fas fa-check-circle mr-2 text-purple-600"></i>
-                        Status Rencana Tata Ruang <span class="text-red-500">*</span>
-                    </label>
-                    <select id="status_rencana" name="status_rencana" 
-                            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm" 
-                            required>
-                        <option value="">Pilih Status</option>
-                        <option value="Sesuai Bersyarat" {{ old('status_rencana', $model->status_rencana ?? '') == 'Sesuai Bersyarat' ? 'selected' : '' }}>Sesuai Bersyarat</option>
-                        <option value="Sesuai Sebagian" {{ old('status_rencana', $model->status_rencana ?? '') == 'Sesuai Sebagian' ? 'selected' : '' }}>Sesuai Sebagian</option>
-                        <option value="Tidak Sesuai" {{ old('status_rencana', $model->status_rencana ?? '') == 'Tidak Sesuai' ? 'selected' : '' }}>Tidak Sesuai</option>
-                    </select>
-                </div>
-
-                <div class="space-y-2">
                     <label for="status_lsd" class="block text-sm font-semibold text-gray-700">
                         <i class="fas fa-seedling mr-2 text-purple-600"></i>
                         Status Lahan Sawah Dilindungi <span class="text-red-500">*</span>
@@ -278,14 +263,51 @@
                     </select>
                 </div>
 
-                <div class="md:col-span-2 space-y-2">
+                <div class="space-y-2">
                     <label for="rencana_manfaat" class="block text-sm font-semibold text-gray-700">
                         <i class="fas fa-clipboard-list mr-2 text-purple-600"></i>
                         Rencana Pemanfaatan Ruang <span class="text-red-500">*</span>
                     </label>
-                    <textarea id="rencana_manfaat" name="rencana_manfaat" rows="3" 
-                              class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm resize-none" 
-                              required>{{ old('rencana_manfaat', $model->rencana_manfaat) }}</textarea>
+                    <input type="text" id="rencana_manfaat" name="rencana_manfaat" 
+                           value="{{ old('rencana_manfaat', $model->rencana_manfaat ?? '') }}" 
+                           class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm" 
+                           placeholder="Masukkan rencana pemanfaatan ruang..." required>
+                </div>
+
+                <div class="space-y-2">
+                    <label for="lokasi_rencana" class="block text-sm font-semibold text-gray-700">
+                        <i class="fas fa-map-marker-alt mr-2 text-purple-600"></i>
+                        Lokasi Rencana Tata Ruang <span class="text-red-500">*</span>
+                    </label>
+                    <input type="text" id="lokasi_rencana" name="lokasi_rencana" 
+                           value="{{ old('lokasi_rencana', $model->lokasi_rencana ?? '') }}" 
+                           class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm" 
+                           placeholder="Masukkan lokasi rencana tata ruang..." required>
+                </div>
+
+                <div class="space-y-2">
+                    <label for="status_rencana" class="block text-sm font-semibold text-gray-700">
+                        <i class="fas fa-check-circle mr-2 text-purple-600"></i>
+                        Status Rencana Tata Ruang <span class="text-red-500">*</span>
+                    </label>
+                    <select id="status_rencana" name="status_rencana" 
+                            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm" 
+                            required onchange="toggleLuasField()">
+                        <option value="">Pilih Status</option>
+                        <option value="disetujui_seluruhnya" {{ old('status_rencana', $model->status_rencana ?? '') == 'disetujui_seluruhnya' ? 'selected' : '' }}>Disetujui Seluruhnya</option>
+                        <option value="disetujui_sebagian" {{ old('status_rencana', $model->status_rencana ?? '') == 'disetujui_sebagian' ? 'selected' : '' }}>Disetujui Sebagian</option>
+                    </select>
+                </div>
+
+                <div class="space-y-2" id="luas_disetujui_field" style="display: none;">
+                    <label for="luas_disetujui" class="block text-sm font-semibold text-gray-700">
+                        <i class="fas fa-ruler mr-2 text-purple-600"></i>
+                        Luas Lahan yang Disetujui (m²) <span class="text-red-500">*</span>
+                    </label>
+                    <input type="number" id="luas_disetujui" name="luas_disetujui" 
+                           value="{{ old('luas_disetujui', $model->luas_disetujui ?? '') }}" 
+                           class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm" 
+                           step="0.01" placeholder="Masukkan luas lahan yang disetujui...">
                 </div>
 
                 <div class="space-y-2">
@@ -330,17 +352,6 @@
                            value="{{ old('ktb', $model->ktb ?? '') }}" 
                            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm" 
                            step="0.01" required>
-                </div>
-
-                <div class="space-y-2">
-                    <label for="lokasi_rencana" class="block text-sm font-semibold text-gray-700">
-                        <i class="fas fa-map-marker-alt mr-2 text-purple-600"></i>
-                        Lokasi Rencana Tata Ruang <span class="text-red-500">*</span>
-                    </label>
-                    <input type="text" id="lokasi_rencana" name="lokasi_rencana" 
-                           value="{{ old('lokasi_rencana', $model->lokasi_rencana ?? '') }}" 
-                           class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm" 
-                           placeholder="Masukkan lokasi rencana tata ruang..." required>
                 </div>
 
                 <div class="space-y-2">
@@ -509,20 +520,31 @@
                 </div>
 
                 <div class="space-y-2">
-                    <label for="pemeriksa_teknis" class="block text-sm font-semibold text-gray-700">
+                    <label class="block text-sm font-semibold text-gray-700">
                         <i class="fas fa-user-check mr-2 text-orange-600"></i>
-                        Pemeriksa Teknis <span class="text-red-500">*</span>
+                        Pemeriksa Teknis
                     </label>
-                    <select id="pemeriksa_teknis" name="pemeriksa_teknis" 
-                            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm" 
-                            required>
-                        <option value="">Pilih Pemeriksa Teknis</option>
-                        @foreach($analis as $anal)
-                            <option value="{{ $anal->id }}" {{ old('pemeriksa_teknis', $model->pemeriksa_teknis ?? '') == $anal->id ? 'selected' : '' }}>
-                                {{ $anal->name }}
-                            </option>
-                        @endforeach
-                    </select>
+                    <div id="pemeriksa-container">
+                        <div class="pemeriksa-item flex items-center space-x-2 mb-2">
+                            <select name="pemeriksa_teknis[]" 
+                                    class="flex-1 px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm">
+                                <option value="">Pilih Pemeriksa Teknis</option>
+                                @foreach($analis as $anal)
+                                    <option value="{{ $anal->id }}">
+                                        {{ $anal->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <button type="button" onclick="removePemeriksa(this)" 
+                                    class="px-3 py-3 bg-red-500 text-white rounded-xl hover:bg-red-600 transition-colors">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <button type="button" onclick="addPemeriksa()" 
+                            class="w-full px-4 py-2 bg-orange-500 text-white rounded-xl hover:bg-orange-600 transition-colors">
+                        <i class="fas fa-plus mr-2"></i>Tambah Pemeriksa Teknis
+                    </button>
                 </div>
             </div>
         </div>
@@ -577,7 +599,75 @@
         @if(isset($model) && $model->f_geojson != null)
             loadExistingKML();
         @endif
+        
+    // Initialize new features
+    toggleLuasField(); // Set initial state for luas field
     });
+
+    // Toggle Luas Field berdasarkan Status Rencana
+    function toggleLuasField() {
+        const statusSelect = document.getElementById('status_rencana');
+        const luasField = document.getElementById('luas_disetujui_field');
+        const luasInput = document.getElementById('luas_disetujui');
+        
+        if (statusSelect.value === 'disetujui_sebagian') {
+            luasField.style.display = 'block';
+            luasInput.required = true;
+        } else {
+            luasField.style.display = 'none';
+            luasInput.required = false;
+            luasInput.value = '';
+        }
+    }
+
+    // Dynamic Pemeriksa Teknis
+    function addPemeriksa() {
+        const container = document.getElementById('pemeriksa-container');
+        const newItem = document.createElement('div');
+        newItem.className = 'pemeriksa-item flex items-center space-x-2 mb-2';
+        
+        // Check if this is the first additional pemeriksa (second overall)
+        const isSecondPemeriksa = container.children.length === 1;
+        
+        if (isSecondPemeriksa) {
+            // Second pemeriksa and beyond: use text input
+            newItem.innerHTML = `
+                <input type="text" name="pemeriksa_teknis[]" 
+                       class="flex-1 px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm" 
+                       placeholder="Masukkan nama pemeriksa teknis...">
+                <button type="button" onclick="removePemeriksa(this)" 
+                        class="px-3 py-3 bg-red-500 text-white rounded-xl hover:bg-red-600 transition-colors">
+                    <i class="fas fa-trash"></i>
+                </button>
+            `;
+        } else {
+            // First pemeriksa: use dropdown
+            const selectOptions = `@foreach($analis as $anal)
+                <option value="{{ $anal->id }}">{{ $anal->name }}</option>
+            @endforeach`;
+            
+            newItem.innerHTML = `
+                <select name="pemeriksa_teknis[]" 
+                        class="flex-1 px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm">
+                    <option value="">Pilih Pemeriksa Teknis</option>
+                    ${selectOptions}
+                </select>
+                <button type="button" onclick="removePemeriksa(this)" 
+                        class="px-3 py-3 bg-red-500 text-white rounded-xl hover:bg-red-600 transition-colors">
+                    <i class="fas fa-trash"></i>
+                </button>
+            `;
+        }
+        
+        container.appendChild(newItem);
+    }
+
+    function removePemeriksa(button) {
+        const container = document.getElementById('pemeriksa-container');
+        if (container.children.length > 1) {
+            button.parentElement.remove();
+        }
+    }
 
     // Initialize Leaflet Map
     function initMap() {
@@ -1101,6 +1191,3 @@
     }
 </script>
 @endsection
-
-
-
