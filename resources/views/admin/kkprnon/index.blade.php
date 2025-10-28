@@ -522,32 +522,25 @@
             menuItems += `
                 <a href="/admin/kkprnon/${id}/view-draft" target="_blank" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-600 transition-colors">
                     <i class="fas fa-file-contract w-4 mr-3"></i>
-                    Lihat Draft
-                </a>
-                <a href="/admin/kkprnon/${id}/peta" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-600 transition-colors">
-                    <i class="fas fa-map w-4 mr-3"></i>
-                    Lihat Peta
-                </a>
-                <a href="/admin/kkprnon/${id}/cetak-berkas" target="_blank" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
-                    <i class="fas fa-file-pdf w-4 mr-3"></i>
-                    Cetak Berkas
-                </a>`;
-        }
-        // Jika user eksternal, hanya tampilkan menu view-only
-        else if (isExternal == true) {
-            menuItems += `
-                <a href="/admin/kkprnon/${id}/peta" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-600 transition-colors">
-                    <i class="fas fa-map w-4 mr-3"></i>
-                    Lihat Peta
+                    Lihat Dokumen Final
                 </a>`;
             
-            if (parseInt(status) >= 7) {
+            // Hanya tampilkan menu tambahan jika bukan OPD Eksternal
+            if (isExternal != true) {
                 menuItems += `
+                    <a href="/admin/kkprnon/${id}/peta" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-600 transition-colors">
+                        <i class="fas fa-map w-4 mr-3"></i>
+                        Lihat Peta
+                    </a>
                     <a href="/admin/kkprnon/${id}/cetak-berkas" target="_blank" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
                         <i class="fas fa-file-pdf w-4 mr-3"></i>
                         Cetak Berkas
                     </a>`;
             }
+        }
+        // Jika user eksternal, hanya tampilkan menu view-only
+        else if (isExternal == true) {
+            // Untuk OPD Eksternal, hanya tampilkan Lihat Detail saja (Lihat Dokumen Final sudah ditangani di kondisi status == 10)
         } else {
             // Menu normal untuk user non-eksternal - URUT BERDASARKAN PROSES
             

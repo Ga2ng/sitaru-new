@@ -29,13 +29,23 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
+        // Check if user has OPD Eksternal permission
+        $user = $request->user();
+        $isOpdEksternal = $user && $user->can('OPD Eksternal');
+
         // Return JSON response for AJAX requests (from animation)
         if ($request->ajax()) {
+            $redirectUrl = $isOpdEksternal ? route('admin.kkpr.index', absolute: false) : route('dashboard', absolute: false);
             return response()->json([
                 'success' => true,
                 'message' => 'Login berhasil!',
-                'redirect' => route('dashboard', absolute: false)
+                'redirect' => $redirectUrl
             ]);
+        }
+
+        // Redirect OPD Eksternal users to KKPR index, others to dashboard
+        if ($isOpdEksternal) {
+            return redirect()->intended(route('admin.kkpr.index', absolute: false) . '?success=true');
         }
 
         return redirect()->intended(route('dashboard', absolute: false) . '?success=true');

@@ -385,7 +385,7 @@
                                         'tim_fpr' => auth()->user()->can('Tim FPR'),
                                     ];
                                 @endphp
-                            <button id="btn-aksi-{{ $kkpr->id }}" onclick="toggleDropdown({{ $kkpr->id }}, {{ $kkpr->proses }}, {{ $kkpr->revisi }}, {{ $can['verifikator'] ? 'true' : 'false' }}, {{ $can['analis'] ? 'true' : 'false' }}, {{ $can['pimpinan'] ? 'true' : 'false' }}, {{ $can['kabid'] ? 'true' : 'false' }}, {{ $can['kepala_dinas'] ? 'true' : 'false' }}, {{ $can['upload_draft'] ? 'true' : 'false' }}, {{ $can['opd_eksternal'] ? 'true中添加 ' : 'false' }}, {{ $can['tim_fpr'] ? 'true' : 'false' }}, {{ $kkpr->deleted ?? 0 }})" class="inline-flex items-center space-x-1.5 px-3 py-1.5 text-xs font-medium text-gray-700 bg-white hover:bg-[Mak](../10 hover:text-[#185B3C] border border-gray-300 rounded-lg transition-all duration-200 hover:scale-105াবে" title="Aksi">
+                            <button id="btn-aksi-{{ $kkpr->id }}" onclick="toggleDropdown({{ $kkpr->id }}, {{ $kkpr->proses }}, {{ $kkpr->revisi }}, {{ $can['verifikator'] ? 'true' : 'false' }}, {{ $can['analis'] ? 'true' : 'false' }}, {{ $can['pimpinan'] ? 'true' : 'false' }}, {{ $can['kabid'] ? 'true' : 'false' }}, {{ $can['kepala_dinas'] ? 'true' : 'false' }}, {{ $can['upload_draft'] ? 'true' : 'false' }}, {{ $can['opd_eksternal'] ? 'true' : 'false' }}, {{ $can['tim_fpr'] ? 'true' : 'false' }}, {{ $kkpr->deleted ?? 0 }})" class="inline-flex items-center space-x-1.5 px-3 py-1.5 text-xs font-medium text-gray-700 bg-white hover:bg-[#185B3C]/10 hover:text-[#185B3C] border border-gray-300 rounded-lg transition-all duration-200 hover:scale-105" title="Aksi">
                                 <i class="fas fa-cog"></i>
                                 <span>Aksi</span>
                                 <i class="fas fa-chevron-down text-xs"></i>
@@ -522,32 +522,25 @@
             menuItems += `
                 <a href="/admin/kkpr/${id}/view-draft" target="_blank" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-600 transition-colors">
                     <i class="fas fa-file-contract w-4 mr-3"></i>
-                    Lihat Draft
-                </a>
-                <a href="/admin/kkpr/${id}/peta" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-600 transition-colors">
-                    <i class="fas fa-map w-4 mr-3"></i>
-                    Lihat Peta
-                </a>
-                <a href="/admin/kkpr/${id}/cetak-berkas" target="_blank" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
-                    <i class="fas fa-file-pdf w-4 mr-3"></i>
-                    Cetak Berkas
-                </a>`;
-        }
-        // Jika user eksternal, hanya tampilkan menu view-only
-        else if (isExternal == true) {
-            menuItems += `
-                <a href="/admin/kkpr/${id}/peta" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-600 transition-colors">
-                    <i class="fas fa-map w-4 mr-3"></i>
-                    Lihat Peta
+                    Lihat Dokumen Final
                 </a>`;
             
-            if (parseInt(status) >= 7) {
+            // Hanya tampilkan menu tambahan jika bukan OPD Eksternal
+            if (isExternal != true) {
                 menuItems += `
+                    <a href="/admin/kkpr/${id}/peta" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-600 transition-colors">
+                        <i class="fas fa-map w-4 mr-3"></i>
+                        Lihat Peta
+                    </a>
                     <a href="/admin/kkpr/${id}/cetak-berkas" target="_blank" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
                         <i class="fas fa-file-pdf w-4 mr-3"></i>
                         Cetak Berkas
                     </a>`;
             }
+        }
+        // Jika user eksternal, hanya tampilkan menu view-only
+        else if (isExternal == true) {
+            // Untuk OPD Eksternal, hanya tampilkan Lihat Detail saja (Lihat Dokumen Final sudah ditangani di kondisi status == 10)
         } else {
             // Menu normal untuk user non-eksternal - URUT BERDASARKAN PROSES
             
