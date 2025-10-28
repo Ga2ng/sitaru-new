@@ -16,6 +16,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class MemberKkprNonController extends Controller
 {
@@ -497,7 +498,7 @@ class MemberKkprNonController extends Controller
             $riwayat->update([
                 'status' => 'Pengajuan',
                 'keterangan' => 'Data permohonan telah diperbarui dan diajukan kembali oleh Pemohon',
-                'updated_at' => now()
+                'updated_at' => Carbon::now('Asia/Jakarta')
             ]);
         }
 
@@ -558,7 +559,7 @@ class MemberKkprNonController extends Controller
                 'defaultFont' => 'DejaVu Sans'
             ]);
 
-        return $pdf->stream('daftar-permohonan-kkpr-non-' . date('Y-m-d') . '.pdf');
+        return $pdf->stream('daftar-permohonan-kkpr-non-' . Carbon::now('Asia/Jakarta')->format('Y-m-d') . '.pdf');
     }
 
     public function getRiwayatData($id)

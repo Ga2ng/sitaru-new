@@ -26,6 +26,7 @@ use Illuminate\Support\Facades\Storage;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 
 class AdminKkprController extends Controller
 {
@@ -659,8 +660,8 @@ class AdminKkprController extends Controller
             $model->update([
                 'proses' => 3,
                 'penerima' => $myuser->name,
-                'tgl_terima' => date("Y-m-d"),
-                'jam_terima' => date("h:i:s"),
+                'tgl_terima' => Carbon::now('Asia/Jakarta')->format('Y-m-d'),
+                'jam_terima' => Carbon::now('Asia/Jakarta')->format('H:i:s'),
                 'revisi' => 0,
             ]);
 
@@ -721,7 +722,7 @@ class AdminKkprController extends Controller
                 ->first();
             
             $autoIncrement = $lastKkpr ? (intval(explode(' / ', $lastKkpr->no_sk)[1]) + 1) : 1;
-            $currentYear = date('Y');
+            $currentYear = Carbon::now('Asia/Jakarta')->format('Y');
             $generatedNoSk = "645 / {$autoIncrement} / 429.115 / {$currentYear}";
             
             $model->no_sk = $generatedNoSk;

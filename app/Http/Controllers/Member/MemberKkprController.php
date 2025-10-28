@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 
 class MemberKkprController extends Controller
 {
@@ -490,7 +491,7 @@ class MemberKkprController extends Controller
             $riwayat->update([
                 'status' => 'Pengajuan',
                 'keterangan' => 'Data permohonan telah diperbarui dan diajukan kembali oleh Pemohon',
-                'updated_at' => now()
+                'updated_at' => Carbon::now('Asia/Jakarta')
             ]);
         }
 
@@ -601,7 +602,7 @@ class MemberKkprController extends Controller
                 'defaultFont' => 'DejaVu Sans'
             ]);
 
-        return $pdf->stream('daftar-permohonan-umk-' . date('Y-m-d') . '.pdf');
+        return $pdf->stream('daftar-permohonan-umk-' . Carbon::now('Asia/Jakarta')->format('Y-m-d') . '.pdf');
     }
 
 

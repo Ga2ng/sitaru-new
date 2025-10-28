@@ -511,10 +511,10 @@
         </tr>
     </table>
 
-    <div class="footer-info">
+    {{-- <div class="footer-info">
         <div>Diterbitkan Tanggal: {{ date('d F Y') }}</div>
         <div style="margin-top: 20px;">Dicetak Tanggal: {{ date('d F Y') }}</div>
-    </div>
+    </div> --}}
 
 
 </body>
