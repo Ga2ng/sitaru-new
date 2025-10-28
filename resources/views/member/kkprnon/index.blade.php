@@ -795,47 +795,6 @@
         document.body.style.overflow = 'auto';
     }
 
-    // Delete KKPR
-    function deleteKkpr(id) {
-        Swal.fire({
-            title: 'Hapus Permohonan?',
-            text: "Data akan dihapus permanen!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Ya, Hapus!',
-            cancelButtonText: 'Batal'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                fetch(`/member/kkpr/${id}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === 'success') {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Berhasil!',
-                            text: 'Data berhasil dihapus',
-                            timer: 2000,
-                            showConfirmButton: false
-                        }).then(() => location.reload());
-                    } else {
-                        Swal.fire('Error!', data.message || 'Gagal menghapus data', 'error');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    Swal.fire('Error!', 'Terjadi kesalahan', 'error');
-                });
-            }
-        });
-    }
 
     // Open Pencabutan Modal
     function openPencabutanModal(id) {

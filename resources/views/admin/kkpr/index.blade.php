@@ -658,17 +658,7 @@
                     </a>`;
             }
             
-            // SEPARATOR untuk aksi berbahaya
-            if (parseInt(status) < 10 && parseInt(status) != 0) {
-                menuItems += `<div class="border-t border-gray-200 my-1"></div>`;
-                
-                // Hapus - hanya jika belum selesai dan tidak ditolak
-                menuItems += `
-                    <button onclick="deleteKkpr(${id}); closeDropdownModal();" class="w-full flex items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors text-left">
-                        <i class="fas fa-trash w-4 mr-3"></i>
-                        Hapus
-                    </button>`;
-            }
+            // Tidak ada aksi tambahan untuk status normal
         }
         
         menuItems += `
@@ -1164,29 +1154,6 @@
         console.log('Modal closed');
     }
 
-    function deleteKkpr(id) {
-        if (confirm('Apakah Anda yakin ingin menghapus permohonan ini?')) {
-            fetch(`/admin/kkpr/${id}`, {
-                method: 'DELETE',
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                    'Content-Type': 'application/json',
-                },
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    location.reload();
-                } else {
-                    alert('Gagal menghapus data');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Terjadi kesalahan');
-            });
-        }
-    }
 
     document.addEventListener('DOMContentLoaded', function() {
         console.log('DOM Content Loaded');
