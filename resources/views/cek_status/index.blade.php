@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Cek Status KKPR - SITARU - SISTEM INFORMASI TATA RUANG</title>
+        <title>Cek Status Surat - SITARU - SISTEM INFORMASI TATA RUANG</title>
         <link rel="icon" type="image/png" href="{{ asset('images/logo_bwi.png') }}">
     
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -15,7 +15,7 @@
     <style>
         .hero-bg { 
             background: linear-gradient(135deg, rgba(21, 93, 79, 0.8) 0%, rgba(0, 0, 0, 0.6) 50%, rgba(218, 175, 73, 0.3) 100%), 
-                        url('/images/slider.jpeg') center/cover no-repeat;
+                        url('{{ asset("images/slider.jpeg") }}') center/cover no-repeat;
         }
         .gradient-bg { background: #F7F8F9; }
         .card-shadow { box-shadow: 0 8px 32px rgba(21, 93, 79, 0.12); }
@@ -112,13 +112,13 @@
                         <div class="w-16 h-1 bg-gradient-to-r from-accent to-primary mx-auto mb-4"></div>
                         <h1 class="text-4xl md:text-5xl font-bold text-white mb-4 font-heading">
                             Cek Status <span class="text-[#DAAF49] relative">
-                                KKPR
+                                Surat
                                 <div class="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-accent to-transparent"></div>
                             </span>
                         </h1>
                     </div>
                     <p class="text-xl text-gray-100 mb-8 max-w-2xl mx-auto font-body leading-relaxed">
-                        Masukkan <span class="text-[#DAAF49] font-semibold">Nomor KKPR</span> untuk melihat status dan progress pengajuan Anda
+                        Masukkan <span class="text-[#DAAF49] font-semibold">Nomor NIB</span> untuk melihat status dan progress pengajuan Anda
                     </p>
                 </div>
 
@@ -130,20 +130,20 @@
                             <div class="w-16 h-16 bg-gradient-to-br from-[#155D4F] to-[#0F3D26] rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
                                 <i class="fa fa-search text-white text-2xl"></i>
                             </div>
-                            <h2 class="text-2xl font-bold text-[#155D4F] font-heading">Cari Status KKPR</h2>
-                            <p class="text-gray-600 mt-2">Masukkan nomor KKPR yang ingin Anda cek</p>
+                            <h2 class="text-2xl font-bold text-[#155D4F] font-heading">Cari Status Surat</h2>
+                            <p class="text-gray-600 mt-2">Masukkan nomor NIB yang ingin Anda cek</p>
                         </div>
 
                         <div class="space-y-4">
                             <div>
-                                <label for="no_kkpr" class="block text-sm font-semibold text-gray-700 mb-2">
+                                <label for="no_nib" class="block text-sm font-semibold text-gray-700 mb-2">
                                     <i class="fa fa-hashtag mr-2 text-[#155D4F]"></i>
-                                    Nomor KKPR <span class="text-red-500">*</span>
+                                    Nomor NIB <span class="text-red-500">*</span>
                                 </label>
-                                <input type="text" id="no_kkpr" name="no_kkpr" value="{{ old('no_kkpr') }}" 
+                                <input type="text" id="no_nib" name="no_nib" value="{{ old('no_nib') }}" 
                                        class="w-full px-6 py-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#155D4F] focus:border-transparent transition-all duration-200 text-lg font-medium" 
-                                       placeholder="Masukkan nomor KKPR" required>
-                                @error('no_kkpr')
+                                       placeholder="Masukkan nomor NIB" required>
+                                @error('no_nib')
                                     <div class="flex items-center space-x-2 text-red-600 text-sm mt-2">
                                         <i class="fa fa-exclamation-circle text-xs"></i>
                                         <span>{{ $message }}</span>
@@ -171,6 +171,116 @@
                         </div>
                     </form>
                 </div>
+
+                @if(isset($models) && $models->count() > 1)
+                    <!-- Multiple Results -->
+                    <div class="bg-white/95 backdrop-blur-sm rounded-2xl p-8 shadow-2xl border border-white/20 mt-8">
+                        <div class="text-center mb-6">
+                            <div class="w-16 h-16 bg-gradient-to-br from-[#155D4F] to-[#0F3D26] rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                                <i class="fa fa-list text-white text-2xl"></i>
+                            </div>
+                            <h2 class="text-2xl font-bold text-[#155D4F] font-heading">Daftar Surat</h2>
+                            <p class="text-gray-600 mt-2">Ditemukan {{ $models->count() }} surat dengan NIB: <span class="font-mono font-bold text-[#155D4F]">{{ $no_nib }}</span></p>
+                        </div>
+
+                        <div class="space-y-4">
+                            @foreach($models as $index => $model)
+                                @php
+                                    $statusConfig = [
+                                        0 => ['label' => 'Ditolak', 'color' => 'red', 'icon' => 'fa-times-circle'],
+                                        1 => ['label' => 'Pengajuan', 'color' => 'blue', 'icon' => 'fa-file-alt'],
+                                        2 => ['label' => 'Upload Dokumen', 'color' => 'yellow', 'icon' => 'fa-upload'],
+                                        3 => ['label' => 'Validasi', 'color' => 'orange', 'icon' => 'fa-check-circle'],
+                                        4 => ['label' => 'Bayar', 'color' => 'purple', 'icon' => 'fa-money-bill'],
+                                        5 => ['label' => 'Validasi Bayar', 'color' => 'indigo', 'icon' => 'fa-receipt'],
+                                        6 => ['label' => 'Survey', 'color' => 'pink', 'icon' => 'fa-map-marked-alt'],
+                                        7 => ['label' => 'Analisa', 'color' => 'cyan', 'icon' => 'fa-file-signature'],
+                                        8 => ['label' => 'Persetujuan', 'color' => 'teal', 'icon' => 'fa-check-double'],
+                                        9 => ['label' => 'TTE', 'color' => 'emerald', 'icon' => 'fa-signature'],
+                                        10 => ['label' => 'Selesai', 'color' => 'green', 'icon' => 'fa-check-circle'],
+                                    ];
+                                    $status = $statusConfig[$model->proses] ?? ['label' => 'Unknown', 'color' => 'gray', 'icon' => 'fa-question'];
+                                    
+                                    // Format jenis untuk display
+                                    $jenisDisplay = $model->jenis == 'non_umk' ? 'KKPR' : ucwords(str_replace('_', ' ', $model->jenis));
+                                @endphp
+
+                                <div class="feature-card bg-white p-6 rounded-xl card-shadow">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center space-x-4">
+                                            <div class="w-16 h-16 bg-gradient-to-br from-[#155D4F] to-[#0F3D26] rounded-xl flex items-center justify-center shadow-lg">
+                                                <i class="fas fa-file-alt text-white text-xl"></i>
+                                            </div>
+                                            <div>
+                                                <h3 class="text-xl font-bold text-[#155D4F] font-heading">{{ $model->no_kkpr ?? 'N/A' }}</h3>
+                                                <p class="text-gray-600 font-body">{{ $model->user->name ?? 'N/A' }}</p>
+                                                <div class="flex items-center space-x-4 text-sm text-gray-500">
+                                                    <span><i class="fa fa-calendar mr-1"></i>{{ $model->created_at->format('d M Y H:i') }}</span>
+                                                    <span><i class="fa fa-tag mr-1"></i>{{ $jenisDisplay }}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="flex items-center space-x-4">
+                                            <div class="text-right">
+                                                @if($model->deleted == 1)
+                                                    <span class="inline-flex items-center px-3 py-1 text-sm font-semibold rounded-full bg-orange-100 text-orange-800 border-2 border-orange-300">
+                                                        <i class="fas fa-times-circle mr-1"></i>
+                                                        Pencabutan
+                                                    </span>
+                                                @elseif($model->deleted == 2)
+                                                    <span class="inline-flex items-center px-3 py-1 text-sm font-semibold rounded-full bg-gray-100 text-gray-800 border-2 border-gray-300">
+                                                        <i class="fas fa-ban mr-1"></i>
+                                                        Dicabut
+                                                    </span>
+                                                @elseif($model->proses == 0)
+                                                    <span class="inline-flex items-center px-3 py-1 text-sm font-semibold rounded-full bg-red-100 text-red-800 border-2 border-red-400">
+                                                        <i class="fas fa-times-circle mr-1"></i>
+                                                        Ditolak
+                                                    </span>
+                                                @elseif($model->revisi == 1)
+                                                    <span class="inline-flex items-center px-3 py-1 text-sm font-semibold rounded-full bg-yellow-100 text-yellow-800 border-2 border-yellow-300">
+                                                        <i class="fas fa-exclamation-triangle mr-1"></i>
+                                                        Revisi
+                                                    </span>
+                                                @else
+                                                    <span class="inline-flex items-center px-3 py-1 text-sm font-semibold rounded-full bg-{{ $status['color'] }}-100 text-{{ $status['color'] }}-800 border border-{{ $status['color'] }}-300">
+                                                        <i class="fas {{ $status['icon'] }} mr-1"></i>
+                                                        {{ $status['label'] }}
+                                                    </span>
+                                                @endif
+                                            </div>
+                                            
+                                            <a href="{{ route('cek-status.show', $model->id) }}" class="btn-primary text-white px-6 py-3 rounded-lg font-semibold shadow-xl relative overflow-hidden">
+                                                <span class="relative z-10 flex items-center">
+                                                    <i class="fa fa-eye mr-2"></i>
+                                                    Lihat Detail
+                                                </span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mt-4 pt-4 border-t border-gray-200">
+                                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                                            <div>
+                                                <span class="text-gray-500 font-medium">Fungsi:</span>
+                                                <p class="text-gray-900">{{ $model->fungsi ?? 'N/A' }}</p>
+                                            </div>
+                                            <div>
+                                                <span class="text-gray-500 font-medium">Jenis Kegiatan:</span>
+                                                <p class="text-gray-900">{{ $model->jenis_kegiatan ?? 'N/A' }}</p>
+                                            </div>
+                                            <div>
+                                                <span class="text-gray-500 font-medium">Lokasi:</span>
+                                                <p class="text-gray-900">{{ Str::limit($model->alamat_kegiatan ?? $model->alamat_tanah, 50) }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
                 <br>    
 
                 <!-- Info Cards -->

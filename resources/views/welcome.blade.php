@@ -173,9 +173,9 @@
                     <div class="flex items-center">
                         <div class="flex items-center space-x-3">
                             <div class="w-10 h-10 bg-white rounded-lg shadow-md flex items-center justify-center overflow-hidden">
-                                <img src="{{ asset('images/maskot.png') }}" 
+                                <img src="{{ asset('images/logo_bwi.png') }}" 
                                      alt="Logo SITARU" 
-                                     class="w-8 h-8 object-contain">
+                                     class="w-6 h-8 object-contain">
                             </div>
                             <div class="flex flex-col">
                                 <h1 class="text-2xl font-bold text-primary font-heading">SITARU</h1>
@@ -238,7 +238,7 @@
                         <a href="{{ route('cek-status.index') }}" class="group relative bg-gradient-to-r from-[#DAAF49] to-[#d4a030] text-[#155D4F] px-10 py-4 rounded-xl font-bold text-lg shadow-2xl border-2 border-[#DAAF49] transform hover:scale-105 transition-all duration-300 overflow-hidden">
                             <span class="relative z-10 flex items-center justify-center">
                                 <i class="fas fa-search mr-2 group-hover:rotate-90 transition-transform duration-300"></i>
-                                Cek Status KKPR
+                                Cek Status Surat
                             </span>
                             <div class="absolute inset-0 bg-white/20 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
                         </a>
@@ -267,9 +267,8 @@
                         <div class="w-16 h-1 bg-gradient-to-r from-accent to-primary mx-auto"></div>
                     </div>
                     <p class="text-lg text-gray-600 max-w-2xl mx-auto font-body">Akses berbagai layanan digital dengan mudah dan aman melalui platform terintegrasi</p>
-                                </div>
-
-                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                </div>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                     <div class="feature-card bg-white p-8 rounded-xl card-shadow">
                         <div class="w-16 h-16 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center mb-6 relative">
                             <div class="absolute inset-0 bg-gradient-to-br from-accent/20 to-transparent rounded-lg"></div>
@@ -312,21 +311,6 @@
                         <p class="text-gray-600 mb-4 font-body">Visualisasi peta tata ruang wilayah untuk perencanaan dan pengembangan kawasan yang terintegrasi.</p>
                         <a href="{{ url('/peta') }}" class="text-primary font-medium hover:text-accent transition-colors relative group">
                             Lihat Peta 
-                            <span class="inline-block transform group-hover:translate-x-1 transition-transform">→</span>
-                        </a>
-                    </div>
-                    
-                    <div class="feature-card bg-white p-8 rounded-xl card-shadow">
-                        <div class="w-16 h-16 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center mb-6 relative">
-                            <div class="absolute inset-0 bg-gradient-to-br from-accent/20 to-transparent rounded-lg"></div>
-                            <svg class="w-8 h-8 text-[#DAAF49] relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                            </svg>
-                        </div>
-                        <h3 class="text-xl font-semibold text-primary mb-4 font-heading">Akses Cepat</h3>
-                        <p class="text-gray-600 mb-4 font-body">Proses yang cepat dan efisien untuk semua layanan dengan antarmuka yang user-friendly.</p>
-                        <a href="#" class="text-primary font-medium hover:text-accent transition-colors relative group">
-                            Coba Sekarang 
                             <span class="inline-block transform group-hover:translate-x-1 transition-transform">→</span>
                         </a>
                     </div>
@@ -743,6 +727,7 @@
                      </div>
                      <p class="text-lg text-gray-600 font-body">Ada pertanyaan? Tim support kami siap membantu Anda</p>
                  </div>
+                 <br>
 
                  <!-- Main Layout -->
                  <div class="grid lg:grid-cols-3 gap-8">

@@ -15,6 +15,7 @@ Route::get('/', [App\Http\Controllers\WelcomeController::class, 'index']);
 Route::prefix('cek-status')->name('cek-status.')->group(function () {
     Route::get('/', [App\Http\Controllers\CekStatusController::class, 'index'])->name('index');
     Route::post('/search', [App\Http\Controllers\CekStatusController::class, 'search'])->name('search');
+    Route::get('/{id}', [App\Http\Controllers\CekStatusController::class, 'show'])->name('show');
 });
 
 Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
