@@ -555,7 +555,7 @@ class AdminKkprNonController extends Controller
                 'NO_KEL', 'luas_dimohon', 'luas_tanah', 'status_lahan', 
                 'status_tanah', 'penggunaan_sekarang', 'jumlah_lantai', 
                 'tinggi_bangunan', 'tgl_terbit', 'tgl_surat', 'no_nib', 
-                'tgl_kkpr', 'no_kkpr'
+                'tgl_kkpr', 'no_kkpr', 'badan_hukum', 'risiko_kegiatan', 'kategori_umk'
             ]);
 
             $kkprData['user_id'] = $user->id;
@@ -1187,6 +1187,9 @@ class AdminKkprNonController extends Controller
                 'atas_nama' => $request->atas_nama,
                 'no_sk' => $request->no_sk,
                 'tanggal_sk' => $request->tanggal_sk,
+                'badan_hukum' => $request->badan_hukum,
+                'risiko_kegiatan' => $request->risiko_kegiatan,
+                'kategori_umk' => $request->kategori_umk,
             ]);
 
             // Update KBLI jika ada
@@ -1397,6 +1400,9 @@ class AdminKkprNonController extends Controller
                 'atas_nama' => $request->atas_nama,
                 'no_sk' => $request->no_sk,
                 'tanggal_sk' => $request->tanggal_sk,
+                'badan_hukum' => $request->badan_hukum,
+                'risiko_kegiatan' => $request->risiko_kegiatan,
+                'kategori_umk' => $request->kategori_umk,
             ]);
 
             // Update KBLI jika ada

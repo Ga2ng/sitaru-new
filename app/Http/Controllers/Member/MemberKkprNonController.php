@@ -295,7 +295,7 @@ class MemberKkprNonController extends Controller
             return redirect()->route('member.kkprnon.index')->withErrors('Anda Tidak Berhak Mengakses Halaman Ini');
         }
 
-        $req = $request->only('alamat_tanah', 'kabupaten_id', 'kecamatan_id', 'kelurahan_id', 'luas', 'jns_sertifikat', 'thn_sertifikat', 'no_sertifikat', 'an_sertifikat', 'luas_sertifikat', 'penggunaan_awal', 'penggunaan_baru', 'longitude', 'lattitude', 'kepimilikan', 'rt', 'rw');
+        $req = $request->only('alamat_tanah', 'kabupaten_id', 'kecamatan_id', 'kelurahan_id', 'luas', 'jns_sertifikat', 'thn_sertifikat', 'no_sertifikat', 'an_sertifikat', 'luas_sertifikat', 'penggunaan_awal', 'penggunaan_baru', 'longitude', 'lattitude', 'kepimilikan', 'rt', 'rw', 'badan_hukum', 'risiko_kegiatan', 'kategori_umk');
         
         $req['user_id'] = $user->id;
         $req['jenis'] = 'umk';

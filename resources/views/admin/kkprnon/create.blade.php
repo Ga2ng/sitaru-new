@@ -175,6 +175,11 @@
     <form method="POST" action="{{ route('admin.kkprnon.store') }}" enctype="multipart/form-data" class="space-y-6" id="kkprForm" style="display: none;">
         @csrf
         
+        <!-- Hidden fields untuk verification -->
+        <input type="hidden" id="hidden_badan_hukum" name="badan_hukum" value="">
+        <input type="hidden" id="hidden_risiko_kegiatan" name="risiko_kegiatan" value="">
+        <input type="hidden" id="hidden_kategori_umk" name="kategori_umk" value="">
+        
         <!-- Informasi Pemohon -->
         <div class="bg-white/80 backdrop-blur-sm rounded-xl p-6 shadow-lg border border-white/20">
             <div class="flex items-center space-x-3 mb-6">
@@ -2633,6 +2638,11 @@
             $('#modalContent').removeClass('scale-100 opacity-100').addClass('scale-95 opacity-0');
             setTimeout(function() {
                 $('#confirmationModal').addClass('hidden').removeClass('flex');
+                
+                // Copy verification values to hidden fields
+                $('#hidden_badan_hukum').val($('#verification1').val());
+                $('#hidden_risiko_kegiatan').val($('#verification2').val());
+                $('#hidden_kategori_umk').val($('#verification3').val());
                 
                 // Disable all verification elements
                 $('#verification1, #verification2, #verification3').prop('disabled', true).addClass('opacity-50 cursor-not-allowed');

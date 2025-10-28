@@ -49,6 +49,84 @@
         @csrf
         @method('PUT')
         
+        <!-- Verifikasi Persetujuan UMK -->
+        <div class="bg-white/80 backdrop-blur-sm rounded-xl p-6 shadow-lg border border-white/20">
+            <div class="flex items-center space-x-3 mb-6">
+                <div class="w-8 h-8 bg-gradient-to-br from-[#185B3C] to-[#0F3D26] rounded-lg flex items-center justify-center">
+                    <i class="fas fa-check-circle text-white text-sm"></i>
+                </div>
+                <h3 class="text-lg font-bold text-gray-900">VERIFIKASI PERSETUJUAN UMK</h3>
+            </div>
+            
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                <div class="flex items-start space-x-3">
+                    <i class="fas fa-info-circle text-blue-600 mt-1"></i>
+                    <div>
+                        <h4 class="font-semibold text-blue-800 mb-2">Informasi Verifikasi</h4>
+                        <p class="text-sm text-blue-700">Anda dapat mengubah pilihan verifikasi UMK sesuai dengan kebutuhan pengajuan.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="space-y-4">
+                <div class="space-y-2">
+                    <label for="badan_hukum" class="text-sm font-semibold text-gray-700">
+                        Status Pemohon <span class="text-red-500">*</span>
+                    </label>
+                    <p class="text-xs text-gray-500">Pilih status pemohon yang sesuai dengan pengajuan Anda.</p>
+                    <select id="badan_hukum" name="badan_hukum" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#185B3C] focus:border-transparent text-sm">
+                        <option value="">-- Pilih Status Pemohon --</option>
+                        <option value="badan_hukum" {{ old('badan_hukum', $model->badan_hukum) == 'badan_hukum' ? 'selected' : '' }}>Badan Hukum</option>
+                        <option value="perorangan" {{ old('badan_hukum', $model->badan_hukum) == 'perorangan' ? 'selected' : '' }}>Perorangan</option>
+                    </select>
+                    @error('badan_hukum')
+                        <div class="flex items-center space-x-2 text-red-600 text-sm mt-1">
+                            <i class="fas fa-exclamation-circle text-xs"></i>
+                            <span>{{ $message }}</span>
+                        </div>
+                    @enderror
+                </div>
+                
+                <div class="space-y-2">
+                    <label for="risiko_kegiatan" class="text-sm font-semibold text-gray-700">
+                        Tingkat Risiko Kegiatan Usaha <span class="text-red-500">*</span>
+                    </label>
+                    <p class="text-xs text-gray-500">Pilih tingkat risiko sesuai dengan karakteristik kegiatan usaha Anda.</p>
+                    <select id="risiko_kegiatan" name="risiko_kegiatan" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#185B3C] focus:border-transparent text-sm">
+                        <option value="">-- Pilih Tingkat Risiko --</option>
+                        <option value="rendah" {{ old('risiko_kegiatan', $model->risiko_kegiatan) == 'rendah' ? 'selected' : '' }}>Rendah</option>
+                        <option value="menengah" {{ old('risiko_kegiatan', $model->risiko_kegiatan) == 'menengah' ? 'selected' : '' }}>Menengah</option>
+                        <option value="tinggi" {{ old('risiko_kegiatan', $model->risiko_kegiatan) == 'tinggi' ? 'selected' : '' }}>Tinggi</option>
+                    </select>
+                    @error('risiko_kegiatan')
+                        <div class="flex items-center space-x-2 text-red-600 text-sm mt-1">
+                            <i class="fas fa-exclamation-circle text-xs"></i>
+                            <span>{{ $message }}</span>
+                        </div>
+                    @enderror
+                </div>
+                
+                <div class="space-y-2">
+                    <label for="kategori_umk" class="text-sm font-semibold text-gray-700">
+                        Kategori Usaha <span class="text-red-500">*</span>
+                    </label>
+                    <p class="text-xs text-gray-500">Pilih kategori usaha sesuai dengan klasifikasi UMK yang berlaku.</p>
+                    <select id="kategori_umk" name="kategori_umk" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#185B3C] focus:border-transparent text-sm">
+                        <option value="">-- Pilih Kategori Usaha --</option>
+                        <option value="mikro" {{ old('kategori_umk', $model->kategori_umk) == 'mikro' ? 'selected' : '' }}>Mikro</option>
+                        <option value="kecil" {{ old('kategori_umk', $model->kategori_umk) == 'kecil' ? 'selected' : '' }}>Kecil</option>
+                        <option value="menengah" {{ old('kategori_umk', $model->kategori_umk) == 'menengah' ? 'selected' : '' }}>Menengah</option>
+                    </select>
+                    @error('kategori_umk')
+                        <div class="flex items-center space-x-2 text-red-600 text-sm mt-1">
+                            <i class="fas fa-exclamation-circle text-xs"></i>
+                            <span>{{ $message }}</span>
+                        </div>
+                    @enderror
+                </div>
+            </div>
+        </div>
+        
         <!-- Informasi Pemohon -->
         <div class="bg-white/80 backdrop-blur-sm rounded-xl p-6 shadow-lg border border-white/20">
             <div class="flex items-center space-x-3 mb-6">
