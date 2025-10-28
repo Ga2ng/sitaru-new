@@ -23,6 +23,14 @@ Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'inde
 // Peta Route
 Route::get('/peta', [PetaController::class, 'index'])->name('peta.index');
 
+// API Peta (public) - gabungan geojson KKPR & UMK
+Route::get('/api/map/combined-geojson', [\App\Http\Controllers\Api\MapController::class, 'combined'])->name('api.map.combined');
+
+// API Peta - Summary dan Refresh Data Map
+Route::post('/api/map/refresh-data', [\App\Http\Controllers\Api\MapController::class, 'refreshDataMap'])->name('api.map.refresh');
+Route::get('/api/map/summary-kkpr', [\App\Http\Controllers\Api\MapController::class, 'summaryKkpr'])->name('api.map.summary.kkpr');
+Route::get('/api/map/summary-umk', [\App\Http\Controllers\Api\MapController::class, 'summaryUmk'])->name('api.map.summary.umk');
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

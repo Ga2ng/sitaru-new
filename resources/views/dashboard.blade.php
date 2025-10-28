@@ -447,6 +447,446 @@
             </div>
         </div>
     </div>
+
+    <!-- Peta Persebaran KKPR & UMK (Mini) -->
+    <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-semibold text-gray-900">Peta Persebaran KKPR & UMK</h3>
+            <div class="flex items-center space-x-3">
+                <div class="text-sm text-gray-500">Sumber: File GeoJSON ter-summary</div>
+                <button id="refreshDataMapBtn" class="bg-[#185B3C] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-[#0F3D26] transition-colors shadow-sm flex items-center space-x-2">
+                    <i class="fas fa-sync-alt" id="refreshIcon"></i>
+                    <span>Refresh Data Map</span>
+                </button>
+            </div>
+        </div>
+        <div class="relative">
+            <div id="dashboard-map" style="width: 100%; height: 55vh; border-radius: 12px; overflow: hidden; background: #f9fafb; position: relative; z-index: 1;"></div>
+            <div id="dashboard-layers-control" class="absolute top-3 right-3 bg-white/95 backdrop-blur-sm p-3 rounded-lg shadow border border-gray-200 min-w-[220px] z-[1000]">
+                <div class="flex items-center justify-between mb-2">
+                    <div class="font-semibold text-gray-900 text-sm">Layer Control</div>
+                    <div class="flex gap-1">
+                        <button id="dashFitToData" class="text-xs px-2 py-1 border rounded text-gray-600 hover:bg-gray-50" title="Fit to Data">🎯</button>
+                        <button id="dashResetView" class="text-xs px-2 py-1 border rounded text-gray-600 hover:bg-gray-50" title="Reset to Indonesia">🇮🇩</button>
+                        <button id="dashResetOpacity" class="text-xs px-2 py-1 border rounded text-gray-600 hover:bg-gray-50">Reset</button>
+                    </div>
+                </div>
+                <div class="space-y-3">
+                    <div>
+                        <label class="inline-flex items-center gap-2 text-sm font-medium text-gray-800">
+                            <input id="dashKkprCheck" type="checkbox" class="form-check-input"> KKPR
+                        </label>
+                        <div class="mt-2">
+                            <label class="text-xs text-gray-600">Opacity: <span id="dashKkprOpacityLbl">100%</span></label>
+                            <input id="dashKkprOpacity" type="range" min="0" max="100" value="100" class="w-full">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="inline-flex items-center gap-2 text-sm font-medium text-gray-800">
+                            <input id="dashUmkCheck" type="checkbox" class="form-check-input"> UMK
+                        </label>
+                        <div class="mt-2">
+                            <label class="text-xs text-gray-600">Opacity: <span id="dashUmkOpacityLbl">100%</span></label>
+                            <input id="dashUmkOpacity" type="range" min="0" max="100" value="100" class="w-full">
+                        </div>
+                    </div>
+                </div>
+                <hr class="my-3">
+                <div class="text-sm font-semibold text-gray-900 mb-2">Legenda</div>
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between text-sm text-gray-700">
+                        <div class="flex items-center gap-2">
+                            <span class="w-4 h-4 rounded-sm" style="background:#185B3C"></span> KKPR
+                        </div>
+                        <span id="kkprCount" class="text-xs text-gray-500">0 features</span>
+                    </div>
+                    <div class="flex items-center justify-between text-sm text-gray-700">
+                        <div class="flex items-center gap-2">
+                            <span class="w-4 h-4 rounded-sm" style="background:#2563eb"></span> UMK
+                        </div>
+                        <span id="umkCount" class="text-xs text-gray-500">0 features</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Leaflet CSS -->
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+        <!-- Leaflet JS -->
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+        <script>
+            console.log('🚀 Starting dashboard map initialization with Leaflet...');
+            console.log('✅ Leaflet loaded:', typeof L !== 'undefined');
+            console.log('✅ Map container exists:', document.getElementById('dashboard-map') !== null);
+            
+            // Initialize Leaflet map centered on Indonesia
+            var dashMap = L.map('dashboard-map').setView([-6.2088, 106.8456], 5); // Jakarta, Indonesia
+            
+            // Add OpenStreetMap tiles
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(dashMap);
+            
+            console.log('✅ Leaflet map initialized successfully');
+            
+            // Initialize layer groups for KKPR and UMK
+            var kkprLayerGroup = L.layerGroup().addTo(dashMap);
+            var umkLayerGroup = L.layerGroup().addTo(dashMap);
+            
+            // Set initial visibility to false
+            kkprLayerGroup.removeFrom(dashMap);
+            umkLayerGroup.removeFrom(dashMap);
+            
+            console.log('✅ Layer groups created');
+            
+            // Load GeoJSON data function
+            function loadGeoJSONData() {
+                console.log('📥 Loading GeoJSON data...');
+                
+                // Load KKPR
+                var kkprUrl = '{{ asset('mapdata/newgeo/kkpr.geojson') }}?t=' + Date.now();
+                console.log('🔗 KKPR URL:', kkprUrl);
+                
+                fetch(kkprUrl)
+                    .then(response => {
+                        console.log('📡 KKPR response status:', response.status);
+                        if (!response.ok) throw new Error('KKPR file not found');
+                        return response.json();
+                    })
+                    .then(geojson => {
+                        console.log('📄 KKPR GeoJSON received:', geojson);
+                        
+                        // Clear existing features
+                        kkprLayerGroup.clearLayers();
+                        
+                        // Add GeoJSON to map
+                        L.geoJSON(geojson, {
+                            style: function(feature) {
+                                return {
+                                    color: '#185B3C',
+                                    weight: 2,
+                                    opacity: 1,
+                                    fillColor: '#185B3C',
+                                    fillOpacity: 0.35
+                                };
+                            },
+                            onEachFeature: function(feature, layer) {
+                                // Add popup with feature info
+                                if (feature.properties) {
+                                    var popupContent = '<div class="p-2">';
+                                    popupContent += '<h6 class="font-semibold text-green-600">KKPR</h6>';
+                                    popupContent += '<p class="text-sm">ID Folder: ' + (feature.properties.idFolder || 'N/A') + '</p>';
+                                    popupContent += '<p class="text-sm">Jenis: ' + (feature.properties.jenis || 'N/A') + '</p>';
+                                    popupContent += '</div>';
+                                    layer.bindPopup(popupContent);
+                                }
+                            }
+                        }).addTo(kkprLayerGroup);
+                        
+                        console.log('✅ KKPR loaded:', geojson.features.length, 'features');
+                        document.getElementById('kkprCount').textContent = geojson.features.length + ' features';
+                        
+                        // Auto fit to data if available
+                        if (geojson.features.length > 0) {
+                            setTimeout(fitToAllData, 500);
+                        }
+                    })
+                    .catch(err => {
+                        console.warn('⚠️ KKPR file not available:', err.message);
+                        document.getElementById('kkprCount').textContent = '0 features';
+                    });
+                
+                // Load UMK
+                var umkUrl = '{{ asset('mapdata/newgeo/umk.geojson') }}?t=' + Date.now();
+                console.log('🔗 UMK URL:', umkUrl);
+                
+                fetch(umkUrl)
+                    .then(response => {
+                        console.log('📡 UMK response status:', response.status);
+                        if (!response.ok) throw new Error('UMK file not found');
+                        return response.json();
+                    })
+                    .then(geojson => {
+                        console.log('📄 UMK GeoJSON received:', geojson);
+                        
+                        // Clear existing features
+                        umkLayerGroup.clearLayers();
+                        
+                        // Add GeoJSON to map
+                        L.geoJSON(geojson, {
+                            style: function(feature) {
+                                return {
+                                    color: '#2563eb',
+                                    weight: 2,
+                                    opacity: 1,
+                                    fillColor: '#2563eb',
+                                    fillOpacity: 0.30
+                                };
+                            },
+                            onEachFeature: function(feature, layer) {
+                                // Add popup with feature info
+                                if (feature.properties) {
+                                    var popupContent = '<div class="p-2">';
+                                    popupContent += '<h6 class="font-semibold text-blue-600">UMK</h6>';
+                                    popupContent += '<p class="text-sm">ID Folder: ' + (feature.properties.idFolder || 'N/A') + '</p>';
+                                    popupContent += '<p class="text-sm">Jenis: ' + (feature.properties.jenis || 'N/A') + '</p>';
+                                    popupContent += '</div>';
+                                    layer.bindPopup(popupContent);
+                                }
+                            }
+                        }).addTo(umkLayerGroup);
+                        
+                        console.log('✅ UMK loaded:', geojson.features.length, 'features');
+                        document.getElementById('umkCount').textContent = geojson.features.length + ' features';
+                    })
+                    .catch(err => {
+                        console.warn('⚠️ UMK file not available:', err.message);
+                        document.getElementById('umkCount').textContent = '0 features';
+                    });
+            }
+            
+            // Fit to all data function
+            function fitToAllData() {
+                console.log('🎯 Fitting map to all data...');
+                var bounds = L.latLngBounds();
+                var hasData = false;
+                
+                // Check KKPR bounds
+                kkprLayerGroup.eachLayer(function(layer) {
+                    if (layer.getBounds) {
+                        bounds.extend(layer.getBounds());
+                        hasData = true;
+                    }
+                });
+                
+                // Check UMK bounds
+                umkLayerGroup.eachLayer(function(layer) {
+                    if (layer.getBounds) {
+                        bounds.extend(layer.getBounds());
+                        hasData = true;
+                    }
+                });
+                
+                if (hasData) {
+                    dashMap.fitBounds(bounds, {
+                        padding: [20, 20],
+                        maxZoom: 15
+                    });
+                    console.log('🎯 Map fitted to data');
+                } else {
+                    console.log('⚠️ No data to fit to');
+                }
+            }
+            
+            // Event Listeners using native JavaScript
+            document.addEventListener('DOMContentLoaded', function() {
+                console.log('📋 DOM ready - setting up event listeners');
+                
+                // KKPR checkbox
+                var kkprCheck = document.getElementById('dashKkprCheck');
+                if (kkprCheck) {
+                    kkprCheck.addEventListener('change', function() {
+                        if (this.checked) {
+                            dashMap.addLayer(kkprLayerGroup);
+                            console.log('🔘 KKPR layer: ON');
+                            
+                            // Auto zoom to KKPR data
+                            if (kkprLayerGroup.getLayers().length > 0) {
+                                setTimeout(function() {
+                                    var bounds = L.latLngBounds();
+                                    kkprLayerGroup.eachLayer(function(layer) {
+                                        if (layer.getBounds) {
+                                            bounds.extend(layer.getBounds());
+                                        }
+                                    });
+                                    dashMap.fitBounds(bounds, {
+                                        padding: [20, 20],
+                                        maxZoom: 15
+                                    });
+                                    console.log('🎯 Auto-zoomed to KKPR data');
+                                }, 100);
+                            }
+                        } else {
+                            dashMap.removeLayer(kkprLayerGroup);
+                            console.log('🔘 KKPR layer: OFF');
+                        }
+                    });
+                }
+                
+                // UMK checkbox
+                var umkCheck = document.getElementById('dashUmkCheck');
+                if (umkCheck) {
+                    umkCheck.addEventListener('change', function() {
+                        if (this.checked) {
+                            dashMap.addLayer(umkLayerGroup);
+                            console.log('🔘 UMK layer: ON');
+                            
+                            // Auto zoom to UMK data
+                            if (umkLayerGroup.getLayers().length > 0) {
+                                setTimeout(function() {
+                                    var bounds = L.latLngBounds();
+                                    umkLayerGroup.eachLayer(function(layer) {
+                                        if (layer.getBounds) {
+                                            bounds.extend(layer.getBounds());
+                                        }
+                                    });
+                                    dashMap.fitBounds(bounds, {
+                                        padding: [20, 20],
+                                        maxZoom: 15
+                                    });
+                                    console.log('🎯 Auto-zoomed to UMK data');
+                                }, 100);
+                            }
+                        } else {
+                            dashMap.removeLayer(umkLayerGroup);
+                            console.log('🔘 UMK layer: OFF');
+                        }
+                    });
+                }
+                
+                // Opacity controls
+                var kkprOpacity = document.getElementById('dashKkprOpacity');
+                if (kkprOpacity) {
+                    kkprOpacity.addEventListener('input', function() {
+                        var value = parseFloat(this.value) / 100;
+                        kkprLayerGroup.eachLayer(function(layer) {
+                            if (layer.setStyle) {
+                                layer.setStyle({
+                                    fillOpacity: value * 0.35,
+                                    opacity: value
+                                });
+                            }
+                        });
+                        var label = document.getElementById('dashKkprOpacityLbl');
+                        if (label) label.textContent = Math.round(value * 100) + '%';
+                    });
+                }
+                
+                var umkOpacity = document.getElementById('dashUmkOpacity');
+                if (umkOpacity) {
+                    umkOpacity.addEventListener('input', function() {
+                        var value = parseFloat(this.value) / 100;
+                        umkLayerGroup.eachLayer(function(layer) {
+                            if (layer.setStyle) {
+                                layer.setStyle({
+                                    fillOpacity: value * 0.30,
+                                    opacity: value
+                                });
+                            }
+                        });
+                        var label = document.getElementById('dashUmkOpacityLbl');
+                        if (label) label.textContent = Math.round(value * 100) + '%';
+                    });
+                }
+                
+                // Fit to data button
+                var fitToDataBtn = document.getElementById('dashFitToData');
+                if (fitToDataBtn) {
+                    fitToDataBtn.addEventListener('click', function() {
+                        console.log('🎯 Fit to data button clicked');
+                        fitToAllData();
+                    });
+                }
+                
+                // Reset view to Indonesia button
+                var resetViewBtn = document.getElementById('dashResetView');
+                if (resetViewBtn) {
+                    resetViewBtn.addEventListener('click', function() {
+                        console.log('🇮🇩 Reset view to Indonesia clicked');
+                        dashMap.setView([-6.2088, 106.8456], 5); // Jakarta, Indonesia
+                    });
+                }
+                
+                // Reset opacity button
+                var resetOpacityBtn = document.getElementById('dashResetOpacity');
+                if (resetOpacityBtn) {
+                    resetOpacityBtn.addEventListener('click', function() {
+                        console.log('🔄 Reset opacity button clicked');
+                        var kkprOpacitySlider = document.getElementById('dashKkprOpacity');
+                        var umkOpacitySlider = document.getElementById('dashUmkOpacity');
+                        var kkprOpacityLabel = document.getElementById('dashKkprOpacityLbl');
+                        var umkOpacityLabel = document.getElementById('dashUmkOpacityLbl');
+                        
+                        if (kkprOpacitySlider) kkprOpacitySlider.value = 100;
+                        if (umkOpacitySlider) umkOpacitySlider.value = 100;
+                        
+                        // Reset KKPR opacity
+                        kkprLayerGroup.eachLayer(function(layer) {
+                            if (layer.setStyle) {
+                                layer.setStyle({
+                                    fillOpacity: 0.35,
+                                    opacity: 1
+                                });
+                            }
+                        });
+                        
+                        // Reset UMK opacity
+                        umkLayerGroup.eachLayer(function(layer) {
+                            if (layer.setStyle) {
+                                layer.setStyle({
+                                    fillOpacity: 0.30,
+                                    opacity: 1
+                                });
+                            }
+                        });
+                        
+                        if (kkprOpacityLabel) kkprOpacityLabel.textContent = '100%';
+                        if (umkOpacityLabel) umkOpacityLabel.textContent = '100%';
+                    });
+                }
+                
+                // Refresh data button
+                var refreshBtn = document.getElementById('refreshDataMapBtn');
+                if (refreshBtn) {
+                    refreshBtn.addEventListener('click', function() {
+                        console.log('🔄 Refresh data button clicked');
+                        var btn = this;
+                        var originalHTML = btn.innerHTML;
+                        
+                        btn.disabled = true;
+                        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Processing...</span>';
+                        
+                        fetch('{{ route('api.map.refresh') }}', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            }
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                loadGeoJSONData();
+                                btn.innerHTML = '<i class="fas fa-check"></i><span>Success!</span>';
+                                btn.classList.add('bg-green-600');
+                                
+                                setTimeout(function() {
+                                    btn.innerHTML = originalHTML;
+                                    btn.classList.remove('bg-green-600');
+                                    btn.disabled = false;
+                                }, 2000);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('❌ Refresh error:', error);
+                            btn.innerHTML = '<i class="fas fa-times"></i><span>Error!</span>';
+                            btn.classList.add('bg-red-600');
+                            
+                            setTimeout(function() {
+                                btn.innerHTML = originalHTML;
+                                btn.classList.remove('bg-red-600');
+                                btn.disabled = false;
+                            }, 2000);
+                        });
+                    });
+                }
+                
+                // Load initial data
+                console.log('📥 Loading initial GeoJSON data...');
+                loadGeoJSONData();
+            });
+        </script>
+        </div>
+    </div>
 </div>
 
 <style>
@@ -454,6 +894,18 @@
         transition: stroke-dashoffset 0.35s;
         transform: rotate(-90deg);
         transform-origin: 50% 50%;
+    }
+    
+    /* Ensure layer control is always on top */
+    #dashboard-layers-control {
+        z-index: 1000 !important;
+        position: absolute !important;
+    }
+    
+    /* Ensure map container has lower z-index */
+    #dashboard-map {
+        z-index: 1 !important;
+        position: relative !important;
     }
 </style>
 
