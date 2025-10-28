@@ -1019,61 +1019,63 @@
             }
         }
         
-        // Tampilkan pencabutan SETELAH proses normal
+        // Tampilkan pencabutan SETELAH proses normal (urutan yang benar)
         if (pencabutanRiwayat.length > 0) {
-            const latestPencabutan = pencabutanRiwayat.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))[0];
+            // Jika ada pencabutan, tampilkan semua riwayat pencabutan (bisa request + konfirmasi)
+            const sortedPencabutan = pencabutanRiwayat.sort((a, b) => new Date(a.updated_at) - new Date(b.updated_at));
             
-            const r = latestPencabutan;
-            const isRequest = r.status.includes('Request');
-            const badge = isRequest ? badgeConfig['pencabutan-request'] : badgeConfig['pencabutan-confirmed'];
-            const bgColor = isRequest ? 'bg-orange-50 border-orange-300' : 'bg-gray-100 border-gray-300';
-            const textColor = isRequest ? 'text-orange-900' : 'text-gray-900';
+            sortedPencabutan.forEach(r => {
+                const isRequest = r.status.includes('Request');
+                const badge = isRequest ? badgeConfig['pencabutan-request'] : badgeConfig['pencabutan-confirmed'];
+                const bgColor = isRequest ? 'bg-orange-50 border-orange-300' : 'bg-gray-100 border-gray-300';
+                const textColor = isRequest ? 'text-orange-900' : 'text-gray-900';
+                    
+                const date = new Date(r.updated_at);
+                const formattedDate = date.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
+                const formattedTime = date.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
                 
-            const date = new Date(r.updated_at);
-            const formattedDate = date.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
-            const formattedTime = date.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
-            
-            html += `
-                <div class="relative pl-16 group">
-                    <div class="absolute left-0 w-12 h-12 rounded-full flex items-center justify-center shadow-lg transition-transform duration-300 group-hover:scale-110 z-10" style="background-color: ${badge.color}">
-                        <i class="fa ${badge.icon} text-white text-lg"></i>
-                    </div>
-                    <div class="${bgColor} border-2 rounded-xl p-4 shadow-md transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
-                        <div class="flex items-start justify-between mb-3">
-                            <div class="flex-1">
-                                <h4 class="font-bold ${textColor} text-base mb-1">${r.status}</h4>
-                                <div class="flex items-center space-x-3 text-xs text-gray-600">
-                                    <div class="flex items-center">
-                                        <i class="fa fa-calendar mr-1.5"></i>
-                                        <span>${formattedDate}</span>
-                                    </div>
-                                    <div class="flex items-center">
-                                        <i class="fa fa-clock mr-1.5"></i>
-                                        <span>${formattedTime}</span>
+                html += `
+                    <div class="relative pl-16 group">
+                        <div class="absolute left-0 w-12 h-12 rounded-full flex items-center justify-center shadow-lg transition-transform duration-300 group-hover:scale-110 z-10" style="background-color: ${badge.color}">
+                            <i class="fa ${badge.icon} text-white text-lg"></i>
+                        </div>
+                        <div class="${bgColor} border-2 rounded-xl p-4 shadow-md transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+                            <div class="flex items-start justify-between mb-3">
+                                <div class="flex-1">
+                                    <h4 class="font-bold ${textColor} text-base mb-1">${r.status}</h4>
+                                    <div class="flex items-center space-x-3 text-xs text-gray-600">
+                                        <div class="flex items-center">
+                                            <i class="fa fa-calendar mr-1.5"></i>
+                                            <span>${formattedDate}</span>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <i class="fa fa-clock mr-1.5"></i>
+                                            <span>${formattedTime}</span>
+                                        </div>
                                     </div>
                                 </div>
+                                <span class="px-3 py-1 text-xs font-semibold rounded-full ${isRequest ? 'bg-orange-100 text-orange-800 border-2 border-orange-400' : 'bg-gray-100 text-gray-700 border-2 border-gray-400'}">
+                                    <i class="fa ${badge.icon} mr-1"></i>${badge.label}
+                                </span>
                             </div>
-                            <span class="px-3 py-1 text-xs font-semibold rounded-full ${isRequest ? 'bg-orange-100 text-orange-800 border-2 border-orange-400' : 'bg-gray-100 text-gray-700 border-2 border-gray-400'}">
-                                <i class="fa ${badge.icon} mr-1"></i>${badge.label}
-                            </span>
+                            <div class="bg-white/70 rounded-lg p-3">
+                                <p class="text-sm text-gray-700 leading-relaxed mb-2">${r.keterangan}</p>
+                                ${r.revisi_detail ? 
+                                    `<div class="mt-3 p-3 ${isRequest ? 'bg-orange-100 border-2 border-orange-300' : 'bg-gray-50 border-2 border-gray-200'} rounded-lg">
+                                        <p class="text-xs font-semibold ${isRequest ? 'text-orange-900' : 'text-gray-800'} mb-1">
+                                            <i class="fa fa-info-circle mr-1"></i>${isRequest ? 'Alasan Pencabutan:' : 'Konfirmasi:'}
+                                        </p>
+                                        <p class="text-sm ${isRequest ? 'text-orange-800' : 'text-gray-700'} font-medium">${r.revisi_detail}</p>
+                                    </div>` : ''
+                                }
+                            </div>
                         </div>
-                        <div class="bg-white/70 rounded-lg p-3">
-                            <p class="text-sm text-gray-700 leading-relaxed mb-2">${r.keterangan}</p>
-                            ${r.revisi_detail ? 
-                                `<div class="mt-3 p-3 ${isRequest ? 'bg-orange-100 border-2 border-orange-300' : 'bg-gray-50 border-2 border-gray-200'} rounded-lg">
-                                    <p class="text-xs font-semibold ${isRequest ? 'text-orange-900' : 'text-gray-800'} mb-1">
-                                        <i class="fa fa-info-circle mr-1"></i>${isRequest ? 'Alasan Pencabutan:' : 'Konfirmasi:'}
-                                    </p>
-                                    <p class="text-sm ${isRequest ? 'text-orange-800' : 'text-gray-700'} font-medium">${r.revisi_detail}</p>
-                                </div>` : ''
-                            }
-                        </div>
-                    </div>
-                </div>`;
+                    </div>`;
+            });
         }
         
         // Handle rejected status (status_id = 0) if exists and not pencabutan
-        const rejectedRiwayat = riwayat.find(r => r.status_id == 0 && !r.status.includes('Pencabutan'));
+        const rejectedRiwayat = riwayat.find(r => r.status_id == 0 && !r.status.includes('Pencabutan') && !r.status.includes('pencabutan'));
         if (rejectedRiwayat) {
             const r = rejectedRiwayat;
             const date = new Date(r.updated_at);
