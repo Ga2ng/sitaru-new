@@ -283,10 +283,10 @@
                         <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">NAMA PEMOHON</span>
                     </div>
                     <div class="col-span-2">
-                        <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">FUNGSI</span>
+                        <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">KBLI</span>
                     </div>
                     <div class="col-span-2">
-                        <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">ALAMAT</span>
+                        <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">NO NIB</span>
                     </div>
                     <div class="col-span-1">
                         <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">STATUS</span>
@@ -306,8 +306,8 @@
                             <p class="font-bold text-gray-900 text-sm">#{{ $kkpr->id }}</p>
                         </div>
                         <div class="col-span-2">
-                            <p class="text-gray-900 font-medium text-sm">{{ $kkpr->created_at->format('d M Y') }}</p>
-                            <p class="text-xs text-gray-500">{{ $kkpr->created_at->format('H:i') }}</p>
+                            <p class="text-gray-900 font-medium text-sm">{{ $kkpr->created_at ? $kkpr->created_at->format('d M Y') : 'N/A' }}</p>
+                            <p class="text-xs text-gray-500">{{ $kkpr->created_at ? $kkpr->created_at->format('H:i') : 'N/A' }}</p>
                         </div>
                         <div class="col-span-3">
                             <div class="flex items-center space-x-3">
@@ -315,17 +315,17 @@
                                     <i class="fas fa-user text-white text-sm"></i>
                                 </div>
                                 <div>
-                                    <p class="font-bold text-gray-900 text-sm">{{ $kkpr->user->name ?? 'N/A' }}</p>
+                                    <p class="font-bold text-gray-900 text-sm">{{ $kkpr->user->name ?? ($kkpr->atas_nama ?? 'N/A') }}</p>
                                     <p class="text-xs text-gray-500">{{ $kkpr->user->phone ?? 'N/A' }}</p>
                                 </div>
                             </div>
                         </div>
                         <div class="col-span-2">
-                            <p class="font-semibold text-gray-900 text-sm">{{ $kkpr->fungsi ?? 'N/A' }}</p>
+                            <p class="font-semibold text-gray-900 text-sm">{{ $kkpr->kbli ?? 'N/A' }}</p>
                             <p class="text-xs text-gray-500">{{ $kkpr->jenis_kegiatan ?? 'N/A' }}</p>
                         </div>
                         <div class="col-span-2">
-                            <p class="text-gray-900 text-sm">{{ Str::limit($kkpr->alamat_kegiatan ?? $kkpr->alamat_tanah, 30) }}</p>
+                            <p class="text-gray-900 text-sm">{{ $kkpr->no_nib ?? 'N/A' }}</p>
                             <p class="text-xs text-gray-500">{{ $kkpr->kecamatan->NAMA_KEC ?? 'N/A' }}</p>
                         </div>
                         <div class="col-span-1">

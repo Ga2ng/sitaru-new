@@ -136,8 +136,8 @@
                     <tr>
                         <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">No</th>
                         <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Tanggal</th>
-                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Fungsi Kegiatan</th>
-                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Alamat</th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">KBLI</th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">No NIB</th>
                         <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Status</th>
                         <th class="px-6 py-3 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">Aksi</th>
                     </tr>
@@ -149,16 +149,16 @@
                             <span class="text-sm font-semibold text-gray-900">{{ $index + 1 }}</span>
                         </td>
                         <td class="px-6 py-4">
-                            <p class="text-sm font-medium text-gray-900">{{ $kkpr->created_at->format('d M Y') }}</p>
-                            <p class="text-xs text-gray-500">{{ $kkpr->created_at->format('H:i') }} WIB</p>
+                            <p class="text-sm font-medium text-gray-900">{{ $kkpr->created_at ? $kkpr->created_at->format('d M Y') : 'N/A' }}</p>
+                            <p class="text-xs text-gray-500">{{ $kkpr->created_at ? $kkpr->created_at->format('H:i') : 'N/A' }} WIB</p>
                         </td>
                         <td class="px-6 py-4">
-                            <p class="text-sm font-semibold text-gray-900">{{ is_array($kkpr->fungsi) ? implode(', ', $kkpr->fungsi) : ($kkpr->fungsi ?? '-') }}</p>
-                            <p class="text-xs text-gray-500">{{ $kkpr->jenis_kegiatan ?? '-' }}</p>
+                            <p class="text-sm font-semibold text-gray-900">{{ $kkpr->kbli ?? 'N/A' }}</p>
+                            <p class="text-xs text-gray-500">{{ $kkpr->jenis_kegiatan ?? 'N/A' }}</p>
                         </td>
                         <td class="px-6 py-4">
-                            <p class="text-sm text-gray-900">{{ Str::limit(is_array($kkpr->alamat_kegiatan) ? implode(', ', $kkpr->alamat_kegiatan) : ($kkpr->alamat_kegiatan ?? $kkpr->alamat_tanah ?? '-'), 40) }}</p>
-                            <p class="text-xs text-gray-500">{{ $kkpr->luas_dimohon ? number_format((float)$kkpr->luas_dimohon) . ' m²' : '-' }}</p>
+                            <p class="text-sm text-gray-900">{{ $kkpr->no_nib ?? 'N/A' }}</p>
+                            <p class="text-xs text-gray-500">{{ $kkpr->luas_dimohon ? number_format((float)$kkpr->luas_dimohon) . ' m²' : 'N/A' }}</p>
                         </td>
                         <td class="px-6 py-4">
                             @php
