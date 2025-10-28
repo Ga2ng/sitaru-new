@@ -341,75 +341,75 @@
     </div>
 
     <!-- Status Overview -->
-    <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-        <div class="flex justify-between items-center mb-6">
-            <h3 class="text-lg font-semibold text-gray-900">Ringkasan Status</h3>
-            <span class="text-sm text-gray-500">Data real-time</span>
+    <div style="background-color: white; border-radius: 12px; padding: 24px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); border: 1px solid #f3f4f6;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+            <h3 style="font-size: 18px; font-weight: 600; color: #111827;">Ringkasan Status</h3>
+            <span style="font-size: 14px; color: #6b7280;">Data real-time</span>
         </div>
         
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px;">
             <!-- KKPR Status -->
-            <div class="bg-gradient-to-br from-[#185B3C] to-[#0F3D26] rounded-lg p-4 text-white">
-                <div class="flex items-center justify-between mb-2">
-                    <h4 class="font-semibold">KKPR (Non-UMK)</h4>
+            <div style="background: linear-gradient(135deg, #185B3C, #0F3D26); border-radius: 8px; padding: 16px; color: white;">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                    <h4 style="font-weight: 600;">KKPR (Non-UMK)</h4>
                     <i class="fas fa-file-alt"></i>
                 </div>
-                <div class="space-y-1 text-sm">
-                    <div class="flex justify-between">
+                <div style="display: flex; flex-direction: column; gap: 4px; font-size: 14px;">
+                    <div style="display: flex; justify-content: space-between;">
                         <span>Pending:</span>
-                        <span class="font-bold">{{ $kkprStatus['pending'] ?? 0 }}</span>
+                        <span style="font-weight: bold;">{{ $kkprStatus['pending'] ?? 0 }}</span>
                     </div>
-                    <div class="flex justify-between">
+                    <div style="display: flex; justify-content: space-between;">
                         <span>Berjalan:</span>
-                        <span class="font-bold">{{ ($kkprStatus['diterima'] ?? 0) + ($kkprStatus['survey'] ?? 0) + ($kkprStatus['analisa'] ?? 0) }}</span>
+                        <span style="font-weight: bold;">{{ ($kkprStatus['diterima'] ?? 0) + ($kkprStatus['survey'] ?? 0) + ($kkprStatus['analisa'] ?? 0) }}</span>
                     </div>
-                    <div class="flex justify-between">
+                    <div style="display: flex; justify-content: space-between;">
                         <span>Selesai:</span>
-                        <span class="font-bold">{{ $kkprStatus['selesai'] ?? 0 }}</span>
+                        <span style="font-weight: bold;">{{ $kkprStatus['selesai'] ?? 0 }}</span>
                     </div>
                 </div>
             </div>
 
             <!-- UMK Status -->
-            <div class="bg-gradient-to-br from-blue-600 to-blue-800 rounded-lg p-4 text-white">
-                <div class="flex items-center justify-between mb-2">
-                    <h4 class="font-semibold">UMK</h4>
+            <div style="background: linear-gradient(135deg, #2563eb, #1e40af); border-radius: 8px; padding: 16px; color: white;">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                    <h4 style="font-weight: 600;">UMK</h4>
                     <i class="fas fa-building"></i>
                 </div>
-                <div class="space-y-1 text-sm">
-                    <div class="flex justify-between">
+                <div style="display: flex; flex-direction: column; gap: 4px; font-size: 14px;">
+                    <div style="display: flex; justify-content: space-between;">
                         <span>Pending:</span>
-                        <span class="font-bold">{{ $umkStatus['pending'] ?? 0 }}</span>
+                        <span style="font-weight: bold;">{{ $umkStatus['pending'] ?? 0 }}</span>
                     </div>
-                    <div class="flex justify-between">
+                    <div style="display: flex; justify-content: space-between;">
                         <span>Berjalan:</span>
-                        <span class="font-bold">{{ ($umkStatus['diterima'] ?? 0) + ($umkStatus['survey'] ?? 0) + ($umkStatus['analisa'] ?? 0) }}</span>
+                        <span style="font-weight: bold;">{{ ($umkStatus['diterima'] ?? 0) + ($umkStatus['survey'] ?? 0) + ($umkStatus['analisa'] ?? 0) }}</span>
                     </div>
-                    <div class="flex justify-between">
+                    <div style="display: flex; justify-content: space-between;">
                         <span>Selesai:</span>
-                        <span class="font-bold">{{ $umkStatus['selesai'] ?? 0 }}</span>
+                        <span style="font-weight: bold;">{{ $umkStatus['selesai'] ?? 0 }}</span>
                     </div>
                 </div>
             </div>
 
             <!-- Progress Overview -->
-            <div class="bg-gradient-to-br from-green-600 to-green-800 rounded-lg p-4 text-white">
-                <div class="flex items-center justify-between mb-2">
-                    <h4 class="font-semibold">Progress</h4>
+            <div style="background: linear-gradient(135deg, #16a34a, #15803d); border-radius: 8px; padding: 16px; color: white;">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                    <h4 style="font-weight: 600;">Progress</h4>
                     <i class="fas fa-chart-line"></i>
                 </div>
-                <div class="space-y-1 text-sm">
-                    <div class="flex justify-between">
+                <div style="display: flex; flex-direction: column; gap: 4px; font-size: 14px;">
+                    <div style="display: flex; justify-content: space-between;">
                         <span>Total:</span>
-                        <span class="font-bold">{{ ($kkprTotal ?? 0) + ($umkTotal ?? 0) }}</span>
+                        <span style="font-weight: bold;">{{ ($kkprTotal ?? 0) + ($umkTotal ?? 0) }}</span>
                     </div>
-                    <div class="flex justify-between">
+                    <div style="display: flex; justify-content: space-between;">
                         <span>Selesai:</span>
-                        <span class="font-bold">{{ ($kkprSelesai ?? 0) + ($umkSelesai ?? 0) }}</span>
+                        <span style="font-weight: bold;">{{ ($kkprSelesai ?? 0) + ($umkSelesai ?? 0) }}</span>
                     </div>
-                    <div class="flex justify-between">
+                    <div style="display: flex; justify-content: space-between;">
                         <span>Rate:</span>
-                        <span class="font-bold">
+                        <span style="font-weight: bold;">
                             @php
                                 $total = ($kkprTotal ?? 0) + ($umkTotal ?? 0);
                                 $selesai = ($kkprSelesai ?? 0) + ($umkSelesai ?? 0);
@@ -422,24 +422,24 @@
             </div>
 
             <!-- Quick Actions -->
-            <div class="bg-gradient-to-br from-purple-600 to-purple-800 rounded-lg p-4 text-white">
-                <div class="flex items-center justify-between mb-2">
-                    <h4 class="font-semibold">Aksi Cepat</h4>
+            <div style="background: linear-gradient(135deg, #9333ea, #7c3aed); border-radius: 8px; padding: 16px; color: white;">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                    <h4 style="font-weight: 600;">Aksi Cepat</h4>
                     <i class="fas fa-bolt"></i>
                 </div>
-                <div class="space-y-2">
+                <div style="display: flex; flex-direction: column; gap: 8px;">
                     @if(auth()->user()->hasRole('admin'))
-                        <a href="{{ route('admin.kkpr.create') }}" class="block w-full bg-white/20 hover:bg-white/30 rounded px-3 py-1 text-sm text-center transition-colors">
+                        <a href="{{ route('admin.kkpr.create') }}" style="display: block; width: 100%; background-color: rgba(255, 255, 255, 0.2); border-radius: 4px; padding: 8px 12px; font-size: 14px; text-align: center; color: white; text-decoration: none; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='rgba(255, 255, 255, 0.3)'" onmouseout="this.style.backgroundColor='rgba(255, 255, 255, 0.2)'">
                             Buat KKPR
                         </a>
-                        <a href="{{ route('admin.kkprnon.create') }}" class="block w-full bg-white/20 hover:bg-white/30 rounded px-3 py-1 text-sm text-center transition-colors">
+                        <a href="{{ route('admin.kkprnon.create') }}" style="display: block; width: 100%; background-color: rgba(255, 255, 255, 0.2); border-radius: 4px; padding: 8px 12px; font-size: 14px; text-align: center; color: white; text-decoration: none; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='rgba(255, 255, 255, 0.3)'" onmouseout="this.style.backgroundColor='rgba(255, 255, 255, 0.2)'">
                             Buat UMK
                         </a>
                     @else
-                        <a href="{{ route('member.kkpr.create') }}" class="block w-full bg-white/20 hover:bg-white/30 rounded px-3 py-1 text-sm text-center transition-colors">
+                        <a href="{{ route('member.kkpr.create') }}" style="display: block; width: 100%; background-color: rgba(255, 255, 255, 0.2); border-radius: 4px; padding: 8px 12px; font-size: 14px; text-align: center; color: white; text-decoration: none; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='rgba(255, 255, 255, 0.3)'" onmouseout="this.style.backgroundColor='rgba(255, 255, 255, 0.2)'">
                             Buat KKPR
                         </a>
-                        <a href="{{ route('member.kkprnon.create') }}" class="block w-full bg-white/20 hover:bg-white/30 rounded px-3 py-1 text-sm text-center transition-colors">
+                        <a href="{{ route('member.kkprnon.create') }}" style="display: block; width: 100%; background-color: rgba(255, 255, 255, 0.2); border-radius: 4px; padding: 8px 12px; font-size: 14px; text-align: center; color: white; text-decoration: none; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='rgba(255, 255, 255, 0.3)'" onmouseout="this.style.backgroundColor='rgba(255, 255, 255, 0.2)'">
                             Buat UMK
                         </a>
                     @endif
