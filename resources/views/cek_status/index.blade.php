@@ -212,8 +212,8 @@
                                                 <i class="fas fa-file-alt text-white text-xl"></i>
                                             </div>
                                             <div>
-                                                <h3 class="text-xl font-bold text-[#155D4F] font-heading">{{ $model->no_kkpr ?? 'N/A' }}</h3>
-                                                <p class="text-gray-600 font-body">{{ $model->user->name ?? 'N/A' }}</p>
+                                                <h3 class="text-xl font-bold text-[#155D4F] font-heading">{{ $model->no_nib ?? 'N/A' }}</h3>
+                                                <p class="text-gray-600 font-body">{{ ($model->user->name ?? $model->atas_nama) ?: 'N/A' }}</p>
                                                 <div class="flex items-center space-x-4 text-sm text-gray-500">
                                                     <span><i class="fa fa-calendar mr-1"></i>{{ $model->created_at->format('d M Y H:i') }}</span>
                                                     <span><i class="fa fa-tag mr-1"></i>{{ $jenisDisplay }}</span>

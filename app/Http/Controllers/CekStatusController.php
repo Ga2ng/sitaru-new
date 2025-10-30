@@ -23,11 +23,15 @@ class CekStatusController extends Controller
             'no_nib.max' => 'Nomor NIB maksimal 255 karakter'
         ]);
 
-        $no_nib = $request->input('no_nib');
+        $no_nib = trim($request->input('no_nib'));
         
         // Cari data KKPR berdasarkan nomor NIB (bisa lebih dari 1 data)
-        $models = Kkpr::with(['user'])
-            ->where('no_nib', $no_nib)
+        // Menangani format desimal di database (contoh: 1904250017636.0)
+        $models = Kkpr::where(function($query) use ($no_nib) {
+                $query->where('no_nib', $no_nib)
+                      ->orWhere('no_nib', $no_nib . '.0')
+                      ->orWhereRaw('CAST(no_nib AS DECIMAL(20,1)) = ?', [(float)$no_nib]);
+            })
             ->orderBy('created_at', 'desc')
             ->get();
 
@@ -54,7 +58,7 @@ class CekStatusController extends Controller
 
     public function show($id)
     {
-        $model = Kkpr::with(['user'])->findOrFail($id);
+        $model = Kkpr::findOrFail($id);
         
         // Ambil riwayat proses menggunakan model Kkpr_riwayat langsung
         $riwayat = Kkpr_riwayat::where('kkpr_id', $model->id)

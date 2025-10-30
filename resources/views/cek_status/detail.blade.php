@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Detail Status Surat {{ $model->no_kkpr }} - SITARU - SISTEM INFORMASI TATA RUANG</title>
+        <title>Detail Status Surat {{ $model->no_nib }} - SITARU - SISTEM INFORMASI TATA RUANG</title>
         <link rel="icon" type="image/png" href="{{ asset('images/logo_bwi.png') }}">
     
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -129,7 +129,7 @@
                         <i class="fa fa-hashtag text-white text-xl"></i>
                     </div>
                     <h3 class="text-lg font-semibold text-[#155D4F] mb-2 font-heading">Nomor Surat</h3>
-                    <p class="text-gray-600 text-sm font-body font-mono font-bold">{{ $model->no_kkpr ?? '-' }}</p>
+                    <p class="text-gray-600 text-sm font-body font-mono font-bold">{{ $model->no_nib ?? '-' }}</p>
                 </div>
 
                 <div class="feature-card bg-white/90 backdrop-blur-sm p-6 rounded-xl card-shadow text-center">
@@ -137,7 +137,7 @@
                         <i class="fa fa-user text-white text-xl"></i>
                     </div>
                     <h3 class="text-lg font-semibold text-[#155D4F] mb-2 font-heading">Pemohon</h3>
-                    <p class="text-gray-600 text-sm font-body">{{ $model->user->name ?? 'N/A' }}</p>
+                    <p class="text-gray-600 text-sm font-body">{{ ($model->user->name ?? $model->atas_nama) ?: 'N/A' }}</p>
                 </div>
 
                 <div class="feature-card bg-white/90 backdrop-blur-sm p-6 rounded-xl card-shadow text-center">
@@ -146,7 +146,7 @@
                     </div>
                     <h3 class="text-lg font-semibold text-[#155D4F] mb-2 font-heading">Tanggal Surat</h3>
                     <p class="text-gray-600 text-sm font-body">
-                        {{ $model->tgl_kkpr ? \Carbon\Carbon::parse($model->tgl_kkpr)->format('d M Y') : '-' }}
+                        {{ $model->created_at ? \Carbon\Carbon::parse($model->created_at)->format('d M Y') : '-' }}
                     </p>
                 </div>
 
@@ -177,17 +177,14 @@
                                 0 => ['icon' => 'fa-times-circle', 'color' => '#dc2626', 'label' => 'Ditolak'],
                                 'pencabutan-request' => ['icon' => 'fa-exclamation-triangle', 'color' => '#f59e0b', 'label' => 'Request Pencabutan'],
                                 'pencabutan-confirmed' => ['icon' => 'fa-ban', 'color' => '#6b7280', 'label' => 'Pencabutan Dikonfirmasi'],
-                                1 => ['icon' => 'fa-address-card', 'color' => '#db3102', 'label' => 'Pengajuan'],
-                                2 => ['icon' => 'fa-upload', 'color' => '#dbac02', 'label' => 'Upload Dokumen'],
-                                3 => ['icon' => 'fa-check-circle', 'color' => '#9edb02', 'label' => 'Validasi'],
-                                4 => ['icon' => 'fa-upload', 'color' => '#38db02', 'label' => 'Upload'],
-                                5 => ['icon' => 'fa-upload', 'color' => '#02db84', 'label' => 'Validasi'],
-                                6 => ['icon' => 'fa-edit', 'color' => '#02d7db', 'label' => 'Survey'],
-                                7 => ['icon' => 'fa-check-circle', 'color' => '#8102db', 'label' => 'Analisa'],
-                                8 => ['icon' => 'fa-check-circle', 'color' => '#cd02db', 'label' => 'Persetujuan'],
-                                9 => ['icon' => 'fa-check-circle', 'color' => '#db02db', 'label' => 'TTE'],
-                                10 => ['icon' => 'fa-handshake', 'color' => '#db0293', 'label' => 'Selesai'],
-                                11 => ['icon' => 'fa-file', 'color' => '#0252db', 'label' => 'Dokumen']
+                                1 => ['icon' => 'fa-address-card', 'color' => '#3b82f6', 'label' => 'Pengajuan'],
+                                3 => ['icon' => 'fa-check-circle', 'color' => '#10b981', 'label' => 'Validasi'],
+                                6 => ['icon' => 'fa-map-marked-alt', 'color' => '#f59e0b', 'label' => 'Survey'],
+                                7 => ['icon' => 'fa-file-signature', 'color' => '#8b5cf6', 'label' => 'Analisa'],
+                                8 => ['icon' => 'fa-check-double', 'color' => '#06b6d4', 'label' => 'Persetujuan'],
+                                9 => ['icon' => 'fa-signature', 'color' => '#ec4899', 'label' => 'TTE'],
+                                10 => ['icon' => 'fa-handshake', 'color' => '#059669', 'label' => 'Selesai'],
+                                11 => ['icon' => 'fa-file', 'color' => '#6366f1', 'label' => 'Dokumen']
                             ];
                         @endphp
 
@@ -199,7 +196,26 @@
                             $hasPencabutan = $pencabutanRiwayat->count() > 0;
                         @endphp
 
-                        @for($statusId = 1; $statusId <= 10; $statusId++)
+                        @php
+                            // Mapping proses id untuk menangani proses yang dihilangkan (2, 4, 5)
+                            $processMapping = [
+                                1 => 1,
+                                2 => null, // Upload Dokumen - dihilangkan
+                                3 => 3,
+                                4 => null, // Upload - dihilangkan
+                                5 => null, // Validasi Upload - dihilangkan
+                                6 => 6,
+                                7 => 7,
+                                8 => 8,
+                                9 => 9,
+                                10 => 10
+                            ];
+                            
+                            // Ambil proses yang sudah normal (tanpa upload)
+                            $normalProcesses = [1, 3, 6, 7, 8, 9, 10];
+                        @endphp
+                        
+                        @foreach($normalProcesses as $statusId)
                             @php
                                 // Find existing riwayat for this status_id
                                 $existingRiwayat = $riwayat->firstWhere('status_id', $statusId);
@@ -285,14 +301,19 @@
                                 @php
                                     // Display placeholder for missing riwayat
                                     $badge = $badgeConfig[$statusId] ?? ['icon' => 'fa-file', 'color' => '#6c757d', 'label' => 'Unknown'];
-                                    $isCompleted = $statusId < $model->proses;
-                                    $isCurrent = $statusId == $model->proses;
-                                    $isPending = $statusId > $model->proses;
+                                    
+                                    // Tentukan status berdasarkan perbandingan dengan proses saat ini
+                                    // Proses yang dihilangkan: 2, 4, 5
+                                    $actualProses = $model->proses;
+                                    $isCompleted = $statusId < $actualProses;
+                                    $isCurrent = $statusId == $actualProses;
+                                    $isPending = $statusId > $actualProses;
                                     
                                     $statusText = $isCompleted ? 'Selesai' : ($isCurrent ? 'Aktif' : 'Belum Dilakukan');
                                     $statusClass = $isCompleted ? 'bg-green-100 text-green-800 border-green-300' : ($isCurrent ? 'bg-blue-100 text-blue-800 border-blue-300' : 'bg-gray-100 text-gray-600 border-gray-300');
                                     $statusIcon = $isCompleted ? 'fa-check' : ($isCurrent ? 'fa-spinner' : 'fa-clock');
-                                    $statusColor = $isCompleted ? '#10b981' : ($isCurrent ? '#3b82f6' : '#6b7280');
+                                    // Gunakan warna dari badge untuk proses selesai/aktif, abu-abu untuk yang belum dilakukan
+                                    $statusColor = $isPending ? '#6b7280' : $badge['color'];
                                 @endphp
 
                                 <div class="relative pl-16 group">
@@ -322,7 +343,7 @@
                                     </div>
                                 </div>
                             @endif
-                        @endfor
+                        @endforeach
 
                         @if($pencabutanRiwayat->count() > 0)
                             @foreach($pencabutanRiwayat->sortBy('updated_at') as $r)
