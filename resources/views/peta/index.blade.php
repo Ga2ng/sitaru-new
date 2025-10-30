@@ -318,6 +318,13 @@
         <!-- Map Content -->
         <div class="relative">
             <div id='map' style='width: 100%; height: 75vh;'></div>
+            <!-- Loading Overlay -->
+            <div id="map-loading-overlay" class="absolute inset-0 z-50 flex items-center justify-center bg-white/90 backdrop-blur-sm">
+                <div class="flex flex-col items-center gap-3">
+                    <div class="w-10 h-10 rounded-full border-4 border-[#185B3C]/20 border-t-[#185B3C] animate-spin"></div>
+                    <div class="text-sm text-gray-700 font-medium">Memuat peta dan data…</div>
+                </div>
+            </div>
             
             <!-- Layer Control Panel -->
             <div id="layers-control" class="absolute top-4 right-4 bg-white/95 backdrop-blur-sm p-4 rounded-xl shadow-lg border border-white/20 max-w-80 max-h-96 overflow-y-auto">
@@ -440,6 +447,34 @@
                         <div class="opacity-control">
                             <label class="form-label small mb-1">Opacity: <span id="rdtrRogojampiOpacity">100%</span></label>
                             <input type="range" class="form-range opacity-slider" id="rdtrRogojampiOpacitySlider" min="0" max="100" value="100">
+                        </div>
+                    </div>
+
+                    <!-- RDTR Genteng -->
+                    <div class="layer-item p-3 border rounded-lg bg-white/50">
+                        <div class="flex justify-between items-center mb-2">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="rdtrGentengCheck">
+                                <label class="form-check-label font-semibold text-sm" for="rdtrGentengCheck">RDTR Genteng</label>
+                            </div>
+                        </div>
+                        <div class="opacity-control">
+                            <label class="form-label small mb-1">Opacity: <span id="rdtrGentengOpacity">100%</span></label>
+                            <input type="range" class="form-range opacity-slider" id="rdtrGentengOpacitySlider" min="0" max="100" value="100">
+                        </div>
+                    </div>
+
+                    <!-- RDTR Singojuruh -->
+                    <div class="layer-item p-3 border rounded-lg bg-white/50">
+                        <div class="flex justify-between items-center mb-2">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="rdtrSingojuruhCheck">
+                                <label class="form-check-label font-semibold text-sm" for="rdtrSingojuruhCheck">RDTR Singojuruh</label>
+                            </div>
+                        </div>
+                        <div class="opacity-control">
+                            <label class="form-label small mb-1">Opacity: <span id="rdtrSingojuruhOpacity">100%</span></label>
+                            <input type="range" class="form-range opacity-slider" id="rdtrSingojuruhOpacitySlider" min="0" max="100" value="100">
                         </div>
                     </div>
                 </div>
@@ -612,6 +647,83 @@
 
 <script>
     // Inisialisasi peta dengan center di Banyuwangi
+    // Scheduler untuk memastikan legenda ter-update saat layer dinyalakan
+    function scheduleLegendUpdateFor(layer) {
+        try {
+            if (!layer) return;
+            var src = layer.getSource && layer.getSource();
+            if (layer.getVisible && layer.getVisible()) {
+                if (src && typeof src.getFeatures === 'function' && src.getFeatures().length === 0) {
+                    var once = function() {
+                        setTimeout(updateLegend, 0);
+                        src.un('featuresloadend', once);
+                    };
+                    src.on('featuresloadend', once);
+                } else {
+                    setTimeout(updateLegend, 0);
+                }
+            } else {
+                setTimeout(updateLegend, 0);
+            }
+        } catch (e) { console.warn('scheduleLegendUpdateFor failed', e); }
+    }
+
+    function showOverlay() {
+        try {
+            var overlayEl = document.getElementById('map-loading-overlay');
+            if (overlayEl) overlayEl.style.display = 'flex';
+        } catch (e) {}
+    }
+
+    function hideOverlay() {
+        try {
+            var overlayEl = document.getElementById('map-loading-overlay');
+            if (overlayEl) overlayEl.style.display = 'none';
+        } catch (e) {}
+    }
+
+    function toggleLayerWithLoading(layer, checked) {
+        try {
+            showOverlay();
+            layer.setVisible(checked);
+            var src = layer.getSource && layer.getSource();
+            var finished = false;
+            function finish() {
+                if (finished) return;
+                finished = true;
+                try { setTimeout(updateLegend, 0); } catch (e) {}
+                hideOverlay();
+            }
+            if (checked) {
+                if (src && typeof src.getFeatures === 'function' && src.getFeatures().length === 0) {
+                    var once = function() { try { src.un('featuresloadend', once); } catch (e) {} finish(); };
+                    try { src.on('featuresloadend', once); } catch (e) {}
+                    setTimeout(finish, 2000);
+                } else {
+                    setTimeout(finish, 150);
+                }
+            } else {
+                setTimeout(finish, 100);
+            }
+        } catch (e) { hideOverlay(); }
+    }
+    // Helper: generate warna konsisten dari string kategori
+    function colorFromCategory(category) {
+        try {
+            var str = String(category || 'LAINNYA');
+            var hash = 0;
+            for (var i = 0; i < str.length; i++) {
+                hash = str.charCodeAt(i) + ((hash << 5) - hash);
+                hash = hash & hash;
+            }
+            var hue = Math.abs(hash) % 360;
+            var saturation = 65;
+            var lightness = 55;
+            return 'hsl(' + hue + ',' + saturation + '%,' + lightness + '%)';
+        } catch (e) {
+            return '#9aa0a6';
+        }
+    }
     var map = new ol.Map({
         target: 'map',
         layers: [
@@ -652,6 +764,7 @@
     batasKecamatan.getSource().on('featuresloadend', function() {
         console.log('Batas Kecamatan layer loaded');
         batasKecamatan.setOpacity(1);
+        if (batasKecamatan.getVisible && batasKecamatan.getVisible()) setTimeout(updateLegend, 0);
     });
 
     // Layer LSD
@@ -692,6 +805,7 @@
     lsdLayer.getSource().on('featuresloadend', function() {
         console.log('LSD layer loaded');
         lsdLayer.setOpacity(1);
+        if (lsdLayer.getVisible && lsdLayer.getVisible()) setTimeout(updateLegend, 0);
     });
 
     // Layer RTRW 2024
@@ -719,6 +833,7 @@
     rtrwLayer.getSource().on('featuresloadend', function() {
         console.log('RTRW layer loaded');
         rtrwLayer.setOpacity(1);
+        if (rtrwLayer.getVisible && rtrwLayer.getVisible()) setTimeout(updateLegend, 0);
     });
 
     // Layer RDTR Glagah-Giri
@@ -746,6 +861,7 @@
     rdtrGlagahGiri.getSource().on('featuresloadend', function() {
         console.log('RDTR Glagah-Giri layer loaded');
         rdtrGlagahGiri.setOpacity(1);
+        if (rdtrGlagahGiri.getVisible && rdtrGlagahGiri.getVisible()) setTimeout(updateLegend, 0);
     });
 
     // Layer RDTR Licin
@@ -773,6 +889,7 @@
     rdtrLicin.getSource().on('featuresloadend', function() {
         console.log('RDTR Licin layer loaded');
         rdtrLicin.setOpacity(1);
+        if (rdtrLicin.getVisible && rdtrLicin.getVisible()) setTimeout(updateLegend, 0);
     });
 
     // Layer RDTR Kabat
@@ -800,6 +917,7 @@
     rdtrKabat.getSource().on('featuresloadend', function() {
         console.log('RDTR Kabat layer loaded');
         rdtrKabat.setOpacity(1);
+        if (rdtrKabat.getVisible && rdtrKabat.getVisible()) setTimeout(updateLegend, 0);
     });
 
     // Layer RDTR Rogojampi
@@ -827,6 +945,77 @@
     rdtrRogojampi.getSource().on('featuresloadend', function() {
         console.log('RDTR Rogojampi layer loaded');
         rdtrRogojampi.setOpacity(1);
+        if (rdtrRogojampi.getVisible && rdtrRogojampi.getVisible()) setTimeout(updateLegend, 0);
+    });
+
+    // Layer RDTR Genteng
+    var rdtrGenteng = new ol.layer.Vector({
+        title: 'RDTR Genteng',
+        source: new ol.source.Vector({
+            url: '{{ asset('mapdata/newgeo/Genteng.geojson') }}',
+            format: new ol.format.GeoJSON()
+        }),
+        visible: false,
+        opacity: 1,
+        style: function(feature) {
+            var kategori = feature.get('NAMOBJ') || feature.get('namobj') || feature.get('NAMZON') || feature.get('KODZON') || 'LAINNYA';
+            var warna = feature.get('WARNA') || feature.get('warna') || colorFromCategory(kategori);
+            feature.set('warna', warna, true);
+            return new ol.style.Style({
+                fill: new ol.style.Fill({ color: warna }),
+                stroke: new ol.style.Stroke({ color: warna, width: 1 })
+            });
+        }
+    });
+
+    rdtrGenteng.getSource().on('featuresloadend', function() {
+        console.log('RDTR Genteng layer loaded');
+        try {
+            var feats = rdtrGenteng.getSource().getFeatures();
+            for (var i = 0; i < feats.length; i++) {
+                var f = feats[i];
+                var kategori = f.get('NAMOBJ') || f.get('namobj') || f.get('NAMZON') || f.get('KODZON') || 'LAINNYA';
+                var warna = f.get('WARNA') || f.get('warna') || colorFromCategory(kategori);
+                f.set('warna', warna, true);
+            }
+        } catch (e) { console.warn('genteng color init error', e); }
+        rdtrGenteng.setOpacity(1);
+        if (rdtrGenteng.getVisible && rdtrGenteng.getVisible()) setTimeout(updateLegend, 0);
+    });
+
+    // Layer RDTR Singojuruh
+    var rdtrSingojuruh = new ol.layer.Vector({
+        title: 'RDTR Singojuruh',
+        source: new ol.source.Vector({
+            url: '{{ asset('mapdata/newgeo/Singojuruh.geojson') }}',
+            format: new ol.format.GeoJSON()
+        }),
+        visible: false,
+        opacity: 1,
+        style: function(feature) {
+            var kategori = feature.get('NAMOBJ') || feature.get('namobj') || feature.get('NAMZON') || feature.get('KODZON') || 'LAINNYA';
+            var warna = feature.get('WARNA') || feature.get('warna') || colorFromCategory(kategori);
+            feature.set('warna', warna, true);
+            return new ol.style.Style({
+                fill: new ol.style.Fill({ color: warna }),
+                stroke: new ol.style.Stroke({ color: warna, width: 1 })
+            });
+        }
+    });
+
+    rdtrSingojuruh.getSource().on('featuresloadend', function() {
+        console.log('RDTR Singojuruh layer loaded');
+        try {
+            var feats = rdtrSingojuruh.getSource().getFeatures();
+            for (var i = 0; i < feats.length; i++) {
+                var f = feats[i];
+                var kategori = f.get('NAMOBJ') || f.get('namobj') || f.get('NAMZON') || f.get('KODZON') || 'LAINNYA';
+                var warna = f.get('WARNA') || f.get('warna') || colorFromCategory(kategori);
+                f.set('warna', warna, true);
+            }
+        } catch (e) { console.warn('singojuruh color init error', e); }
+        rdtrSingojuruh.setOpacity(1);
+        if (rdtrSingojuruh.getVisible && rdtrSingojuruh.getVisible()) setTimeout(updateLegend, 0);
     });
 
     // Membuat layer untuk marker pencarian
@@ -902,37 +1091,47 @@
         }
         
         $('#batasKecamatanCheck').on('change', function() {
-            batasKecamatan.setVisible(this.checked);
+            toggleLayerWithLoading(batasKecamatan, this.checked);
             ensureMarkerOnTop();
         });
 
         $('#lsdCheck').on('change', function() {
-            lsdLayer.setVisible(this.checked);
+            toggleLayerWithLoading(lsdLayer, this.checked);
             ensureMarkerOnTop();
         });
 
         $('#rtrwCheck').on('change', function() {
-            rtrwLayer.setVisible(this.checked);
+            toggleLayerWithLoading(rtrwLayer, this.checked);
             ensureMarkerOnTop();
         });
 
         $('#rdtrGlagahGiriCheck').on('change', function() {
-            rdtrGlagahGiri.setVisible(this.checked);
+            toggleLayerWithLoading(rdtrGlagahGiri, this.checked);
             ensureMarkerOnTop();
         });
 
         $('#rdtrLicinCheck').on('change', function() {
-            rdtrLicin.setVisible(this.checked);
+            toggleLayerWithLoading(rdtrLicin, this.checked);
             ensureMarkerOnTop();
         });
 
         $('#rdtrKabatCheck').on('change', function() {
-            rdtrKabat.setVisible(this.checked);
+            toggleLayerWithLoading(rdtrKabat, this.checked);
             ensureMarkerOnTop();
         });
 
         $('#rdtrRogojampiCheck').on('change', function() {
-            rdtrRogojampi.setVisible(this.checked);
+            toggleLayerWithLoading(rdtrRogojampi, this.checked);
+            ensureMarkerOnTop();
+        });
+
+        $('#rdtrGentengCheck').on('change', function() {
+            toggleLayerWithLoading(rdtrGenteng, this.checked);
+            ensureMarkerOnTop();
+        });
+
+        $('#rdtrSingojuruhCheck').on('change', function() {
+            toggleLayerWithLoading(rdtrSingojuruh, this.checked);
             ensureMarkerOnTop();
         });
     });
@@ -983,6 +1182,14 @@
         $('#rdtrRogojampiOpacitySlider').on('input', function() {
             setLayerOpacity(rdtrRogojampi, '#rdtrRogojampiOpacitySlider', '#rdtrRogojampiOpacity');
         });
+
+        $('#rdtrGentengOpacitySlider').on('input', function() {
+            setLayerOpacity(rdtrGenteng, '#rdtrGentengOpacitySlider', '#rdtrGentengOpacity');
+        });
+
+        $('#rdtrSingojuruhOpacitySlider').on('input', function() {
+            setLayerOpacity(rdtrSingojuruh, '#rdtrSingojuruhOpacitySlider', '#rdtrSingojuruhOpacity');
+        });
     });
 
     // Reset semua opacity ke 100%
@@ -1014,6 +1221,8 @@
     map.addLayer(rdtrLicin);
     map.addLayer(rdtrKabat);
     map.addLayer(rdtrRogojampi);
+    map.addLayer(rdtrGenteng);
+    map.addLayer(rdtrSingojuruh);
     map.addLayer(lsdLayer);
     map.addLayer(markerLayer);
     markerLayer.setZIndex(9999);
@@ -1098,7 +1307,7 @@
             $('#info-zona-namobj').html(html);
             $('#info-zona-namobj-summary').html(html);
         } else {
-            html += infoRow('NAMOBJ', namobj || '-');
+            html += infoRow('Nama Zona', namobj || '-');
             $('#info-zona-namobj').html(html);
             $('#info-zona-namobj-summary').html(html);
         }
@@ -1115,7 +1324,9 @@
             {layer: rdtrGlagahGiri, name: 'RDTR Glagah-Giri'},
             {layer: rdtrLicin, name: 'RDTR Licin'},
             {layer: rdtrKabat, name: 'RDTR Kabat'},
-            {layer: rdtrRogojampi, name: 'RDTR Rogojampi'}
+            {layer: rdtrRogojampi, name: 'RDTR Rogojampi'},
+            {layer: rdtrGenteng, name: 'RDTR Genteng'},
+            {layer: rdtrSingojuruh, name: 'RDTR Singojuruh'}
         ];
         
         map.forEachFeatureAtPixel(evt.pixel, function(feature, layerRef) {
@@ -1186,7 +1397,9 @@
             {layer: rdtrGlagahGiri, name: 'RDTR Glagah-Giri', utama: 'NAMOBJ'},
             {layer: rdtrLicin, name: 'RDTR Licin', utama: 'NAMOBJ'},
             {layer: rdtrKabat, name: 'RDTR Kabat', utama: 'NAMOBJ'},
-            {layer: rdtrRogojampi, name: 'RDTR Rogojampi', utama: 'NAMOBJ'}
+            {layer: rdtrRogojampi, name: 'RDTR Rogojampi', utama: 'NAMOBJ'},
+            {layer: rdtrGenteng, name: 'RDTR Genteng', utama: 'NAMOBJ'},
+            {layer: rdtrSingojuruh, name: 'RDTR Singojuruh', utama: 'NAMOBJ'}
         ];
         
         for(var i=0;i<layers.length;i++){
@@ -1210,12 +1423,16 @@
                             +'</div>');
                         }
                     } else {
+                        var seenUtama = Object.create(null);
                         for(var j=0;j<feats.length;j++){
                             var f = feats[j];
-                            var warna = f.get('WARNA')||f.get('warna')||'#eee';
                             var utama = f.get(layers[i].utama)||'-';
+                            var key = String(utama);
+                            if(seenUtama[key]) continue;
+                            seenUtama[key] = true;
+                            var warnaLegend = f.get('WARNA')||f.get('warna')||colorFromCategory(utama);
                             legend.push('<div class="flex items-center gap-2 mb-2">'
-                                +'<span class="w-6 h-6 rounded bg-gray-200 border-2 border-gray-400" style="background:'+warna+'"></span>'
+                                +'<span class="w-6 h-6 rounded bg-gray-200 border-2 border-gray-400" style="background:'+warnaLegend+'"></span>'
                                 +'<span class="text-sm text-gray-700">'+utama+'</span>'
                             +'</div>');
                         }
@@ -1248,9 +1465,19 @@
     // Update legenda saat layer diaktifkan/nonaktifkan
     $(document).ready(function(){
         updateLegend();
-        $('#batasKecamatanCheck,#lsdCheck,#rtrwCheck,#rdtrGlagahGiriCheck,#rdtrLicinCheck,#rdtrKabatCheck,#rdtrRogojampiCheck').on('change',function(){
+        $('#batasKecamatanCheck,#lsdCheck,#rtrwCheck,#rdtrGlagahGiriCheck,#rdtrLicinCheck,#rdtrKabatCheck,#rdtrRogojampiCheck,#rdtrGentengCheck,#rdtrSingojuruhCheck').on('change',function(){
             setTimeout(updateLegend,300);
         });
+
+        // Fake loading state 2 detik saat pertama kali akses halaman peta
+        try {
+            var overlayEl = document.getElementById('map-loading-overlay');
+            if (overlayEl) {
+                setTimeout(function(){
+                    overlayEl.style.display = 'none';
+                }, 2000);
+            }
+        } catch (e) { console.warn('overlay hide failed', e); }
     });
 </script>
 
