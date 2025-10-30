@@ -89,11 +89,22 @@ class AdminKkprController extends Controller
         // Pagination
         $kkprs = $query->paginate(15)->withQueryString();
 
-        // Statistics
-        $totalKkpr = Kkpr::where('deleted', 0)->where('jenis', 'non_umk')->count();
-        $pengajuan = Kkpr::where('deleted', 0)->where('jenis', 'non_umk')->where('proses', 1)->count();
-        $proses = Kkpr::where('deleted', 0)->where('jenis', 'non_umk')->whereIn('proses', [2, 3, 4, 5, 6, 7, 8, 9])->count();
-        $selesai = Kkpr::where('deleted', 0)->where('jenis', 'non_umk')->where('proses', 10)->count();
+        // Statistics - apply same role filter as query
+        $statsQuery = Kkpr::where('deleted', 0)->where('jenis', 'non_umk');
+        
+        if (Gate::allows('Tim FPR')) {
+            $statsQuery->where('tim_fpr', 1);
+        } else {
+            $statsQuery->where(function($q) {
+                $q->whereNull('tim_fpr')
+                  ->orWhere('tim_fpr', 0);
+            });
+        }
+        
+        $totalKkpr = (clone $statsQuery)->count();
+        $pengajuan = (clone $statsQuery)->where('proses', 1)->count();
+        $proses = (clone $statsQuery)->whereIn('proses', [2, 3, 4, 5, 6, 7, 8, 9])->count();
+        $selesai = (clone $statsQuery)->where('proses', 10)->count();
 
         $data = [
             'title' => 'Persetujuan KKPR',
