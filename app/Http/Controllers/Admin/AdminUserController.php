@@ -80,7 +80,15 @@ class AdminUserController extends Controller
     public function create()
     {
         $roles = Role::pluck('name', 'id');
-        $permissions = Permission::pluck('name', 'id');
+        
+        // Filter permissions yang tidak ditampilkan
+        $excludedPermissions = [
+            'Petugas TL', 'Skpd', 'Revisi', 'Penomoran', 'Admin Sipo', 'Admin KKPR',
+            'KKPR BERUSAHA', 'KKPR NON BERUSAHA', 'Kadin PTSP', 'User', 'Admin AP',
+            'Mpp', 'Staff', 'Sekretariat', 'Kasi', 'Sekdin'
+        ];
+        
+        $permissions = Permission::whereNotIn('name', $excludedPermissions)->pluck('name', 'id');
         
         return view($this->base_view . 'create', compact('roles', 'permissions'));
     }
@@ -149,7 +157,15 @@ class AdminUserController extends Controller
     {
         $user->load(['roles', 'permissions']);
         $roles = Role::pluck('name', 'id');
-        $permissions = Permission::pluck('name', 'id');
+        
+        // Filter permissions yang tidak ditampilkan
+        $excludedPermissions = [
+            'Petugas TL', 'Skpd', 'Revisi', 'Penomoran', 'Admin Sipo', 'Admin KKPR',
+            'KKPR BERUSAHA', 'KKPR NON BERUSAHA', 'Kadin PTSP', 'User', 'Admin AP',
+            'Mpp', 'Staff', 'Sekretariat', 'Kasi', 'Sekdin'
+        ];
+        
+        $permissions = Permission::whereNotIn('name', $excludedPermissions)->pluck('name', 'id');
         
         return view($this->base_view . 'edit', compact('user', 'roles', 'permissions'));
     }
