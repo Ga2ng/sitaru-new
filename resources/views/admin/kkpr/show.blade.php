@@ -328,7 +328,7 @@
                                     <p class="text-gray-900 mt-1">{{ $model->status_lahan ?? 'N/A' }}</p>
                                 </div>
                                 <div>
-                                    <label class="text-sm font-semibold text-gray-600">Status Penggunaan Tanah</label>
+                                    <label class="text-sm font-semibold text-gray-600">Kondisi Lahan Eksisting</label>
                                     <p class="text-gray-900 mt-1">{{ $model->status_penggunaan_tanah ?? 'N/A' }}</p>
                                 </div>
                                 <div>
@@ -366,7 +366,7 @@
                         <div class="w-10 h-10 bg-indigo-500 rounded-lg flex items-center justify-center">
                             <i class="fas fa-map-marker-alt text-white text-sm"></i>
                         </div>
-                        <h4 class="text-lg font-semibold text-gray-900">Lokasi Kegiatan</h4>
+                        <h4 class="text-lg font-semibold text-gray-900">Lokasi Kegiatan Usaha</h4>
                     </div>
                     <div class="bg-white rounded-lg p-4 border border-indigo-200">
                         <p class="text-gray-900 leading-relaxed">
@@ -487,7 +487,7 @@
                                                 <i class="fas fa-file-signature text-white text-sm"></i>
             </div>
                                             <div>
-                                                <p class="font-bold text-gray-900 text-sm">Surat Pernyataan Mandiri</p>
+                                                <p class="font-bold text-gray-900 text-sm">Upload KKPR</p>
                                                 <p class="text-xs text-gray-500">Dokumen wajib</p>
         </div>
         </div>
@@ -702,7 +702,7 @@
                                                 <i class="fas fa-building text-white text-sm"></i>
                                             </div>
                 <div>
-                                                <p class="font-bold text-gray-900 text-sm">Akta Perusahaan</p>
+                                                <p class="font-bold text-gray-900 text-sm">Akta Perusahaan (Badan Usaha)</p>
                                                 <p class="text-xs text-gray-500">Dokumen wajib</p>
                                             </div>
                                         </div>

@@ -50,7 +50,7 @@ class MemberKkprNonController extends Controller
     {
         $user = Auth::user();
         
-        $req = $request->only('alamat_tanah', 'kabupaten_id', 'kecamatan_id', 'kelurahan_id', 'luas', 'jns_sertifikat', 'thn_sertifikat', 'no_sertifikat', 'an_sertifikat', 'luas_sertifikat', 'penggunaan_awal', 'penggunaan_baru', 'longitude', 'lattitude', 'kepimilikan', 'rt', 'rw');
+        $req = $request->only('kabupaten_id', 'kecamatan_id', 'kelurahan_id', 'luas', 'jns_sertifikat', 'thn_sertifikat', 'no_sertifikat', 'an_sertifikat', 'luas_sertifikat', 'penggunaan_awal', 'penggunaan_baru', 'longitude', 'lattitude', 'kepimilikan', 'rt', 'rw');
         
         $req['user_id'] = $user->id;
         $req['jenis'] = 'umk';
@@ -100,25 +100,64 @@ class MemberKkprNonController extends Controller
             }
         }
 
-        $reqkor = $request->only('longi', 'lati');
-        if (isset($reqkor)) {
-            $koordinat = $model->kkpr_koordinat;
-            if ($koordinat->count()) {
-                foreach ($koordinat as $kor) {
-                    $kor->delete();
+        // Handle koordinat dari KML atau input manual
+        $inputMethod = $request->get('input_method', 'kml');
+        
+        if ($inputMethod === 'manual') {
+            // Handle koordinat dari input manual (JSON array)
+            $koordinatDimohon = $request->get('koordinat_dimohon');
+            if ($koordinatDimohon) {
+                $koordinat = $model->kkpr_koordinat;
+                if ($koordinat->count()) {
+                    foreach ($koordinat as $kor) {
+                        $kor->delete();
+                    }
+                }
+                
+                try {
+                    $coordinates = json_decode($koordinatDimohon, true);
+                    if (is_array($coordinates) && count($coordinates) > 0) {
+                        foreach ($coordinates as $coord) {
+                            if (isset($coord['latitude']) && isset($coord['longitude'])) {
+                                Koordinat_kkpr::create([
+                                    'jenis' => 'UMK',
+                                    'id_kkpr' => $model->id,
+                                    'lati' => $coord['latitude'],
+                                    'longi' => $coord['longitude'],
+                                ]);
+                            }
+                        }
+                    }
+                } catch (\Exception $e) {
+                    // Handle error jika JSON tidak valid
                 }
             }
+        } else {
+            // Handle koordinat dari KML (logic yang sudah ada)
+            $reqkor = $request->only('longi', 'lati');
+            if (isset($reqkor) && !empty($reqkor['longi']) && !empty($reqkor['lati'])) {
+                $koordinat = $model->kkpr_koordinat;
+                if ($koordinat->count()) {
+                    foreach ($koordinat as $kor) {
+                        $kor->delete();
+                    }
+                }
 
-            $longitude = $reqkor['longi'];
-            $lattitude = $reqkor['lati'];
+                $longitude = $reqkor['longi'];
+                $lattitude = $reqkor['lati'];
 
-            foreach ($longitude as $key => $n) {
-                Koordinat_kkpr::create([
-                    'jenis' => 'UMK',
-                    'id_kkpr' => $model->id,
-                    'longi' => $longitude[$key],
-                    'lati' => $lattitude[$key],
-                ]);
+                if (is_array($longitude) && is_array($lattitude)) {
+                    foreach ($longitude as $key => $n) {
+                        if (isset($lattitude[$key]) && !empty($longitude[$key]) && !empty($lattitude[$key])) {
+                            Koordinat_kkpr::create([
+                                'jenis' => 'UMK',
+                                'id_kkpr' => $model->id,
+                                'longi' => $longitude[$key],
+                                'lati' => $lattitude[$key],
+                            ]);
+                        }
+                    }
+                }
             }
         }
 
@@ -296,7 +335,7 @@ class MemberKkprNonController extends Controller
             return redirect()->route('member.kkprnon.index')->withErrors('Anda Tidak Berhak Mengakses Halaman Ini');
         }
 
-        $req = $request->only('alamat_tanah', 'kabupaten_id', 'kecamatan_id', 'kelurahan_id', 'luas', 'jns_sertifikat', 'thn_sertifikat', 'no_sertifikat', 'an_sertifikat', 'luas_sertifikat', 'penggunaan_awal', 'penggunaan_baru', 'longitude', 'lattitude', 'kepimilikan', 'rt', 'rw', 'badan_hukum', 'risiko_kegiatan', 'kategori_umk');
+        $req = $request->only('kabupaten_id', 'kecamatan_id', 'kelurahan_id', 'luas', 'jns_sertifikat', 'thn_sertifikat', 'no_sertifikat', 'an_sertifikat', 'luas_sertifikat', 'penggunaan_awal', 'penggunaan_baru', 'longitude', 'lattitude', 'kepimilikan', 'rt', 'rw', 'badan_hukum', 'risiko_kegiatan', 'kategori_umk');
         
         $req['user_id'] = $user->id;
         $req['jenis'] = 'umk';
@@ -345,25 +384,64 @@ class MemberKkprNonController extends Controller
             }
         }
 
-        $reqkor = $request->only('longi', 'lati');
-        if (isset($reqkor)) {
-            $koordinat = $model->kkpr_koordinat;
-            if ($koordinat->count()) {
-                foreach ($koordinat as $kor) {
-                    $kor->delete();
+        // Handle koordinat dari KML atau input manual
+        $inputMethod = $request->get('input_method', 'kml');
+        
+        if ($inputMethod === 'manual') {
+            // Handle koordinat dari input manual (JSON array)
+            $koordinatDimohon = $request->get('koordinat_dimohon');
+            if ($koordinatDimohon) {
+                $koordinat = $model->kkpr_koordinat;
+                if ($koordinat->count()) {
+                    foreach ($koordinat as $kor) {
+                        $kor->delete();
+                    }
+                }
+                
+                try {
+                    $coordinates = json_decode($koordinatDimohon, true);
+                    if (is_array($coordinates) && count($coordinates) > 0) {
+                        foreach ($coordinates as $coord) {
+                            if (isset($coord['latitude']) && isset($coord['longitude'])) {
+                                Koordinat_kkpr::create([
+                                    'jenis' => 'UMK',
+                                    'id_kkpr' => $model->id,
+                                    'lati' => $coord['latitude'],
+                                    'longi' => $coord['longitude'],
+                                ]);
+                            }
+                        }
+                    }
+                } catch (\Exception $e) {
+                    // Handle error jika JSON tidak valid
                 }
             }
+        } else {
+            // Handle koordinat dari KML (logic yang sudah ada)
+            $reqkor = $request->only('longi', 'lati');
+            if (isset($reqkor) && !empty($reqkor['longi']) && !empty($reqkor['lati'])) {
+                $koordinat = $model->kkpr_koordinat;
+                if ($koordinat->count()) {
+                    foreach ($koordinat as $kor) {
+                        $kor->delete();
+                    }
+                }
 
-            $longitude = $reqkor['longi'];
-            $lattitude = $reqkor['lati'];
+                $longitude = $reqkor['longi'];
+                $lattitude = $reqkor['lati'];
 
-            foreach ($longitude as $key => $n) {
-                Koordinat_kkpr::create([
-                    'jenis' => 'UMK',
-                    'id_kkpr' => $model->id,
-                    'longi' => $longitude[$key],
-                    'lati' => $lattitude[$key],
-                ]);
+                if (is_array($longitude) && is_array($lattitude)) {
+                    foreach ($longitude as $key => $n) {
+                        if (isset($lattitude[$key]) && !empty($longitude[$key]) && !empty($lattitude[$key])) {
+                            Koordinat_kkpr::create([
+                                'jenis' => 'UMK',
+                                'id_kkpr' => $model->id,
+                                'longi' => $longitude[$key],
+                                'lati' => $lattitude[$key],
+                            ]);
+                        }
+                    }
+                }
             }
         }
 

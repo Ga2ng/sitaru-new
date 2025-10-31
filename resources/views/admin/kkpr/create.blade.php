@@ -210,7 +210,7 @@
                 <div class="space-y-2">
                     <label for="alamat_kegiatan" class="block text-sm font-semibold text-gray-700">
                         <i class="fas fa-map mr-2 text-purple-600"></i>
-                        Alamat Kegiatan <span class="text-red-500">*</span>
+                        Lokasi Kegiatan Usaha <span class="text-red-500">*</span>
                     </label>
                     <textarea id="alamat_kegiatan" name="alamat_kegiatan" rows="3" 
                               class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm resize-none" 
@@ -269,14 +269,34 @@
                         Status Lahan <span class="text-red-500">*</span>
                     </label>
                     <select id="status_lahan" name="status_lahan" 
-                            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm" required>
+                            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm" 
+                            onchange="toggleStatusLahanLainnya(this.value)" required>
                         <option value="">-- Pilih Status Lahan --</option>
                         <option value="Milik sendiri" {{ old('status_lahan') == 'Milik sendiri' ? 'selected' : '' }}>Milik sendiri</option>
                         <option value="Jual Beli" {{ old('status_lahan') == 'Jual Beli' ? 'selected' : '' }}>Jual Beli</option>
                         <option value="Sewa" {{ old('status_lahan') == 'Sewa' ? 'selected' : '' }}>Sewa</option>
                         <option value="Pinjam Pakai" {{ old('status_lahan') == 'Pinjam Pakai' ? 'selected' : '' }}>Pinjam Pakai</option>
+                        <option value="Dokumen penguasaan lainnya" {{ old('status_lahan') == 'Dokumen penguasaan lainnya' ? 'selected' : '' }}>Dokumen penguasaan lainnya</option>
                     </select>
                     @error('status_lahan')
+                        <div class="flex items-center space-x-2 text-red-600 text-sm mt-1">
+                            <i class="fas fa-exclamation-circle text-xs"></i>
+                            <span>{{ $message }}</span>
+                        </div>
+                    @enderror
+                </div>
+
+                <!-- Dynamic Field untuk Dokumen penguasaan lainnya -->
+                <div id="status_lahan_lainnya" class="space-y-2" style="display: none;">
+                    <label for="status_lahan_lainnya_input" class="block text-sm font-semibold text-gray-700">
+                        <i class="fas fa-file-alt mr-2 text-purple-600"></i>
+                        Dokumen Penguasaan Lainnya <span class="text-red-500">*</span>
+                    </label>
+                    <input type="text" id="status_lahan_lainnya_input" name="status_lahan_lainnya_input" 
+                           value="{{ old('status_lahan_lainnya_input') }}"
+                           placeholder="Masukkan jenis dokumen penguasaan lainnya"
+                           class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm">
+                    @error('status_lahan_lainnya_input')
                         <div class="flex items-center space-x-2 text-red-600 text-sm mt-1">
                             <i class="fas fa-exclamation-circle text-xs"></i>
                             <span>{{ $message }}</span>
@@ -287,15 +307,17 @@
                 <div class="space-y-2">
                     <label for="status_penggunaan_tanah" class="block text-sm font-semibold text-gray-700">
                         <i class="fas fa-home mr-2 text-purple-600"></i>
-                        Status Penggunaan Tanah <span class="text-red-500">*</span>
+                        Kondisi Lahan Eksisting <span class="text-red-500">*</span>
                     </label>
                     <select id="status_penggunaan_tanah" name="status_penggunaan_tanah" 
-                            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm" required>
-                        <option value="">-- Pilih Status Penggunaan Tanah --</option>
+                            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm" 
+                            onchange="togglePenggunaanSekarang(this.value)" required>
+                        <option value="">-- Pilih Kondisi Lahan Eksisting --</option>
                         <option value="Sudah Terbangun" {{ old('status_penggunaan_tanah') == 'Sudah Terbangun' ? 'selected' : '' }}>Sudah Terbangun</option>
                         <option value="Proses Pembangunan" {{ old('status_penggunaan_tanah') == 'Proses Pembangunan' ? 'selected' : '' }}>Proses Pembangunan</option>
                         <option value="Kosong" {{ old('status_penggunaan_tanah') == 'Kosong' ? 'selected' : '' }}>Kosong</option>
                         <option value="Terdapat Bangunan Lain" {{ old('status_penggunaan_tanah') == 'Terdapat Bangunan Lain' ? 'selected' : '' }}>Terdapat Bangunan Lain</option>
+                        <option value="Terdapat Bangunan Lain (Akan dilakukan pembongkaran)" {{ old('status_penggunaan_tanah') == 'Terdapat Bangunan Lain (Akan dilakukan pembongkaran)' ? 'selected' : '' }}>Terdapat Bangunan Lain (Akan dilakukan pembongkaran)</option>
                     </select>
                     @error('status_penggunaan_tanah')
                         <div class="flex items-center space-x-2 text-red-600 text-sm mt-1">
@@ -349,10 +371,10 @@
                 <div class="space-y-2">
                     <label for="status_tanah" class="block text-sm font-semibold text-gray-700">
                         <i class="fas fa-map mr-2 text-purple-600"></i>
-                        Status Atas Tanah <span class="text-red-500">*</span>
+                        Status Atas Tanah
                     </label>
                     <select id="status_tanah" name="status_tanah" 
-                            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm" required>
+                            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm">
                         <option value="">-- Pilih Status Atas Tanah --</option>
                         <option value="Sebidang Tanah Perumahan" {{ old('status_tanah') == 'Sebidang Tanah Perumahan' ? 'selected' : '' }}>Sebidang Tanah Perumahan</option>
                         <option value="Sebidang Tanah Pertanian" {{ old('status_tanah') == 'Sebidang Tanah Pertanian' ? 'selected' : '' }}>Sebidang Tanah Pertanian</option>
@@ -372,7 +394,7 @@
                         Penggunaan Sekarang
                     </label>
                     <input type="text" id="penggunaan_sekarang" name="penggunaan_sekarang" value="{{ old('penggunaan_sekarang') }}" 
-                           class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm" 
+                           class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm disabled:bg-gray-100 disabled:cursor-not-allowed" 
                            placeholder="Penggunaan tanah saat ini">
                     @error('penggunaan_sekarang')
                         <div class="flex items-center space-x-2 text-red-600 text-sm mt-1">
@@ -382,21 +404,6 @@
                     @enderror
                 </div>
 
-                <div class="space-y-2">
-                    <label for="alamat_tanah" class="block text-sm font-semibold text-gray-700">
-                        <i class="fas fa-map-marker-alt mr-2 text-purple-600"></i>
-                        Alamat Tanah
-                    </label>
-                    <textarea id="alamat_tanah" name="alamat_tanah" rows="3" 
-                              class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm resize-none" 
-                              placeholder="Alamat lokasi tanah yang akan dimanfaatkan">{{ old('alamat_tanah') }}</textarea>
-                    @error('alamat_tanah')
-                        <div class="flex items-center space-x-2 text-red-600 text-sm mt-1">
-                            <i class="fas fa-exclamation-circle text-xs"></i>
-                            <span>{{ $message }}</span>
-                        </div>
-                    @enderror
-                </div>
             </div>
         </div>
 
@@ -723,7 +730,7 @@
                 <div class="space-y-2">
                     <label for="sp_mandiri" class="block text-sm font-semibold text-gray-700">
                         <i class="fas fa-file-signature mr-2 text-red-600"></i>
-                        Upload Surat Pernyataan Mandiri <span class="text-red-500">*.pdf</span>
+                        Upload KKPR <span class="text-red-500">*.pdf</span>
                     </label>
                     <div class="relative">
                         <input type="file" id="sp_mandiri" name="sp_mandiri" accept="application/pdf" 
@@ -818,7 +825,7 @@
                 <div class="space-y-2">
                     <label for="f_akta" class="block text-sm font-semibold text-gray-700">
                         <i class="fas fa-file-alt mr-2 text-red-600"></i>
-                        Akta Perusahaan
+                        Akta Perusahaan (Badan Usaha)
                     </label>
                     <div class="relative">
                         <input type="file" id="f_akta" name="f_akta" accept="application/pdf" 
@@ -836,7 +843,7 @@
                 <div class="space-y-2">
                     <label for="dok_taru" class="block text-sm font-semibold text-gray-700">
                         <i class="fas fa-file-alt mr-2 text-red-600"></i>
-                        Dokumen TARU
+                        Dokumen Perizinan Tata Ruang Sebelumnya
                     </label>
                     <div class="relative">
                         <input type="file" id="dok_taru" name="dok_taru" accept="application/pdf" 
@@ -898,11 +905,10 @@
                 <div class="w-8 h-8 bg-gradient-to-br from-teal-500 to-teal-600 rounded-lg flex items-center justify-center">
                     <i class="fas fa-map-marker-alt text-white text-sm"></i>
                 </div>
-                <h3 class="text-lg font-bold text-gray-900">LOKASI KEGIATAN</h3>
+                <h3 class="text-lg font-bold text-gray-900">RENCANA PEMBANGUNAN</h3>
             </div>
             
             <div class="space-y-6">
-                <h4 class="text-md font-semibold text-gray-700">Koordinat Lokasi</h4>
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
                     <div class="space-y-2">
                         <label for="luas_tanah" class="block text-sm font-semibold text-gray-700">
@@ -1062,56 +1068,111 @@
         <!-- Map Section -->
         <div class="bg-white/80 backdrop-blur-sm rounded-xl p-6 shadow-lg border border-white/20">
             <div class="space-y-4">
-                <div class="flex items-center justify-between">
-                    <h4 class="text-lg font-semibold text-gray-700">Peta Lokasi</h4>
-                    <div class="flex items-center space-x-4">
-                        <div class="space-y-2">
-                            <label for="f_kml" class="block text-sm font-semibold text-gray-700">
-                                <i class="fas fa-upload mr-2 text-blue-600"></i>
-                                Upload KML
-                            </label>
-                            <div class="relative">
-                                <input type="file" id="f_kml" name="f_kml" accept=".kml" 
-                                       class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-                                       onchange="console.log('KML input onchange triggered:', this.files)">
-                            </div>
-                            @error('f_kml')
-                                <div class="flex items-center space-x-2 text-red-600 text-sm mt-1">
-                                    <i class="fas fa-exclamation-circle text-xs"></i>
-                                    <span>{{ $message }}</span>
+                <!-- Pilihan Input Koordinat -->
+                <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-4 border border-blue-200">
+                    <label class="block text-sm font-semibold text-gray-700 mb-3">
+                        <i class="fas fa-map-marker-alt mr-2 text-blue-600"></i>
+                        Pilih Metode Input Koordinat
+                    </label>
+                    <div class="flex space-x-4">
+                        <label class="flex items-center space-x-2 cursor-pointer">
+                            <input type="radio" name="input_method" value="kml" id="input_method_kml" class="w-4 h-4 text-blue-600 focus:ring-blue-500" {{ old('input_method', 'kml') == 'kml' ? 'checked' : '' }} onchange="toggleInputMethod('kml')">
+                            <span class="text-sm font-medium text-gray-700">Upload KML / Draw di Peta</span>
+                        </label>
+                        <label class="flex items-center space-x-2 cursor-pointer">
+                            <input type="radio" name="input_method" value="manual" id="input_method_manual" class="w-4 h-4 text-blue-600 focus:ring-blue-500" {{ old('input_method') == 'manual' ? 'checked' : '' }} onchange="toggleInputMethod('manual')">
+                            <span class="text-sm font-medium text-gray-700">Input Koordinat Manual</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Section Upload KML / Draw Peta -->
+                <div id="kml_section" class="space-y-4">
+                    <div class="flex items-center justify-between">
+                        <h4 class="text-lg font-semibold text-gray-700">Peta Lokasi</h4>
+                        <div class="flex items-center space-x-4">
+                            <div class="space-y-2">
+                                <label for="f_kml" class="block text-sm font-semibold text-gray-700">
+                                    <i class="fas fa-upload mr-2 text-blue-600"></i>
+                                    Upload KML
+                                </label>
+                                <div class="relative">
+                                    <input type="file" id="f_kml" name="f_kml" accept=".kml" 
+                                           class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                                           onchange="console.log('KML input onchange triggered:', this.files)">
                                 </div>
-                            @enderror
-                        </div>
-                        <div class="space-y-2">
-                            <label class="block text-sm font-semibold text-gray-700">
-                                <i class="fas fa-draw-polygon mr-2 text-green-600"></i>
-                                Tools
-                            </label>
-                            <div class="flex space-x-2">
-                                <button type="button" id="clearMap" class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors text-sm">
-                                    <i class="fas fa-trash mr-1"></i>Clear
-                                </button>
-                                <button type="button" id="toggleDraw" class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors text-sm">
-                                    <i class="fas fa-pencil-alt mr-1"></i>Draw
-                                </button>
+                                @error('f_kml')
+                                    <div class="flex items-center space-x-2 text-red-600 text-sm mt-1">
+                                        <i class="fas fa-exclamation-circle text-xs"></i>
+                                        <span>{{ $message }}</span>
+                                    </div>
+                                @enderror
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block text-sm font-semibold text-gray-700">
+                                    <i class="fas fa-draw-polygon mr-2 text-green-600"></i>
+                                    Tools
+                                </label>
+                                <div class="flex space-x-2">
+                                    <button type="button" id="clearMap" class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors text-sm">
+                                        <i class="fas fa-trash mr-1"></i>Clear
+                                    </button>
+                                    <button type="button" id="toggleDraw" class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors text-sm">
+                                        <i class="fas fa-pencil-alt mr-1"></i>Draw
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                
-                <textarea name="kml_geojson" id="kml_geojson" style="display: none;" cols="30" rows="10"></textarea>
-                
-                <!-- GeoJSON Status Indicator -->
-                <div id="geojson_status" class="hidden mb-4">
-                    <div class="flex items-center space-x-2 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                        <div id="geojson_icon" class="w-5 h-5">
-                            <i class="fas fa-spinner fa-spin text-blue-600"></i>
+                    
+                    <textarea name="kml_geojson" id="kml_geojson" style="display: none;" cols="30" rows="10"></textarea>
+                    
+                    <!-- GeoJSON Status Indicator -->
+                    <div id="geojson_status" class="hidden mb-4">
+                        <div class="flex items-center space-x-2 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                            <div id="geojson_icon" class="w-5 h-5">
+                                <i class="fas fa-spinner fa-spin text-blue-600"></i>
+                            </div>
+                            <span id="geojson_message" class="text-sm font-medium text-blue-800">Mengkonversi data ke GeoJSON...</span>
                         </div>
-                        <span id="geojson_message" class="text-sm font-medium text-blue-800">Mengkonversi data ke GeoJSON...</span>
+                    </div>
+                    
+                    <div id='mapKu' style='width: 100%; height: 80vh; border-radius: 0.5rem; border: 1px solid #e5e7eb;'></div>
+                </div>
+
+                <!-- Section Input Koordinat Manual -->
+                <div id="manual_section" class="space-y-4" style="display: none;">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <label class="block text-sm font-semibold text-gray-700">
+                                <i class="fas fa-map-marked-alt mr-2 text-purple-600"></i>
+                                Input Koordinat Lokasi <span class="text-red-500">*</span>
+                            </label>
+                            <button type="button" id="add_coordinate_btn" onclick="addCoordinateRow()" class="px-3 py-1.5 text-sm bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors">
+                                <i class="fas fa-plus mr-1"></i>Tambah Koordinat
+                            </button>
+                        </div>
+                        
+                        <!-- Daftar Koordinat -->
+                        <div id="coordinates_list" class="space-y-3">
+                            <!-- Koordinat akan ditambahkan di sini secara dinamis -->
+                        </div>
+                        
+                        <!-- Hidden input untuk menyimpan data array -->
+                        <input type="hidden" id="koordinat_data" name="koordinat_dimohon" value="{{ old('koordinat_dimohon', '[]') }}">
+                        
+                        <p class="text-xs text-gray-500 mt-2">
+                            <i class="fas fa-info-circle mr-1"></i>
+                            Klik "Tambah Koordinat" untuk menambahkan pasangan koordinat (Latitude, Longitude)
+                        </p>
+                        @error('koordinat_dimohon')
+                            <div class="flex items-center space-x-2 text-red-600 text-sm mt-1">
+                                <i class="fas fa-exclamation-circle text-xs"></i>
+                                <span>{{ $message }}</span>
+                            </div>
+                        @enderror
                     </div>
                 </div>
-                
-                <div id='mapKu' style='width: 100%; height: 80vh; border-radius: 0.5rem; border: 1px solid #e5e7eb;'></div>
             </div>
         </div>
 
@@ -1172,6 +1233,113 @@
 <script src="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.js"></script>
 
 <script>
+    // Coordinate counter for unique IDs
+    let coordinateCounter = 0;
+
+    // Add coordinate row
+    function addCoordinateRow(latitude = '', longitude = '') {
+        const coordinatesList = document.getElementById('coordinates_list');
+        const rowId = 'coordinate_' + coordinateCounter++;
+        
+        const row = document.createElement('div');
+        row.id = rowId;
+        row.className = 'bg-gray-50 rounded-lg p-4 border border-gray-200';
+        row.innerHTML = `
+            <div class="grid grid-cols-12 gap-3 items-end">
+                <div class="col-span-5">
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">
+                        Latitude <span class="text-red-500">*</span>
+                    </label>
+                    <input type="text" 
+                           class="coordinate-lat w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm" 
+                           placeholder="-8.2191" 
+                           value="${latitude}"
+                           onchange="updateKoordinatData()"
+                           pattern="-?\\d+\\.?\\d*">
+                </div>
+                <div class="col-span-5">
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">
+                        Longitude <span class="text-red-500">*</span>
+                    </label>
+                    <input type="text" 
+                           class="coordinate-lng w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm" 
+                           placeholder="114.3691" 
+                           value="${longitude}"
+                           onchange="updateKoordinatData()"
+                           pattern="-?\\d+\\.?\\d*">
+                </div>
+                <div class="col-span-2">
+                    <button type="button" onclick="removeCoordinateRow('${rowId}')" class="w-full px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors text-sm">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+        `;
+        
+        coordinatesList.appendChild(row);
+        updateKoordinatData();
+    }
+
+    // Remove coordinate row
+    function removeCoordinateRow(rowId) {
+        const row = document.getElementById(rowId);
+        if (row) {
+            row.remove();
+            updateKoordinatData();
+        }
+    }
+
+    // Update hidden input dengan data array koordinat
+    function updateKoordinatData() {
+        const coordinates = [];
+        const latInputs = document.querySelectorAll('.coordinate-lat');
+        const lngInputs = document.querySelectorAll('.coordinate-lng');
+        
+        latInputs.forEach((latInput, index) => {
+            const lat = latInput.value.trim();
+            const lng = lngInputs[index] ? lngInputs[index].value.trim() : '';
+            
+            if (lat && lng) {
+                coordinates.push({
+                    latitude: lat,
+                    longitude: lng
+                });
+            }
+        });
+        
+        const hiddenInput = document.getElementById('koordinat_data');
+        if (hiddenInput) {
+            hiddenInput.value = JSON.stringify(coordinates);
+        }
+    }
+
+    // Toggle input method - must be in global scope for onchange attribute
+    function toggleInputMethod(method) {
+        const kmlSection = document.getElementById('kml_section');
+        const manualSection = document.getElementById('manual_section');
+        const kmlInput = document.getElementById('f_kml');
+        const kmlGeojson = document.getElementById('kml_geojson');
+        
+        if (method === 'kml') {
+            if (kmlSection) kmlSection.style.display = 'block';
+            if (manualSection) manualSection.style.display = 'none';
+        } else {
+            if (kmlSection) kmlSection.style.display = 'none';
+            if (manualSection) manualSection.style.display = 'block';
+            if (kmlInput) {
+                kmlInput.required = false;
+                kmlInput.value = '';
+            }
+            if (kmlGeojson) kmlGeojson.value = '';
+            
+            // Initialize dengan satu row koordinat jika belum ada
+            const coordinatesList = document.getElementById('coordinates_list');
+            if (coordinatesList && coordinatesList.children.length === 0) {
+                addCoordinateRow();
+            }
+        }
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
         console.log('=== DOM CONTENT LOADED ===');
         console.log('Document ready, initializing...');
@@ -1217,33 +1385,138 @@
         // Dynamic form functionality
         console.log('Initializing dynamic forms...');
         initDynamicForms();
-        
+
+        // Initialize input method on load
+        @if(old('input_method') == 'manual')
+            toggleInputMethod('manual');
+            // Load existing coordinates if any
+            @if(old('koordinat_dimohon'))
+                try {
+                    const existingCoords = {!! json_encode(old('koordinat_dimohon')) !!};
+                    if (Array.isArray(existingCoords) && existingCoords.length > 0) {
+                        existingCoords.forEach(coord => {
+                            addCoordinateRow(coord.latitude || '', coord.longitude || '');
+                        });
+                    } else {
+                        addCoordinateRow();
+                    }
+                } catch (e) {
+                    addCoordinateRow();
+                }
+            @else
+                addCoordinateRow();
+            @endif
+        @else
+            toggleInputMethod('kml');
+        @endif
+
         // Add form validation before submit
         const form = document.querySelector('form');
         if (form) {
             form.addEventListener('submit', function(e) {
+                const inputMethod = document.querySelector('input[name="input_method"]:checked').value;
                 const kmlGeojson = document.getElementById('kml_geojson').value;
+                const koordinatDimohon = document.getElementById('koordinat_dimohon').value;
                 
-                if (!kmlGeojson || kmlGeojson.trim() === '') {
-                    e.preventDefault();
-                    alert('Silakan upload file KML atau gambar area di peta terlebih dahulu.');
-                    return false;
-                }
-                
-                try {
-                    const geoJsonData = JSON.parse(kmlGeojson);
-                    if (!geoJsonData.geometry || !geoJsonData.geometry.coordinates) {
+                if (inputMethod === 'kml') {
+                    if (!kmlGeojson || kmlGeojson.trim() === '') {
+                        e.preventDefault();
+                        alert('Silakan upload file KML atau gambar area di peta terlebih dahulu.');
+                        return false;
+                    }
+                    
+                    try {
+                        const geoJsonData = JSON.parse(kmlGeojson);
+                        if (!geoJsonData.geometry || !geoJsonData.geometry.coordinates) {
+                            e.preventDefault();
+                            alert('Data koordinat tidak valid. Silakan upload ulang file KML atau gambar area di peta.');
+                            return false;
+                        }
+                    } catch (error) {
                         e.preventDefault();
                         alert('Data koordinat tidak valid. Silakan upload ulang file KML atau gambar area di peta.');
                         return false;
                     }
-                } catch (error) {
-                    e.preventDefault();
-                    alert('Data koordinat tidak valid. Silakan upload ulang file KML atau gambar area di peta.');
-                    return false;
+                } else {
+                    const koordinatData = document.getElementById('koordinat_data');
+                    const koordinatValue = koordinatData ? koordinatData.value : '';
+                    
+                    if (!koordinatValue || koordinatValue.trim() === '' || koordinatValue === '[]') {
+                        e.preventDefault();
+                        alert('Silakan tambahkan minimal satu pasangan koordinat (Latitude dan Longitude).');
+                        const addBtn = document.getElementById('add_coordinate_btn');
+                        if (addBtn) addBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        return false;
+                    }
+                    
+                    try {
+                        const coordinates = JSON.parse(koordinatValue);
+                        if (!Array.isArray(coordinates) || coordinates.length === 0) {
+                            e.preventDefault();
+                            alert('Silakan tambahkan minimal satu pasangan koordinat (Latitude dan Longitude).');
+                            return false;
+                        }
+                        
+                        // Validate each coordinate
+                        for (let i = 0; i < coordinates.length; i++) {
+                            const coord = coordinates[i];
+                            if (!coord.latitude || !coord.longitude) {
+                                e.preventDefault();
+                                alert(`Koordinat ke-${i + 1} belum lengkap. Pastikan Latitude dan Longitude terisi.`);
+                                return false;
+                            }
+                            
+                            const lat = parseFloat(coord.latitude);
+                            const lng = parseFloat(coord.longitude);
+                            if (isNaN(lat) || isNaN(lng)) {
+                                e.preventDefault();
+                                alert(`Koordinat ke-${i + 1} tidak valid. Pastikan Latitude dan Longitude berupa angka.`);
+                                return false;
+                            }
+                        }
+                    } catch (error) {
+                        e.preventDefault();
+                        alert('Data koordinat tidak valid. Silakan periksa kembali input koordinat.');
+                        return false;
+                    }
+                    
+                    // Clear KML fields when using manual input
+                    if (document.getElementById('f_kml')) document.getElementById('f_kml').value = '';
+                    if (document.getElementById('kml_geojson')) document.getElementById('kml_geojson').value = '';
+                }
+
+                // Handle status lahan lainnya - gabungkan value ke status_lahan
+                const statusLahanSelect = document.getElementById('status_lahan');
+                const statusLahanLainnyaInput = document.getElementById('status_lahan_lainnya_input');
+                
+                if (statusLahanSelect && statusLahanLainnyaInput && statusLahanSelect.value === 'Dokumen penguasaan lainnya') {
+                    const customValue = statusLahanLainnyaInput.value.trim();
+                    if (!customValue) {
+                        e.preventDefault();
+                        alert('Silakan isi dokumen penguasaan lainnya.');
+                        statusLahanLainnyaInput.focus();
+                        return false;
+                    }
+                    // Set value status_lahan dari input dynamic field - gunakan hidden input untuk pastikan value terkirim
+                    const hiddenInput = document.createElement('input');
+                    hiddenInput.type = 'hidden';
+                    hiddenInput.name = 'status_lahan';
+                    hiddenInput.value = customValue;
+                    statusLahanSelect.parentNode.appendChild(hiddenInput);
+                    statusLahanSelect.disabled = true; // Disable select agar value tidak ikut terkirim
                 }
             });
         }
+
+        // Initialize status lahan lainnya jika old value ada
+        @if(old('status_lahan') == 'Dokumen penguasaan lainnya' || old('status_lahan_lainnya_input'))
+            toggleStatusLahanLainnya('Dokumen penguasaan lainnya');
+        @endif
+
+        // Initialize penggunaan sekarang - disable jika status "Kosong"
+        @if(old('status_penggunaan_tanah') == 'Kosong')
+            togglePenggunaanSekarang('Kosong');
+        @endif
     });
 
     // Toggle jenis kegiatan lainnya
@@ -1258,6 +1531,33 @@
             lainnyaDiv.style.display = 'none';
             inputLainnya.required = false;
             inputLainnya.value = '';
+        }
+    }
+
+    // Toggle status lahan lainnya
+    function toggleStatusLahanLainnya(value) {
+        const lainnyaDiv = document.getElementById('status_lahan_lainnya');
+        const inputLainnya = document.getElementById('status_lahan_lainnya_input');
+        
+        if (value === 'Dokumen penguasaan lainnya') {
+            lainnyaDiv.style.display = 'block';
+            inputLainnya.required = true;
+        } else {
+            lainnyaDiv.style.display = 'none';
+            inputLainnya.required = false;
+            inputLainnya.value = '';
+        }
+    }
+
+    // Toggle penggunaan sekarang - disable jika status "Kosong"
+    function togglePenggunaanSekarang(value) {
+        const penggunaanSekarangInput = document.getElementById('penggunaan_sekarang');
+        
+        if (value === 'Kosong') {
+            penggunaanSekarangInput.disabled = true;
+            penggunaanSekarangInput.value = '';
+        } else {
+            penggunaanSekarangInput.disabled = false;
         }
     }
 

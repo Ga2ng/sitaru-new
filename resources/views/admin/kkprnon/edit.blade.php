@@ -289,7 +289,7 @@
                 <div class="space-y-2">
                     <label for="alamat_kegiatan" class="block text-sm font-semibold text-gray-700">
                         <i class="fas fa-map mr-2 text-purple-600"></i>
-                        Alamat Kegiatan <span class="text-red-500">*</span>
+                        Lokasi Kegiatan Usaha <span class="text-red-500">*</span>
                     </label>
                     <textarea id="alamat_kegiatan" name="alamat_kegiatan" rows="3" 
                               class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm resize-none" 
@@ -347,15 +347,44 @@
                         <i class="fas fa-landmark mr-2 text-purple-600"></i>
                         Status Lahan <span class="text-red-500">*</span>
                     </label>
+                    @php
+                        $statusLahanOptions = ['Milik sendiri', 'Jual Beli', 'Sewa', 'Pinjam Pakai', 'Dokumen penguasaan lainnya'];
+                        $currentStatusLahan = old('status_lahan', $model->status_lahan);
+                        $isCustomValue = !in_array($currentStatusLahan, $statusLahanOptions);
+                    @endphp
                     <select id="status_lahan" name="status_lahan" 
-                            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm" required>
+                            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm" 
+                            onchange="toggleStatusLahanLainnya(this.value)" required>
                         <option value="">-- Pilih Status Lahan --</option>
-                        <option value="Milik sendiri" {{ old('status_lahan', $model->status_lahan) == 'Milik sendiri' ? 'selected' : '' }}>Milik sendiri</option>
-                        <option value="Jual Beli" {{ old('status_lahan', $model->status_lahan) == 'Jual Beli' ? 'selected' : '' }}>Jual Beli</option>
-                        <option value="Sewa" {{ old('status_lahan', $model->status_lahan) == 'Sewa' ? 'selected' : '' }}>Sewa</option>
-                        <option value="Pinjam Pakai" {{ old('status_lahan', $model->status_lahan) == 'Pinjam Pakai' ? 'selected' : '' }}>Pinjam Pakai</option>
+                        <option value="Milik sendiri" {{ $currentStatusLahan == 'Milik sendiri' ? 'selected' : '' }}>Milik sendiri</option>
+                        <option value="Jual Beli" {{ $currentStatusLahan == 'Jual Beli' ? 'selected' : '' }}>Jual Beli</option>
+                        <option value="Sewa" {{ $currentStatusLahan == 'Sewa' ? 'selected' : '' }}>Sewa</option>
+                        <option value="Pinjam Pakai" {{ $currentStatusLahan == 'Pinjam Pakai' ? 'selected' : '' }}>Pinjam Pakai</option>
+                        <option value="Dokumen penguasaan lainnya" {{ $isCustomValue || $currentStatusLahan == 'Dokumen penguasaan lainnya' ? 'selected' : '' }}>Dokumen penguasaan lainnya</option>
                     </select>
                     @error('status_lahan')
+                        <div class="flex items-center space-x-2 text-red-600 text-sm mt-1">
+                            <i class="fas fa-exclamation-circle text-xs"></i>
+                            <span>{{ $message }}</span>
+                        </div>
+                    @enderror
+                </div>
+                <!-- Dynamic Field untuk Dokumen penguasaan lainnya -->
+                @php
+                    $statusLahanOptions = ['Milik sendiri', 'Jual Beli', 'Sewa', 'Pinjam Pakai', 'Dokumen penguasaan lainnya'];
+                    $currentStatusLahan = old('status_lahan', $model->status_lahan);
+                    $isCustomValue = !in_array($currentStatusLahan, $statusLahanOptions);
+                @endphp
+                <div id="status_lahan_lainnya" class="space-y-2" style="display: {{ $isCustomValue || old('status_lahan', $model->status_lahan) == 'Dokumen penguasaan lainnya' ? 'block' : 'none' }};">
+                    <label for="status_lahan_lainnya_input" class="block text-sm font-semibold text-gray-700">
+                        <i class="fas fa-file-alt mr-2 text-purple-600"></i>
+                        Dokumen Penguasaan Lainnya <span class="text-red-500">*</span>
+                    </label>
+                    <input type="text" id="status_lahan_lainnya_input" name="status_lahan_lainnya_input" 
+                           value="{{ old('status_lahan_lainnya_input', $isCustomValue ? $model->status_lahan : '') }}"
+                           placeholder="Masukkan jenis dokumen penguasaan lainnya"
+                           class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm">
+                    @error('status_lahan_lainnya_input')
                         <div class="flex items-center space-x-2 text-red-600 text-sm mt-1">
                             <i class="fas fa-exclamation-circle text-xs"></i>
                             <span>{{ $message }}</span>
@@ -366,15 +395,17 @@
                 <div class="space-y-2">
                     <label for="status_penggunaan_tanah" class="block text-sm font-semibold text-gray-700">
                         <i class="fas fa-home mr-2 text-purple-600"></i>
-                        Status Penggunaan Tanah <span class="text-red-500">*</span>
+                        Kondisi Lahan Eksisting <span class="text-red-500">*</span>
                     </label>
                     <select id="status_penggunaan_tanah" name="status_penggunaan_tanah" 
-                            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm" required>
-                        <option value="">-- Pilih Status Penggunaan Tanah --</option>
+                            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm" 
+                            onchange="togglePenggunaanSekarang(this.value)" required>
+                        <option value="">-- Pilih Kondisi Lahan Eksisting --</option>
                         <option value="Sudah Terbangun" {{ old('status_penggunaan_tanah', $model->status_penggunaan_tanah) == 'Sudah Terbangun' ? 'selected' : '' }}>Sudah Terbangun</option>
                         <option value="Proses Pembangunan" {{ old('status_penggunaan_tanah', $model->status_penggunaan_tanah) == 'Proses Pembangunan' ? 'selected' : '' }}>Proses Pembangunan</option>
                         <option value="Kosong" {{ old('status_penggunaan_tanah', $model->status_penggunaan_tanah) == 'Kosong' ? 'selected' : '' }}>Kosong</option>
                         <option value="Terdapat Bangunan Lain" {{ old('status_penggunaan_tanah', $model->status_penggunaan_tanah) == 'Terdapat Bangunan Lain' ? 'selected' : '' }}>Terdapat Bangunan Lain</option>
+                        <option value="Terdapat Bangunan Lain (Akan dilakukan pembongkaran)" {{ old('status_penggunaan_tanah', $model->status_penggunaan_tanah) == 'Terdapat Bangunan Lain (Akan dilakukan pembongkaran)' ? 'selected' : '' }}>Terdapat Bangunan Lain (Akan dilakukan pembongkaran)</option>
                     </select>
                     @error('status_penggunaan_tanah')
                         <div class="flex items-center space-x-2 text-red-600 text-sm mt-1">
@@ -451,7 +482,7 @@
                         Penggunaan Sekarang
                     </label>
                     <input type="text" id="penggunaan_sekarang" name="penggunaan_sekarang" value="{{ old('penggunaan_sekarang', $model->penggunaan_sekarang) }}" 
-                           class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm" 
+                           class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm disabled:bg-gray-100 disabled:cursor-not-allowed" 
                            placeholder="Penggunaan tanah saat ini">
                     @error('penggunaan_sekarang')
                         <div class="flex items-center space-x-2 text-red-600 text-sm mt-1">
@@ -461,21 +492,6 @@
                     @enderror
                 </div>
 
-                <div class="space-y-2">
-                    <label for="alamat_tanah" class="block text-sm font-semibold text-gray-700">
-                        <i class="fas fa-map-marker-alt mr-2 text-purple-600"></i>
-                        Alamat Tanah
-                    </label>
-                    <textarea id="alamat_tanah" name="alamat_tanah" rows="3" 
-                              class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm resize-none" 
-                              placeholder="Alamat lokasi tanah yang akan dimanfaatkan">{{ old('alamat_tanah', $model->alamat_tanah) }}</textarea>
-                    @error('alamat_tanah')
-                        <div class="flex items-center space-x-2 text-red-600 text-sm mt-1">
-                            <i class="fas fa-exclamation-circle text-xs"></i>
-                            <span>{{ $message }}</span>
-                        </div>
-                    @enderror
-                </div>
             </div>
         </div>
 
@@ -877,7 +893,7 @@
                 <div class="space-y-2">
                     <label for="f_akta" class="block text-sm font-semibold text-gray-700">
                         <i class="fas fa-file-alt mr-2 text-red-600"></i>
-                        Akta Perusahaan
+                        Akta Perusahaan (Badan Usaha)
                     </label>
                     <div class="relative">
                         <input type="file" id="f_akta" name="f_akta" accept="application/pdf" 
@@ -895,7 +911,7 @@
                 <div class="space-y-2">
                     <label for="dok_taru" class="block text-sm font-semibold text-gray-700">
                         <i class="fas fa-file-alt mr-2 text-red-600"></i>
-                        Dokumen TARU
+                        Dokumen Perizinan Tata Ruang Sebelumnya
                     </label>
                     <div class="relative">
                         <input type="file" id="dok_taru" name="dok_taru" accept="application/pdf" 
@@ -957,11 +973,10 @@
                 <div class="w-8 h-8 bg-gradient-to-br from-teal-500 to-teal-600 rounded-lg flex items-center justify-center">
                     <i class="fas fa-map-marker-alt text-white text-sm"></i>
                 </div>
-                <h3 class="text-lg font-bold text-gray-900">LOKASI KEGIATAN</h3>
+                <h3 class="text-lg font-bold text-gray-900">RENCANA PEMBANGUNAN</h3>
             </div>
             
             <div class="space-y-6">
-                <h4 class="text-md font-semibold text-gray-700">Koordinat Lokasi</h4>
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
                     <div class="space-y-2">
                         <label for="luas_tanah" class="block text-sm font-semibold text-gray-700">
@@ -1313,8 +1328,44 @@
                     alert('Data koordinat tidak valid. Silakan upload ulang file KML atau gambar area di peta.');
                     return false;
                 }
+
+                // Handle status lahan lainnya - gabungkan value ke status_lahan
+                const statusLahanSelect = document.getElementById('status_lahan');
+                const statusLahanLainnyaInput = document.getElementById('status_lahan_lainnya_input');
+                
+                if (statusLahanSelect && statusLahanLainnyaInput && statusLahanSelect.value === 'Dokumen penguasaan lainnya') {
+                    const customValue = statusLahanLainnyaInput.value.trim();
+                    if (!customValue) {
+                        e.preventDefault();
+                        alert('Silakan isi dokumen penguasaan lainnya.');
+                        statusLahanLainnyaInput.focus();
+                        return false;
+                    }
+                    // Set value status_lahan dari input dynamic field - gunakan hidden input untuk pastikan value terkirim
+                    const hiddenInput = document.createElement('input');
+                    hiddenInput.type = 'hidden';
+                    hiddenInput.name = 'status_lahan';
+                    hiddenInput.value = customValue;
+                    statusLahanSelect.parentNode.appendChild(hiddenInput);
+                    statusLahanSelect.disabled = true; // Disable select agar value tidak ikut terkirim
+                }
             });
         }
+
+        // Initialize status lahan lainnya jika old value ada atau custom value
+        @php
+            $statusLahanOptions = ['Milik sendiri', 'Jual Beli', 'Sewa', 'Pinjam Pakai', 'Dokumen penguasaan lainnya'];
+            $currentStatusLahan = old('status_lahan', $model->status_lahan);
+            $isCustomValue = !in_array($currentStatusLahan, $statusLahanOptions);
+        @endphp
+        @if($isCustomValue || old('status_lahan', $model->status_lahan) == 'Dokumen penguasaan lainnya')
+            toggleStatusLahanLainnya('Dokumen penguasaan lainnya');
+        @endif
+
+        // Initialize penggunaan sekarang - disable jika status "Kosong"
+        @if(old('status_penggunaan_tanah', $model->status_penggunaan_tanah) == 'Kosong')
+            togglePenggunaanSekarang('Kosong');
+        @endif
     });
 
     // Toggle jenis kegiatan lainnya
@@ -1329,6 +1380,33 @@
             lainnyaDiv.style.display = 'none';
             inputLainnya.required = false;
             inputLainnya.value = '';
+        }
+    }
+
+    // Toggle status lahan lainnya
+    function toggleStatusLahanLainnya(value) {
+        const lainnyaDiv = document.getElementById('status_lahan_lainnya');
+        const inputLainnya = document.getElementById('status_lahan_lainnya_input');
+        
+        if (value === 'Dokumen penguasaan lainnya') {
+            lainnyaDiv.style.display = 'block';
+            inputLainnya.required = true;
+        } else {
+            lainnyaDiv.style.display = 'none';
+            inputLainnya.required = false;
+            inputLainnya.value = '';
+        }
+    }
+
+    // Toggle penggunaan sekarang - disable jika status "Kosong"
+    function togglePenggunaanSekarang(value) {
+        const penggunaanSekarangInput = document.getElementById('penggunaan_sekarang');
+        
+        if (value === 'Kosong') {
+            penggunaanSekarangInput.disabled = true;
+            penggunaanSekarangInput.value = '';
+        } else {
+            penggunaanSekarangInput.disabled = false;
         }
     }
 

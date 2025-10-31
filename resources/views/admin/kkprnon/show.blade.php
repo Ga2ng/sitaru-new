@@ -310,7 +310,7 @@
                         <div class="w-10 h-10 bg-indigo-500 rounded-lg flex items-center justify-center">
                             <i class="fas fa-map-marker-alt text-white text-sm"></i>
                 </div>
-                        <h4 class="text-lg font-semibold text-gray-900">Lokasi Kegiatan</h4>
+                        <h4 class="text-lg font-semibold text-gray-900">Lokasi Kegiatan Usaha</h4>
                 </div>
                     <div class="bg-white rounded-lg p-4 border border-indigo-200">
                         <p class="text-gray-900 leading-relaxed">
@@ -651,7 +651,7 @@
                                                 <i class="fas fa-building text-white text-sm"></i>
                                             </div>
                 <div>
-                                                <p class="font-bold text-gray-900 text-sm">Akta Perusahaan</p>
+                                                <p class="font-bold text-gray-900 text-sm">Akta Perusahaan (Badan Usaha)</p>
                                                 <p class="text-xs text-gray-500">Dokumen wajib</p>
                                             </div>
                                         </div>

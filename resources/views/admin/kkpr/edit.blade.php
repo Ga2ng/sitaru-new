@@ -155,21 +155,6 @@
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="space-y-2 md:col-span-2">
-                    <label for="alamat_tanah" class="block text-sm font-semibold text-gray-700">
-                        <i class="fas fa-map mr-2 text-blue-600"></i>
-                        Alamat Tanah <span class="text-red-500">*</span>
-                    </label>
-                    <textarea id="alamat_tanah" name="alamat_tanah" rows="3" 
-                              class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm resize-none" 
-                              placeholder="Masukkan alamat tanah" required>{{ old('alamat_tanah', $model->alamat_tanah) }}</textarea>
-                    @error('alamat_tanah')
-                        <div class="flex items-center space-x-2 text-red-600 text-sm mt-1">
-                            <i class="fas fa-exclamation-circle text-xs"></i>
-                            <span>{{ $message }}</span>
-                        </div>
-                    @enderror
-                </div>
 
                 <div class="space-y-2">
                     <label for="kabupaten_id" class="block text-sm font-semibold text-gray-700">
@@ -371,7 +356,7 @@
                 <div class="space-y-2 md:col-span-2">
                     <label for="alamat_kegiatan" class="block text-sm font-semibold text-gray-700">
                         <i class="fas fa-map mr-2 text-purple-600"></i>
-                        Alamat Kegiatan
+                        Lokasi Kegiatan Usaha
                     </label>
                     <textarea id="alamat_kegiatan" name="alamat_kegiatan" rows="3" 
                               class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm resize-none" 
