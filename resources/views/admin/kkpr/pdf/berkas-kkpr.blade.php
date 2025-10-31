@@ -180,6 +180,17 @@
         $kab = \DB::table('setup_kab')->where('NO_PROP', 35)->where('NO_KAB', $model->kabupaten_id)->first();
         $kec = \DB::table('setup_kec')->where('NO_PROP', 35)->where('NO_KAB', 10)->where('NO_KEC', $model->NO_KEC)->first();
         $kel = \DB::table('setup_kel_fix')->where('NO_PROP', 35)->where('NO_KAB', 10)->where('NO_KEC', $model->NO_KEC)->where('NO_KEL', $model->NO_KEL)->first();
+        
+        // Parse pemeriksa_teknis
+        $pemeriksa_teknis = [];
+        if (!empty($model->pemeriksa_teknis)) {
+            if (is_string($model->pemeriksa_teknis)) {
+                $decoded = json_decode($model->pemeriksa_teknis, true);
+                $pemeriksa_teknis = is_array($decoded) ? $decoded : [];
+            } elseif (is_array($model->pemeriksa_teknis)) {
+                $pemeriksa_teknis = $model->pemeriksa_teknis;
+            }
+        }
     @endphp
 
     <!-- Header Section -->
@@ -209,42 +220,42 @@
     <!-- Document Header Table -->
     <table style="width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 9pt;">
         <tr>
-            <td style="width: 12%; padding: 3px; border: 1px dotted #333;"><strong>Nomor</strong></td>
-            <td style="width: 2%; padding: 3px; border: 1px dotted #333;">:</td>
-            <td style="width: 35%; padding: 3px; border: 1px dotted #333;">{{ $model->no_sk ?? '-' }}</td>
-            <td style="width: 51%; padding: 3px; border: 1px dotted #333; text-align: right;"><strong>Banyuwangi, {{ \Carbon\Carbon::now()->locale('id')->translatedFormat('d F Y') }}</strong></td>
+            <td style="width: 12%; padding: 3px;"><strong>Nomor</strong></td>
+            <td style="width: 2%; padding: 3px;">:</td>
+            <td style="width: 35%; padding: 3px;">{{ $model->no_sk ?? '-' }}</td>
+            <td style="width: 51%; padding: 3px; text-align: right;"><strong>Banyuwangi, {{ \Carbon\Carbon::now()->locale('id')->translatedFormat('d F Y') }}</strong></td>
         </tr>
         <tr>
-            <td style="padding: 3px; border: 1px dotted #333;"><strong>Tanggal</strong></td>
-            <td style="padding: 3px; border: 1px dotted #333;">:</td>
-            <td style="padding: 3px; border: 1px dotted #333;">{{ $model->tanggal_sk ? \Carbon\Carbon::parse($model->tanggal_sk)->locale('id')->translatedFormat('d F Y') : '-' }}</td>
-            <td style="padding: 3px; border: 1px dotted #333;"></td>
+            <td style="padding: 3px;"><strong>Tanggal</strong></td>
+            <td style="padding: 3px;">:</td>
+            <td style="padding: 3px;">{{ $model->tanggal_sk ? \Carbon\Carbon::parse($model->tanggal_sk)->locale('id')->translatedFormat('d F Y') : '-' }}</td>
+            <td style="padding: 3px;"></td>
         </tr>
         <tr>
-            <td style="padding: 3px; border: 1px dotted #333;"><strong>Sifat</strong></td>
-            <td style="padding: 3px; border: 1px dotted #333;">:</td>
-            <td style="padding: 3px; border: 1px dotted #333;">Penting</td>
-            <td style="padding: 3px; border: 1px dotted #333;"></td>
+            <td style="padding: 3px;"><strong>Sifat</strong></td>
+            <td style="padding: 3px;">:</td>
+            <td style="padding: 3px;">Penting</td>
+            <td style="padding: 3px;"></td>
         </tr>
         <tr>
-            <td style="padding: 3px; border: 1px dotted #333;"><strong>Lampiran</strong></td>
-            <td style="padding: 3px; border: 1px dotted #333;">:</td>
-            <td style="padding: 3px; border: 1px dotted #333;">1 (satu) berkas</td>
-            <td style="padding: 3px; border: 1px dotted #333;"></td>
+            <td style="padding: 3px;"><strong>Lampiran</strong></td>
+            <td style="padding: 3px;">:</td>
+            <td style="padding: 3px;">1 (satu) berkas</td>
+            <td style="padding: 3px;"></td>
         </tr>
         <tr>
-            <td style="padding: 3px; border: 1px dotted #333;"><strong>Perihal</strong></td>
-            <td style="padding: 3px; border: 1px dotted #333;">:</td>
-            <td colspan="2" style="padding: 3px; border: 1px dotted #333;">Hasil Validasi Pernyataan Mandiri Kegiatan Berusaha Bagi KKPR Terhadap Kesesuaian Rencana Tata Ruang</td>
+            <td style="padding: 3px;"><strong>Perihal</strong></td>
+            <td style="padding: 3px;">:</td>
+            <td colspan="2" style="padding: 3px;">Hasil Validasi Pernyataan Mandiri Kegiatan Berusaha Bagi KKPR Terhadap Kesesuaian Rencana Tata Ruang</td>
         </tr>
     </table>
 
     <div style="margin: 10px 0; font-size: 10pt;">
-        <strong>Yth. Sdr. {{ strtoupper($model->user->name) }}<br>Di Banyuwangi</strong>
+        <strong>Yth. Sdr. {{ strtoupper($model->user && $model->user->name ? $model->user->name : ($model->atas_nama ?? 'Pemohon')) }}<br>Di Banyuwangi</strong>
     </div>
 
     <div class="justify" style="margin: 10px 0; font-size: 10pt;">
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Dengan hormat disampaikan hasil penilaian kesesuaian rencana penggunaan lahan an. <strong>{{ strtoupper($model->user->name) }}</strong> terhadap peraturan rencana tata ruang dengan rincian sebagai berikut:
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Dengan hormat disampaikan hasil penilaian kesesuaian rencana penggunaan lahan an. <strong>{{ strtoupper($model->user && $model->user->name ? $model->user->name : ($model->atas_nama ?? 'Pemohon')) }}</strong> terhadap peraturan rencana tata ruang dengan rincian sebagai berikut:
     </div>
 
     <!-- Section 1: Persetujuan Kegiatan Pemanfaatan Ruang Bagi KKPR -->
@@ -255,7 +266,7 @@
             <td class="label-col">a.</td>
             <td class="field-col">Nama Pelaku Usaha</td>
             <td class="colon-col">:</td>
-            <td class="value-col">{{ strtoupper($model->user->name ?? '-') }}</td>
+            <td class="value-col">{{ strtoupper($model->user && $model->user->name ? $model->user->name : ($model->atas_nama ?? '-')) }}</td>
         </tr>
         <tr>
             <td class="label-col">b.</td>
@@ -481,34 +492,62 @@
     <!-- Signature Section -->
     <table class="signature-table" style="font-size: 9pt;">
         <tr>
-            <td class="signature-left">
-                <div class="signature-block">
+            <td class="signature-left" style="vertical-align: top;">
+                <div>
+                    <div><strong>Mengetahui,</strong></div>
+                    
+                    @if(count($pemeriksa_teknis) > 0)
+                        @foreach($pemeriksa_teknis as $index => $pemeriksa)
+                            <div style="margin: 15px 0;">
+                                <div style="margin-bottom: 10px;">
+                                    @if(is_numeric($pemeriksa))
+                                        @php $userPemeriksa = \App\Models\User::find($pemeriksa); @endphp
+                                        @if($userPemeriksa)
+                                            <strong>{{ strtoupper($userPemeriksa->name) }}</strong>
+                                            @if($userPemeriksa->nip)
+                                                <br>NIP. {{ $userPemeriksa->nip }}
+                                            @endif
+                                        @endif
+                                    @else
+                                        <strong>{{ strtoupper($pemeriksa) }}</strong>
+                                    @endif
+                                </div>
+                                <div style="border-bottom: 1px dotted #000; min-height: 40px; max-width: 250px;"></div>
+                                <div style="margin-top: 5px;"><strong>Pemeriksa Teknis</strong></div>
+                            </div>
+                        @endforeach
+                    @else
+                        <div style="margin: 15px 0;">
+                            <div style="margin-bottom: 10px;"></div>
+                            <div style="border-bottom: 1px dotted #000; min-height: 40px; max-width: 250px;"></div>
+                            <div style="margin-top: 5px;"><strong>Pemeriksa Teknis</strong></div>
+                        </div>
+                    @endif
+                    
+                    <div style="margin: 15px 0;">
+                        <div style="margin-bottom: 10px;">
+                            <strong>Ir. BAYU HADIYANTO, ST, M.Si</strong><br>
+                            NIP. 19751004 200312 1 004
+                        </div>
+                        <div style="border-bottom: 1px dotted #000; min-height: 40px; max-width: 250px;"></div>
+                        <div style="margin-top: 5px;"><strong>Pemeriksa</strong></div>
+                        <div style="margin-top: 2px;"><strong>Kepala Bidang Penataan Ruang</strong></div>
+                    </div>
+                </div>
+            </td>
+            <td class="signature-right" style="vertical-align: top;">
+                <div>
                     <div><strong>Mengetahui,</strong></div>
                     <div style="text-align: center; margin: 10px 0;">
                         <strong>Plt. KEPALA DINAS PEKERJAAN UMUM CIPTA KARYA PERUMAHAN DAN PERMUKIMAN KABUPATEN BANYUWANGI</strong>
                     </div>
                     <div style="margin: 15px 0;">
-                        <div class="dotted-line" style="margin-bottom: 5px;">
-                            <strong>Reni Carica Ratriyani</strong><br>
-                            NIP. 19900110 201502 2 002
+                        <div style="margin-bottom: 10px;">
+                            <div class="signature-name">SUYANTO WASPO TONDO WICAKSONO</div>
+                            <div>Pembina Utama Muda</div>
+                            <div>NIP. 19700421 198903 1 001</div>
                         </div>
-                        <div><strong>Pemeriksa Teknis</strong></div>
-                    </div>
-                    <div style="margin: 15px 0;">
-                        <div class="dotted-line" style="margin-bottom: 5px;">
-                            <strong>Ir. BAYU HADIYANTO, ST, M.Si</strong><br>
-                            NIP. 19751004 200312 1 004
-                        </div>
-                        <div><strong>Pemeriksa Kepala Bidang Penataan Ruang</strong></div>
-                    </div>
-                </div>
-            </td>
-            <td class="signature-right">
-                <div class="signature-block">
-                    <div class="dotted-line" style="margin-bottom: 5px;">
-                        <div class="signature-name">SUYANTO WASPO TONDO WICAKSONO</div>
-                        <div>Pembina Utama Muda</div>
-                        <div>NIP. 19700421 198903 1 001</div>
+                        <div style="border-bottom: 1px dotted #000; min-height: 40px; max-width: 250px;"></div>
                     </div>
                 </div>
             </td>
