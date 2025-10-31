@@ -153,8 +153,8 @@
                             <p class="text-xs text-gray-500">{{ $kkpr->created_at ? $kkpr->created_at->format('H:i') : 'N/A' }} WIB</p>
                         </td>
                         <td class="px-6 py-4">
-                            <p class="text-sm font-semibold text-gray-900">{{ $kkpr->kbli ?? 'N/A' }}</p>
-                            <p class="text-xs text-gray-500">{{ $kkpr->jenis_kegiatan ?? 'N/A' }}</p>
+                            <p class="text-sm font-semibold text-gray-900">{{ $kkpr->kbli ?? ($kkpr->kkpr_kbli->first()->kode_kbli ?? 'N/A') }}</p>
+                            <p class="text-xs text-gray-500">{{ $kkpr->jenis_kegiatan ?? ($kkpr->kkpr_kbli->first()->judul_kbli ?? 'N/A') }}</p>
                         </td>
                         <td class="px-6 py-4">
                             <p class="text-sm text-gray-900">{{ $kkpr->no_nib ?? 'N/A' }}</p>

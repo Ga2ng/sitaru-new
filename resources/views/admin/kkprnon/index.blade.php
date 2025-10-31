@@ -321,8 +321,8 @@
                             </div>
                         </div>
                         <div class="col-span-2">
-                            <p class="font-semibold text-gray-900 text-sm">{{ $kkpr->kbli ?? 'N/A' }}</p>
-                            <p class="text-xs text-gray-500">{{ $kkpr->jenis_kegiatan ?? 'N/A' }}</p>
+                            <p class="font-semibold text-gray-900 text-sm">{{ $kkpr->kbli ?? ($kkpr->kkpr_kbli->first()->kode_kbli ?? 'N/A') }}</p>
+                            <p class="text-xs text-gray-500">{{ $kkpr->jenis_kegiatan ?? ($kkpr->kkpr_kbli->first()->judul_kbli ?? 'N/A') }}</p>
                         </div>
                         <div class="col-span-2">
                             <p class="text-gray-900 text-sm">{{ $kkpr->no_nib ?? 'N/A' }}</p>
