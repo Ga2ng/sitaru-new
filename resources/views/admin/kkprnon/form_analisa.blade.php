@@ -12,7 +12,7 @@
             <div class="flex items-center justify-between">
                 <div>
                     <h1 class="text-2xl font-bold mb-1">Form {{ $isEdit ? 'Edit' : 'Tambah' }} Analisa Persetujuan Bagi UMK</h1>
-                    <p class="text-sm text-white/90 mb-4">Permohonan #{{ $model->id }} - {{ $model->user->name }}</p>
+                    <p class="text-sm text-white/90 mb-4">Permohonan #{{ $model->id }} - {{ $model->user && $model->user->name ? $model->user->name : 'N/A' }}</p>
                     <div class="flex items-center space-x-4">
                         <div class="flex items-center space-x-2">
                             <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
@@ -65,7 +65,7 @@
                         Nama Pelaku Usaha <span class="text-red-500">*</span>
                     </label>
                     <input type="text" id="nama_pemohon" name="nama_pemohon" 
-                           value="{{ old('nama_pemohon', $model->user ? $model->user->name : '') }}" 
+                           value="{{ old('nama_pemohon', $model->user && $model->user->name ? $model->user->name : ($model->atas_nama ?? '')) }}" 
                            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#185B3C] focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm" 
                            required readonly>
                 </div>
@@ -76,7 +76,7 @@
                         Nama Penanggung Jawab <span class="text-red-500">*</span>
                     </label>
                     <input type="text" id="nama_penanggung_jawab" name="nama_penanggung_jawab" 
-                           value="{{ old('nama_penanggung_jawab', $model->user ? $model->user->name : '') }}" 
+                           value="{{ old('nama_penanggung_jawab', $model->user && $model->user->name ? $model->user->name : ($model->atas_nama ?? '')) }}" 
                            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#185B3C] focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm" 
                            required>
                 </div>

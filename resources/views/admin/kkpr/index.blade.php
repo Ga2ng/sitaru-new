@@ -544,10 +544,20 @@
         } else {
             // Menu normal untuk user non-eksternal - URUT BERDASARKAN PROSES
             
+            // Edit - jika status masih Pengajuan (status = 1)
+            if (parseInt(status) == 1) {
+                menuItems += `
+                    <div class="border-t border-gray-100"></div>
+                    <a href="/admin/kkpr/${id}/edit" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors">
+                        <i class="fas fa-edit w-4 mr-3"></i>
+                        <span class="flex-1">Edit</span>
+                        <span class="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">Edit</span>
+                    </a>`;
+            }
+            
             // PROSES 1: Validasi - hanya untuk Verifikator dan status = 1 (Pengajuan)
             if (canValidate && parseInt(status) == 1) {
                 menuItems += `
-                    <div class="border-t border-gray-100"></div>
                     <a href="/admin/kkpr/${id}/validasi" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-600 transition-colors">
                         <i class="fas fa-check-circle w-4 mr-3"></i>
                         <span class="flex-1">Validasi</span>

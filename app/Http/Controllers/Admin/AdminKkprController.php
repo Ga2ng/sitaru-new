@@ -732,7 +732,15 @@ class AdminKkprController extends Controller
                 ->orderBy('id', 'desc')
                 ->first();
             
-            $autoIncrement = $lastKkpr ? (intval(explode(' / ', $lastKkpr->no_sk)[1]) + 1) : 1;
+            // Parse nomor SK dengan pengecekan keamanan
+            $autoIncrement = 1;
+            if ($lastKkpr && !empty($lastKkpr->no_sk)) {
+                $parts = explode(' / ', $lastKkpr->no_sk);
+                if (isset($parts[1])) {
+                    $autoIncrement = intval($parts[1]) + 1;
+                }
+            }
+            
             $currentYear = Carbon::now('Asia/Jakarta')->format('Y');
             $generatedNoSk = "645 / {$autoIncrement} / 429.115 / {$currentYear}";
             

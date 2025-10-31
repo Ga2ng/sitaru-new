@@ -72,9 +72,9 @@
                         <i class="fas fa-user text-white text-xl"></i>
                     </div>
                     <div class="flex-1">
-                        <h4 class="text-lg font-bold text-gray-900">{{ $user->name ?? 'N/A' }}</h4>
-                        <p class="text-sm text-gray-600">{{ $user->username ?? 'N/A' }}</p>
-                        <p class="text-xs text-gray-500 mt-1">{{ $user->work ?? 'N/A' }}</p>
+                        <h4 class="text-lg font-bold text-gray-900">{{ $user && $user->name ? $user->name : 'N/A' }}</h4>
+                        <p class="text-sm text-gray-600">{{ $user && $user->username ? $user->username : 'N/A' }}</p>
+                        <p class="text-xs text-gray-500 mt-1">{{ $user && $user->work ? $user->work : 'N/A' }}</p>
                     </div>
                 </div>
             </div>
@@ -87,7 +87,7 @@
                     </div>
                     <div class="flex-1 min-w-0">
                         <p class="text-sm font-semibold text-gray-600">Email</p>
-                        <p class="text-sm text-gray-900 break-all">{{ $user->email ?? 'N/A' }}</p>
+                        <p class="text-sm text-gray-900 break-all">{{ $user && $user->email ? $user->email : 'N/A' }}</p>
                     </div>
                 </div>
                 
@@ -97,7 +97,7 @@
                     </div>
                     <div class="flex-1 min-w-0">
                         <p class="text-sm font-semibold text-gray-600">No HP</p>
-                        <p class="text-sm text-gray-900">{{ $user->phone ?? 'N/A' }}</p>
+                        <p class="text-sm text-gray-900">{{ $user && $user->phone ? $user->phone : 'N/A' }}</p>
                     </div>
                 </div>
                 
@@ -107,7 +107,7 @@
                     </div>
                     <div class="flex-1 min-w-0">
                         <p class="text-sm font-semibold text-gray-600">Alamat</p>
-                        <p class="text-sm text-gray-900">{{ $user->address ?? 'N/A' }}</p>
+                        <p class="text-sm text-gray-900">{{ $user && $user->address ? $user->address : 'N/A' }}</p>
                     </div>
                 </div>
             </div>
@@ -226,7 +226,7 @@
                                 <span class="font-medium text-gray-900">KTP Pemohon</span>
                             </div>
                             <div>
-                                @if ($user->ktp != null)
+                                @if ($user && $user->ktp != null)
                                     <a target="_blank" href="{{ url('/uploads/images/ktp/').'/'.$user->ktp }}" class="text-[#185B3C] hover:underline text-sm">{{ $user->ktp }}</a>
                                 @else 
                                     <span class="text-yellow-600 text-sm">Tidak Upload</span>

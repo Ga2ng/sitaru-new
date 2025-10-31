@@ -31,7 +31,7 @@
                         </div>
                         <div class="flex items-center space-x-2">
                             <i class="fas fa-user text-xs"></i>
-                            <span class="text-xs">{{ $model->user->name }}</span>
+                            <span class="text-xs">{{ $model->user && $model->user->name ? $model->user->name : 'N/A' }}</span>
                         </div>
                     </div>
                 </div>
@@ -71,7 +71,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <div class="space-y-1">
                 <p class="text-xs font-medium text-gray-500 uppercase">Nama Pelaku Usaha</p>
-                <p class="text-sm font-semibold text-gray-900">{{ $model->user->name }}</p>
+                <p class="text-sm font-semibold text-gray-900">{{ $model->user && $model->user->name ? $model->user->name : ($model->atas_nama ?? 'N/A') }}</p>
             </div>
             <div class="space-y-1">
                 <p class="text-xs font-medium text-gray-500 uppercase">NIB</p>

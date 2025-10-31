@@ -70,6 +70,8 @@ class MemberKkprController extends Controller
         $req['no_nib'] = $request->get('no_nib');
         $req['tgl_terbit'] = $request->get('tgl_terbit');
         $req['tgl_surat'] = $request->get('tgl_surat');
+        $req['no_kkpr'] = $request->get('no_kkpr');
+        $req['tgl_kkpr'] = $request->get('tgl_kkpr');
         
         $model = Kkpr::create($req);
 
@@ -311,6 +313,8 @@ class MemberKkprController extends Controller
         $req['tgl_terbit'] = $request->get('tgl_terbit');
         $req['no_nib'] = $request->get('no_nib');
         $req['tgl_surat'] = $request->get('tgl_surat');
+        $req['no_kkpr'] = $request->get('no_kkpr');
+        $req['tgl_kkpr'] = $request->get('tgl_kkpr');
         $req['revisi'] = 0; // Reset status revisi
         $req['proses'] = 1; // Kembali ke status Pengajuan
         
