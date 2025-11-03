@@ -1199,9 +1199,10 @@ class AdminKkprNonController extends Controller
             $model->save();
         }
         
-        // Parse pertimbangan dan ketentuan_lain dari JSON jika ada
+        // Parse pertimbangan, ketentuan_lain, dan keterangan_lain dari JSON jika ada
         $pertimbangan = [];
         $ketentuan_lain = [];
+        $keterangan_lain = [];
         
         if (!empty($model->pertimbangan)) {
             if (is_string($model->pertimbangan)) {
@@ -1219,6 +1220,14 @@ class AdminKkprNonController extends Controller
             }
         }
         
+        if (!empty($model->keterangan_lain)) {
+            if (is_string($model->keterangan_lain)) {
+                $keterangan_lain = json_decode($model->keterangan_lain, true) ?: [];
+            } else {
+                $keterangan_lain = $model->keterangan_lain;
+            }
+        }
+        
         $data = [
             'model' => $model,
             'kbli' => $kbli,
@@ -1227,6 +1236,7 @@ class AdminKkprNonController extends Controller
             'analis' => User::permission('Analis')->get(),
             'pertimbangan' => $pertimbangan,
             'ketentuan_lain' => $ketentuan_lain,
+            'keterangan_lain' => $keterangan_lain,
         ];
 
         return view($this->base_view . 'form_analisa', $data);
@@ -1239,15 +1249,19 @@ class AdminKkprNonController extends Controller
 
             $model = Kkpr::where('jenis', 'umk')->findOrFail($request->id);
 
-            // Process pertimbangan and ketentuan_lain as JSON
+            // Process pertimbangan, ketentuan_lain, dan keterangan_lain as JSON
             $pertimbangan = $request->get('pertimbangan', []);
             $ketentuan_lain = $request->get('ketentuan_lain', []);
+            $keterangan_lain = $request->get('keterangan_lain', []);
             
             // Filter out empty values
             $pertimbangan = array_filter($pertimbangan, function($item) {
                 return !empty(trim($item));
             });
             $ketentuan_lain = array_filter($ketentuan_lain, function($item) {
+                return !empty(trim($item));
+            });
+            $keterangan_lain = array_filter($keterangan_lain, function($item) {
                 return !empty(trim($item));
             });
 
@@ -1281,6 +1295,7 @@ class AdminKkprNonController extends Controller
                 'tinggi_bangunan' => $request->tinggi_bangunan,
                 'pertimbangan' => json_encode($pertimbangan),
                 'ketentuan_lain' => json_encode($ketentuan_lain),
+                'keterangan_lain' => json_encode($keterangan_lain),
                 'pemeriksa_teknis' => json_encode($pemeriksa_teknis),
                 'status_analisa' => 'analisa',
                 'no_nib' => $request->no_nib,

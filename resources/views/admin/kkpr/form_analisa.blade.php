@@ -519,6 +519,33 @@
                     </div>
                 </div>
 
+                <!-- Dynamic Keterangan Lain -->
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between">
+                        <label class="block text-sm font-semibold text-gray-700">
+                            <i class="fas fa-comment-alt mr-2 text-green-600"></i>
+                            Keterangan Lain
+                        </label>
+                        <button type="button" id="add_keterangan" class="px-3 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors">
+                            <i class="fas fa-plus mr-1"></i>Tambah
+                        </button>
+                    </div>
+                    <div id="keterangan_list">
+                        @if(isset($keterangan_lain) && is_array($keterangan_lain) && count($keterangan_lain) > 0)
+                            @foreach($keterangan_lain as $index => $item)
+                                <div class="flex items-center space-x-2 mb-2 keterangan-item">
+                                    <input type="text" name="keterangan_lain[]" value="{{ $item }}" 
+                                           class="flex-1 px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm" 
+                                           placeholder="Masukkan keterangan lain...">
+                                    <button type="button" class="px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors remove-keterangan">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                </div>
+                            @endforeach
+                        @endif
+                    </div>
+                </div>
+
                 <div class="space-y-2">
                     <label class="block text-sm font-semibold text-gray-700">
                         <i class="fas fa-user-check mr-2 text-orange-600"></i>
@@ -1008,6 +1035,22 @@
             container.appendChild(newItem);
         });
 
+        // Keterangan Dynamic
+        document.getElementById('add_keterangan').addEventListener('click', function() {
+            const container = document.getElementById('keterangan_list');
+            const newItem = document.createElement('div');
+            newItem.className = 'flex items-center space-x-2 mb-2 keterangan-item';
+            newItem.innerHTML = `
+                <input type="text" name="keterangan_lain[]" 
+                       class="flex-1 px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm" 
+                       placeholder="Masukkan keterangan lain...">
+                <button type="button" class="px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors remove-keterangan">
+                    <i class="fas fa-minus"></i>
+                </button>
+            `;
+            container.appendChild(newItem);
+        });
+
         // Remove handlers
         document.addEventListener('click', function(e) {
             if (e.target.classList.contains('remove-pertimbangan') || e.target.parentElement.classList.contains('remove-pertimbangan')) {
@@ -1018,6 +1061,11 @@
             if (e.target.classList.contains('remove-ketentuan') || e.target.parentElement.classList.contains('remove-ketentuan')) {
                 const button = e.target.classList.contains('remove-ketentuan') ? e.target : e.target.parentElement;
                 button.closest('.ketentuan-item').remove();
+            }
+            
+            if (e.target.classList.contains('remove-keterangan') || e.target.parentElement.classList.contains('remove-keterangan')) {
+                const button = e.target.classList.contains('remove-keterangan') ? e.target : e.target.parentElement;
+                button.closest('.keterangan-item').remove();
             }
         });
     }

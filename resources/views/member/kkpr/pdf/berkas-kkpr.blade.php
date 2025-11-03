@@ -432,16 +432,11 @@
     <div class="section-title">3. Dengan mempertimbangkan:</div>
     
     <div class="consideration-list">
-        <div style="margin: 10px 0;">
-            <strong>a. Peraturan Bupati Banyuwangi Nomor 55 Tahun 2024 tentang Rencana Detail Tata Ruang Wilayah Perencanaan Genteng Tahun 2024-2044</strong>
-        </div>
-        <div style="margin: 10px 0;">
-            <strong>b. Surat Keputusan Menteri Agraria Dan Tata Ruang/ Kepala Badan Pertanahan Nasional Nomor 1589/SK-Hk.02.01/XII/2021 Tentang Penetapan Peta Lahan Sawah Yang Dilindungi Pada Kabupaten/Kota</strong>
-        </div>
         @php
-            // Decode JSON data for pertimbangan and ketentuan_lain
+            // Decode JSON data for pertimbangan, ketentuan_lain, dan keterangan_lain
             $pertimbangan = [];
             $ketentuan_lain = [];
+            $keterangan_lain = [];
             
             if (!empty($model->pertimbangan)) {
                 if (is_string($model->pertimbangan)) {
@@ -464,24 +459,57 @@
                     $ketentuan_lain = [];
                 }
             }
+            
+            if (!empty($model->keterangan_lain)) {
+                if (is_string($model->keterangan_lain)) {
+                    $decoded = json_decode($model->keterangan_lain, true);
+                    $keterangan_lain = is_array($decoded) ? $decoded : [];
+                } elseif (is_array($model->keterangan_lain)) {
+                    $keterangan_lain = $model->keterangan_lain;
+                } else {
+                    $keterangan_lain = [];
+                }
+            }
+            
+            // Calculate alphabet starting from 'a' for pertimbangan
+            $letterIndex = 0; // Starting index for 'a' (a=0)
         @endphp
 
         @if(!empty($pertimbangan))
+        @foreach($pertimbangan as $index => $item)
+        @php
+            $letter = chr(97 + $letterIndex); // Convert to lowercase letter (a=97)
+            $letterIndex++;
+        @endphp
         <div style="margin: 10px 0;">
-            <strong>c. Ketentuan penggunaan lahan untuk kegiatan Kode KBLI {{ $model->kkpr_kbli && $model->kkpr_kbli->count() > 0 ? $model->kkpr_kbli->first()->kode_kbli : '-' }} pada {{ $model->rencana_manfaat ?? '-' }}:</strong>
+            <strong>{{ $letter }}. {{ $item }}</strong>
+        </div>
+        @endforeach
+        @endif
+
+        @if(!empty($ketentuan_lain))
+        @php
+            $letter = chr(97 + $letterIndex);
+            $letterIndex++;
+        @endphp
+        <div style="margin: 10px 0;">
+            <strong>{{ $letter }}. Ketentuan penggunaan lahan untuk kegiatan Kode KBLI {{ $model->kkpr_kbli && $model->kkpr_kbli->count() > 0 ? $model->kkpr_kbli->first()->kode_kbli : '-' }} pada {{ $model->rencana_manfaat ?? '-' }}:</strong>
             <ol style="margin: 10px 0; padding-left: 20px;">
-                @foreach($pertimbangan as $index => $item)
+                @foreach($ketentuan_lain as $index => $item)
                     <li>{{ $item }}</li>
                 @endforeach
             </ol>
         </div>
         @endif
 
-        @if(!empty($ketentuan_lain))
+        @if(!empty($keterangan_lain))
+        @php
+            $letter = chr(97 + $letterIndex);
+        @endphp
         <div style="margin: 10px 0;">
-            <strong>d. Keterangan lain yang dianggap perlu:</strong>
+            <strong>{{ $letter }}. Keterangan lain yang dianggap perlu:</strong>
             <ol style="margin: 10px 0; padding-left: 20px;">
-                @foreach($ketentuan_lain as $index => $item)
+                @foreach($keterangan_lain as $index => $item)
                     <li>{{ $item }}</li>
                 @endforeach
             </ol>

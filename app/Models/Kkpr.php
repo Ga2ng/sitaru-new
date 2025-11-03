@@ -61,6 +61,7 @@ class Kkpr extends Model
     'badan_hukum',
     'risiko_kegiatan',
     'kategori_umk',
+    'keterangan_lain',
 ];
 
     protected $casts = [
