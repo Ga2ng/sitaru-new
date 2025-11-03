@@ -7,6 +7,9 @@ use Illuminate\Support\Facades\Route;
 Route::middleware(['auth'])->group(function () {
     // Member KKPR Routes
     Route::prefix('member')->name('member.')->group(function () {
+        // AJAX Route for getKelurahanByKecamatan KKPR (MUST be before routes with {id})
+        Route::get('/kkpr/get-kelurahan-by-kecamatan', [MemberKkprController::class, 'getKelurahanByKecamatan'])->name('kkpr.get.kelurahan');
+        
         Route::get('/kkpr', [MemberKkprController::class, 'index'])->name('kkpr.index');
         Route::get('/kkpr/create', [MemberKkprController::class, 'create'])->name('kkpr.create');
         Route::post('/kkpr', [MemberKkprController::class, 'store'])->name('kkpr.store');
@@ -35,6 +38,9 @@ Route::middleware(['auth'])->group(function () {
         
         // Request Pencabutan Route for KKPR
         Route::post('/kkpr/{id}/request-pencabutan', [MemberKkprController::class, 'requestPencabutan'])->name('kkpr.request.pencabutan');
+        
+        // AJAX Route for getKelurahanByKecamatan KKPR Non (MUST be before routes with {id})
+        Route::get('/kkprnon/get-kelurahan-by-kecamatan', [MemberKkprNonController::class, 'getKelurahanByKecamatan'])->name('kkprnon.get.kelurahan');
         
         // Member KKPR Non Routes
         Route::get('/kkprnon', [MemberKkprNonController::class, 'index'])->name('kkprnon.index');

@@ -186,7 +186,15 @@ class AdminKkprNonController extends Controller
         $req['penggunaan_sekarang'] = $request->get('penggunaan_sekarang');
         $req['jumlah_lantai']     = $request->get('jumlah_lantai');
         $req['tinggi_bangunan']   = $request->get('tinggi_bangunan');
-        $req['luas_lantai']       = $request->get('luas_lantai');
+        // Handle luas_lantai array - filter null/NaN/undefined
+        $luasLantai = $request->get('luas_lantai');
+        if (is_array($luasLantai)) {
+            $req['luas_lantai'] = array_values(array_filter($luasLantai, function($value) {
+                return $value !== null && $value !== '' && $value !== 'NaN' && $value !== 'undefined';
+            }));
+        } else {
+            $req['luas_lantai'] = $luasLantai;
+        }
         $req['tgl_surat']         = $request->get('tgl_surat');
         $req['tgl_terbit']        = $request->get('tgl_terbit');
         $req['no_nib']            = $request->get('no_nib');
@@ -513,7 +521,7 @@ class AdminKkprNonController extends Controller
 
     public function edit($id)
     {
-        $kkpr = Kkpr::with(['kkpr_terbit', 'kkpr_kbli', 'kkpr_koordinat'])
+        $kkpr = Kkpr::with(['user', 'kkpr_terbit', 'kkpr_kbli', 'kkpr_koordinat'])
             ->where('jenis', 'umk')
             ->findOrFail($id);
         
@@ -534,11 +542,11 @@ class AdminKkprNonController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'nama_pemohon' => 'required|string|max:255',
-            'nik_pemohon' => 'required|string|max:16',
-            'no_telp' => 'required|string|max:20',
-            'pekerjaan_pemohon' => 'required|string|max:255',
-            'alamat_pemohon' => 'required|string|max:500',
+            'nama_pemohon' => 'nullable|string|max:255',
+            'nik_pemohon' => 'nullable|string|max:16',
+            'no_telp' => 'nullable|string|max:20',
+            'pekerjaan_pemohon' => 'nullable|string|max:255',
+            'alamat_pemohon' => 'nullable|string|max:500',
             'kabupaten_id' => 'required|integer',
             'kecamatan_id' => 'required|integer',
             'kelurahan_id' => 'required|integer',
@@ -551,38 +559,8 @@ class AdminKkprNonController extends Controller
 
             $kkpr = Kkpr::where('jenis', 'umk')->findOrFail($id);
 
-            // Update user
-            $no_ktp = $request->get('nik_pemohon');
-            $alamat_email = $request->has('email') ? $request->get('email') : $no_ktp . '@email.com';
-
-            $user = User::where('username', $no_ktp)
-                ->orWhere('nik', $no_ktp)
-                ->first();
-
-            if ($user) {
-                $user->update([
-                    'name' => $request->get('nama_pemohon'),
-                    'nik' => $no_ktp,
-                    'email' => $alamat_email,
-                    'phone' => $request->get('no_telp'),
-                    'work' => $request->get('pekerjaan_pemohon'),
-                    'address' => $request->get('alamat_pemohon'),
-                ]);
-            } else {
-                $user = User::create([
-                    'name' => $request->get('nama_pemohon'),
-                    'username' => $no_ktp,
-                    'nik' => $no_ktp,
-                    'email' => $alamat_email,
-                    'phone' => $request->get('no_telp'),
-                    'work' => $request->get('pekerjaan_pemohon'),
-                    'address' => $request->get('alamat_pemohon'),
-                    'password' => bcrypt('123456'),
-                    'active' => 1,
-                ]);
-                $user->assignRole('member');
-                $user->givePermissionTo('KKPR NON BERUSAHA');
-            }
+            // Get user from existing KKPR (no update needed since fields are readonly)
+            $user = $kkpr->user;
 
             // Update KKPR
             $kkprData = $request->only([
@@ -599,7 +577,15 @@ class AdminKkprNonController extends Controller
 
             $kkprData['user_id'] = $user->id;
             $kkprData['jenis'] = 'umk';
-            $kkprData['luas_lantai'] = $request->get('luas_lantai');
+            // Handle luas_lantai array - filter null/NaN/undefined
+            $luasLantai = $request->get('luas_lantai');
+            if (is_array($luasLantai)) {
+                $kkprData['luas_lantai'] = array_values(array_filter($luasLantai, function($value) {
+                    return $value !== null && $value !== '' && $value !== 'NaN' && $value !== 'undefined';
+                }));
+            } else {
+                $kkprData['luas_lantai'] = $luasLantai;
+            }
 
             $kkpr->update($kkprData);
 
@@ -725,7 +711,28 @@ class AdminKkprNonController extends Controller
             }
 
             // Handle file uploads
-            $this->handleFileUploads($request, $kkpr, $no_ktp);
+            $this->handleFileUploads($request, $kkpr, $user->nik);
+            
+            // Update riwayat status kembali ke Pengajuan setelah edit
+            // Hapus semua riwayat dengan status > 1 (reset ke pengajuan awal)
+            Kkpr_riwayat::where('kkpr_id', $kkpr->id)->where('status_id', '>', 1)->delete();
+            
+            // Update atau create riwayat pengajuan
+            $riwayat = Kkpr_riwayat::where('kkpr_id', $kkpr->id)->where('status_id', 1)->first();
+            if(!$riwayat){
+                Kkpr_riwayat::create([
+                    'kkpr_id' => $kkpr->id, 
+                    'status_id' => '1', 
+                    'status' => 'Pengajuan', 
+                    'keterangan' => 'Data permohonan telah diperbarui dan diajukan kembali oleh Admin'
+                ]);
+            } else {
+                $riwayat->update([
+                    'status' => 'Pengajuan',
+                    'keterangan' => 'Data permohonan telah diperbarui dan diajukan kembali oleh Admin',
+                    'updated_at' => Carbon::now('Asia/Jakarta')
+                ]);
+            }
 
             DB::commit();
 
@@ -950,6 +957,7 @@ class AdminKkprNonController extends Controller
         $fileFields = [
             'dok_kepemilikan' => 'dokumen_kepemilikan',
             'dok_taru' => 'dok_taru',
+            'sp_mandiri' => 'sp_mandiri',
             'f_nib' => 'f_nib',
             'f_kml' => 'kml',
             'f_ktp' => 'f_ktp',
@@ -981,7 +989,7 @@ class AdminKkprNonController extends Controller
             if (!is_dir($dir_to_save)) {
                 mkdir($dir_to_save, 0755, true);
             }
-            file_put_contents($dir_to_save . 'geojson.geojson', json_encode($kml_geo));
+            file_put_contents($dir_to_save . 'geojson.geojson', $kml_geo);
             $kkpr->update(['f_geojson' => 'geojson.geojson']);
         }
 
@@ -1919,6 +1927,26 @@ class AdminKkprNonController extends Controller
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => 'Terjadi kesalahan: ' . $e->getMessage()], 500);
         }
+    }
+
+    // Get kelurahan berdasarkan NO_KEC
+    public function getKelurahanByKecamatan(Request $request)
+    {
+        $no_kec = $request->get('NO_KEC');
+        
+        if (!$no_kec) {
+            return response()->json(['kelurahan' => []]);
+        }
+
+        // Ambil kelurahan berdasarkan NO_KEC yang dipilih
+        $kelurahan = DB::table('setup_kel_fix')
+            ->where('NO_PROP', 35)
+            ->where('NO_KAB', 10)
+            ->where('NO_KEC', $no_kec)
+            ->pluck('NAMA_KEL', 'NO_KEL')
+            ->toArray();
+
+        return response()->json(['kelurahan' => $kelurahan]);
     }
 
 }

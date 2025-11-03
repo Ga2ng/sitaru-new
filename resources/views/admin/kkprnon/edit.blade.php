@@ -143,12 +143,10 @@
                         NIK Pemohon <span class="text-red-500">*</span>
                     </label>
                     <div class="flex space-x-2">
-                        <input type="text" id="nik_pemohon" name="nik_pemohon" value="{{ old('nik_pemohon', $model->user->nik ?? '') }}" 
-                               class="flex-1 px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#185B3C] focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm" 
-                               placeholder="3512345678910123" maxlength="16" required
-                               oninput="this.value = this.value.replace(/[^0-9]/g, '')"
-                               onkeypress="return event.charCode >= 48 && event.charCode <= 57">
-                        <button type="button" id="kadasa" class="px-4 py-3 bg-[#185B3C] text-white rounded-xl hover:bg-[#0F3D26] transition-colors">
+                        <input type="text" id="nik_pemohon" name="nik_pemohon" value="{{ old('nik_pemohon', optional($model->user)->nik ?? '') }}" 
+                               class="flex-1 px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-transparent transition-all duration-200 bg-gray-100 backdrop-blur-sm cursor-not-allowed" 
+                               placeholder="3512345678910123" maxlength="16" required readonly>
+                        <button type="button" id="kadasa" class="px-4 py-3 bg-gray-400 text-white rounded-xl cursor-not-allowed" disabled>
                             Cek NIK
                         </button>
                     </div>
@@ -165,7 +163,7 @@
                         <i class="fas fa-user mr-2 text-[#185B3C]"></i>
                         Nama Pelaku Usaha <span class="text-red-500">*</span>
                     </label>
-                    <input type="text" id="nama_pemohon" name="nama_pemohon" value="{{ old('nama_pemohon', $model->user->name ?? '') }}" 
+                    <input type="text" id="nama_pemohon" name="nama_pemohon" value="{{ old('nama_pemohon', optional($model->user)->name ?? '') }}" 
                            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#185B3C] focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm" 
                            placeholder="Nama Pelaku Usaha" required>
                     @error('nama_pemohon')
@@ -181,7 +179,7 @@
                         <i class="fas fa-briefcase mr-2 text-[#185B3C]"></i>
                         Pekerjaan Pemohon <span class="text-red-500">*</span>
                     </label>
-                    <input type="text" id="pekerjaan_pemohon" name="pekerjaan_pemohon" value="{{ old('pekerjaan_pemohon') }}" 
+                    <input type="text" id="pekerjaan_pemohon" name="pekerjaan_pemohon" value="{{ old('pekerjaan_pemohon', optional($model->user)->work ?? '') }}" 
                            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#185B3C] focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm" 
                            placeholder="Pekerjaan Pemohon" required>
                     @error('pekerjaan_pemohon')
@@ -213,11 +211,9 @@
                         <i class="fas fa-phone mr-2 text-[#185B3C]"></i>
                         No HP <span class="text-red-500">*</span>
                     </label>
-                    <input type="tel" id="no_telp" name="no_telp" value="{{ old('no_telp') }}" 
-                           class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#185B3C] focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm" 
-                           placeholder="081234567890" required
-                           oninput="this.value = this.value.replace(/[^0-9]/g, '')"
-                           onkeypress="return event.charCode >= 48 && event.charCode <= 57">
+                    <input type="tel" id="no_telp" name="no_telp" value="{{ old('no_telp', optional($model->user)->phone ?? '') }}" 
+                           class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-transparent transition-all duration-200 bg-gray-100 backdrop-blur-sm cursor-not-allowed" 
+                           placeholder="081234567890" required readonly>
                     @error('no_telp')
                         <div class="flex items-center space-x-2 text-red-600 text-sm mt-1">
                             <i class="fas fa-exclamation-circle text-xs"></i>
@@ -231,7 +227,7 @@
                         <i class="fas fa-envelope mr-2 text-[#185B3C]"></i>
                         Alamat Email
                     </label>
-                    <input type="email" id="email" name="email" value="{{ old('email', $model->user->email ?? '') }}" 
+                    <input type="email" id="email" name="email" value="{{ old('email', optional($model->user)->email ?? '') }}" 
                            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#185B3C] focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm" 
                            placeholder="alamat@email.com">
                     @error('email')
@@ -248,8 +244,8 @@
                         Alamat Pemohon
                     </label>
                     <textarea id="alamat_pemohon" name="alamat_pemohon" rows="3" 
-                              class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#185B3C] focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm resize-none" 
-                              placeholder="Jl. Nama Jalan, Desa/Kelurahan, Kecamatan, Kabupaten" required>{{ old('alamat_pemohon') }}</textarea>
+                              class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-transparent transition-all duration-200 bg-gray-100 backdrop-blur-sm resize-none cursor-not-allowed" 
+                              placeholder="Jl. Nama Jalan, Desa/Kelurahan, Kecamatan, Kabupaten" required readonly>{{ old('alamat_pemohon', optional($model->user)->address ?? '') }}</textarea>
                     @error('alamat_pemohon')
                         <div class="flex items-center space-x-2 text-red-600 text-sm mt-1">
                             <i class="fas fa-exclamation-circle text-xs"></i>
@@ -423,14 +419,57 @@
                     <select id="jenis_kegiatan" name="jenis_kegiatan" 
                             class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm" required
                             onchange="toggleJenisLainnya(this.value)">
+                        @php
+                            $jenisKegiatanOptions = [
+                                'Pertanian, Kehutanan, dan Perikanan',
+                                'Pertambangan dan Penggalian',
+                                'Industri pengolahan',
+                                'Pengadaan Listrik, Gas, Uap/Air Panas dan Udara Dingin',
+                                'Treatment Air, Treatment Air Limbah, Treatment dan Pemulihan Material Sampah, dan Aktivitas Remediasi',
+                                'Konstruksi',
+                                'Perdagangan Besar dan Eceran, Reparasi dan Perawatan Mobil dan Sepeda Motor',
+                                'Pengangkutan dan Pergudangan',
+                                'Penyediaan Akomodasi dan Penyediaan Makan Minum',
+                                'Informasi dan Komunikasi',
+                                'Aktivitas Keuangan dan Asuransi',
+                                'Real Estat',
+                                'Aktivitas Profesional, Ilmiah dan Teknis',
+                                'Aktivitas Penyewaan dan Sewa Guna Usaha Tanpa Hak Opsi, Keterangakerjaan, Agen Perjalanan dan Penunjang Usaha Lainnya',
+                                'Administrasi Pemerintahan, Pertanahan dan Jaminan Sosial Wajib',
+                                'Pendidikan',
+                                'Aktivitas Kesehatan Manusia dan Aktivitas Sosial',
+                                'Kesenian, Hiburan dan Rekreasi',
+                                'Aktivitas Jasa Lainnya',
+                                'Aktivitas Rumah Tangga Sebagai Pemberi Kerja',
+                                'Aktivitas Badan Internasioanl dan Badan Ekstra Internasional Lainnya',
+                                'Lainnya'
+                            ];
+                            $currentJenisKegiatan = old('jenis_kegiatan', $model->jenis_kegiatan);
+                            $isCustomJenisKegiatan = !in_array($currentJenisKegiatan, $jenisKegiatanOptions) && $currentJenisKegiatan != null && $currentJenisKegiatan != '';
+                        @endphp
                         <option value="">-- Pilih Jenis Kegiatan --</option>
-                        <option value="Perumahan" {{ old('jenis_kegiatan', $model->jenis_kegiatan) == 'Perumahan' ? 'selected' : '' }}>Perumahan</option>
-                        <option value="Industri" {{ old('jenis_kegiatan', $model->jenis_kegiatan) == 'Industri' ? 'selected' : '' }}>Industri</option>
-                        <option value="Perdagangan dan Jasa" {{ old('jenis_kegiatan', $model->jenis_kegiatan) == 'Perdagangan dan Jasa' ? 'selected' : '' }}>Perdagangan dan Jasa</option>
-                        <option value="Pergudangan" {{ old('jenis_kegiatan', $model->jenis_kegiatan) == 'Pergudangan' ? 'selected' : '' }}>Pergudangan</option>
-                        <option value="Pariwisata" {{ old('jenis_kegiatan', $model->jenis_kegiatan) == 'Pariwisata' ? 'selected' : '' }}>Pariwisata</option>
-                        <option value="Pertanian" {{ old('jenis_kegiatan', $model->jenis_kegiatan) == 'Pertanian' ? 'selected' : '' }}>Pertanian</option>
-                        <option value="Lainnya" {{ old('jenis_kegiatan', $model->jenis_kegiatan) == 'Lainnya' ? 'selected' : '' }}>Lainnya</option>
+                        <option value="Pertanian, Kehutanan, dan Perikanan" {{ $currentJenisKegiatan == 'Pertanian, Kehutanan, dan Perikanan' ? 'selected' : '' }}>Pertanian, Kehutanan, dan Perikanan</option>
+                        <option value="Pertambangan dan Penggalian" {{ $currentJenisKegiatan == 'Pertambangan dan Penggalian' ? 'selected' : '' }}>Pertambangan dan Penggalian</option>
+                        <option value="Industri pengolahan" {{ $currentJenisKegiatan == 'Industri pengolahan' ? 'selected' : '' }}>Industri pengolahan</option>
+                        <option value="Pengadaan Listrik, Gas, Uap/Air Panas dan Udara Dingin" {{ $currentJenisKegiatan == 'Pengadaan Listrik, Gas, Uap/Air Panas dan Udara Dingin' ? 'selected' : '' }}>Pengadaan Listrik, Gas, Uap/Air Panas dan Udara Dingin</option>
+                        <option value="Treatment Air, Treatment Air Limbah, Treatment dan Pemulihan Material Sampah, dan Aktivitas Remediasi" {{ $currentJenisKegiatan == 'Treatment Air, Treatment Air Limbah, Treatment dan Pemulihan Material Sampah, dan Aktivitas Remediasi' ? 'selected' : '' }}>Treatment Air, Treatment Air Limbah, Treatment dan Pemulihan Material Sampah, dan Aktivitas Remediasi</option>
+                        <option value="Konstruksi" {{ $currentJenisKegiatan == 'Konstruksi' ? 'selected' : '' }}>Konstruksi</option>
+                        <option value="Perdagangan Besar dan Eceran, Reparasi dan Perawatan Mobil dan Sepeda Motor" {{ $currentJenisKegiatan == 'Perdagangan Besar dan Eceran, Reparasi dan Perawatan Mobil dan Sepeda Motor' ? 'selected' : '' }}>Perdagangan Besar dan Eceran, Reparasi dan Perawatan Mobil dan Sepeda Motor</option>
+                        <option value="Pengangkutan dan Pergudangan" {{ $currentJenisKegiatan == 'Pengangkutan dan Pergudangan' ? 'selected' : '' }}>Pengangkutan dan Pergudangan</option>
+                        <option value="Penyediaan Akomodasi dan Penyediaan Makan Minum" {{ $currentJenisKegiatan == 'Penyediaan Akomodasi dan Penyediaan Makan Minum' ? 'selected' : '' }}>Penyediaan Akomodasi dan Penyediaan Makan Minum</option>
+                        <option value="Informasi dan Komunikasi" {{ $currentJenisKegiatan == 'Informasi dan Komunikasi' ? 'selected' : '' }}>Informasi dan Komunikasi</option>
+                        <option value="Aktivitas Keuangan dan Asuransi" {{ $currentJenisKegiatan == 'Aktivitas Keuangan dan Asuransi' ? 'selected' : '' }}>Aktivitas Keuangan dan Asuransi</option>
+                        <option value="Real Estat" {{ $currentJenisKegiatan == 'Real Estat' ? 'selected' : '' }}>Real Estat</option>
+                        <option value="Aktivitas Profesional, Ilmiah dan Teknis" {{ $currentJenisKegiatan == 'Aktivitas Profesional, Ilmiah dan Teknis' ? 'selected' : '' }}>Aktivitas Profesional, Ilmiah dan Teknis</option>
+                        <option value="Aktivitas Penyewaan dan Sewa Guna Usaha Tanpa Hak Opsi, Keterangakerjaan, Agen Perjalanan dan Penunjang Usaha Lainnya" {{ $currentJenisKegiatan == 'Aktivitas Penyewaan dan Sewa Guna Usaha Tanpa Hak Opsi, Keterangakerjaan, Agen Perjalanan dan Penunjang Usaha Lainnya' ? 'selected' : '' }}>Aktivitas Penyewaan dan Sewa Guna Usaha Tanpa Hak Opsi, Keterangakerjaan, Agen Perjalanan dan Penunjang Usaha Lainnya</option>
+                        <option value="Administrasi Pemerintahan, Pertanahan dan Jaminan Sosial Wajib" {{ $currentJenisKegiatan == 'Administrasi Pemerintahan, Pertanahan dan Jaminan Sosial Wajib' ? 'selected' : '' }}>Administrasi Pemerintahan, Pertanahan dan Jaminan Sosial Wajib</option>
+                        <option value="Pendidikan" {{ $currentJenisKegiatan == 'Pendidikan' ? 'selected' : '' }}>Pendidikan</option>
+                        <option value="Aktivitas Kesehatan Manusia dan Aktivitas Sosial" {{ $currentJenisKegiatan == 'Aktivitas Kesehatan Manusia dan Aktivitas Sosial' ? 'selected' : '' }}>Aktivitas Kesehatan Manusia dan Aktivitas Sosial</option>
+                        <option value="Kesenian, Hiburan dan Rekreasi" {{ $currentJenisKegiatan == 'Kesenian, Hiburan dan Rekreasi' ? 'selected' : '' }}>Kesenian, Hiburan dan Rekreasi</option>
+                        <option value="Aktivitas Jasa Lainnya" {{ $currentJenisKegiatan == 'Aktivitas Jasa Lainnya' ? 'selected' : '' }}>Aktivitas Jasa Lainnya</option>
+                        <option value="Aktivitas Rumah Tangga Sebagai Pemberi Kerja" {{ $currentJenisKegiatan == 'Aktivitas Rumah Tangga Sebagai Pemberi Kerja' ? 'selected' : '' }}>Aktivitas Rumah Tangga Sebagai Pemberi Kerja</option>
+                        <option value="Aktivitas Badan Internasioanl dan Badan Ekstra Internasional Lainnya" {{ $currentJenisKegiatan == 'Aktivitas Badan Internasioanl dan Badan Ekstra Internasional Lainnya' ? 'selected' : '' }}>Aktivitas Badan Internasioanl dan Badan Ekstra Internasional Lainnya</option>
+                        <option value="Lainnya" {{ $isCustomJenisKegiatan || $currentJenisKegiatan == 'Lainnya' ? 'selected' : '' }}>Lainnya</option>
                     </select>
                     @error('jenis_kegiatan')
                         <div class="flex items-center space-x-2 text-red-600 text-sm mt-1">
@@ -440,12 +479,40 @@
                     @enderror
             </div>
 
-                <div class="space-y-2" id="jenis_kegiatan_lainnya" style="display:none;">
+                @php
+                    $jenisKegiatanOptions = [
+                        'Pertanian, Kehutanan, dan Perikanan',
+                        'Pertambangan dan Penggalian',
+                        'Industri pengolahan',
+                        'Pengadaan Listrik, Gas, Uap/Air Panas dan Udara Dingin',
+                        'Treatment Air, Treatment Air Limbah, Treatment dan Pemulihan Material Sampah, dan Aktivitas Remediasi',
+                        'Konstruksi',
+                        'Perdagangan Besar dan Eceran, Reparasi dan Perawatan Mobil dan Sepeda Motor',
+                        'Pengangkutan dan Pergudangan',
+                        'Penyediaan Akomodasi dan Penyediaan Makan Minum',
+                        'Informasi dan Komunikasi',
+                        'Aktivitas Keuangan dan Asuransi',
+                        'Real Estat',
+                        'Aktivitas Profesional, Ilmiah dan Teknis',
+                        'Aktivitas Penyewaan dan Sewa Guna Usaha Tanpa Hak Opsi, Keterangakerjaan, Agen Perjalanan dan Penunjang Usaha Lainnya',
+                        'Administrasi Pemerintahan, Pertanahan dan Jaminan Sosial Wajib',
+                        'Pendidikan',
+                        'Aktivitas Kesehatan Manusia dan Aktivitas Sosial',
+                        'Kesenian, Hiburan dan Rekreasi',
+                        'Aktivitas Jasa Lainnya',
+                        'Aktivitas Rumah Tangga Sebagai Pemberi Kerja',
+                        'Aktivitas Badan Internasioanl dan Badan Ekstra Internasional Lainnya',
+                        'Lainnya'
+                    ];
+                    $currentJenisKegiatan = old('jenis_kegiatan', $model->jenis_kegiatan);
+                    $isCustomJenisKegiatan = !in_array($currentJenisKegiatan, $jenisKegiatanOptions) && $currentJenisKegiatan != null && $currentJenisKegiatan != '';
+                @endphp
+                <div class="space-y-2" id="jenis_kegiatan_lainnya" style="display:{{ $isCustomJenisKegiatan || $currentJenisKegiatan == 'Lainnya' ? 'block' : 'none' }};">
                     <label for="jenis_kegiatan_lainnya" class="block text-sm font-semibold text-gray-700">
                         <i class="fas fa-edit mr-2 text-purple-600"></i>
                         Jenis Kegiatan Lainnya <span class="text-red-500">*</span>
                     </label>
-                    <input type="text" id="input_jenis_kegiatan_lainnya" name="jenis_kegiatan_lainnya" value="{{ old('jenis_kegiatan_lainnya') }}" 
+                    <input type="text" id="input_jenis_kegiatan_lainnya" name="jenis_kegiatan_lainnya" value="{{ old('jenis_kegiatan_lainnya', $isCustomJenisKegiatan ? $model->jenis_kegiatan : $model->jenis_kegiatan_lainnya) }}" 
                            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm" 
                            placeholder="Masukkan Jenis Kegiatan">
                     @error('jenis_kegiatan_lainnya')
@@ -504,7 +571,7 @@
                 <h3 class="text-lg font-bold text-gray-900">NIB</h3>
             </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="space-y-2">
                     <label for="tgl_terbit" class="block text-sm font-semibold text-gray-700">
                         <i class="fas fa-calendar mr-2 text-orange-600"></i>
@@ -514,22 +581,6 @@
                            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm" 
                            required>
                     @error('tgl_terbit')
-                        <div class="flex items-center space-x-2 text-red-600 text-sm mt-1">
-                            <i class="fas fa-exclamation-circle text-xs"></i>
-                            <span>{{ $message }}</span>
-                        </div>
-                    @enderror
-                </div>
-
-                <div class="space-y-2">
-                    <label for="nib" class="block text-sm font-semibold text-gray-700">
-                        <i class="fas fa-hashtag mr-2 text-orange-600"></i>
-                        NIB <span class="text-red-500">*</span>
-                    </label>
-                    <input type="text" id="nib" name="nib" value="{{ old('nib', $model->nib) }}" 
-                           class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm" 
-                           placeholder="NIB" required>
-                    @error('nib')
                         <div class="flex items-center space-x-2 text-red-600 text-sm mt-1">
                             <i class="fas fa-exclamation-circle text-xs"></i>
                             <span>{{ $message }}</span>
@@ -564,7 +615,7 @@
                         <div class="flex items-center space-x-2 p-3 bg-green-50 border border-green-200 rounded-lg mb-2">
                             <i class="fas fa-file-pdf text-green-600"></i>
                             <span class="text-sm text-green-700 flex-1">{{ $model->f_nib }}</span>
-                            <a href="{{ asset('uploads/berkas/kkpr_non/'.$model->id.'/f_nib/'.$model->f_nib) }}" target="_blank" class="text-blue-600 hover:text-blue-800">
+                            <a href="{{ asset('uploads/berkas/umk/'.$model->id.'/f_nib/'.$model->f_nib) }}" target="_blank" class="text-blue-600 hover:text-blue-800">
                                 <i class="fas fa-eye"></i>
                             </a>
                             <button type="button" onclick="deleteFile('f_nib', {{ $model->id }})" class="text-red-600 hover:text-red-800">
@@ -798,12 +849,24 @@
                 <div class="space-y-2">
                     <label for="sp_mandiri" class="block text-sm font-semibold text-gray-700">
                         <i class="fas fa-file-signature mr-2 text-red-600"></i>
-                        Upload Surat Pernyataan Mandiri <span class="text-red-500">*.pdf</span>
+                        Upload Surat Pernyataan Mandiri @if(!$model->sp_mandiri)<span class="text-red-500">*.pdf</span>@endif
                     </label>
+                    @if($model->sp_mandiri)
+                        <div class="flex items-center space-x-2 p-3 bg-green-50 border border-green-200 rounded-lg mb-2">
+                            <i class="fas fa-file-pdf text-green-600"></i>
+                            <span class="text-sm text-green-700 flex-1">{{ $model->sp_mandiri }}</span>
+                            <a href="{{ asset('uploads/berkas/umk/'.$model->id.'/sp_mandiri/'.$model->sp_mandiri) }}" target="_blank" class="text-blue-600 hover:text-blue-800">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            <button type="button" onclick="deleteFile('sp_mandiri', {{ $model->id }})" class="text-red-600 hover:text-red-800">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    @endif
                     <div class="relative">
                         <input type="file" id="sp_mandiri" name="sp_mandiri" accept="application/pdf" 
                                class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-red-50 file:text-red-700 hover:file:bg-red-100" 
-                               required>
+                               {{ !$model->sp_mandiri ? 'required' : '' }}>
                     </div>
                     @error('sp_mandiri')
                         <div class="flex items-center space-x-2 text-red-600 text-sm mt-1">
@@ -817,12 +880,24 @@
                 <div class="space-y-2">
                     <label for="dok_kepemilikan" class="block text-sm font-semibold text-gray-700">
                         <i class="fas fa-file-contract mr-2 text-red-600"></i>
-                        Upload Surat Kepemilikan Tanah <span class="text-red-500">.pdf</span>
+                        Upload Surat Kepemilikan Tanah @if(!$model->dok_kepemilikan)<span class="text-red-500">.pdf</span>@endif
                     </label>
+                    @if($model->dok_kepemilikan)
+                        <div class="flex items-center space-x-2 p-3 bg-green-50 border border-green-200 rounded-lg mb-2">
+                            <i class="fas fa-file-pdf text-green-600"></i>
+                            <span class="text-sm text-green-700 flex-1">{{ $model->dok_kepemilikan }}</span>
+                            <a href="{{ asset('uploads/berkas/umk/'.$model->id.'/dokumen_kepemilikan/'.$model->dok_kepemilikan) }}" target="_blank" class="text-blue-600 hover:text-blue-800">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            <button type="button" onclick="deleteFile('dok_kepemilikan', {{ $model->id }})" class="text-red-600 hover:text-red-800">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    @endif
                     <div class="relative">
                         <input type="file" id="dok_kepemilikan" name="dok_kepemilikan" accept="application/pdf" 
                                class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-red-50 file:text-red-700 hover:file:bg-red-100" 
-                               required>
+                               {{ !$model->dok_kepemilikan ? 'required' : '' }}>
                     </div>
                     @error('dok_kepemilikan')
                         <div class="flex items-center space-x-2 text-red-600 text-sm mt-1">
@@ -836,12 +911,24 @@
                 <div class="space-y-2">
                     <label for="f_ktp" class="block text-sm font-semibold text-gray-700">
                         <i class="fas fa-id-card mr-2 text-red-600"></i>
-                        KTP Pemohon <span class="text-red-500">*.pdf</span>
+                        KTP Pemohon @if(!$model->f_ktp)<span class="text-red-500">*.pdf</span>@endif
                     </label>
+                    @if($model->f_ktp)
+                        <div class="flex items-center space-x-2 p-3 bg-green-50 border border-green-200 rounded-lg mb-2">
+                            <i class="fas fa-file-pdf text-green-600"></i>
+                            <span class="text-sm text-green-700 flex-1">{{ $model->f_ktp }}</span>
+                            <a href="{{ asset('uploads/berkas/umk/'.$model->id.'/f_ktp/'.$model->f_ktp) }}" target="_blank" class="text-blue-600 hover:text-blue-800">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            <button type="button" onclick="deleteFile('f_ktp', {{ $model->id }})" class="text-red-600 hover:text-red-800">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    @endif
                     <div class="relative">
                         <input type="file" id="f_ktp" name="f_ktp" accept="application/pdf" 
                                class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-red-50 file:text-red-700 hover:file:bg-red-100" 
-                               required>
+                               {{ !$model->f_ktp ? 'required' : '' }}>
                     </div>
                     @error('f_ktp')
                         <div class="flex items-center space-x-2 text-red-600 text-sm mt-1">
@@ -855,12 +942,24 @@
                 <div class="space-y-2">
                     <label for="f_sertifikat" class="block text-sm font-semibold text-gray-700">
                         <i class="fas fa-certificate mr-2 text-red-600"></i>
-                        Sertifikat Tanah <span class="text-red-500">*.pdf</span>
+                        Sertifikat Tanah @if(!$model->f_sertifikat)<span class="text-red-500">*.pdf</span>@endif
                     </label>
+                    @if($model->f_sertifikat)
+                        <div class="flex items-center space-x-2 p-3 bg-green-50 border border-green-200 rounded-lg mb-2">
+                            <i class="fas fa-file-pdf text-green-600"></i>
+                            <span class="text-sm text-green-700 flex-1">{{ $model->f_sertifikat }}</span>
+                            <a href="{{ asset('uploads/berkas/umk/'.$model->id.'/f_sertifikat/'.$model->f_sertifikat) }}" target="_blank" class="text-blue-600 hover:text-blue-800">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            <button type="button" onclick="deleteFile('f_sertifikat', {{ $model->id }})" class="text-red-600 hover:text-red-800">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    @endif
                     <div class="relative">
                         <input type="file" id="f_sertifikat" name="f_sertifikat" accept="application/pdf" 
                                class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-red-50 file:text-red-700 hover:file:bg-red-100" 
-                               required>
+                               {{ !$model->f_sertifikat ? 'required' : '' }}>
                     </div>
                     @error('f_sertifikat')
                         <div class="flex items-center space-x-2 text-red-600 text-sm mt-1">
@@ -874,12 +973,24 @@
                 <div class="space-y-2">
                     <label for="f_siteplan" class="block text-sm font-semibold text-gray-700">
                         <i class="fas fa-map mr-2 text-red-600"></i>
-                        Siteplan/Denah Lokasi <span class="text-red-500">*.pdf</span>
+                        Siteplan/Denah Lokasi @if(!$model->f_siteplan)<span class="text-red-500">*.pdf</span>@endif
                     </label>
+                    @if($model->f_siteplan)
+                        <div class="flex items-center space-x-2 p-3 bg-green-50 border border-green-200 rounded-lg mb-2">
+                            <i class="fas fa-file-pdf text-green-600"></i>
+                            <span class="text-sm text-green-700 flex-1">{{ $model->f_siteplan }}</span>
+                            <a href="{{ asset('uploads/berkas/umk/'.$model->id.'/f_siteplan/'.$model->f_siteplan) }}" target="_blank" class="text-blue-600 hover:text-blue-800">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            <button type="button" onclick="deleteFile('f_siteplan', {{ $model->id }})" class="text-red-600 hover:text-red-800">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    @endif
                     <div class="relative">
                         <input type="file" id="f_siteplan" name="f_siteplan" accept="application/pdf" 
                                class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-red-50 file:text-red-700 hover:file:bg-red-100" 
-                               required>
+                               {{ !$model->f_siteplan ? 'required' : '' }}>
                     </div>
                     @error('f_siteplan')
                         <div class="flex items-center space-x-2 text-red-600 text-sm mt-1">
@@ -895,6 +1006,18 @@
                         <i class="fas fa-file-alt mr-2 text-red-600"></i>
                         Akta Perusahaan (Badan Usaha)
                     </label>
+                    @if($model->f_akta)
+                        <div class="flex items-center space-x-2 p-3 bg-green-50 border border-green-200 rounded-lg mb-2">
+                            <i class="fas fa-file-pdf text-green-600"></i>
+                            <span class="text-sm text-green-700 flex-1">{{ $model->f_akta }}</span>
+                            <a href="{{ asset('uploads/berkas/umk/'.$model->id.'/f_akta/'.$model->f_akta) }}" target="_blank" class="text-blue-600 hover:text-blue-800">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            <button type="button" onclick="deleteFile('f_akta', {{ $model->id }})" class="text-red-600 hover:text-red-800">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    @endif
                     <div class="relative">
                         <input type="file" id="f_akta" name="f_akta" accept="application/pdf" 
                                class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-red-50 file:text-red-700 hover:file:bg-red-100">
@@ -913,6 +1036,18 @@
                         <i class="fas fa-file-alt mr-2 text-red-600"></i>
                         Dokumen Perizinan Tata Ruang Sebelumnya
                     </label>
+                    @if($model->dok_taru)
+                        <div class="flex items-center space-x-2 p-3 bg-green-50 border border-green-200 rounded-lg mb-2">
+                            <i class="fas fa-file-pdf text-green-600"></i>
+                            <span class="text-sm text-green-700 flex-1">{{ $model->dok_taru }}</span>
+                            <a href="{{ asset('uploads/berkas/umk/'.$model->id.'/dok_taru/'.$model->dok_taru) }}" target="_blank" class="text-blue-600 hover:text-blue-800">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            <button type="button" onclick="deleteFile('dok_taru', {{ $model->id }})" class="text-red-600 hover:text-red-800">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    @endif
                     <div class="relative">
                         <input type="file" id="dok_taru" name="dok_taru" accept="application/pdf" 
                                class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-red-50 file:text-red-700 hover:file:bg-red-100">
@@ -946,22 +1081,50 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td class="px-4 py-2">
-                                <input type="text" class="form-control w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" 
-                                       name="kode_kbli[]" id="kode_kbli_1" placeholder="Kode KBLI" required>
-                            </td>
-                            <td class="px-4 py-2">
-                                <input type="text" class="form-control w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" 
-                                       name="judul_kbli[]" id="judul_kbli_1" placeholder="Judul KBLI" required>
-                            </td>
-                            <td class="px-4 py-2 text-center">
-                                <button class="btn btn-success px-3 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors" 
-                                        type="button" id="add_kbli">
-                                    <i class="fas fa-plus"></i>
-                                </button>
-                            </td>
-                        </tr>
+                        @if($kbli && $kbli->count() > 0)
+                            @foreach($kbli as $index => $item)
+                                <tr>
+                                    <td class="px-4 py-2">
+                                        <input type="text" class="form-control w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" 
+                                               name="kode_kbli[]" value="{{ $item->kode_kbli ?? '' }}" placeholder="Kode KBLI" required>
+                                    </td>
+                                    <td class="px-4 py-2">
+                                        <input type="text" class="form-control w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" 
+                                               name="judul_kbli[]" value="{{ $item->judul_kbli ?? '' }}" placeholder="Judul KBLI" required>
+                                    </td>
+                                    <td class="px-4 py-2 text-center">
+                                        @if($loop->first)
+                                            <button class="btn btn-success px-3 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors" 
+                                                    type="button" id="add_kbli">
+                                                <i class="fas fa-plus"></i>
+                                            </button>
+                                        @else
+                                            <button class="btn btn-danger px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors btn_remove_kbli" 
+                                                    type="button">
+                                                <i class="fas fa-minus"></i>
+                                            </button>
+                                        @endif
+                                    </td>
+                                </tr>
+                            @endforeach
+                        @else
+                            <tr>
+                                <td class="px-4 py-2">
+                                    <input type="text" class="form-control w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" 
+                                           name="kode_kbli[]" id="kode_kbli_1" placeholder="Kode KBLI" required>
+                                </td>
+                                <td class="px-4 py-2">
+                                    <input type="text" class="form-control w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" 
+                                           name="judul_kbli[]" id="judul_kbli_1" placeholder="Judul KBLI" required>
+                                </td>
+                                <td class="px-4 py-2 text-center">
+                                    <button class="btn btn-success px-3 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors" 
+                                            type="button" id="add_kbli">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        @endif
                     </tbody>
                 </table>
             </div>
@@ -1136,6 +1299,44 @@
         <!-- Map Section -->
         <div class="bg-white/80 backdrop-blur-sm rounded-xl p-6 shadow-lg border border-white/20">
             <div class="space-y-4">
+                <!-- Pilihan Input Koordinat -->
+                @php
+                    $hasKoordinatDimohon = !empty($model->koordinat_dimohon);
+                    $hasKml = !empty($model->f_kml);
+                    $hasKmlGeojson = !empty($model->kml_geojson);
+                    $hasAnyCoordinateData = $hasKoordinatDimohon || $hasKml || $hasKmlGeojson;
+                    
+                    // Tentukan metode input default berdasarkan data yang ada
+                    if (!$hasAnyCoordinateData) {
+                        $defaultMethod = old('input_method', 'kml');
+                    } else if ($hasKoordinatDimohon) {
+                        $defaultMethod = 'manual';
+                    } else {
+                        $defaultMethod = 'kml';
+                    }
+                @endphp
+                
+                @if($hasAnyCoordinateData)
+                    <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-4 border border-blue-200">
+                        <label class="block text-sm font-semibold text-gray-700 mb-3">
+                            <i class="fas fa-map-marker-alt mr-2 text-blue-600"></i>
+                            Pilih Metode Input Koordinat
+                        </label>
+                        <div class="flex space-x-4">
+                            <label class="flex items-center space-x-2 cursor-pointer">
+                                <input type="radio" name="input_method" value="kml" id="input_method_kml" class="w-4 h-4 text-blue-600 focus:ring-blue-500" {{ old('input_method', $defaultMethod) == 'kml' ? 'checked' : '' }} onchange="toggleInputMethod('kml')">
+                                <span class="text-sm font-medium text-gray-700">Upload KML / Draw di Peta</span>
+                            </label>
+                            <label class="flex items-center space-x-2 cursor-pointer">
+                                <input type="radio" name="input_method" value="manual" id="input_method_manual" class="w-4 h-4 text-blue-600 focus:ring-blue-500" {{ old('input_method', $defaultMethod) == 'manual' ? 'checked' : '' }} onchange="toggleInputMethod('manual')">
+                                <span class="text-sm font-medium text-gray-700">Input Koordinat Manual</span>
+                            </label>
+                        </div>
+                    </div>
+                @endif
+
+                <!-- Section Upload KML / Draw Peta -->
+                <div id="kml_section" class="space-y-4" style="display: {{ !$hasAnyCoordinateData || $defaultMethod == 'kml' ? 'block' : 'none' }};">
                 <div class="flex items-center justify-between">
                     <h4 class="text-lg font-semibold text-gray-700">Peta Lokasi</h4>
                     <div class="flex items-center space-x-4">
@@ -1148,7 +1349,7 @@
                                 <div class="flex items-center space-x-2 p-3 bg-green-50 border border-green-200 rounded-lg mb-2">
                                     <i class="fas fa-map text-green-600"></i>
                                     <span class="text-sm text-green-700 flex-1">{{ $model->f_kml }}</span>
-                                    <a href="{{ asset('uploads/berkas/kkpr_non/'.$model->id.'/kml/'.$model->f_kml) }}" download class="text-blue-600 hover:text-blue-800" title="Download KML">
+                                    <a href="{{ asset('uploads/berkas/umk/'.$model->id.'/kml/'.$model->f_kml) }}" download class="text-blue-600 hover:text-blue-800" title="Download KML">
                                         <i class="fas fa-download"></i>
                                     </a>
                                     <button type="button" onclick="deleteFile('f_kml', {{ $model->id }})" class="text-red-600 hover:text-red-800" title="Hapus KML">
@@ -1185,7 +1386,7 @@
                     </div>
                 </div>
                 
-                <textarea name="kml_geojson" id="kml_geojson" style="display: none;" cols="30" rows="10"></textarea>
+                <textarea name="kml_geojson" id="kml_geojson" style="display: none;" cols="30" rows="10">{{ old('kml_geojson', $model->kml_geojson) }}</textarea>
                 
                 <!-- GeoJSON Status Indicator -->
                 <div id="geojson_status" class="hidden mb-4">
@@ -1198,6 +1399,35 @@
                 </div>
                 
                 <div id='mapKu' style='width: 100%; height: 80vh; border-radius: 0.5rem; border: 1px solid #e5e7eb;'></div>
+                </div>
+
+                <!-- Section Input Koordinat Manual -->
+                <div id="manual_section" class="space-y-4" style="display: {{ !$hasAnyCoordinateData || $defaultMethod == 'kml' ? 'none' : 'block' }};">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <label class="block text-sm font-semibold text-gray-700">
+                                <i class="fas fa-map-marked-alt mr-2 text-purple-600"></i>
+                                Input Koordinat Lokasi <span class="text-red-500">*</span>
+                            </label>
+                            <button type="button" id="add_coordinate_btn" onclick="addCoordinateRow()" class="px-3 py-1.5 text-sm bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors">
+                                <i class="fas fa-plus mr-1"></i>Tambah Koordinat
+                            </button>
+                        </div>
+                        
+                        <!-- Daftar Koordinat -->
+                        <div id="coordinates_list" class="space-y-3">
+                            <!-- Koordinat akan ditambahkan di sini secara dinamis -->
+                        </div>
+                        
+                        <!-- Hidden input untuk menyimpan data array -->
+                        <input type="hidden" id="koordinat_data" name="koordinat_dimohon" value="{{ old('koordinat_dimohon', !empty($model->koordinat_dimohon) ? json_encode($model->koordinat_dimohon) : '[]') }}">
+                        
+                        <p class="text-xs text-gray-500 mt-2">
+                            <i class="fas fa-info-circle mr-1"></i>
+                            Klik "Tambah Koordinat" untuk menambahkan pasangan koordinat (Latitude, Longitude)
+                        </p>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -2563,34 +2793,38 @@
     // Initialize dynamic forms
     function initDynamicForms() {
         // KBLI dynamic rows
-        let kbliCount = 1;
-        document.getElementById('add_kbli').addEventListener('click', function() {
-            kbliCount++;
-            const tbody = document.querySelector('#kbli_tbl tbody');
-            const newRow = document.createElement('tr');
-            newRow.innerHTML = `
-                <td class="px-4 py-2">
-                    <input type="text" class="form-control w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" 
-                           name="kode_kbli[]" id="kode_kbli_${kbliCount}" placeholder="Kode KBLI" required>
-                </td>
-                <td class="px-4 py-2">
-                    <input type="text" class="form-control w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" 
-                           name="judul_kbli[]" id="judul_kbli_${kbliCount}" placeholder="Judul KBLI" required>
-                </td>
-                <td class="px-4 py-2 text-center">
-                    <button class="btn btn-danger px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors btn_remove_kbli" 
-                            type="button" id="${kbliCount}">
-                        <i class="fas fa-minus"></i>
-                    </button>
-                </td>
-            `;
-            tbody.appendChild(newRow);
-        });
+        let kbliCount = {{ $kbli ? $kbli->count() : 1 }};
+        const addKbliBtn = document.getElementById('add_kbli');
+        if(addKbliBtn) {
+            addKbliBtn.addEventListener('click', function() {
+                kbliCount++;
+                const tbody = document.querySelector('#kbli_tbl tbody');
+                const newRow = document.createElement('tr');
+                newRow.innerHTML = `
+                    <td class="px-4 py-2">
+                        <input type="text" class="form-control w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" 
+                               name="kode_kbli[]" id="kode_kbli_${kbliCount}" placeholder="Kode KBLI" required>
+                    </td>
+                    <td class="px-4 py-2">
+                        <input type="text" class="form-control w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" 
+                               name="judul_kbli[]" id="judul_kbli_${kbliCount}" placeholder="Judul KBLI" required>
+                    </td>
+                    <td class="px-4 py-2 text-center">
+                        <button class="btn btn-danger px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors btn_remove_kbli" 
+                                type="button" id="${kbliCount}">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(newRow);
+            });
+        }
 
         // Remove KBLI row
         document.addEventListener('click', function(e) {
-            if (e.target.classList.contains('btn_remove_kbli')) {
-                e.target.closest('tr').remove();
+            if (e.target.classList.contains('btn_remove_kbli') || e.target.parentElement.classList.contains('btn_remove_kbli')) {
+                const btn = e.target.classList.contains('btn_remove_kbli') ? e.target : e.target.parentElement;
+                btn.closest('tr').remove();
             }
         });
 
@@ -2688,7 +2922,7 @@
     document.addEventListener('DOMContentLoaded', function() {
         setTimeout(function() {
             if(window.kkprMap) {
-                const kmlPath = '{{ asset("uploads/berkas/kkpr_non/".$model->id."/kml/".$model->f_kml) }}';
+                const kmlPath = '{{ asset("uploads/berkas/umk/".$model->id."/kml/".$model->f_kml) }}';
                 
                 fetch(kmlPath)
                     .then(response => response.text())
@@ -2736,6 +2970,174 @@
         }, 1500);
     });
     @endif
+
+    // Coordinate counter for unique IDs
+    let coordinateCounter = 0;
+
+    // Add coordinate row
+    function addCoordinateRow(latitude = '', longitude = '') {
+        const coordinatesList = document.getElementById('coordinates_list');
+        if (!coordinatesList) return;
+        
+        const rowId = 'coordinate_' + coordinateCounter++;
+        
+        const row = document.createElement('div');
+        row.id = rowId;
+        row.className = 'bg-gray-50 rounded-lg p-4 border border-gray-200';
+        row.innerHTML = `
+            <div class="grid grid-cols-12 gap-3 items-end">
+                <div class="col-span-5">
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">
+                        Latitude <span class="text-red-500">*</span>
+                    </label>
+                    <input type="text" 
+                           class="coordinate-lat w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm" 
+                           placeholder="-8.2191" 
+                           value="${latitude}"
+                           onchange="updateKoordinatData()"
+                           pattern="-?\\d+\\.?\\d*">
+                </div>
+                <div class="col-span-5">
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">
+                        Longitude <span class="text-red-500">*</span>
+                    </label>
+                    <input type="text" 
+                           class="coordinate-lng w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm" 
+                           placeholder="114.3691" 
+                           value="${longitude}"
+                           onchange="updateKoordinatData()"
+                           pattern="-?\\d+\\.?\\d*">
+                </div>
+                <div class="col-span-2">
+                    <button type="button" onclick="removeCoordinateRow('${rowId}')" class="w-full px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors text-sm">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+        `;
+        
+        coordinatesList.appendChild(row);
+        updateKoordinatData();
+    }
+
+    // Remove coordinate row
+    function removeCoordinateRow(rowId) {
+        const row = document.getElementById(rowId);
+        if (row) {
+            row.remove();
+            updateKoordinatData();
+        }
+    }
+
+    // Update hidden input dengan data array koordinat
+    function updateKoordinatData() {
+        const coordinates = [];
+        const latInputs = document.querySelectorAll('.coordinate-lat');
+        const lngInputs = document.querySelectorAll('.coordinate-lng');
+        
+        latInputs.forEach((latInput, index) => {
+            const lat = latInput.value.trim();
+            const lng = lngInputs[index] ? lngInputs[index].value.trim() : '';
+            
+            if (lat && lng) {
+                coordinates.push({
+                    latitude: lat,
+                    longitude: lng
+                });
+            }
+        });
+        
+        const hiddenInput = document.getElementById('koordinat_data');
+        if (hiddenInput) {
+            hiddenInput.value = JSON.stringify(coordinates);
+        }
+    }
+
+    // Toggle input method - must be in global scope for onchange attribute
+    function toggleInputMethod(method) {
+        const kmlSection = document.getElementById('kml_section');
+        const manualSection = document.getElementById('manual_section');
+        const kmlInput = document.getElementById('f_kml');
+        const kmlGeojson = document.getElementById('kml_geojson');
+        
+        if (method === 'kml') {
+            if (kmlSection) kmlSection.style.display = 'block';
+            if (manualSection) manualSection.style.display = 'none';
+        } else {
+            if (kmlSection) kmlSection.style.display = 'none';
+            if (manualSection) manualSection.style.display = 'block';
+            if (kmlInput) {
+                kmlInput.required = false;
+                kmlInput.value = '';
+            }
+            if (kmlGeojson) kmlGeojson.value = '';
+            
+            // Initialize dengan satu row koordinat jika belum ada
+            const coordinatesList = document.getElementById('coordinates_list');
+            if (coordinatesList && coordinatesList.children.length === 0) {
+                addCoordinateRow();
+            }
+        }
+    }
+
+    // Load existing koordinat_dimohon if available
+    @if(isset($model->koordinat_dimohon) && !empty($model->koordinat_dimohon))
+    document.addEventListener('DOMContentLoaded', function() {
+        try {
+            const existingCoords = @json($model->koordinat_dimohon);
+            if (Array.isArray(existingCoords) && existingCoords.length > 0) {
+                existingCoords.forEach(coord => {
+                    if (coord && coord.latitude && coord.longitude) {
+                        addCoordinateRow(coord.latitude, coord.longitude);
+                    }
+                });
+            }
+        } catch(e) {
+            console.error('Error loading existing coordinates:', e);
+        }
+    });
+    @endif
+
+    // Handle NO_KEC change to update kelurahan dropdown
+    document.addEventListener('DOMContentLoaded', function() {
+        const noKecSelect = document.getElementById('NO_KEC');
+        if (noKecSelect) {
+            noKecSelect.addEventListener('change', function() {
+                const noKec = this.value;
+                const noKelSelect = document.getElementById('NO_KEL');
+                
+                // Reset kelurahan dropdown
+                noKelSelect.innerHTML = '<option value="">-- Pilih Desa/Kelurahan --</option>';
+                
+                if (!noKec) {
+                    return;
+                }
+                
+                // Fetch kelurahan based on kecamatan
+                fetch(`{{ route('admin.kkprnon.get.kelurahan') }}?NO_KEC=${noKec}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.kelurahan && Object.keys(data.kelurahan).length > 0) {
+                        Object.entries(data.kelurahan).forEach(([id, name]) => {
+                            const option = document.createElement('option');
+                            option.value = id;
+                            option.textContent = name;
+                            noKelSelect.appendChild(option);
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching kelurahan:', error);
+                });
+            });
+        }
+    });
 </script>
 @endsection
 

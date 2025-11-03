@@ -65,7 +65,15 @@ class MemberKkprController extends Controller
         $req['penggunaan_sekarang'] = $request->get('penggunaan_sekarang');
         $req['jumlah_lantai'] = $request->get('jumlah_lantai');
         $req['tinggi_bangunan'] = $request->get('tinggi_bangunan');
-        $req['luas_lantai'] = $request->get('luas_lantai');
+        // Handle luas_lantai array - filter null/NaN/undefined
+        $luasLantai = $request->get('luas_lantai');
+        if (is_array($luasLantai)) {
+            $req['luas_lantai'] = array_values(array_filter($luasLantai, function($value) {
+                return $value !== null && $value !== '' && $value !== 'NaN' && $value !== 'undefined';
+            }));
+        } else {
+            $req['luas_lantai'] = $luasLantai;
+        }
         $req['fungsi'] = $request->get('fungsi');
         $req['no_nib'] = $request->get('no_nib');
         $req['tgl_terbit'] = $request->get('tgl_terbit');
@@ -348,7 +356,15 @@ class MemberKkprController extends Controller
         $req['penggunaan_sekarang'] = $request->get('penggunaan_sekarang');
         $req['jumlah_lantai'] = $request->get('jumlah_lantai');
         $req['tinggi_bangunan'] = $request->get('tinggi_bangunan');
-        $req['luas_lantai'] = $request->get('luas_lantai');
+        // Handle luas_lantai array - filter null/NaN/undefined
+        $luasLantai = $request->get('luas_lantai');
+        if (is_array($luasLantai)) {
+            $req['luas_lantai'] = array_values(array_filter($luasLantai, function($value) {
+                return $value !== null && $value !== '' && $value !== 'NaN' && $value !== 'undefined';
+            }));
+        } else {
+            $req['luas_lantai'] = $luasLantai;
+        }
         $req['tgl_terbit'] = $request->get('tgl_terbit');
         $req['no_nib'] = $request->get('no_nib');
         $req['tgl_surat'] = $request->get('tgl_surat');
@@ -945,5 +961,25 @@ class MemberKkprController extends Controller
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => 'Terjadi kesalahan: ' . $e->getMessage()], 500);
         }
+    }
+
+    // Get kelurahan berdasarkan NO_KEC
+    public function getKelurahanByKecamatan(Request $request)
+    {
+        $no_kec = $request->get('NO_KEC');
+        
+        if (!$no_kec) {
+            return response()->json(['kelurahan' => []]);
+        }
+
+        // Ambil kelurahan berdasarkan NO_KEC yang dipilih
+        $kelurahan = DB::table('setup_kel_fix')
+            ->where('NO_PROP', 35)
+            ->where('NO_KAB', 10)
+            ->where('NO_KEC', $no_kec)
+            ->pluck('NAMA_KEL', 'NO_KEL')
+            ->toArray();
+
+        return response()->json(['kelurahan' => $kelurahan]);
     }
 }

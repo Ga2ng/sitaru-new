@@ -41,6 +41,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
             Route::put('settings', [AdminSettingsController::class, 'update'])->name('settings.update')->middleware('permission:Setting');
 
             // KKPR Management Routes
+            Route::get('kkpr/get-kelurahan-by-kecamatan', [AdminKkprController::class, 'getKelurahanByKecamatan'])->name('kkpr.get.kelurahan');
             Route::resource('kkpr', AdminKkprController::class);
             Route::post('kkpr/{kkpr}/toggle-status', [AdminKkprController::class, 'toggleStatus'])->name('kkpr.toggle-status');
             Route::get('kkpr/{kkpr}/riwayat', [AdminKkprController::class, 'riwayat'])->name('kkpr.riwayat');
@@ -68,6 +69,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
             Route::post('kkpr/{id}/confirm-pencabutan', [AdminKkprController::class, 'confirmPencabutan'])->name('kkpr.confirm.pencabutan');
 
             // KKPR Non Berusaha Management Routes
+            Route::get('kkprnon/get-kelurahan-by-kecamatan', [AdminKkprNonController::class, 'getKelurahanByKecamatan'])->name('kkprnon.get.kelurahan');
             Route::resource('kkprnon', AdminKkprNonController::class);
             Route::get('kkprnon/{kkprnon}/riwayat', [AdminKkprNonController::class, 'riwayat'])->name('kkprnon.riwayat');
             Route::get('kkprnon/riwayat-data/{id}', [AdminKkprNonController::class, 'getRiwayatData'])->name('kkprnon.riwayat.data');

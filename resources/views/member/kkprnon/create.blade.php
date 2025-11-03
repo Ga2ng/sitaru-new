@@ -411,12 +411,27 @@
                             class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm" required
                             onchange="toggleJenisLainnya(this.value)">
                         <option value="">-- Pilih Jenis Kegiatan --</option>
-                        <option value="Perumahan" {{ old('jenis_kegiatan') == 'Perumahan' ? 'selected' : '' }}>Perumahan</option>
-                        <option value="Industri" {{ old('jenis_kegiatan') == 'Industri' ? 'selected' : '' }}>Industri</option>
-                        <option value="Perdagangan dan Jasa" {{ old('jenis_kegiatan') == 'Perdagangan dan Jasa' ? 'selected' : '' }}>Perdagangan dan Jasa</option>
-                        <option value="Pergudangan" {{ old('jenis_kegiatan') == 'Pergudangan' ? 'selected' : '' }}>Pergudangan</option>
-                        <option value="Pariwisata" {{ old('jenis_kegiatan') == 'Pariwisata' ? 'selected' : '' }}>Pariwisata</option>
-                        <option value="Pertanian" {{ old('jenis_kegiatan') == 'Pertanian' ? 'selected' : '' }}>Pertanian</option>
+                        <option value="Pertanian, Kehutanan, dan Perikanan" {{ old('jenis_kegiatan') == 'Pertanian, Kehutanan, dan Perikanan' ? 'selected' : '' }}>Pertanian, Kehutanan, dan Perikanan</option>
+                        <option value="Pertambangan dan Penggalian" {{ old('jenis_kegiatan') == 'Pertambangan dan Penggalian' ? 'selected' : '' }}>Pertambangan dan Penggalian</option>
+                        <option value="Industri pengolahan" {{ old('jenis_kegiatan') == 'Industri pengolahan' ? 'selected' : '' }}>Industri pengolahan</option>
+                        <option value="Pengadaan Listrik, Gas, Uap/Air Panas dan Udara Dingin" {{ old('jenis_kegiatan') == 'Pengadaan Listrik, Gas, Uap/Air Panas dan Udara Dingin' ? 'selected' : '' }}>Pengadaan Listrik, Gas, Uap/Air Panas dan Udara Dingin</option>
+                        <option value="Treatment Air, Treatment Air Limbah, Treatment dan Pemulihan Material Sampah, dan Aktivitas Remediasi" {{ old('jenis_kegiatan') == 'Treatment Air, Treatment Air Limbah, Treatment dan Pemulihan Material Sampah, dan Aktivitas Remediasi' ? 'selected' : '' }}>Treatment Air, Treatment Air Limbah, Treatment dan Pemulihan Material Sampah, dan Aktivitas Remediasi</option>
+                        <option value="Konstruksi" {{ old('jenis_kegiatan') == 'Konstruksi' ? 'selected' : '' }}>Konstruksi</option>
+                        <option value="Perdagangan Besar dan Eceran, Reparasi dan Perawatan Mobil dan Sepeda Motor" {{ old('jenis_kegiatan') == 'Perdagangan Besar dan Eceran, Reparasi dan Perawatan Mobil dan Sepeda Motor' ? 'selected' : '' }}>Perdagangan Besar dan Eceran, Reparasi dan Perawatan Mobil dan Sepeda Motor</option>
+                        <option value="Pengangkutan dan Pergudangan" {{ old('jenis_kegiatan') == 'Pengangkutan dan Pergudangan' ? 'selected' : '' }}>Pengangkutan dan Pergudangan</option>
+                        <option value="Penyediaan Akomodasi dan Penyediaan Makan Minum" {{ old('jenis_kegiatan') == 'Penyediaan Akomodasi dan Penyediaan Makan Minum' ? 'selected' : '' }}>Penyediaan Akomodasi dan Penyediaan Makan Minum</option>
+                        <option value="Informasi dan Komunikasi" {{ old('jenis_kegiatan') == 'Informasi dan Komunikasi' ? 'selected' : '' }}>Informasi dan Komunikasi</option>
+                        <option value="Aktivitas Keuangan dan Asuransi" {{ old('jenis_kegiatan') == 'Aktivitas Keuangan dan Asuransi' ? 'selected' : '' }}>Aktivitas Keuangan dan Asuransi</option>
+                        <option value="Real Estat" {{ old('jenis_kegiatan') == 'Real Estat' ? 'selected' : '' }}>Real Estat</option>
+                        <option value="Aktivitas Profesional, Ilmiah dan Teknis" {{ old('jenis_kegiatan') == 'Aktivitas Profesional, Ilmiah dan Teknis' ? 'selected' : '' }}>Aktivitas Profesional, Ilmiah dan Teknis</option>
+                        <option value="Aktivitas Penyewaan dan Sewa Guna Usaha Tanpa Hak Opsi, Keterangakerjaan, Agen Perjalanan dan Penunjang Usaha Lainnya" {{ old('jenis_kegiatan') == 'Aktivitas Penyewaan dan Sewa Guna Usaha Tanpa Hak Opsi, Keterangakerjaan, Agen Perjalanan dan Penunjang Usaha Lainnya' ? 'selected' : '' }}>Aktivitas Penyewaan dan Sewa Guna Usaha Tanpa Hak Opsi, Keterangakerjaan, Agen Perjalanan dan Penunjang Usaha Lainnya</option>
+                        <option value="Administrasi Pemerintahan, Pertanahan dan Jaminan Sosial Wajib" {{ old('jenis_kegiatan') == 'Administrasi Pemerintahan, Pertanahan dan Jaminan Sosial Wajib' ? 'selected' : '' }}>Administrasi Pemerintahan, Pertanahan dan Jaminan Sosial Wajib</option>
+                        <option value="Pendidikan" {{ old('jenis_kegiatan') == 'Pendidikan' ? 'selected' : '' }}>Pendidikan</option>
+                        <option value="Aktivitas Kesehatan Manusia dan Aktivitas Sosial" {{ old('jenis_kegiatan') == 'Aktivitas Kesehatan Manusia dan Aktivitas Sosial' ? 'selected' : '' }}>Aktivitas Kesehatan Manusia dan Aktivitas Sosial</option>
+                        <option value="Kesenian, Hiburan dan Rekreasi" {{ old('jenis_kegiatan') == 'Kesenian, Hiburan dan Rekreasi' ? 'selected' : '' }}>Kesenian, Hiburan dan Rekreasi</option>
+                        <option value="Aktivitas Jasa Lainnya" {{ old('jenis_kegiatan') == 'Aktivitas Jasa Lainnya' ? 'selected' : '' }}>Aktivitas Jasa Lainnya</option>
+                        <option value="Aktivitas Rumah Tangga Sebagai Pemberi Kerja" {{ old('jenis_kegiatan') == 'Aktivitas Rumah Tangga Sebagai Pemberi Kerja' ? 'selected' : '' }}>Aktivitas Rumah Tangga Sebagai Pemberi Kerja</option>
+                        <option value="Aktivitas Badan Internasioanl dan Badan Ekstra Internasional Lainnya" {{ old('jenis_kegiatan') == 'Aktivitas Badan Internasioanl dan Badan Ekstra Internasional Lainnya' ? 'selected' : '' }}>Aktivitas Badan Internasioanl dan Badan Ekstra Internasional Lainnya</option>
                         <option value="Lainnya" {{ old('jenis_kegiatan') == 'Lainnya' ? 'selected' : '' }}>Lainnya</option>
                     </select>
                     @error('jenis_kegiatan')
@@ -2907,6 +2922,47 @@
                 }, 300);
             }
         });
+    });
+
+    // Handle NO_KEC change to update kelurahan dropdown
+    document.addEventListener('DOMContentLoaded', function() {
+        const noKecSelect = document.getElementById('NO_KEC');
+        if (noKecSelect) {
+            noKecSelect.addEventListener('change', function() {
+                const noKec = this.value;
+                const noKelSelect = document.getElementById('NO_KEL');
+                
+                // Reset kelurahan dropdown
+                noKelSelect.innerHTML = '<option value="">-- Pilih Desa/Kelurahan --</option>';
+                
+                if (!noKec) {
+                    return;
+                }
+                
+                // Fetch kelurahan based on kecamatan
+                fetch(`{{ route('member.kkprnon.get.kelurahan') }}?NO_KEC=${noKec}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.kelurahan && Object.keys(data.kelurahan).length > 0) {
+                        Object.entries(data.kelurahan).forEach(([id, name]) => {
+                            const option = document.createElement('option');
+                            option.value = id;
+                            option.textContent = name;
+                            noKelSelect.appendChild(option);
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching kelurahan:', error);
+                });
+            });
+        }
     });
 </script>
 @endsection

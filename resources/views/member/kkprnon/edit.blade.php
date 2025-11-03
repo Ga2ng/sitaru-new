@@ -142,7 +142,7 @@
                         <i class="fas fa-id-card mr-2 text-[#185B3C]"></i>
                         NIK
                     </label>
-                    <input type="text" value="{{ $model->user->nik ?? '' }}" readonly class="w-full px-4 py-3 border border-gray-200 rounded-xl bg-gray-50 text-gray-600">
+                    <input type="text" value="{{ optional($model->user)->nik ?? '' }}" readonly class="w-full px-4 py-3 border border-gray-200 rounded-xl bg-gray-50 text-gray-600">
                 </div>
 
                 <div class="space-y-2">
@@ -150,7 +150,7 @@
                         <i class="fas fa-user mr-2 text-[#185B3C]"></i>
                         Nama Pelaku Usaha
                     </label>
-                    <input type="text" value="{{ $model->user->name ?? '' }}" readonly class="w-full px-4 py-3 border border-gray-200 rounded-xl bg-gray-50 text-gray-600">
+                    <input type="text" value="{{ optional($model->user)->name ?? '' }}" readonly class="w-full px-4 py-3 border border-gray-200 rounded-xl bg-gray-50 text-gray-600">
                 </div>
 
                 <div class="space-y-2">
@@ -158,7 +158,7 @@
                         <i class="fas fa-briefcase mr-2 text-[#185B3C]"></i>
                         Pekerjaan
                     </label>
-                    <input type="text" value="{{ $model->user->work ?? '' }}" readonly class="w-full px-4 py-3 border border-gray-200 rounded-xl bg-gray-50 text-gray-600">
+                    <input type="text" value="{{ optional($model->user)->work ?? '' }}" readonly class="w-full px-4 py-3 border border-gray-200 rounded-xl bg-gray-50 text-gray-600">
                 </div>
 
                 <div class="space-y-2">
@@ -182,7 +182,7 @@
                         <i class="fas fa-phone mr-2 text-[#185B3C]"></i>
                         No HP
                     </label>
-                    <input type="text" value="{{ $model->user->phone ?? '' }}" readonly class="w-full px-4 py-3 border border-gray-200 rounded-xl bg-gray-50 text-gray-600">
+                    <input type="text" value="{{ optional($model->user)->phone ?? '' }}" readonly class="w-full px-4 py-3 border border-gray-200 rounded-xl bg-gray-50 text-gray-600">
                 </div>
 
                 <div class="space-y-2">
@@ -190,7 +190,7 @@
                         <i class="fas fa-envelope mr-2 text-[#185B3C]"></i>
                         Email
                     </label>
-                    <input type="email" value="{{ $model->user->email ?? '' }}" readonly class="w-full px-4 py-3 border border-gray-200 rounded-xl bg-gray-50 text-gray-600">
+                    <input type="email" value="{{ optional($model->user)->email ?? '' }}" readonly class="w-full px-4 py-3 border border-gray-200 rounded-xl bg-gray-50 text-gray-600">
                 </div>
 
                 <div class="space-y-2 md:col-span-2">
@@ -198,7 +198,7 @@
                         <i class="fas fa-map-marker-alt mr-2 text-[#185B3C]"></i>
                         Alamat
                     </label>
-                    <textarea readonly rows="3" class="w-full px-4 py-3 border border-gray-200 rounded-xl bg-gray-50 text-gray-600 resize-none">{{ $model->user->address ?? '' }}</textarea>
+                    <textarea readonly rows="3" class="w-full px-4 py-3 border border-gray-200 rounded-xl bg-gray-50 text-gray-600 resize-none">{{ optional($model->user)->address ?? '' }}</textarea>
                 </div>
             </div>
         </div>
@@ -363,17 +363,60 @@
                         <i class="fas fa-industry mr-2 text-purple-600"></i>
                         Jenis Kegiatan <span class="text-red-500">*</span>
                     </label>
+                    @php
+                        $jenisKegiatanOptions = [
+                            'Pertanian, Kehutanan, dan Perikanan',
+                            'Pertambangan dan Penggalian',
+                            'Industri pengolahan',
+                            'Pengadaan Listrik, Gas, Uap/Air Panas dan Udara Dingin',
+                            'Treatment Air, Treatment Air Limbah, Treatment dan Pemulihan Material Sampah, dan Aktivitas Remediasi',
+                            'Konstruksi',
+                            'Perdagangan Besar dan Eceran, Reparasi dan Perawatan Mobil dan Sepeda Motor',
+                            'Pengangkutan dan Pergudangan',
+                            'Penyediaan Akomodasi dan Penyediaan Makan Minum',
+                            'Informasi dan Komunikasi',
+                            'Aktivitas Keuangan dan Asuransi',
+                            'Real Estat',
+                            'Aktivitas Profesional, Ilmiah dan Teknis',
+                            'Aktivitas Penyewaan dan Sewa Guna Usaha Tanpa Hak Opsi, Keterangakerjaan, Agen Perjalanan dan Penunjang Usaha Lainnya',
+                            'Administrasi Pemerintahan, Pertanahan dan Jaminan Sosial Wajib',
+                            'Pendidikan',
+                            'Aktivitas Kesehatan Manusia dan Aktivitas Sosial',
+                            'Kesenian, Hiburan dan Rekreasi',
+                            'Aktivitas Jasa Lainnya',
+                            'Aktivitas Rumah Tangga Sebagai Pemberi Kerja',
+                            'Aktivitas Badan Internasioanl dan Badan Ekstra Internasional Lainnya',
+                            'Lainnya'
+                        ];
+                        $currentJenisKegiatan = old('jenis_kegiatan', $model->jenis_kegiatan);
+                        $isCustomJenisKegiatan = !in_array($currentJenisKegiatan, $jenisKegiatanOptions) && $currentJenisKegiatan != null && $currentJenisKegiatan != '';
+                    @endphp
                     <select id="jenis_kegiatan" name="jenis_kegiatan" 
                             class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm" required
                             onchange="toggleJenisLainnya(this.value)">
                         <option value="">-- Pilih Jenis Kegiatan --</option>
-                        <option value="Perumahan" {{ old('jenis_kegiatan', $model->jenis_kegiatan) == 'Perumahan' ? 'selected' : '' }}>Perumahan</option>
-                        <option value="Industri" {{ old('jenis_kegiatan', $model->jenis_kegiatan) == 'Industri' ? 'selected' : '' }}>Industri</option>
-                        <option value="Perdagangan dan Jasa" {{ old('jenis_kegiatan', $model->jenis_kegiatan) == 'Perdagangan dan Jasa' ? 'selected' : '' }}>Perdagangan dan Jasa</option>
-                        <option value="Pergudangan" {{ old('jenis_kegiatan', $model->jenis_kegiatan) == 'Pergudangan' ? 'selected' : '' }}>Pergudangan</option>
-                        <option value="Pariwisata" {{ old('jenis_kegiatan', $model->jenis_kegiatan) == 'Pariwisata' ? 'selected' : '' }}>Pariwisata</option>
-                        <option value="Pertanian" {{ old('jenis_kegiatan', $model->jenis_kegiatan) == 'Pertanian' ? 'selected' : '' }}>Pertanian</option>
-                        <option value="Lainnya" {{ old('jenis_kegiatan', $model->jenis_kegiatan) == 'Lainnya' ? 'selected' : '' }}>Lainnya</option>
+                        <option value="Pertanian, Kehutanan, dan Perikanan" {{ $currentJenisKegiatan == 'Pertanian, Kehutanan, dan Perikanan' ? 'selected' : '' }}>Pertanian, Kehutanan, dan Perikanan</option>
+                        <option value="Pertambangan dan Penggalian" {{ $currentJenisKegiatan == 'Pertambangan dan Penggalian' ? 'selected' : '' }}>Pertambangan dan Penggalian</option>
+                        <option value="Industri pengolahan" {{ $currentJenisKegiatan == 'Industri pengolahan' ? 'selected' : '' }}>Industri pengolahan</option>
+                        <option value="Pengadaan Listrik, Gas, Uap/Air Panas dan Udara Dingin" {{ $currentJenisKegiatan == 'Pengadaan Listrik, Gas, Uap/Air Panas dan Udara Dingin' ? 'selected' : '' }}>Pengadaan Listrik, Gas, Uap/Air Panas dan Udara Dingin</option>
+                        <option value="Treatment Air, Treatment Air Limbah, Treatment dan Pemulihan Material Sampah, dan Aktivitas Remediasi" {{ $currentJenisKegiatan == 'Treatment Air, Treatment Air Limbah, Treatment dan Pemulihan Material Sampah, dan Aktivitas Remediasi' ? 'selected' : '' }}>Treatment Air, Treatment Air Limbah, Treatment dan Pemulihan Material Sampah, dan Aktivitas Remediasi</option>
+                        <option value="Konstruksi" {{ $currentJenisKegiatan == 'Konstruksi' ? 'selected' : '' }}>Konstruksi</option>
+                        <option value="Perdagangan Besar dan Eceran, Reparasi dan Perawatan Mobil dan Sepeda Motor" {{ $currentJenisKegiatan == 'Perdagangan Besar dan Eceran, Reparasi dan Perawatan Mobil dan Sepeda Motor' ? 'selected' : '' }}>Perdagangan Besar dan Eceran, Reparasi dan Perawatan Mobil dan Sepeda Motor</option>
+                        <option value="Pengangkutan dan Pergudangan" {{ $currentJenisKegiatan == 'Pengangkutan dan Pergudangan' ? 'selected' : '' }}>Pengangkutan dan Pergudangan</option>
+                        <option value="Penyediaan Akomodasi dan Penyediaan Makan Minum" {{ $currentJenisKegiatan == 'Penyediaan Akomodasi dan Penyediaan Makan Minum' ? 'selected' : '' }}>Penyediaan Akomodasi dan Penyediaan Makan Minum</option>
+                        <option value="Informasi dan Komunikasi" {{ $currentJenisKegiatan == 'Informasi dan Komunikasi' ? 'selected' : '' }}>Informasi dan Komunikasi</option>
+                        <option value="Aktivitas Keuangan dan Asuransi" {{ $currentJenisKegiatan == 'Aktivitas Keuangan dan Asuransi' ? 'selected' : '' }}>Aktivitas Keuangan dan Asuransi</option>
+                        <option value="Real Estat" {{ $currentJenisKegiatan == 'Real Estat' ? 'selected' : '' }}>Real Estat</option>
+                        <option value="Aktivitas Profesional, Ilmiah dan Teknis" {{ $currentJenisKegiatan == 'Aktivitas Profesional, Ilmiah dan Teknis' ? 'selected' : '' }}>Aktivitas Profesional, Ilmiah dan Teknis</option>
+                        <option value="Aktivitas Penyewaan dan Sewa Guna Usaha Tanpa Hak Opsi, Keterangakerjaan, Agen Perjalanan dan Penunjang Usaha Lainnya" {{ $currentJenisKegiatan == 'Aktivitas Penyewaan dan Sewa Guna Usaha Tanpa Hak Opsi, Keterangakerjaan, Agen Perjalanan dan Penunjang Usaha Lainnya' ? 'selected' : '' }}>Aktivitas Penyewaan dan Sewa Guna Usaha Tanpa Hak Opsi, Keterangakerjaan, Agen Perjalanan dan Penunjang Usaha Lainnya</option>
+                        <option value="Administrasi Pemerintahan, Pertanahan dan Jaminan Sosial Wajib" {{ $currentJenisKegiatan == 'Administrasi Pemerintahan, Pertanahan dan Jaminan Sosial Wajib' ? 'selected' : '' }}>Administrasi Pemerintahan, Pertanahan dan Jaminan Sosial Wajib</option>
+                        <option value="Pendidikan" {{ $currentJenisKegiatan == 'Pendidikan' ? 'selected' : '' }}>Pendidikan</option>
+                        <option value="Aktivitas Kesehatan Manusia dan Aktivitas Sosial" {{ $currentJenisKegiatan == 'Aktivitas Kesehatan Manusia dan Aktivitas Sosial' ? 'selected' : '' }}>Aktivitas Kesehatan Manusia dan Aktivitas Sosial</option>
+                        <option value="Kesenian, Hiburan dan Rekreasi" {{ $currentJenisKegiatan == 'Kesenian, Hiburan dan Rekreasi' ? 'selected' : '' }}>Kesenian, Hiburan dan Rekreasi</option>
+                        <option value="Aktivitas Jasa Lainnya" {{ $currentJenisKegiatan == 'Aktivitas Jasa Lainnya' ? 'selected' : '' }}>Aktivitas Jasa Lainnya</option>
+                        <option value="Aktivitas Rumah Tangga Sebagai Pemberi Kerja" {{ $currentJenisKegiatan == 'Aktivitas Rumah Tangga Sebagai Pemberi Kerja' ? 'selected' : '' }}>Aktivitas Rumah Tangga Sebagai Pemberi Kerja</option>
+                        <option value="Aktivitas Badan Internasioanl dan Badan Ekstra Internasional Lainnya" {{ $currentJenisKegiatan == 'Aktivitas Badan Internasioanl dan Badan Ekstra Internasional Lainnya' ? 'selected' : '' }}>Aktivitas Badan Internasioanl dan Badan Ekstra Internasional Lainnya</option>
+                        <option value="Lainnya" {{ $isCustomJenisKegiatan || $currentJenisKegiatan == 'Lainnya' ? 'selected' : '' }}>Lainnya</option>
                     </select>
                     @error('jenis_kegiatan')
                         <div class="flex items-center space-x-2 text-red-600 text-sm mt-1">
@@ -383,12 +426,40 @@
                     @enderror
             </div>
 
-                <div class="space-y-2" id="jenis_kegiatan_lainnya" style="display:{{ $model->jenis_kegiatan == 'Lainnya' ? 'block' : 'none' }};">
+                @php
+                    $jenisKegiatanOptions = [
+                        'Pertanian, Kehutanan, dan Perikanan',
+                        'Pertambangan dan Penggalian',
+                        'Industri pengolahan',
+                        'Pengadaan Listrik, Gas, Uap/Air Panas dan Udara Dingin',
+                        'Treatment Air, Treatment Air Limbah, Treatment dan Pemulihan Material Sampah, dan Aktivitas Remediasi',
+                        'Konstruksi',
+                        'Perdagangan Besar dan Eceran, Reparasi dan Perawatan Mobil dan Sepeda Motor',
+                        'Pengangkutan dan Pergudangan',
+                        'Penyediaan Akomodasi dan Penyediaan Makan Minum',
+                        'Informasi dan Komunikasi',
+                        'Aktivitas Keuangan dan Asuransi',
+                        'Real Estat',
+                        'Aktivitas Profesional, Ilmiah dan Teknis',
+                        'Aktivitas Penyewaan dan Sewa Guna Usaha Tanpa Hak Opsi, Keterangakerjaan, Agen Perjalanan dan Penunjang Usaha Lainnya',
+                        'Administrasi Pemerintahan, Pertanahan dan Jaminan Sosial Wajib',
+                        'Pendidikan',
+                        'Aktivitas Kesehatan Manusia dan Aktivitas Sosial',
+                        'Kesenian, Hiburan dan Rekreasi',
+                        'Aktivitas Jasa Lainnya',
+                        'Aktivitas Rumah Tangga Sebagai Pemberi Kerja',
+                        'Aktivitas Badan Internasioanl dan Badan Ekstra Internasional Lainnya',
+                        'Lainnya'
+                    ];
+                    $currentJenisKegiatan = old('jenis_kegiatan', $model->jenis_kegiatan);
+                    $isCustomJenisKegiatan = !in_array($currentJenisKegiatan, $jenisKegiatanOptions) && $currentJenisKegiatan != null && $currentJenisKegiatan != '';
+                @endphp
+                <div class="space-y-2" id="jenis_kegiatan_lainnya" style="display:{{ $isCustomJenisKegiatan || $currentJenisKegiatan == 'Lainnya' ? 'block' : 'none' }};">
                     <label for="jenis_kegiatan_lainnya" class="block text-sm font-semibold text-gray-700">
                         <i class="fas fa-edit mr-2 text-purple-600"></i>
                         Jenis Kegiatan Lainnya <span class="text-red-500">*</span>
                     </label>
-                    <input type="text" id="input_jenis_kegiatan_lainnya" name="jenis_kegiatan_lainnya" value="{{ old('jenis_kegiatan_lainnya', $model->jenis_kegiatan_lainnya) }}" 
+                    <input type="text" id="input_jenis_kegiatan_lainnya" name="jenis_kegiatan_lainnya" value="{{ old('jenis_kegiatan_lainnya', $isCustomJenisKegiatan ? $model->jenis_kegiatan : $model->jenis_kegiatan_lainnya) }}" 
                            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm" 
                            placeholder="Masukkan Jenis Kegiatan">
                     @error('jenis_kegiatan_lainnya')
@@ -978,11 +1049,11 @@
                                 <tr>
                                     <td class="px-4 py-2">
                                         <input type="text" class="form-control w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" 
-                                               name="kode_kbli[]" value="{{ $item->kode_kbli }}" placeholder="Kode KBLI" required>
+                                               name="kode_kbli[]" value="{{ $item->kode_kbli ?? '' }}" placeholder="Kode KBLI" required>
                                     </td>
                                     <td class="px-4 py-2">
                                         <input type="text" class="form-control w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" 
-                                               name="judul_kbli[]" value="{{ $item->judul_kbli }}" placeholder="Judul KBLI" required>
+                                               name="judul_kbli[]" value="{{ $item->judul_kbli ?? '' }}" placeholder="Judul KBLI" required>
                                     </td>
                                     <td class="px-4 py-2 text-center">
                                         @if($loop->first)
@@ -1191,6 +1262,44 @@
         <!-- Map Section -->
         <div class="bg-white/80 backdrop-blur-sm rounded-xl p-6 shadow-lg border border-white/20">
             <div class="space-y-4">
+                <!-- Pilihan Input Koordinat -->
+                @php
+                    $hasKoordinatDimohon = !empty($model->koordinat_dimohon);
+                    $hasKml = !empty($model->f_kml);
+                    $hasKmlGeojson = !empty($model->kml_geojson);
+                    $hasAnyCoordinateData = $hasKoordinatDimohon || $hasKml || $hasKmlGeojson;
+                    
+                    // Tentukan metode input default berdasarkan data yang ada
+                    if (!$hasAnyCoordinateData) {
+                        $defaultMethod = old('input_method', 'kml');
+                    } else if ($hasKoordinatDimohon) {
+                        $defaultMethod = 'manual';
+                    } else {
+                        $defaultMethod = 'kml';
+                    }
+                @endphp
+                
+                @if($hasAnyCoordinateData)
+                    <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-4 border border-blue-200">
+                        <label class="block text-sm font-semibold text-gray-700 mb-3">
+                            <i class="fas fa-map-marker-alt mr-2 text-blue-600"></i>
+                            Pilih Metode Input Koordinat
+                        </label>
+                        <div class="flex space-x-4">
+                            <label class="flex items-center space-x-2 cursor-pointer">
+                                <input type="radio" name="input_method" value="kml" id="input_method_kml" class="w-4 h-4 text-blue-600 focus:ring-blue-500" {{ old('input_method', $defaultMethod) == 'kml' ? 'checked' : '' }} onchange="toggleInputMethod('kml')">
+                                <span class="text-sm font-medium text-gray-700">Upload KML / Draw di Peta</span>
+                            </label>
+                            <label class="flex items-center space-x-2 cursor-pointer">
+                                <input type="radio" name="input_method" value="manual" id="input_method_manual" class="w-4 h-4 text-blue-600 focus:ring-blue-500" {{ old('input_method', $defaultMethod) == 'manual' ? 'checked' : '' }} onchange="toggleInputMethod('manual')">
+                                <span class="text-sm font-medium text-gray-700">Input Koordinat Manual</span>
+                            </label>
+                        </div>
+                    </div>
+                @endif
+
+                <!-- Section Upload KML / Draw Peta -->
+                <div id="kml_section" class="space-y-4" style="display: {{ !$hasAnyCoordinateData || $defaultMethod == 'kml' ? 'block' : 'none' }};">
                 <div class="flex items-center justify-between">
                     <h4 class="text-lg font-semibold text-gray-700">Peta Lokasi</h4>
                     <div class="flex items-center space-x-4">
@@ -1253,6 +1362,35 @@
                 </div>
                 
                 <div id='mapKu' style='width: 100%; height: 80vh; border-radius: 0.5rem; border: 1px solid #e5e7eb;'></div>
+                </div>
+
+                <!-- Section Input Koordinat Manual -->
+                <div id="manual_section" class="space-y-4" style="display: {{ !$hasAnyCoordinateData || $defaultMethod == 'kml' ? 'none' : 'block' }};">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <label class="block text-sm font-semibold text-gray-700">
+                                <i class="fas fa-map-marked-alt mr-2 text-purple-600"></i>
+                                Input Koordinat Lokasi <span class="text-red-500">*</span>
+                            </label>
+                            <button type="button" id="add_coordinate_btn" onclick="addCoordinateRow()" class="px-3 py-1.5 text-sm bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors">
+                                <i class="fas fa-plus mr-1"></i>Tambah Koordinat
+                            </button>
+                        </div>
+                        
+                        <!-- Daftar Koordinat -->
+                        <div id="coordinates_list" class="space-y-3">
+                            <!-- Koordinat akan ditambahkan di sini secara dinamis -->
+                        </div>
+                        
+                        <!-- Hidden input untuk menyimpan data array -->
+                        <input type="hidden" id="koordinat_data" name="koordinat_dimohon" value="{{ old('koordinat_dimohon', !empty($model->koordinat_dimohon) ? json_encode($model->koordinat_dimohon) : '[]') }}">
+                        
+                        <p class="text-xs text-gray-500 mt-2">
+                            <i class="fas fa-info-circle mr-1"></i>
+                            Klik "Tambah Koordinat" untuk menambahkan pasangan koordinat (Latitude, Longitude)
+                        </p>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -2833,6 +2971,174 @@
         }, 1500);
     });
     @endif
+
+    // Coordinate counter for unique IDs
+    let coordinateCounter = 0;
+
+    // Add coordinate row
+    function addCoordinateRow(latitude = '', longitude = '') {
+        const coordinatesList = document.getElementById('coordinates_list');
+        if (!coordinatesList) return;
+        
+        const rowId = 'coordinate_' + coordinateCounter++;
+        
+        const row = document.createElement('div');
+        row.id = rowId;
+        row.className = 'bg-gray-50 rounded-lg p-4 border border-gray-200';
+        row.innerHTML = `
+            <div class="grid grid-cols-12 gap-3 items-end">
+                <div class="col-span-5">
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">
+                        Latitude <span class="text-red-500">*</span>
+                    </label>
+                    <input type="text" 
+                           class="coordinate-lat w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm" 
+                           placeholder="-8.2191" 
+                           value="${latitude}"
+                           onchange="updateKoordinatData()"
+                           pattern="-?\\d+\\.?\\d*">
+                </div>
+                <div class="col-span-5">
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">
+                        Longitude <span class="text-red-500">*</span>
+                    </label>
+                    <input type="text" 
+                           class="coordinate-lng w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm" 
+                           placeholder="114.3691" 
+                           value="${longitude}"
+                           onchange="updateKoordinatData()"
+                           pattern="-?\\d+\\.?\\d*">
+                </div>
+                <div class="col-span-2">
+                    <button type="button" onclick="removeCoordinateRow('${rowId}')" class="w-full px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors text-sm">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+        `;
+        
+        coordinatesList.appendChild(row);
+        updateKoordinatData();
+    }
+
+    // Remove coordinate row
+    function removeCoordinateRow(rowId) {
+        const row = document.getElementById(rowId);
+        if (row) {
+            row.remove();
+            updateKoordinatData();
+        }
+    }
+
+    // Update hidden input dengan data array koordinat
+    function updateKoordinatData() {
+        const coordinates = [];
+        const latInputs = document.querySelectorAll('.coordinate-lat');
+        const lngInputs = document.querySelectorAll('.coordinate-lng');
+        
+        latInputs.forEach((latInput, index) => {
+            const lat = latInput.value.trim();
+            const lng = lngInputs[index] ? lngInputs[index].value.trim() : '';
+            
+            if (lat && lng) {
+                coordinates.push({
+                    latitude: lat,
+                    longitude: lng
+                });
+            }
+        });
+        
+        const hiddenInput = document.getElementById('koordinat_data');
+        if (hiddenInput) {
+            hiddenInput.value = JSON.stringify(coordinates);
+        }
+    }
+
+    // Toggle input method - must be in global scope for onchange attribute
+    function toggleInputMethod(method) {
+        const kmlSection = document.getElementById('kml_section');
+        const manualSection = document.getElementById('manual_section');
+        const kmlInput = document.getElementById('f_kml');
+        const kmlGeojson = document.getElementById('kml_geojson');
+        
+        if (method === 'kml') {
+            if (kmlSection) kmlSection.style.display = 'block';
+            if (manualSection) manualSection.style.display = 'none';
+        } else {
+            if (kmlSection) kmlSection.style.display = 'none';
+            if (manualSection) manualSection.style.display = 'block';
+            if (kmlInput) {
+                kmlInput.required = false;
+                kmlInput.value = '';
+            }
+            if (kmlGeojson) kmlGeojson.value = '';
+            
+            // Initialize dengan satu row koordinat jika belum ada
+            const coordinatesList = document.getElementById('coordinates_list');
+            if (coordinatesList && coordinatesList.children.length === 0) {
+                addCoordinateRow();
+            }
+        }
+    }
+
+    // Load existing koordinat_dimohon if available
+    @if(isset($model->koordinat_dimohon) && !empty($model->koordinat_dimohon))
+    document.addEventListener('DOMContentLoaded', function() {
+        try {
+            const existingCoords = @json($model->koordinat_dimohon);
+            if (Array.isArray(existingCoords) && existingCoords.length > 0) {
+                existingCoords.forEach(coord => {
+                    if (coord && coord.latitude && coord.longitude) {
+                        addCoordinateRow(coord.latitude, coord.longitude);
+                    }
+                });
+            }
+        } catch(e) {
+            console.error('Error loading existing coordinates:', e);
+        }
+    });
+    @endif
+
+    // Handle NO_KEC change to update kelurahan dropdown
+    document.addEventListener('DOMContentLoaded', function() {
+        const noKecSelect = document.getElementById('NO_KEC');
+        if (noKecSelect) {
+            noKecSelect.addEventListener('change', function() {
+                const noKec = this.value;
+                const noKelSelect = document.getElementById('NO_KEL');
+                
+                // Reset kelurahan dropdown
+                noKelSelect.innerHTML = '<option value="">-- Pilih Desa/Kelurahan --</option>';
+                
+                if (!noKec) {
+                    return;
+                }
+                
+                // Fetch kelurahan based on kecamatan
+                fetch(`{{ route('member.kkprnon.get.kelurahan') }}?NO_KEC=${noKec}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.kelurahan && Object.keys(data.kelurahan).length > 0) {
+                        Object.entries(data.kelurahan).forEach(([id, name]) => {
+                            const option = document.createElement('option');
+                            option.value = id;
+                            option.textContent = name;
+                            noKelSelect.appendChild(option);
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching kelurahan:', error);
+                });
+            });
+        }
+    });
 </script>
 @endsection
 

@@ -223,8 +223,15 @@ class AdminKkprController extends Controller
             $req['jumlah_lantai'] = $request->get('jumlah_lantai');
             $req['tinggi_bangunan'] = $request->get('tinggi_bangunan');
 
-            // Simpan luas_lantai langsung tanpa json_encode tambahan
-            $req['luas_lantai'] = $request->get('luas_lantai');
+            // Handle luas_lantai array - filter null/NaN/undefined
+            $luasLantai = $request->get('luas_lantai');
+            if (is_array($luasLantai)) {
+                $req['luas_lantai'] = array_values(array_filter($luasLantai, function($value) {
+                    return $value !== null && $value !== '' && $value !== 'NaN' && $value !== 'undefined';
+                }));
+            } else {
+                $req['luas_lantai'] = $luasLantai;
+            }
 
             $req['fungsi'] = $request->get('fungsi');
             $req['no_nib'] = $request->get('no_nib');
@@ -490,11 +497,11 @@ class AdminKkprController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'nama_pemohon' => 'required|string|max:255',
-            'nik_pemohon' => 'required|string|max:16',
-            'no_telp' => 'required|string|max:20',
-            'pekerjaan_pemohon' => 'required|string|max:255',
-            'alamat_pemohon' => 'required|string|max:500',
+            'nama_pemohon' => 'nullable|string|max:255',
+            'nik_pemohon' => 'nullable|string|max:16',
+            'no_telp' => 'nullable|string|max:20',
+            'pekerjaan_pemohon' => 'nullable|string|max:255',
+            'alamat_pemohon' => 'nullable|string|max:500',
             'kabupaten_id' => 'required|integer',
             'kecamatan_id' => 'required|integer',
             'kelurahan_id' => 'required|integer',
@@ -507,37 +514,8 @@ class AdminKkprController extends Controller
 
             $kkpr = Kkpr::findOrFail($id);
 
-            // Update user
-            $no_ktp = $request->get('nik_pemohon');
-            $alamat_email = $request->has('email') ? $request->get('email') : $no_ktp . '@email.com';
-
-            $user = User::where('username', $no_ktp)
-                ->orWhere('nik', $no_ktp)
-                ->first();
-
-            if ($user) {
-                $user->update([
-                    'name' => $request->get('nama_pemohon'),
-                    'nik' => $no_ktp,
-                    'email' => $alamat_email,
-                    'phone' => $request->get('no_telp'),
-                    'work' => $request->get('pekerjaan_pemohon'),
-                    'address' => $request->get('alamat_pemohon'),
-                ]);
-            } else {
-                $user = User::create([
-                    'name' => $request->get('nama_pemohon'),
-                    'username' => $no_ktp,
-                    'nik' => $no_ktp,
-                    'email' => $alamat_email,
-                    'phone' => $request->get('no_telp'),
-                    'work' => $request->get('pekerjaan_pemohon'),
-                    'address' => $request->get('alamat_pemohon'),
-                    'password' => bcrypt('123456'),
-                    'active' => 1,
-                ]);
-                $user->assignRole('member');
-            }
+            // Get user from existing KKPR (no update needed since fields are readonly)
+            $user = $kkpr->user;
 
             // Update KKPR
             $kkprData = $request->only([
@@ -555,7 +533,15 @@ class AdminKkprController extends Controller
 
             $kkprData['user_id'] = $user->id;
             $kkprData['jenis'] = 'non_umk';
-            $kkprData['luas_lantai'] = $request->get('luas_lantai');
+            // Handle luas_lantai array - filter null/NaN/undefined
+            $luasLantai = $request->get('luas_lantai');
+            if (is_array($luasLantai)) {
+                $kkprData['luas_lantai'] = array_values(array_filter($luasLantai, function($value) {
+                    return $value !== null && $value !== '' && $value !== 'NaN' && $value !== 'undefined';
+                }));
+            } else {
+                $kkprData['luas_lantai'] = $luasLantai;
+            }
 
             $kkpr->update($kkprData);
 
@@ -628,6 +614,141 @@ class AdminKkprController extends Controller
                 }
             }
 
+            // Handle file uploads
+            $folder = 'uploads/berkas/kkpr/' . $kkpr->id;
+            if (!file_exists($folder)) {
+                mkdir($folder, 0755, true);
+            }
+
+            if ($request->hasFile('dok_kepemilikan')) {
+                if (!file_exists($folder.'/dokumen_kepemilikan')) {
+                    mkdir($folder.'/dokumen_kepemilikan', 0755, true);
+                }
+                $fDok = $request->file('dok_kepemilikan');
+                $filename = 'dok_kepemilikan.'.$fDok->guessClientExtension();
+                $fDok->move($folder.'/dokumen_kepemilikan', $filename);
+
+                $kkpr->update(['dok_kepemilikan'=>$filename]);
+            }
+
+            if ($request->hasFile('dok_taru')) {
+                if (!file_exists($folder.'/dok_taru')) {
+                    mkdir($folder.'/dok_taru', 0755, true);
+                }
+                $fTaru = $request->file('dok_taru');
+                $filename = 'dok_taru.'.$fTaru->guessClientExtension();
+                $fTaru->move($folder.'/dok_taru', $filename);
+
+                $kkpr->update(['dok_taru'=>$filename]);
+            }
+
+            if ($request->hasFile('sp_mandiri')) {
+                if (!file_exists($folder.'/sp_mandiri')) {
+                    mkdir($folder.'/sp_mandiri', 0755, true);
+                }
+                $fMandiri = $request->file('sp_mandiri');
+                $filename = 'sp_mandiri.'.$fMandiri->guessClientExtension();
+                $fMandiri->move($folder.'/sp_mandiri', $filename);
+
+                $kkpr->update(['sp_mandiri'=>$filename]);
+            }
+
+            if ($request->hasFile('f_nib')) {
+                if (!file_exists($folder.'/f_nib')) {
+                    mkdir($folder.'/f_nib', 0755, true);
+                }
+                $fNib = $request->file('f_nib');
+                $filename = 'f_nib.'.$fNib->guessClientExtension();
+                $fNib->move($folder.'/f_nib', $filename);
+
+                $kkpr->update(['f_nib'=>$filename]);
+            }
+
+            if ($request->hasFile('f_kml')) {
+                if (!file_exists($folder.'/kml')) {
+                    mkdir($folder.'/kml', 0755, true);
+                }
+                $fKml = $request->file('f_kml');
+                $filename = 'kml.'.$fKml->getClientOriginalExtension();
+                $fKml->move($folder.'/kml', $filename);
+
+                $kkpr->update(['f_kml'=>$filename]);
+            }
+            
+            $kml_geo = $request->get('kml_geojson');
+            if($kml_geo != null){
+                $dir_to_save = $folder.'/kml/';
+                if (!is_dir($dir_to_save)) {
+                    mkdir($folder.'/kml/', 0755, true);
+                }
+                file_put_contents($dir_to_save.'geojson.geojson', $kml_geo);
+                $kkpr->update(['f_geojson'=>'geojson.geojson']);
+            }
+
+            if ($request->hasFile('f_ktp')) {
+                if (!file_exists($folder.'/f_ktp')) {
+                    mkdir($folder.'/f_ktp', 0755, true);
+                }
+                $fKtp = $request->file('f_ktp');
+                $filename = 'f_ktp.'.$fKtp->guessClientExtension();
+                $fKtp->move($folder.'/f_ktp', $filename);
+
+                $kkpr->update(['f_ktp'=>$filename]);
+            }
+
+            if ($request->hasFile('f_sertifikat')) {
+                if (!file_exists($folder.'/f_sertifikat')) {
+                    mkdir($folder.'/f_sertifikat', 0755, true);
+                }
+                $fSertifikat = $request->file('f_sertifikat');
+                $filename = 'f_sertifikat.'.$fSertifikat->guessClientExtension();
+                $fSertifikat->move($folder.'/f_sertifikat', $filename);
+
+                $kkpr->update(['f_sertifikat'=>$filename]);
+            }
+
+            if ($request->hasFile('f_siteplan')) {
+                if (!file_exists($folder.'/f_siteplan')) {
+                    mkdir($folder.'/f_siteplan', 0755, true);
+                }
+                $fSiteplan = $request->file('f_siteplan');
+                $filename = 'f_siteplan.'.$fSiteplan->guessClientExtension();
+                $fSiteplan->move($folder.'/f_siteplan', $filename);
+
+                $kkpr->update(['f_siteplan'=>$filename]);
+            }
+
+            if ($request->hasFile('f_akta')) {
+                if (!file_exists($folder.'/f_akta')) {
+                    mkdir($folder.'/f_akta', 0755, true);
+                }
+                $fAkta = $request->file('f_akta');
+                $filename = 'f_akta.'.$fAkta->guessClientExtension();
+                $fAkta->move($folder.'/f_akta', $filename);
+
+                $kkpr->update(['f_akta'=>$filename]);
+            }
+
+            // Update riwayat status kembali ke Pengajuan setelah edit
+            // Hapus semua riwayat dengan status > 1 (reset ke pengajuan awal)
+            Kkpr_riwayat::where('kkpr_id', $kkpr->id)->where('status_id', '>', 1)->delete();
+            
+            // Update atau create riwayat pengajuan
+            $riwayat = Kkpr_riwayat::where('kkpr_id', $kkpr->id)->where('status_id', 1)->first();
+            if(!$riwayat){
+                Kkpr_riwayat::create([
+                    'kkpr_id' => $kkpr->id, 
+                    'status_id' => '1', 
+                    'status' => 'Pengajuan', 
+                    'keterangan' => 'Data permohonan telah diperbarui dan diajukan kembali oleh Admin'
+                ]);
+            } else {
+                $riwayat->update([
+                    'status' => 'Pengajuan',
+                    'keterangan' => 'Data permohonan telah diperbarui dan diajukan kembali oleh Admin',
+                    'updated_at' => Carbon::now('Asia/Jakarta')
+                ]);
+            }
 
             DB::commit();
 
@@ -1639,6 +1760,26 @@ class AdminKkprController extends Controller
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => 'Terjadi kesalahan: ' . $e->getMessage()], 500);
         }
+    }
+
+    // Get kelurahan berdasarkan NO_KEC
+    public function getKelurahanByKecamatan(Request $request)
+    {
+        $no_kec = $request->get('NO_KEC');
+        
+        if (!$no_kec) {
+            return response()->json(['kelurahan' => []]);
+        }
+
+        // Ambil kelurahan berdasarkan NO_KEC yang dipilih
+        $kelurahan = DB::table('setup_kel_fix')
+            ->where('NO_PROP', 35)
+            ->where('NO_KAB', 10)
+            ->where('NO_KEC', $no_kec)
+            ->pluck('NAMA_KEL', 'NO_KEL')
+            ->toArray();
+
+        return response()->json(['kelurahan' => $kelurahan]);
     }
 
 }
