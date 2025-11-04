@@ -19,6 +19,7 @@
         </div>
         <div class="flex space-x-3">
             @if(auth()->user()->hasRole('admin'))
+                @canany(['Verifikator', 'Admin Sipo'])
                 <a href="{{ route('admin.kkpr.create') }}" class="bg-[#185B3C] text-white px-6 py-2.5 rounded-lg font-medium hover:bg-[#0F3D26] transition-colors shadow-sm">
                     <i class="fas fa-plus mr-2"></i>
                     Buat KKPR
@@ -27,6 +28,7 @@
                     <i class="fas fa-building mr-2"></i>
                     Buat UMK
                 </a>
+                @endcanany
             @else
                 <a href="{{ route('member.kkpr.create') }}" class="bg-[#185B3C] text-white px-6 py-2.5 rounded-lg font-medium hover:bg-[#0F3D26] transition-colors shadow-sm">
                     <i class="fas fa-plus mr-2"></i>
@@ -429,12 +431,14 @@
                 </div>
                 <div style="display: flex; flex-direction: column; gap: 8px;">
                     @if(auth()->user()->hasRole('admin'))
+                        @canany(['Verifikator', 'Admin Sipo'])
                         <a href="{{ route('admin.kkpr.create') }}" style="display: block; width: 100%; background-color: rgba(255, 255, 255, 0.2); border-radius: 4px; padding: 8px 12px; font-size: 14px; text-align: center; color: white; text-decoration: none; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='rgba(255, 255, 255, 0.3)'" onmouseout="this.style.backgroundColor='rgba(255, 255, 255, 0.2)'">
                             Buat KKPR
                         </a>
                         <a href="{{ route('admin.kkprnon.create') }}" style="display: block; width: 100%; background-color: rgba(255, 255, 255, 0.2); border-radius: 4px; padding: 8px 12px; font-size: 14px; text-align: center; color: white; text-decoration: none; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='rgba(255, 255, 255, 0.3)'" onmouseout="this.style.backgroundColor='rgba(255, 255, 255, 0.2)'">
                             Buat UMK
                         </a>
+                        @endcanany
                     @else
                         <a href="{{ route('member.kkpr.create') }}" style="display: block; width: 100%; background-color: rgba(255, 255, 255, 0.2); border-radius: 4px; padding: 8px 12px; font-size: 14px; text-align: center; color: white; text-decoration: none; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='rgba(255, 255, 255, 0.3)'" onmouseout="this.style.backgroundColor='rgba(255, 255, 255, 0.2)'">
                             Buat KKPR
