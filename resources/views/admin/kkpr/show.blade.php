@@ -51,7 +51,7 @@
             Kembali
         </a>
         @if($model->proses < 3)
-            @can('OPD eksternal')
+            @canany(['Verifikator', 'Admin Sipo'])
                 <a href="{{ route('admin.kkpr.edit', $model->id) }}" class="inline-flex items-center px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
                     <i class="fas fa-edit mr-2"></i>
                     Edit
@@ -60,7 +60,7 @@
                     <i class="fas fa-trash mr-2"></i>
                     Hapus
                 </button>
-            @endcan
+            @endcanany
         @endif
     </div>
 

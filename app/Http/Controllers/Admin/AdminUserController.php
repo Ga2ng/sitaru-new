@@ -83,7 +83,7 @@ class AdminUserController extends Controller
         
         // Filter permissions yang tidak ditampilkan
         $excludedPermissions = [
-            'Petugas TL', 'Skpd', 'Revisi', 'Penomoran', 'Admin Sipo', 'Admin KKPR',
+            'Petugas TL', 'Skpd', 'Revisi', 'Penomoran', 'Admin KKPR',
             'KKPR BERUSAHA', 'KKPR NON BERUSAHA', 'Kadin PTSP', 'User', 'Admin AP',
             'Mpp', 'Staff', 'Sekretariat', 'Kasi', 'Sekdin'
         ];
@@ -160,7 +160,7 @@ class AdminUserController extends Controller
         
         // Filter permissions yang tidak ditampilkan
         $excludedPermissions = [
-            'Petugas TL', 'Skpd', 'Revisi', 'Penomoran', 'Admin Sipo', 'Admin KKPR',
+            'Petugas TL', 'Skpd', 'Revisi', 'Penomoran', 'Admin KKPR',
             'KKPR BERUSAHA', 'KKPR NON BERUSAHA', 'Kadin PTSP', 'User', 'Admin AP',
             'Mpp', 'Staff', 'Sekretariat', 'Kasi', 'Sekdin'
         ];

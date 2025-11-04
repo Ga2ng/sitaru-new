@@ -195,10 +195,12 @@
                 <p class="text-sm text-gray-600">Kelola informasi ini</p>
             </div>
             <div class="flex items-center space-x-3">
+                @if(auth()->user()->can('Verifikator') || auth()->user()->can('Admin Sipo'))
                 <a href="{{ route('admin.informasi.edit', $informasi->id) }}" class="flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors shadow-md">
                     <i class="fas fa-edit mr-2"></i>
                     Edit Informasi
                 </a>
+                @endif
                 
                 <form action="{{ route('admin.informasi.destroy', $informasi->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this informasi?');" class="inline">
                     @csrf

@@ -136,6 +136,7 @@
         
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             @cannot('OPD Eksternal')
+            @canany(['Verifikator', 'Admin Sipo'])
             <a href="{{ route('admin.kkprnon.create') }}" class="group relative overflow-hidden bg-gradient-to-br from-[#185B3C] to-[#0F3D26] rounded-xl p-4 text-white hover:shadow-lg transition-all duration-300">
                 <div class="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 <div class="relative z-10 text-center">
@@ -146,6 +147,7 @@
                     <p class="text-xs text-white/80">Buat permohonan baru</p>
                 </div>
             </a>
+            @endcanany
             @endcannot
             
             <button onclick="refreshTable()" class="group relative overflow-hidden bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-4 text-white hover:shadow-lg transition-all duration-300">
@@ -401,10 +403,12 @@
                     </div>
                     <h3 class="text-lg font-semibold text-gray-900 mb-2">Tidak ada data</h3>
                     <p class="text-gray-500 mb-4">Belum ada permohonan Persetujuan Bagi UMK yang tersedia</p>
+                    @canany(['Verifikator', 'Admin Sipo'])
                     <a href="{{ route('admin.kkprnon.create') }}" class="inline-flex items-center px-4 py-2 bg-[#185B3C] text-white rounded-lg hover:bg-[#0F3D26] transition-colors">
                         <i class="fas fa-plus mr-2"></i>
                         Buat Permohonan Pertama
                     </a>
+                    @endcanany
                 </div>
                 @endforelse
             </div>
@@ -609,8 +613,8 @@
                     </button>`;
             }
             
-            // PROSES 8: Persetujuan Dokumen - hanya untuk Kepala Dinas
-            if (canKepalaDinas == true && parseInt(status) == 8) {
+            // PROSES 8: Persetujuan Dokumen - hanya untuk Kepala Dinas dan Kabid
+            if ((canKepalaDinas == true || canKabid == true) && parseInt(status) == 8) {
                 menuItems += `
                     <div class="border-t border-gray-100"></div>
                     <a href="/admin/kkprnon/${id}/persetujuan-dokumen" class="w-full flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-cyan-50 hover:text-cyan-600 transition-colors">
