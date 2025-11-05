@@ -44,6 +44,43 @@
         </a>
     </div>
 
+    <!-- Notifications -->
+    @if(session('success'))
+    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-4 flex items-center justify-between" role="alert">
+        <div class="flex items-center">
+            <i class="fas fa-check-circle mr-2"></i>
+            <span>{{ session('success') }}</span>
+        </div>
+        <button type="button" onclick="this.parentElement.style.display='none'" class="text-green-700 hover:text-green-900">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+    @endif
+
+    @if(session('error') || $errors->any())
+    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-4" role="alert">
+        <div class="flex items-center justify-between mb-2">
+            <div class="flex items-center">
+                <i class="fas fa-exclamation-circle mr-2"></i>
+                <strong>Terjadi kesalahan:</strong>
+            </div>
+            <button type="button" onclick="this.parentElement.parentElement.style.display='none'" class="text-red-700 hover:text-red-900">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        @if(session('error'))
+            <p class="text-sm">{{ session('error') }}</p>
+        @endif
+        @if($errors->any())
+            <ul class="list-disc list-inside text-sm mt-2">
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        @endif
+    </div>
+    @endif
+
     <!-- Form -->
     <form method="POST" action="{{ route('member.kkpr.update', $model->id) }}" enctype="multipart/form-data" class="space-y-6" id="kkprForm">
         @csrf
@@ -505,9 +542,9 @@
                 <div class="space-y-2">
                     <label for="f_nib" class="block text-sm font-semibold text-gray-700">
                         <i class="fas fa-upload mr-2 text-orange-600"></i>
-                        Upload File NIB @if(!$model->f_nib)<span class="text-red-500">*</span>@endif
+                        Upload File NIB @if(!isset($model->f_nib) || !$model->f_nib)<span class="text-red-500">*</span>@endif
                     </label>
-                    @if($model->f_nib)
+                    @if(isset($model->f_nib) && $model->f_nib)
                         <div class="flex items-center space-x-2 p-3 bg-green-50 border border-green-200 rounded-lg mb-2">
                             <i class="fas fa-file-pdf text-green-600"></i>
                             <span class="text-sm text-green-700 flex-1">{{ $model->f_nib }}</span>
@@ -745,9 +782,9 @@
                 <div class="space-y-2">
                     <label for="sp_mandiri" class="block text-sm font-semibold text-gray-700">
                         <i class="fas fa-file-signature mr-2 text-red-600"></i>
-                        Upload KKPR @if(!$model->sp_mandiri)<span class="text-red-500">*.pdf</span>@endif
+                        Upload KKPR @if(!isset($model->sp_mandiri) || !$model->sp_mandiri)<span class="text-red-500">*.pdf</span>@endif
                     </label>
-                    @if($model->sp_mandiri)
+                    @if(isset($model->sp_mandiri) && $model->sp_mandiri)
                         <div class="flex items-center space-x-2 p-3 bg-green-50 border border-green-200 rounded-lg mb-2">
                             <i class="fas fa-file-pdf text-green-600"></i>
                             <span class="text-sm text-green-700 flex-1">{{ $model->sp_mandiri }}</span>
@@ -776,9 +813,9 @@
                 <div class="space-y-2">
                     <label for="dok_kepemilikan" class="block text-sm font-semibold text-gray-700">
                         <i class="fas fa-file-contract mr-2 text-red-600"></i>
-                        Upload Surat Kepemilikan Tanah @if(!$model->dok_kepemilikan)<span class="text-red-500">.pdf</span>@endif
+                        Upload Surat Kepemilikan Tanah @if(!isset($model->dok_kepemilikan) || !$model->dok_kepemilikan)<span class="text-red-500">.pdf</span>@endif
                     </label>
-                    @if($model->dok_kepemilikan)
+                    @if(isset($model->dok_kepemilikan) && $model->dok_kepemilikan)
                         <div class="flex items-center space-x-2 p-3 bg-green-50 border border-green-200 rounded-lg mb-2">
                             <i class="fas fa-file-pdf text-green-600"></i>
                             <span class="text-sm text-green-700 flex-1">{{ $model->dok_kepemilikan }}</span>
@@ -807,9 +844,9 @@
                 <div class="space-y-2">
                     <label for="f_ktp" class="block text-sm font-semibold text-gray-700">
                         <i class="fas fa-id-card mr-2 text-red-600"></i>
-                        KTP Pemohon @if(!$model->f_ktp)<span class="text-red-500">*.pdf</span>@endif
+                        KTP Pemohon @if(!isset($model->f_ktp) || !$model->f_ktp)<span class="text-red-500">*.pdf</span>@endif
                     </label>
-                    @if($model->f_ktp)
+                    @if(isset($model->f_ktp) && $model->f_ktp)
                         <div class="flex items-center space-x-2 p-3 bg-green-50 border border-green-200 rounded-lg mb-2">
                             <i class="fas fa-file-pdf text-green-600"></i>
                             <span class="text-sm text-green-700 flex-1">{{ $model->f_ktp }}</span>
@@ -838,9 +875,9 @@
                 <div class="space-y-2">
                     <label for="f_sertifikat" class="block text-sm font-semibold text-gray-700">
                         <i class="fas fa-certificate mr-2 text-red-600"></i>
-                        Sertifikat Tanah @if(!$model->f_sertifikat)<span class="text-red-500">*.pdf</span>@endif
+                        Sertifikat Tanah @if(!isset($model->f_sertifikat) || !$model->f_sertifikat)<span class="text-red-500">*.pdf</span>@endif
                     </label>
-                    @if($model->f_sertifikat)
+                    @if(isset($model->f_sertifikat) && $model->f_sertifikat)
                         <div class="flex items-center space-x-2 p-3 bg-green-50 border border-green-200 rounded-lg mb-2">
                             <i class="fas fa-file-pdf text-green-600"></i>
                             <span class="text-sm text-green-700 flex-1">{{ $model->f_sertifikat }}</span>
@@ -869,9 +906,9 @@
                 <div class="space-y-2">
                     <label for="f_siteplan" class="block text-sm font-semibold text-gray-700">
                         <i class="fas fa-map mr-2 text-red-600"></i>
-                        Siteplan/Denah Lokasi @if(!$model->f_siteplan)<span class="text-red-500">*.pdf</span>@endif
+                        Siteplan/Denah Lokasi @if(!isset($model->f_siteplan) || !$model->f_siteplan)<span class="text-red-500">*.pdf</span>@endif
                     </label>
-                    @if($model->f_siteplan)
+                    @if(isset($model->f_siteplan) && $model->f_siteplan)
                         <div class="flex items-center space-x-2 p-3 bg-green-50 border border-green-200 rounded-lg mb-2">
                             <i class="fas fa-file-pdf text-green-600"></i>
                             <span class="text-sm text-green-700 flex-1">{{ $model->f_siteplan }}</span>
@@ -902,7 +939,7 @@
                         <i class="fas fa-file-alt mr-2 text-red-600"></i>
                         Akta Perusahaan (Badan Usaha)
                     </label>
-                    @if($model->f_akta)
+                    @if(isset($model->f_akta) && $model->f_akta)
                         <div class="flex items-center space-x-2 p-3 bg-green-50 border border-green-200 rounded-lg mb-2">
                             <i class="fas fa-file-pdf text-green-600"></i>
                             <span class="text-sm text-green-700 flex-1">{{ $model->f_akta }}</span>
@@ -932,7 +969,7 @@
                         <i class="fas fa-file-alt mr-2 text-red-600"></i>
                         Dokumen Perizinan Tata Ruang Sebelumnya
                     </label>
-                    @if($model->dok_taru)
+                    @if(isset($model->dok_taru) && $model->dok_taru)
                         <div class="flex items-center space-x-2 p-3 bg-green-50 border border-green-200 rounded-lg mb-2">
                             <i class="fas fa-file-pdf text-green-600"></i>
                             <span class="text-sm text-green-700 flex-1">{{ $model->dok_taru }}</span>
@@ -977,27 +1014,43 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @if($kbli && $kbli->count() > 0)
-                            @foreach($kbli as $index => $item)
+                        @php
+                            // Get KBLI data: If kolom kbli already has data but no relationship, use kolom kbli
+                            // Otherwise, use relationship data if available
+                            $kbliData = collect();
+                            if (isset($kbli) && is_object($kbli) && method_exists($kbli, 'count') && $kbli->count() > 0) {
+                                $kbliData = $kbli;
+                            } elseif (isset($model->kkpr_kbli) && is_object($model->kkpr_kbli) && method_exists($model->kkpr_kbli, 'count') && $model->kkpr_kbli->count() > 0) {
+                                $kbliData = $model->kkpr_kbli;
+                            } elseif (!empty($model->kbli)) {
+                                // If kolom kbli has data but no relationship, create a single-item collection
+                                $kbliData = collect([
+                                    (object)[
+                                        'kode_kbli' => $model->kbli,
+                                        'judul_kbli' => $model->judul_kbli ?? ''
+                                    ]
+                                ]);
+                            }
+                        @endphp
+                        @if($kbliData && is_object($kbliData) && method_exists($kbliData, 'count') && $kbliData->count() > 0)
+                            @foreach($kbliData as $index => $item)
                                 <tr>
                                     <td class="px-4 py-2">
                                         <input type="text" class="form-control w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" 
-                                               name="kode_kbli[]" value="{{ $item->kode_kbli ?? '' }}" placeholder="Kode KBLI" required>
+                                               name="kode_kbli[]" id="kode_kbli_{{ $index + 1 }}" value="{{ old('kode_kbli.' . $index, isset($item->kode_kbli) ? $item->kode_kbli : '') }}" placeholder="Kode KBLI" required>
                                     </td>
                                     <td class="px-4 py-2">
                                         <input type="text" class="form-control w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" 
-                                               name="judul_kbli[]" value="{{ $item->judul_kbli ?? '' }}" placeholder="Judul KBLI" required>
+                                               name="judul_kbli[]" id="judul_kbli_{{ $index + 1 }}" value="{{ old('judul_kbli.' . $index, isset($item->judul_kbli) ? $item->judul_kbli : '') }}" placeholder="Judul KBLI" required>
                                     </td>
                                     <td class="px-4 py-2 text-center">
-                                        @if($loop->first)
-                                            <button class="btn btn-success px-3 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors" 
-                                                    type="button" id="add_kbli">
-                                                <i class="fas fa-plus"></i>
+                                        @if($index > 0)
+                                            <button class="btn btn-danger px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors btn_remove_kbli" type="button">
+                                                <i class="fas fa-trash"></i>
                                             </button>
                                         @else
-                                            <button class="btn btn-danger px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors btn_remove_kbli" 
-                                                    type="button">
-                                                <i class="fas fa-minus"></i>
+                                            <button class="btn btn-success px-3 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors" type="button" id="add_kbli">
+                                                <i class="fas fa-plus"></i>
                                             </button>
                                         @endif
                                     </td>
@@ -1007,15 +1060,14 @@
                             <tr>
                                 <td class="px-4 py-2">
                                     <input type="text" class="form-control w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" 
-                                           name="kode_kbli[]" id="kode_kbli_1" placeholder="Kode KBLI" required>
+                                           name="kode_kbli[]" id="kode_kbli_1" value="{{ old('kode_kbli.0', !empty($model->kbli) ? $model->kbli : '') }}" placeholder="Kode KBLI" required>
                                 </td>
                                 <td class="px-4 py-2">
                                     <input type="text" class="form-control w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" 
-                                           name="judul_kbli[]" id="judul_kbli_1" placeholder="Judul KBLI" required>
+                                           name="judul_kbli[]" id="judul_kbli_1" value="{{ old('judul_kbli.0', !empty($model->judul_kbli) ? $model->judul_kbli : '') }}" placeholder="Judul KBLI" required>
                                 </td>
                                 <td class="px-4 py-2 text-center">
-                                    <button class="btn btn-success px-3 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors" 
-                                            type="button" id="add_kbli">
+                                    <button class="btn btn-success px-3 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors" type="button" id="add_kbli">
                                         <i class="fas fa-plus"></i>
                                     </button>
                                 </td>
@@ -1241,7 +1293,7 @@
                                 <i class="fas fa-upload mr-2 text-blue-600"></i>
                                 Upload KML
                             </label>
-                            @if($model->f_kml)
+                            @if(isset($model->f_kml) && $model->f_kml)
                                 <div class="flex items-center space-x-2 p-3 bg-green-50 border border-green-200 rounded-lg mb-2">
                                     <i class="fas fa-map text-green-600"></i>
                                     <span class="text-sm text-green-700 flex-1">{{ $model->f_kml }}</span>
@@ -1316,7 +1368,17 @@
                         </div>
                         
                         <!-- Hidden input untuk menyimpan data array -->
-                        <input type="hidden" id="koordinat_data" name="koordinat_dimohon" value="{{ old('koordinat_dimohon', !empty($model->koordinat_dimohon) ? json_encode($model->koordinat_dimohon) : '[]') }}">
+                        @php
+                            $koordinatJson = '[]';
+                            if (isset($model->koordinat_dimohon) && !empty($model->koordinat_dimohon)) {
+                                try {
+                                    $koordinatJson = json_encode($model->koordinat_dimohon);
+                                } catch (\Exception $e) {
+                                    $koordinatJson = '[]';
+                                }
+                            }
+                        @endphp
+                        <input type="hidden" id="koordinat_data" name="koordinat_dimohon" value="{{ old('koordinat_dimohon', $koordinatJson) }}">
                         
                         <p class="text-xs text-gray-500 mt-2">
                             <i class="fas fa-info-circle mr-1"></i>
@@ -1434,25 +1496,82 @@
         const form = document.querySelector('form');
         if (form) {
             form.addEventListener('submit', function(e) {
-                const kmlGeojson = document.getElementById('kml_geojson').value;
+                // Check input method
+                const inputMethod = document.querySelector('input[name="input_method"]:checked');
+                const inputMethodValue = inputMethod ? inputMethod.value : 'kml';
                 
-                if (!kmlGeojson || kmlGeojson.trim() === '') {
-                    e.preventDefault();
-                    alert('Silakan upload file KML atau gambar area di peta terlebih dahulu.');
-                    return false;
-                }
-                
-                try {
-                    const geoJsonData = JSON.parse(kmlGeojson);
-                    if (!geoJsonData.geometry || !geoJsonData.geometry.coordinates) {
+                if (inputMethodValue === 'kml') {
+                    // Validate KML/GeoJSON
+                    const kmlGeojson = document.getElementById('kml_geojson');
+                    const kmlGeojsonValue = kmlGeojson ? kmlGeojson.value : '';
+                    
+                    if (!kmlGeojsonValue || kmlGeojsonValue.trim() === '') {
+                        e.preventDefault();
+                        alert('Silakan upload file KML atau gambar area di peta terlebih dahulu.');
+                        return false;
+                    }
+                    
+                    try {
+                        const geoJsonData = JSON.parse(kmlGeojsonValue);
+                        // Check if it's a FeatureCollection or Feature
+                        const features = geoJsonData.features || (geoJsonData.type === 'Feature' ? [geoJsonData] : []);
+                        if (features.length === 0 || !geoJsonData.geometry) {
+                            e.preventDefault();
+                            alert('Data koordinat tidak valid. Silakan upload ulang file KML atau gambar area di peta.');
+                            return false;
+                        }
+                    } catch (error) {
                         e.preventDefault();
                         alert('Data koordinat tidak valid. Silakan upload ulang file KML atau gambar area di peta.');
                         return false;
                     }
-                } catch (error) {
-                    e.preventDefault();
-                    alert('Data koordinat tidak valid. Silakan upload ulang file KML atau gambar area di peta.');
-                    return false;
+                } else if (inputMethodValue === 'manual') {
+                    // Validate manual coordinates
+                    const koordinatData = document.getElementById('koordinat_data') || document.getElementById('koordinat_dimohon');
+                    const koordinatValue = koordinatData ? koordinatData.value : '';
+                    
+                    if (!koordinatValue || koordinatValue.trim() === '') {
+                        e.preventDefault();
+                        alert('Silakan tambahkan minimal satu pasangan koordinat (Latitude dan Longitude).');
+                        const addBtn = document.getElementById('add_coordinate_btn');
+                        if (addBtn) addBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        return false;
+                    }
+                    
+                    try {
+                        const coordinates = JSON.parse(koordinatValue);
+                        if (!Array.isArray(coordinates) || coordinates.length === 0) {
+                            e.preventDefault();
+                            alert('Silakan tambahkan minimal satu pasangan koordinat (Latitude dan Longitude).');
+                            return false;
+                        }
+                        
+                        // Validate each coordinate
+                        for (let i = 0; i < coordinates.length; i++) {
+                            const coord = coordinates[i];
+                            if (!coord.latitude || !coord.longitude) {
+                                e.preventDefault();
+                                alert(`Koordinat ke-${i + 1} belum lengkap. Pastikan Latitude dan Longitude terisi.`);
+                                return false;
+                            }
+                            
+                            const lat = parseFloat(coord.latitude);
+                            const lng = parseFloat(coord.longitude);
+                            if (isNaN(lat) || isNaN(lng)) {
+                                e.preventDefault();
+                                alert(`Koordinat ke-${i + 1} tidak valid. Pastikan Latitude dan Longitude berupa angka.`);
+                                return false;
+                            }
+                        }
+                    } catch (error) {
+                        e.preventDefault();
+                        alert('Data koordinat tidak valid. Silakan periksa kembali input koordinat.');
+                        return false;
+                    }
+                    
+                    // Clear KML fields when using manual input
+                    if (document.getElementById('f_kml')) document.getElementById('f_kml').value = '';
+                    if (document.getElementById('kml_geojson')) document.getElementById('kml_geojson').value = '';
                 }
 
                 // Handle status lahan lainnya - gabungkan value ke status_lahan
@@ -1491,6 +1610,22 @@
         // Initialize penggunaan sekarang - disable jika status "Kosong"
         @if(old('status_penggunaan_tanah', $model->status_penggunaan_tanah) == 'Kosong')
             togglePenggunaanSekarang('Kosong');
+        @endif
+        
+        // Ensure map renders properly even when no GeoJSON/KML data exists
+        @php
+            $hasKml = !empty(isset($model->f_kml) ? $model->f_kml : null);
+            $hasKmlGeojson = !empty(isset($model->kml_geojson) ? $model->kml_geojson : null);
+            $hasKoordinatDimohon = !empty(isset($model->koordinat_dimohon) ? $model->koordinat_dimohon : null);
+            $hasAnyCoordinateData = $hasKml || $hasKmlGeojson || $hasKoordinatDimohon;
+        @endphp
+        @if(!$hasAnyCoordinateData)
+            // No coordinate data - ensure map still renders properly
+            setTimeout(function() {
+                if (window.kkprMap) {
+                    window.kkprMap.invalidateSize();
+                }
+            }, 500);
         @endif
     });
 
@@ -1567,6 +1702,24 @@
         window.kkprPolygon = null;
         window.drawnItems = new L.FeatureGroup();
         map.addLayer(window.drawnItems);
+        
+        // Ensure map renders properly after initialization
+        setTimeout(function() {
+            if (window.kkprMap) {
+                window.kkprMap.invalidateSize();
+            }
+        }, 100);
+        
+        // Handle window resize to ensure map renders properly
+        let resizeTimer;
+        window.addEventListener('resize', function() {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(function() {
+                if (window.kkprMap) {
+                    window.kkprMap.invalidateSize();
+                }
+            }, 250);
+        });
 
         // Initialize draw control
         const drawControl = new L.Control.Draw({
@@ -1816,11 +1969,18 @@
                 // Add to map
                 window.kkprMap.addLayer(geoJsonLayer);
                 
-                // Fit map to layer bounds
-                if (geoJsonLayer.getBounds) {
+                // Fit map to layer bounds - validate bounds first
+                if (geoJsonLayer.getBounds && geoJsonLayer.getBounds().isValid()) {
                     console.log('Fitting map to bounds:', geoJsonLayer.getBounds());
                     window.kkprMap.fitBounds(geoJsonLayer.getBounds());
                 }
+                
+                // Ensure map renders properly after loading GeoJSON
+                setTimeout(function() {
+                    if (window.kkprMap) {
+                        window.kkprMap.invalidateSize();
+                    }
+                }, 200);
                 
                 // Update status indicator
                 const statusDiv = document.getElementById('geojson_status');
@@ -2689,7 +2849,11 @@
     // Initialize dynamic forms
     function initDynamicForms() {
         // KBLI dynamic rows
-        let kbliCount = {{ $kbli ? $kbli->count() : 1 }};
+        @php
+            $kbliDataForJs = isset($kbli) && is_object($kbli) && method_exists($kbli, 'count') ? $kbli : collect();
+            $kbliCountForJs = ($kbliDataForJs && is_object($kbliDataForJs) && method_exists($kbliDataForJs, 'count') && $kbliDataForJs->count() > 0) ? $kbliDataForJs->count() : 1;
+        @endphp
+        let kbliCount = {{ $kbliCountForJs }};
         const addKbliBtn = document.getElementById('add_kbli');
         if(addKbliBtn) {
             addKbliBtn.addEventListener('click', function() {
@@ -2791,12 +2955,21 @@
     }
 
     // Load existing coordinates for edit mode
-    @if(isset($koordinat) && $koordinat->count() > 0)
+    @php
+        $koordinatDataForJs = isset($koordinat) && is_object($koordinat) && method_exists($koordinat, 'count') ? $koordinat : collect();
+        $hasKoordinatForJs = $koordinatDataForJs && is_object($koordinatDataForJs) && method_exists($koordinatDataForJs, 'count') && $koordinatDataForJs->count() > 0;
+    @endphp
+    @if($hasKoordinatForJs)
     document.addEventListener('DOMContentLoaded', function() {
         // Wait for map to be initialized
         setTimeout(function() {
             if(window.kkprMap) {
-                const coordinates = @json($koordinat->map(function($k) { return [$k->lati, $k->longi]; }));
+                @php
+                    $coordsArray = $koordinatDataForJs->map(function($k) { 
+                        return [isset($k->lati) ? $k->lati : '', isset($k->longi) ? $k->longi : '']; 
+                    })->toArray();
+                @endphp
+                const coordinates = @json($coordsArray);
                 
                 if(coordinates.length > 0) {
                     // Create a polygon from existing coordinates
@@ -2812,8 +2985,17 @@
                     
                     window.kkprPolygon = polygon;
                     
-                    // Fit map to polygon bounds
-                    window.kkprMap.fitBounds(polygon.getBounds());
+                    // Fit map to polygon bounds - validate bounds first
+                    if (polygon.getBounds && polygon.getBounds().isValid()) {
+                        window.kkprMap.fitBounds(polygon.getBounds());
+                    }
+                    
+                    // Ensure map renders properly after loading coordinates
+                    setTimeout(function() {
+                        if (window.kkprMap) {
+                            window.kkprMap.invalidateSize();
+                        }
+                    }, 200);
                     
                     // Update GeoJSON
                     const geoJson = {
@@ -2887,10 +3069,17 @@
                         // Add to map
                         window.kkprMap.addLayer(geoJsonLayer);
                         
-                        // Fit map to layer bounds
-                        if (geoJsonLayer.getBounds) {
+                        // Fit map to layer bounds - validate bounds first
+                        if (geoJsonLayer.getBounds && geoJsonLayer.getBounds().isValid()) {
                             window.kkprMap.fitBounds(geoJsonLayer.getBounds());
                         }
+                        
+                        // Ensure map renders properly after loading GeoJSON
+                        setTimeout(function() {
+                            if (window.kkprMap) {
+                                window.kkprMap.invalidateSize();
+                            }
+                        }, 200);
                         
                         // Extract and display coordinates
                         extractCoordinatesFromGeoJSON(geoJsonData);
@@ -2899,6 +3088,12 @@
                     })
                     .catch(error => {
                         console.error('Error loading existing KML:', error);
+                        // Ensure map still renders even if KML fails
+                        setTimeout(function() {
+                            if (window.kkprMap) {
+                                window.kkprMap.invalidateSize();
+                            }
+                        }, 200);
                     });
             }
         }, 1500);
@@ -3058,10 +3253,17 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.kelurahan && Object.keys(data.kelurahan).length > 0) {
+                        @php
+                            $currentKelId = old('NO_KEL', $model->NO_KEL);
+                        @endphp
+                        const currentKelId = @json($currentKelId);
                         Object.entries(data.kelurahan).forEach(([id, name]) => {
                             const option = document.createElement('option');
                             option.value = id;
                             option.textContent = name;
+                            if (currentKelId && String(id) === String(currentKelId)) {
+                                option.selected = true;
+                            }
                             noKelSelect.appendChild(option);
                         });
                     }
@@ -3070,6 +3272,18 @@
                     console.error('Error fetching kelurahan:', error);
                 });
             });
+            
+            // Load kelurahan on page load if kecamatan is already selected
+            @php
+                $currentKecId = old('NO_KEC', $model->NO_KEC);
+            @endphp
+            @if($currentKecId)
+                const currentKec = @json($currentKecId);
+                if (currentKec) {
+                    noKecSelect.value = currentKec;
+                    noKecSelect.dispatchEvent(new Event('change'));
+                }
+            @endif
         }
     });
 </script>

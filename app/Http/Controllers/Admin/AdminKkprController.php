@@ -479,43 +479,137 @@ class AdminKkprController extends Controller
 
     public function edit($id)
     {
-        $kkpr = Kkpr::with(['kkpr_kbli', 'kkpr_koordinat'])->findOrFail($id);
-        
-        $data = [
-            'model' => $kkpr,
-            'kbli' => $kkpr->kkpr_kbli,
-            'koordinat' => $kkpr->kkpr_koordinat,
-            'kabupaten' => DB::table('setup_kab')->where('NO_PROP', 35)->where('NO_KAB', 10)->pluck('NAMA_KAB', 'NO_KAB'),
-            'kecamatan' => DB::table('setup_kec')->where('NO_PROP', 35)->where('NO_KAB', 10)->pluck('NAMA_KEC', 'NO_KEC'),
-            'kelurahan' => DB::table('setup_kel_fix')->where('NO_PROP', 35)->where('NO_KAB', 10)->where('NO_KEC', $kkpr->NO_KEC)->pluck('NAMA_KEL', 'NO_KEL'),
-            'title' => 'Kegiatan Kesesuaian Tata Ruang',
-        ];
+        try {
+            // Load model first to check if kolom kbli has data
+            $kkpr = Kkpr::findOrFail($id);
+            
+            // Only load kkpr_kbli relationship if kolom kbli is empty
+            // If kolom kbli already has data, don't load relationship (optimize query)
+            $relationships = ['kkpr_koordinat'];
+            if (empty($kkpr->kbli)) {
+                $relationships[] = 'kkpr_kbli';
+            }
+            $kkpr->load($relationships);
+            
+            // Optimize database queries - use select specific columns and execute immediately
+            $kabupaten = DB::table('setup_kab')
+                ->where('NO_PROP', 35)
+                ->where('NO_KAB', 10)
+                ->select('NO_KAB', 'NAMA_KAB')
+                ->pluck('NAMA_KAB', 'NO_KAB');
+            
+            $kecamatan = DB::table('setup_kec')
+                ->where('NO_PROP', 35)
+                ->where('NO_KAB', 10)
+                ->select('NO_KEC', 'NAMA_KEC')
+                ->pluck('NAMA_KEC', 'NO_KEC');
+            
+            // Only query kelurahan if NO_KEC exists and is not null
+            $kelurahan = collect();
+            // Use NO_KEC from model (not kecamatan_id)
+            $noKec = $kkpr->NO_KEC ?? null;
+            if (!empty($noKec) && $noKec != null) {
+                $kelurahan = DB::table('setup_kel_fix')
+                    ->where('NO_PROP', 35)
+                    ->where('NO_KAB', 10)
+                    ->where('NO_KEC', $noKec)
+                    ->select('NO_KEL', 'NAMA_KEL')
+                    ->pluck('NAMA_KEL', 'NO_KEL');
+            }
+            
+            // Get KBLI: If kolom kbli already has data, don't use relationship
+            // Otherwise, use relationship data if available
+            $kbliData = collect();
+            
+            // If kolom kbli has data, don't use relationship (as per requirement)
+            if (!empty($kkpr->kbli)) {
+                // Kolom kbli already has data, don't load from relationship table
+                $kbliData = collect();
+            } 
+            // If kolom kbli is empty, use relationship data if it exists
+            elseif ($kkpr->relationLoaded('kkpr_kbli') && $kkpr->kkpr_kbli && $kkpr->kkpr_kbli->count() > 0) {
+                $kbliData = $kkpr->kkpr_kbli;
+            }
+            
+            $data = [
+                'model' => $kkpr,
+                'kbli' => $kbliData,
+                'koordinat' => $kkpr->kkpr_koordinat,
+                'kabupaten' => $kabupaten,
+                'kecamatan' => $kecamatan,
+                'kelurahan' => $kelurahan,
+                'title' => 'Kegiatan Kesesuaian Tata Ruang',
+            ];
 
-        return view($this->base_view . 'edit', $data);
+            return view($this->base_view . 'edit', $data);
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('KKPR Edit Error: ' . $e->getMessage(), [
+                'id' => $id,
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            return redirect()->route($this->path . '.index')
+                ->with('error', 'Terjadi kesalahan saat mengakses halaman edit: ' . $e->getMessage());
+        }
     }
 
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'nama_pemohon' => 'nullable|string|max:255',
-            'nik_pemohon' => 'nullable|string|max:16',
-            'no_telp' => 'nullable|string|max:20',
-            'pekerjaan_pemohon' => 'nullable|string|max:255',
-            'alamat_pemohon' => 'nullable|string|max:500',
-            'kabupaten_id' => 'required|integer',
-            'kecamatan_id' => 'required|integer',
-            'kelurahan_id' => 'required|integer',
-            'luas' => 'required|numeric',
-            'fungsi' => 'required|string|max:255',
-        ]);
-
         try {
+            // Validasi minimal untuk update - semua field optional
+            $request->validate([
+                'nama_pemohon' => 'nullable|string|max:255',
+                'nik_pemohon' => 'nullable|string|max:16',
+                'no_telp' => 'nullable|string|max:20',
+                'pekerjaan_pemohon' => 'nullable|string|max:255',
+                'alamat_pemohon' => 'nullable|string|max:500',
+                'kabupaten_id' => 'nullable|integer',
+                'kecamatan_id' => 'nullable|integer',
+                'kelurahan_id' => 'nullable|integer',
+                'luas' => 'nullable|numeric',
+                'fungsi' => 'nullable|string|max:255',
+            ]);
+
             DB::beginTransaction();
 
             $kkpr = Kkpr::findOrFail($id);
 
-            // Get user from existing KKPR (no update needed since fields are readonly)
+            // Get user from existing KKPR or create/update user if user_id is null
             $user = $kkpr->user;
+            
+            // If user is null or user_id is empty, create or find user
+            if (!$user || !$kkpr->user_id) {
+                // Check if user exists by NIK
+                $nikPemohon = $request->get('nik_pemohon');
+                if ($nikPemohon) {
+                    $user = User::where('nik', $nikPemohon)->first();
+                    
+                    // If user doesn't exist, create new user
+                    if (!$user) {
+                        $user = User::create([
+                            'nik' => $request->get('nik_pemohon'),
+                            'name' => $request->get('nama_pemohon'),
+                            'work' => $request->get('pekerjaan_pemohon'),
+                            'phone' => $request->get('no_telp'),
+                            'email' => $request->get('email'),
+                            'address' => $request->get('alamat_pemohon'),
+                            'password' => bcrypt('123456'), // Default password
+                        ]);
+                    } else {
+                        // Update existing user
+                        $user->update([
+                            'name' => $request->get('nama_pemohon'),
+                            'work' => $request->get('pekerjaan_pemohon'),
+                            'phone' => $request->get('no_telp'),
+                            'email' => $request->get('email'),
+                            'address' => $request->get('alamat_pemohon'),
+                        ]);
+                    }
+                } else {
+                    // If no NIK provided, set user_id to null
+                    $user = null;
+                }
+            }
 
             // Update KKPR
             $kkprData = $request->only([
@@ -525,13 +619,35 @@ class AdminKkprController extends Controller
                 'penggunaan_baru', 'longitude', 'lattitude', 'kepimilikan', 
                 'rt', 'rw', 'status_penggunaan_tanah', 'jenis_kegiatan', 
                 'jenis_kegiatan_lainnya', 'fungsi', 'alamat_kegiatan', 'NO_KEC', 
-                'NO_KEL', 'luas_dimohon', 'luas_tanah', 'status_lahan', 
-                'status_tanah', 'penggunaan_sekarang', 'jumlah_lantai', 
+                'NO_KEL', 'luas_dimohon', 'luas_tanah', 'status_tanah', 
+                'penggunaan_sekarang', 'jumlah_lantai', 
                 'tinggi_bangunan', 'tgl_terbit', 'tgl_surat', 'no_nib', 
                 'no_kkpr', 'tgl_kkpr', 'nib'
             ]);
 
-            $kkprData['user_id'] = $user->id;
+            // Handle status lahan - priority: status_lahan_lainnya_input > status_lahan dari request
+            $statusLahanFromRequest = $request->get('status_lahan', '');
+            $statusLahanLainnyaInput = $request->get('status_lahan_lainnya_input', '');
+            
+            // Priority 1: Jika ada status_lahan_lainnya_input yang terisi, gunakan itu
+            $statusLahan = '';
+            if (!empty(trim($statusLahanLainnyaInput))) {
+                $statusLahan = trim($statusLahanLainnyaInput);
+            } 
+            // Priority 2: Jika tidak ada custom input atau kosong, gunakan status_lahan dari request
+            elseif (!empty($statusLahanFromRequest)) {
+                $statusLahan = $statusLahanFromRequest;
+            }
+            
+            // Set status_lahan ke kkprData
+            if (!empty($statusLahan)) {
+                $kkprData['status_lahan'] = $statusLahan;
+            }
+
+            // Only set user_id if user exists
+            if ($user) {
+                $kkprData['user_id'] = $user->id;
+            }
             $kkprData['jenis'] = 'non_umk';
             // Handle luas_lantai array - filter null/NaN/undefined
             $luasLantai = $request->get('luas_lantai');
@@ -547,20 +663,42 @@ class AdminKkprController extends Controller
 
             // Update KBLI
             if ($request->has('kode_kbli') && $request->has('judul_kbli')) {
-                // Hapus KBLI lama
-                Kbli::where('id_kkpr', $kkpr->id)->where('jenis', 'KKPR')->delete();
-
-                // Tambah KBLI baru
                 $kode_kbli = $request->get('kode_kbli');
                 $judul_kbli = $request->get('judul_kbli');
-
+                
+                // Filter out empty values
+                $validKbli = [];
                 foreach ($kode_kbli as $key => $kode) {
-                    Kbli::create([
-                        'jenis' => 'KKPR',
-                        'id_kkpr' => $kkpr->id,
-                        'kode_kbli' => $kode,
-                        'judul_kbli' => $judul_kbli[$key],
-                    ]);
+                    if (!empty(trim($kode)) && !empty(trim($judul_kbli[$key] ?? ''))) {
+                        $validKbli[] = [
+                            'kode' => trim($kode),
+                            'judul' => trim($judul_kbli[$key])
+                        ];
+                    }
+                }
+                
+                if (count($validKbli) > 0) {
+                    // Hapus KBLI lama
+                    Kbli::where('id_kkpr', $kkpr->id)->where('jenis', 'KKPR')->delete();
+
+                    // Tambah KBLI baru
+                    foreach ($validKbli as $kbliItem) {
+                        Kbli::create([
+                            'jenis' => 'KKPR',
+                            'id_kkpr' => $kkpr->id,
+                            'kode_kbli' => $kbliItem['kode'],
+                            'judul_kbli' => $kbliItem['judul'],
+                        ]);
+                    }
+                    
+                    // Update kolom kbli dan judul_kbli di model dengan KBLI pertama (jika kolom ada)
+                    if (count($validKbli) > 0) {
+                        $updateData = ['kbli' => $validKbli[0]['kode']];
+                        if (!empty($validKbli[0]['judul'])) {
+                            $updateData['judul_kbli'] = $validKbli[0]['judul'];
+                        }
+                        $kkpr->update($updateData);
+                    }
                 }
             }
 
@@ -579,7 +717,8 @@ class AdminKkprController extends Controller
                         $coordinates = json_decode($koordinatDimohon, true);
                         if (is_array($coordinates) && count($coordinates) > 0) {
                             foreach ($coordinates as $coord) {
-                                if (isset($coord['latitude']) && isset($coord['longitude'])) {
+                                if (isset($coord['latitude']) && isset($coord['longitude']) && 
+                                    !empty($coord['latitude']) && !empty($coord['longitude'])) {
                                     Koordinat_kkpr::create([
                                         'jenis' => 'KKPR',
                                         'id_kkpr' => $kkpr->id,
@@ -594,7 +733,60 @@ class AdminKkprController extends Controller
                     }
                 }
             } else {
-                // Handle koordinat dari KML (logic yang sudah ada)
+                // Handle koordinat dari KML/GeoJSON - extract dari drawnItems
+                // Jika ada kml_geojson, extract koordinat dari GeoJSON
+                $kmlGeojson = $request->get('kml_geojson');
+                if ($kmlGeojson) {
+                    try {
+                        $geoJsonData = json_decode($kmlGeojson, true);
+                        if (is_array($geoJsonData) && isset($geoJsonData['features'])) {
+                            foreach ($geoJsonData['features'] as $feature) {
+                                if (isset($feature['geometry']['coordinates'])) {
+                                    $coordinates = $feature['geometry']['coordinates'];
+                                    
+                                    // Handle different geometry types
+                                    if ($feature['geometry']['type'] === 'Polygon') {
+                                        // Polygon coordinates are nested arrays
+                                        foreach ($coordinates[0] as $coord) {
+                                            if (count($coord) >= 2) {
+                                                Koordinat_kkpr::create([
+                                                    'jenis' => 'KKPR',
+                                                    'id_kkpr' => $kkpr->id,
+                                                    'lati' => $coord[1],
+                                                    'longi' => $coord[0],
+                                                ]);
+                                            }
+                                        }
+                                    } elseif ($feature['geometry']['type'] === 'LineString') {
+                                        foreach ($coordinates as $coord) {
+                                            if (count($coord) >= 2) {
+                                                Koordinat_kkpr::create([
+                                                    'jenis' => 'KKPR',
+                                                    'id_kkpr' => $kkpr->id,
+                                                    'lati' => $coord[1],
+                                                    'longi' => $coord[0],
+                                                ]);
+                                            }
+                                        }
+                                    } elseif ($feature['geometry']['type'] === 'Point') {
+                                        if (count($coordinates) >= 2) {
+                                            Koordinat_kkpr::create([
+                                                'jenis' => 'KKPR',
+                                                'id_kkpr' => $kkpr->id,
+                                                'lati' => $coordinates[1],
+                                                'longi' => $coordinates[0],
+                                            ]);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    } catch (\Exception $e) {
+                        // Handle error jika GeoJSON tidak valid
+                    }
+                }
+                
+                // Fallback: Handle koordinat dari KML (logic yang sudah ada)
                 if ($request->has('longi') && $request->has('lati')) {
                     $longitude = $request->get('longi');
                     $lattitude = $request->get('lati');
@@ -675,14 +867,27 @@ class AdminKkprController extends Controller
                 $kkpr->update(['f_kml'=>$filename]);
             }
             
+            // Handle kml_geojson - save to file only (database column doesn't exist)
             $kml_geo = $request->get('kml_geojson');
-            if($kml_geo != null){
+            if (!empty($kml_geo)) {
                 $dir_to_save = $folder.'/kml/';
                 if (!is_dir($dir_to_save)) {
-                    mkdir($folder.'/kml/', 0755, true);
+                    mkdir($dir_to_save, 0755, true);
                 }
+                
+                // Save GeoJSON to file
                 file_put_contents($dir_to_save.'geojson.geojson', $kml_geo);
-                $kkpr->update(['f_geojson'=>'geojson.geojson']);
+                
+                // Update database with filename only (kml_geojson column doesn't exist in database)
+                $kkpr->update([
+                    'f_geojson' => 'geojson.geojson'
+                ]);
+            } else {
+                // If no GeoJSON provided, clear the file reference
+                if ($kkpr->f_geojson && file_exists($folder.'/kml/'.$kkpr->f_geojson)) {
+                    unlink($folder.'/kml/'.$kkpr->f_geojson);
+                }
+                $kkpr->update(['f_geojson' => null]);
             }
 
             if ($request->hasFile('f_ktp')) {
@@ -752,14 +957,30 @@ class AdminKkprController extends Controller
 
             DB::commit();
 
-            return redirect()->route($this->path . '.index')
+            return redirect()->route($this->path . '.edit', $id)
                 ->with('success', 'Data berhasil diupdate kedalam sistem');
 
-        } catch (\Exception $e) {
+        } catch (\Illuminate\Validation\ValidationException $e) {
             DB::rollback();
             return redirect()->back()
+                ->withErrors($e->errors())
                 ->withInput()
-                ->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+                ->with('error', 'Terjadi kesalahan validasi. Silakan periksa kembali data yang Anda masukkan.');
+        } catch (\Exception $e) {
+            DB::rollback();
+            
+            // Log error untuk debugging
+            \Illuminate\Support\Facades\Log::error('KKPR Update Error: ' . $e->getMessage(), [
+                'id' => $id,
+                'request_data' => $request->except(['f_ktp', 'f_nib', 'sp_mandiri', 'dok_kepemilikan', 'f_sertifikat', 'f_siteplan', 'f_akta', 'f_kml']),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Terjadi kesalahan saat mengupdate data: ' . $e->getMessage());
         }
     }
 
