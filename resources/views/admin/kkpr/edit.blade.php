@@ -598,7 +598,7 @@
                         <input type="file" id="f_nib" name="f_nib" accept="application/pdf" 
                                class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-orange-50 file:text-orange-700 hover:file:bg-orange-100" 
                                {{ (!isset($model->f_nib) || !$model->f_nib) ? 'required' : '' }}>
-                    </div>
+                </div>
                     @error('f_nib')
                         <div class="flex items-center space-x-2 text-red-600 text-sm mt-1">
                             <i class="fas fa-exclamation-circle text-xs"></i>
@@ -1510,7 +1510,7 @@
         });
     }
 
-        document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function() {
         // Staggered animation for cards
         const cards = document.querySelectorAll('.bg-white\\/80, .bg-gradient-to-br');
         cards.forEach((card, index) => {
@@ -2592,7 +2592,7 @@
                 const container = document.getElementById('luas_lantai_container');
                 if (!container) return;
                 container.innerHTML = '';
-
+                
                 for (let i = 1; i <= jumlahLantai; i++) {
                     const div = document.createElement('div');
                     div.className = 'col-lg-3 space-y-2';
@@ -2623,7 +2623,7 @@
                         jumlahLantaiInput.dispatchEvent(new Event('input'));
                     }
                 }, 100);
-            @endif
+                @endif
         }
     }
 

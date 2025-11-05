@@ -181,7 +181,26 @@ class AdminKkprNonController extends Controller
         $req['NO_KEL']            = $request->get('NO_KEL');
         $req['luas_dimohon']      = $request->get('luas_dimohon');
         $req['luas_tanah']        = $request->get('luas_tanah');
-        $req['status_lahan']      = $request->get('status_lahan');
+        
+        // Handle status lahan - priority: status_lahan_lainnya_input > status_lahan dari request
+        $statusLahanFromRequest = $request->get('status_lahan', '');
+        $statusLahanLainnyaInput = $request->get('status_lahan_lainnya_input', '');
+        
+        // Priority 1: Jika ada status_lahan_lainnya_input yang terisi, gunakan itu
+        $statusLahan = '';
+        if (!empty(trim($statusLahanLainnyaInput))) {
+            $statusLahan = trim($statusLahanLainnyaInput);
+        } 
+        // Priority 2: Jika tidak ada custom input atau kosong, gunakan status_lahan dari request
+        elseif (!empty($statusLahanFromRequest)) {
+            $statusLahan = $statusLahanFromRequest;
+        }
+        
+        // Set status_lahan ke req
+        if (!empty($statusLahan)) {
+            $req['status_lahan'] = $statusLahan;
+        }
+        
         $req['status_tanah']      = $request->get('status_tanah');
         $req['penggunaan_sekarang'] = $request->get('penggunaan_sekarang');
         $req['jumlah_lantai']     = $request->get('jumlah_lantai');

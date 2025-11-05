@@ -2805,26 +2805,30 @@
 
 
         // Luas lantai dynamic inputs
-        document.getElementById('jumlah_lantai').addEventListener('input', function() {
-            const jumlahLantai = parseInt(this.value) || 0;
-            const container = document.getElementById('luas_lantai_container');
-            container.innerHTML = '';
+        const jumlahLantaiInput = document.getElementById('jumlah_lantai');
+        if (jumlahLantaiInput) {
+            jumlahLantaiInput.addEventListener('input', function() {
+                const jumlahLantai = parseInt(this.value) || 0;
+                const container = document.getElementById('luas_lantai_container');
+                if (!container) return;
+                container.innerHTML = '';
 
-            for (let i = 1; i <= jumlahLantai; i++) {
-                const div = document.createElement('div');
-                div.className = 'col-lg-3 space-y-2';
-                div.innerHTML = `
-                    <label for="luas_lantai_${i}" class="block text-sm font-semibold text-gray-700">
-                        <i class="fas fa-layer-group mr-2 text-teal-600"></i>
-                        Luas Lantai ${i} <span class="text-red-500">m²</span>
-                    </label>
-                    <input type="number" id="luas_lantai_${i}" name="luas_lantai[]" 
-                           class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm" 
-                           placeholder="Luas Lantai ${i}">
-                `;
-                container.appendChild(div);
-            }
-        });
+                for (let i = 1; i <= jumlahLantai; i++) {
+                    const div = document.createElement('div');
+                    div.className = 'col-lg-3 space-y-2';
+                    div.innerHTML = `
+                        <label for="luas_lantai_${i}" class="block text-sm font-semibold text-gray-700">
+                            <i class="fas fa-layer-group mr-2 text-teal-600"></i>
+                            Luas Lantai ${i} <span class="text-red-500">m²</span>
+                        </label>
+                        <input type="number" id="luas_lantai_${i}" name="luas_lantai[]" 
+                               class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm" 
+                               placeholder="Luas Lantai ${i}">
+                    `;
+                    container.appendChild(div);
+                }
+            });
+        }
     }
 
     // Verifikasi select validation

@@ -2962,39 +2962,56 @@
         });
 
 
-        // Luas lantai dynamic inputs - trigger on load for edit mode
+        // Luas lantai dynamic inputs
+        @php
+            $luasLantaiData = [];
+            if (isset($model->luas_lantai) && is_array($model->luas_lantai)) {
+                $luasLantaiData = $model->luas_lantai;
+            } elseif (old('luas_lantai') && is_array(old('luas_lantai'))) {
+                $luasLantaiData = old('luas_lantai');
+            }
+        @endphp
+        const existingLuasLantai = {!! json_encode($luasLantaiData) !!};
+        
         const jumlahLantaiInput = document.getElementById('jumlah_lantai');
-        if(jumlahLantaiInput) {
-            // Trigger on input
+        if (jumlahLantaiInput) {
             jumlahLantaiInput.addEventListener('input', function() {
-                updateLuasLantaiFields(this.value);
+                const jumlahLantai = parseInt(this.value) || 0;
+                const container = document.getElementById('luas_lantai_container');
+                if (!container) return;
+                container.innerHTML = '';
+
+                for (let i = 1; i <= jumlahLantai; i++) {
+                    const div = document.createElement('div');
+                    div.className = 'col-lg-3 space-y-2';
+                    const existingValue = existingLuasLantai && existingLuasLantai[i - 1] !== undefined ? existingLuasLantai[i - 1] : '';
+                    div.innerHTML = `
+                        <label for="luas_lantai_${i}" class="block text-sm font-semibold text-gray-700">
+                            <i class="fas fa-layer-group mr-2 text-teal-600"></i>
+                            Luas Lantai ${i} <span class="text-red-500">m²</span>
+                        </label>
+                        <input type="number" id="luas_lantai_${i}" name="luas_lantai[]" 
+                               class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm" 
+                               placeholder="Luas Lantai ${i}" 
+                               value="${existingValue || ''}">
+                    `;
+                    container.appendChild(div);
+                }
             });
             
-            // Trigger on page load for edit mode
-            if(jumlahLantaiInput.value) {
-                updateLuasLantaiFields(jumlahLantaiInput.value);
-            }
-        }
-    }
-    
-    function updateLuasLantaiFields(jumlahLantai) {
-        jumlahLantai = parseInt(jumlahLantai) || 0;
-        const container = document.getElementById('luas_lantai_container');
-        container.innerHTML = '';
-
-        for (let i = 1; i <= jumlahLantai; i++) {
-            const div = document.createElement('div');
-            div.className = 'col-lg-3 space-y-2';
-            div.innerHTML = `
-                <label for="luas_lantai_${i}" class="block text-sm font-semibold text-gray-700">
-                    <i class="fas fa-layer-group mr-2 text-teal-600"></i>
-                    Luas Lantai ${i} <span class="text-red-500">m²</span>
-                </label>
-                <input type="number" id="luas_lantai_${i}" name="luas_lantai[]" 
-                       class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm" 
-                       placeholder="Luas Lantai ${i}">
-            `;
-            container.appendChild(div);
+            // Initialize on load if jumlah_lantai has value
+            @php
+                $initialJumlahLantai = old('jumlah_lantai', $model->jumlah_lantai);
+            @endphp
+            @if($initialJumlahLantai)
+                setTimeout(function() {
+                    const initialJumlahLantai = {{ $initialJumlahLantai }};
+                    if (initialJumlahLantai > 0 && jumlahLantaiInput) {
+                        jumlahLantaiInput.value = initialJumlahLantai;
+                        jumlahLantaiInput.dispatchEvent(new Event('input'));
+                    }
+                }, 100);
+            @endif
         }
     }
     
