@@ -896,8 +896,12 @@
         const pencabutanRiwayat = riwayat.filter(r => r.status_id == 0 && (r.status.includes('Pencabutan') || r.status.includes('pencabutan')));
         const hasPencabutan = pencabutanRiwayat.length > 0;
         
-        // Generate all process steps from 1 to 10
-        for (let statusId = 1; statusId <= 10; statusId++) {
+        // Hanya tampilkan proses inti: Pengajuan(1), Survey(6), Analisa(7), Persetujuan(8), TTE(9), Selesai(10)
+        // Skip validasi dan upload dokumen: 2, 3, 4, 5
+        const processSteps = [1, 6, 7, 8, 9, 10];
+        
+        for (let i = 0; i < processSteps.length; i++) {
+            const statusId = processSteps[i];
             // Find existing riwayat for this status_id
             const existingRiwayat = riwayat.find(r => r.status_id == statusId);
             
@@ -970,9 +974,13 @@
                 
                 // Display placeholder for missing riwayat
                 const badge = badgeConfig[statusId] || { icon: 'fa-file', color: '#6c757d', label: 'Unknown' };
-                const isCompleted = statusId < model.proses;
-                const isCurrent = statusId == model.proses;
-                const isPending = statusId > model.proses;
+                // Jika model.proses berada di 2-5 (validasi/upload yang tidak ditampilkan), 
+                // kita perlu menentukan status berdasarkan proses inti terdekat
+                const adjustedProses = processSteps.includes(model.proses) ? model.proses : 
+                    (model.proses < 6 ? 1 : processSteps.find(step => step > model.proses) || 10);
+                const isCompleted = statusId < adjustedProses;
+                const isCurrent = statusId == adjustedProses && statusId == model.proses;
+                const isPending = statusId > adjustedProses;
                 
                 let statusText, statusClass, statusIcon, statusColor;
                 
