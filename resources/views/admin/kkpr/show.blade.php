@@ -74,14 +74,14 @@
                     <i class="fas fa-user text-white text-sm"></i>
                 </div>
                     <div class="text-right">
-                        <p class="text-2xl font-bold text-[#185B3C]">{{ $model->user->name ?? 'N/A' }}</p>
+                        <p class="text-2xl font-bold text-[#185B3C]">{{ $model->user_id ? ($model->user->name ?? 'N/A') : ($model->atas_nama ?? 'N/A') }}</p>
                         <p class="text-xs text-gray-500">Pemohon</p>
             </div>
                 </div>
                 <h3 class="text-sm font-semibold text-gray-900 mb-1">Biodata Pemohon</h3>
                 <div class="flex items-center text-xs text-gray-600">
                     <i class="fas fa-id-card mr-1"></i>
-                    <span>{{ $model->user->username ?? 'N/A' }}</span>
+                    <span>{{ $model->user_id ? ($model->user->username ?? 'N/A') : ($model->atas_nama ?? 'N/A') }}</span>
                 </div>
             </div>
         </div>
@@ -168,9 +168,9 @@
                         <i class="fas fa-user text-white text-xl"></i>
                     </div>
                     <div class="flex-1">
-                        <h4 class="text-lg font-bold text-gray-900">{{ $model->user->name ?? 'N/A' }}</h4>
-                        <p class="text-sm text-gray-600">{{ $model->user->username ?? 'N/A' }}</p>
-                        <p class="text-xs text-gray-500 mt-1">{{ $model->user->work ?? 'N/A' }}</p>
+                        <h4 class="text-lg font-bold text-gray-900">{{ $model->user_id ? ($model->user->name ?? 'N/A') : ($model->atas_nama ?? 'N/A') }}</h4>
+                        <p class="text-sm text-gray-600">{{ $model->user_id ? ($model->user->username ?? 'N/A') : ($model->atas_nama ?? 'N/A') }}</p>
+                        <p class="text-xs text-gray-500 mt-1">{{ $model->user_id ? ($model->user->work ?? 'N/A') : 'N/A' }}</p>
                 </div>
                 </div>
             </div>
@@ -183,7 +183,7 @@
                     </div>
                     <div class="flex-1 min-w-0">
                         <p class="text-sm font-semibold text-gray-600">Email</p>
-                        <p class="text-sm text-gray-900 break-all">{{ $model->user->email ?? 'N/A' }}</p>
+                        <p class="text-sm text-gray-900 break-all">{{ $model->user_id ? ($model->user->email ?? 'N/A') : 'N/A' }}</p>
                     </div>
                 </div>
                 
@@ -193,7 +193,7 @@
                     </div>
                     <div class="flex-1 min-w-0">
                         <p class="text-sm font-semibold text-gray-600">No HP</p>
-                        <p class="text-sm text-gray-900">{{ $model->user->phone ?? 'N/A' }}</p>
+                        <p class="text-sm text-gray-900">{{ $model->user_id ? ($model->user->phone ?? 'N/A') : 'N/A' }}</p>
                     </div>
                 </div>
                 
@@ -203,7 +203,7 @@
                     </div>
                     <div class="flex-1 min-w-0">
                         <p class="text-sm font-semibold text-gray-600">Alamat</p>
-                        <p class="text-sm text-gray-900">{{ $model->user->address ?? 'N/A' }}</p>
+                        <p class="text-sm text-gray-900">{{ $model->user_id ? ($model->user->address ?? 'N/A') : 'N/A' }}</p>
                     </div>
                 </div>
 
@@ -441,8 +441,62 @@
                 <p class="text-sm text-gray-500">Daftar dokumen yang telah diupload</p>
             </div>
         </div>
-                
-                <!-- Modern Data Table -->
+        
+        @if(!empty($model->link_gdrive))
+            <!-- Google Drive Link Section -->
+            <div class="relative overflow-hidden bg-gradient-to-br from-[#185B3C] via-[#0F3D26] to-[#185B3C] rounded-xl p-8 shadow-xl border border-[#185B3C]/20">
+                <div class="absolute inset-0 bg-black/5"></div>
+                <div class="relative z-10">
+                    <!-- Header -->
+                    <div class="flex items-center justify-center mb-6">
+                        <div class="w-20 h-20 bg-white/10 backdrop-blur-sm rounded-2xl flex items-center justify-center shadow-lg border border-white/20">
+                            <i class="fab fa-google-drive text-white text-4xl"></i>
+                        </div>
+                    </div>
+                    
+                    <!-- Title -->
+                    <div class="text-center mb-6">
+                        <h4 class="text-2xl font-bold text-white mb-2">Dokumen Tersedia di Google Drive</h4>
+                        <p class="text-white/80 text-sm">Akses semua dokumen melalui link Google Drive berikut</p>
+                    </div>
+                    
+                    <!-- Link Card -->
+                    <div class="bg-white/95 backdrop-blur-sm rounded-xl p-6 shadow-2xl border border-white/30 hover:shadow-3xl transition-all duration-300 group">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-14 h-14 bg-gradient-to-br from-[#185B3C] to-[#0F3D26] rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                                <i class="fas fa-external-link-alt text-white text-xl"></i>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm font-semibold text-gray-500 mb-1">Link Google Drive</p>
+                                <a href="{{ $model->link_gdrive }}" target="_blank" rel="noopener noreferrer" class="text-[#185B3C] font-bold text-lg hover:text-[#0F3D26] transition-colors break-all">
+                                    {{ $model->link_gdrive }}
+                                </a>
+                            </div>
+                            <div class="flex-shrink-0">
+                                <a href="{{ $model->link_gdrive }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-[#185B3C] to-[#0F3D26] text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300">
+                                    <i class="fas fa-external-link-alt mr-2"></i>
+                                    Buka Link
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Info Box -->
+                    <div class="mt-6 bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20">
+                        <div class="flex items-start space-x-3">
+                            <i class="fas fa-info-circle text-white/90 text-lg mt-0.5"></i>
+                            <p class="text-white/90 text-sm leading-relaxed">
+                                Klik tombol "Buka Link" di atas untuk mengakses semua dokumen yang tersedia di Google Drive. Pastikan Anda memiliki akses ke folder tersebut.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Decorative Elements -->
+                <div class="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-y-16 translate-x-16"></div>
+                <div class="absolute bottom-0 left-0 w-24 h-24 bg-white/5 rounded-full translate-y-12 -translate-x-12"></div>
+            </div>
+        @else
+            <!-- Modern Data Table -->
                 <div class="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg border border-white/20 overflow-hidden">
                     <!-- Table Header -->
                     <div class="px-6 py-4 bg-gradient-to-r from-gray-50 to-gray-100 border-b border-gray-200">
@@ -825,7 +879,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        @endif
     </div>
 </div>
 
