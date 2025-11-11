@@ -358,7 +358,7 @@
                 <div id="status_lahan_lainnya" class="space-y-2" style="display: {{ $isCustomValue || old('status_lahan', $model->status_lahan) == 'Dokumen penguasaan lainnya' ? 'block' : 'none' }};">
                     <label for="status_lahan_lainnya_input" class="block text-sm font-semibold text-gray-700">
                         <i class="fas fa-file-alt mr-2 text-purple-600"></i>
-                        Dokumen Penguasaan Lainnya <span class="text-red-500">*</span>
+                        Jenis Dokumen Penguasaan Lainnya <span class="text-red-500">*</span>
                     </label>
                     <input type="text" id="status_lahan_lainnya_input" name="status_lahan_lainnya_input" 
                            value="{{ old('status_lahan_lainnya_input', $isCustomValue ? $model->status_lahan : '') }}"
@@ -377,17 +377,46 @@
                         <i class="fas fa-home mr-2 text-purple-600"></i>
                         Kondisi Lahan Eksisting <span class="text-red-500">*</span>
                     </label>
+                    @php
+                        $statusPenggunaanOptions = [
+                            'Sudah Terbangun',
+                            'Proses Pembangunan',
+                            'Kosong',
+                            'Terdapat Bangunan Lain',
+                            'Terdapat Bangunan Lain (Akan dilakukan pembongkaran)',
+                            'Lainnya'
+                        ];
+                        $currentStatusPenggunaan = old('status_penggunaan_tanah', $model->status_penggunaan_tanah);
+                        $isCustomStatusPenggunaan = !in_array($currentStatusPenggunaan, $statusPenggunaanOptions) && $currentStatusPenggunaan != null && $currentStatusPenggunaan != '';
+                    @endphp
                     <select id="status_penggunaan_tanah" name="status_penggunaan_tanah" 
                             class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm" 
-                            onchange="togglePenggunaanSekarang(this.value)" required>
+                            onchange="handleStatusPenggunaanTanah(this.value)" required>
                         <option value="">-- Pilih Kondisi Lahan Eksisting --</option>
-                        <option value="Sudah Terbangun" {{ old('status_penggunaan_tanah', $model->status_penggunaan_tanah) == 'Sudah Terbangun' ? 'selected' : '' }}>Sudah Terbangun</option>
-                        <option value="Proses Pembangunan" {{ old('status_penggunaan_tanah', $model->status_penggunaan_tanah) == 'Proses Pembangunan' ? 'selected' : '' }}>Proses Pembangunan</option>
-                        <option value="Kosong" {{ old('status_penggunaan_tanah', $model->status_penggunaan_tanah) == 'Kosong' ? 'selected' : '' }}>Kosong</option>
-                        <option value="Terdapat Bangunan Lain" {{ old('status_penggunaan_tanah', $model->status_penggunaan_tanah) == 'Terdapat Bangunan Lain' ? 'selected' : '' }}>Terdapat Bangunan Lain</option>
-                        <option value="Terdapat Bangunan Lain (Akan dilakukan pembongkaran)" {{ old('status_penggunaan_tanah', $model->status_penggunaan_tanah) == 'Terdapat Bangunan Lain (Akan dilakukan pembongkaran)' ? 'selected' : '' }}>Terdapat Bangunan Lain (Akan dilakukan pembongkaran)</option>
+                        <option value="Sudah Terbangun" {{ $currentStatusPenggunaan == 'Sudah Terbangun' ? 'selected' : '' }}>Sudah Terbangun</option>
+                        <option value="Proses Pembangunan" {{ $currentStatusPenggunaan == 'Proses Pembangunan' ? 'selected' : '' }}>Proses Pembangunan</option>
+                        <option value="Kosong" {{ $currentStatusPenggunaan == 'Kosong' ? 'selected' : '' }}>Kosong</option>
+                        <option value="Terdapat Bangunan Lain (Akan dilakukan pembongkaran)" {{ $currentStatusPenggunaan == 'Terdapat Bangunan Lain (Akan dilakukan pembongkaran)' ? 'selected' : '' }}>Terdapat Bangunan Lain (Akan dilakukan pembongkaran)</option>
+                        <option value="Lainnya" {{ $isCustomStatusPenggunaan || $currentStatusPenggunaan == 'Lainnya' ? 'selected' : '' }}>Lainnya</option>
                     </select>
                     @error('status_penggunaan_tanah')
+                        <div class="flex items-center space-x-2 text-red-600 text-sm mt-1">
+                            <i class="fas fa-exclamation-circle text-xs"></i>
+                            <span>{{ $message }}</span>
+                        </div>
+                    @enderror
+                </div>
+
+                <div id="status_penggunaan_tanah_lainnya" class="space-y-2" style="display:{{ $isCustomStatusPenggunaan || $currentStatusPenggunaan == 'Lainnya' ? 'block' : 'none' }};">
+                    <label for="status_penggunaan_tanah_lainnya_input" class="block text-sm font-semibold text-gray-700">
+                        <i class="fas fa-file-alt mr-2 text-purple-600"></i>
+                        Kondisi Lahan Eksisting Lainnya <span class="text-red-500">*</span>
+                    </label>
+                    <input type="text" id="status_penggunaan_tanah_lainnya_input" name="status_penggunaan_tanah_lainnya_input" 
+                           value="{{ old('status_penggunaan_tanah_lainnya_input', $isCustomStatusPenggunaan ? $model->status_penggunaan_tanah : '') }}"
+                           placeholder="Masukkan kondisi lahan eksisting lainnya"
+                           class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm">
+                    @error('status_penggunaan_tanah_lainnya_input')
                         <div class="flex items-center space-x-2 text-red-600 text-sm mt-1">
                             <i class="fas fa-exclamation-circle text-xs"></i>
                             <span>{{ $message }}</span>
@@ -1661,6 +1690,26 @@
                     statusLahanSelect.parentNode.appendChild(hiddenInput);
                     statusLahanSelect.disabled = true; // Disable select agar value tidak ikut terkirim
                 }
+
+                // Handle status penggunaan tanah lainnya - gabungkan value ke status_penggunaan_tanah
+                const statusPenggunaanSelect = document.getElementById('status_penggunaan_tanah');
+                const statusPenggunaanLainnyaInput = document.getElementById('status_penggunaan_tanah_lainnya_input');
+
+                if (statusPenggunaanSelect && statusPenggunaanLainnyaInput && statusPenggunaanSelect.value === 'Lainnya') {
+                    const customStatusPenggunaan = statusPenggunaanLainnyaInput.value.trim();
+                    if (!customStatusPenggunaan) {
+                        e.preventDefault();
+                        alert('Silakan isi kondisi lahan eksisting lainnya.');
+                        statusPenggunaanLainnyaInput.focus();
+                        return false;
+                    }
+                    const hiddenStatusPenggunaanInput = document.createElement('input');
+                    hiddenStatusPenggunaanInput.type = 'hidden';
+                    hiddenStatusPenggunaanInput.name = 'status_penggunaan_tanah';
+                    hiddenStatusPenggunaanInput.value = customStatusPenggunaan;
+                    statusPenggunaanSelect.parentNode.appendChild(hiddenStatusPenggunaanInput);
+                    statusPenggunaanSelect.disabled = true;
+                }
             });
         }
 
@@ -1674,9 +1723,27 @@
             toggleStatusLahanLainnya('Dokumen penguasaan lainnya');
         @endif
 
-        // Initialize penggunaan sekarang - disable jika status "Kosong"
+        // Initialize penggunaan sekarang dan input lainnya sesuai nilai awal
         @if(old('status_penggunaan_tanah', $model->status_penggunaan_tanah) == 'Kosong')
-            togglePenggunaanSekarang('Kosong');
+            handleStatusPenggunaanTanah('Kosong');
+        @endif
+        @php
+            $statusPenggunaanDefaults = [
+                'Sudah Terbangun',
+                'Proses Pembangunan',
+                'Kosong',
+                'Terdapat Bangunan Lain',
+                'Terdapat Bangunan Lain (Akan dilakukan pembongkaran)',
+                'Lainnya'
+            ];
+        @endphp
+        @if(old('status_penggunaan_tanah') == 'Lainnya' || old('status_penggunaan_tanah_lainnya_input') || (!empty($model->status_penggunaan_tanah) && !in_array($model->status_penggunaan_tanah, $statusPenggunaanDefaults)))
+            handleStatusPenggunaanTanah('Lainnya');
+        @else
+            const statusPenggunaanSelect = document.getElementById('status_penggunaan_tanah');
+            if (statusPenggunaanSelect) {
+                handleStatusPenggunaanTanah(statusPenggunaanSelect.value);
+            }
         @endif
         
         // Ensure map renders properly even when no GeoJSON/KML data exists
@@ -1726,15 +1793,30 @@
         }
     }
 
-    // Toggle penggunaan sekarang - disable jika status "Kosong"
-    function togglePenggunaanSekarang(value) {
+    // Toggle penggunaan sekarang - disable jika status "Kosong" dan kelola input lainnya
+    function handleStatusPenggunaanTanah(value) {
         const penggunaanSekarangInput = document.getElementById('penggunaan_sekarang');
+        const penggunaanTanahLainnyaDiv = document.getElementById('status_penggunaan_tanah_lainnya');
+        const penggunaanTanahLainnyaInput = document.getElementById('status_penggunaan_tanah_lainnya_input');
         
-        if (value === 'Kosong') {
-            penggunaanSekarangInput.disabled = true;
-            penggunaanSekarangInput.value = '';
-        } else {
-            penggunaanSekarangInput.disabled = false;
+        if (penggunaanSekarangInput) {
+            if (value === 'Kosong') {
+                penggunaanSekarangInput.disabled = true;
+                penggunaanSekarangInput.value = '';
+            } else {
+                penggunaanSekarangInput.disabled = false;
+            }
+        }
+
+        if (penggunaanTanahLainnyaDiv && penggunaanTanahLainnyaInput) {
+            if (value === 'Lainnya') {
+                penggunaanTanahLainnyaDiv.style.display = 'block';
+                penggunaanTanahLainnyaInput.required = true;
+            } else {
+                penggunaanTanahLainnyaDiv.style.display = 'none';
+                penggunaanTanahLainnyaInput.required = false;
+                penggunaanTanahLainnyaInput.value = '';
+            }
         }
     }
 

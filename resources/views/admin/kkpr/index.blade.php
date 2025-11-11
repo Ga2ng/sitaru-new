@@ -583,7 +583,7 @@
                 menuItems += `<div class="border-t border-gray-100"></div>`;
                 
                 // Survey - jika belum survey (proses < 6)
-                if (parseInt(status) < 6) {
+                if (!canTimFpr && parseInt(status) < 6) {
                     menuItems += `
                         <button onclick="setSurvey(${id}); closeDropdownModal();" class="w-full flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-colors text-left">
                             <i class="fas fa-map-marked-alt w-4 mr-3"></i>

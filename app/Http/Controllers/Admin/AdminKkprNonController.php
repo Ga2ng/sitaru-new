@@ -1526,6 +1526,42 @@ class AdminKkprNonController extends Controller
                 }
             }
 
+            $statusPenggunaanFromRequest = $request->get('status_penggunaan_tanah', '');
+            $statusPenggunaanLainnyaInput = $request->get('status_penggunaan_tanah_lainnya_input', '');
+            $statusPenggunaanTanah = '';
+            if (!empty(trim($statusPenggunaanLainnyaInput))) {
+                $statusPenggunaanTanah = trim($statusPenggunaanLainnyaInput);
+            } elseif (!empty($statusPenggunaanFromRequest)) {
+                $statusPenggunaanTanah = $statusPenggunaanFromRequest;
+            }
+
+            $statusPenggunaanFromRequest = $request->get('status_penggunaan_tanah', '');
+            $statusPenggunaanLainnyaInput = $request->get('status_penggunaan_tanah_lainnya_input', '');
+            $statusPenggunaanTanah = '';
+            if (!empty(trim($statusPenggunaanLainnyaInput))) {
+                $statusPenggunaanTanah = trim($statusPenggunaanLainnyaInput);
+            } elseif (!empty($statusPenggunaanFromRequest)) {
+                $statusPenggunaanTanah = $statusPenggunaanFromRequest;
+            }
+
+            $statusPenggunaanFromRequest = $request->get('status_penggunaan_tanah', '');
+            $statusPenggunaanLainnyaInput = $request->get('status_penggunaan_tanah_lainnya_input', '');
+            $statusPenggunaanTanah = '';
+            if (!empty(trim($statusPenggunaanLainnyaInput))) {
+                $statusPenggunaanTanah = trim($statusPenggunaanLainnyaInput);
+            } elseif (!empty($statusPenggunaanFromRequest)) {
+                $statusPenggunaanTanah = $statusPenggunaanFromRequest;
+            }
+
+            $statusPenggunaanFromRequest = $request->get('status_penggunaan_tanah', '');
+            $statusPenggunaanLainnyaInput = $request->get('status_penggunaan_tanah_lainnya_input', '');
+            $statusPenggunaanTanah = '';
+            if (!empty(trim($statusPenggunaanLainnyaInput))) {
+                $statusPenggunaanTanah = trim($statusPenggunaanLainnyaInput);
+            } elseif (!empty($statusPenggunaanFromRequest)) {
+                $statusPenggunaanTanah = $statusPenggunaanFromRequest;
+            }
+
             // Update data analisa
             $model->update([
                 'status_rencana' => $request->status_rencana,
@@ -1547,7 +1583,7 @@ class AdminKkprNonController extends Controller
                 'no_nib' => $request->no_nib,
                 'tgl_terbit' => $request->tgl_terbit,
                 'alamat_kegiatan' => $request->alamat_kegiatan,
-                'status_penggunaan_tanah' => $request->status_penggunaan_tanah,
+                'status_penggunaan_tanah' => $statusPenggunaanTanah,
                 'luas_dimohon' => $request->luas_dimohon,
                 'atas_nama' => $request->atas_nama,
                 'no_sk' => $request->no_sk,
@@ -1757,6 +1793,15 @@ class AdminKkprNonController extends Controller
                 }
             }
 
+            $statusPenggunaanFromRequest = $request->get('status_penggunaan_tanah', '');
+            $statusPenggunaanLainnyaInput = $request->get('status_penggunaan_tanah_lainnya_input', '');
+            $statusPenggunaanTanah = '';
+            if (!empty(trim($statusPenggunaanLainnyaInput))) {
+                $statusPenggunaanTanah = trim($statusPenggunaanLainnyaInput);
+            } elseif (!empty($statusPenggunaanFromRequest)) {
+                $statusPenggunaanTanah = $statusPenggunaanFromRequest;
+            }
+
             // Update data analisa
             $model->update([
                 'status_rencana' => $request->status_rencana,
@@ -1776,7 +1821,7 @@ class AdminKkprNonController extends Controller
                 'no_nib' => $request->no_nib,
                 'tgl_terbit' => $request->tgl_terbit,
                 'alamat_kegiatan' => $request->alamat_kegiatan,
-                'status_penggunaan_tanah' => $request->status_penggunaan_tanah,
+                'status_penggunaan_tanah' => $statusPenggunaanTanah,
                 'luas_dimohon' => $request->luas_dimohon,
                 'atas_nama' => $request->atas_nama,
                 'no_sk' => $request->no_sk,

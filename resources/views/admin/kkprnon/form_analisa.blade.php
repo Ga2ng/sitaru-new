@@ -189,7 +189,6 @@
                         <option value="Sudah Terbangun" {{ old('status_penggunaan_tanah', $model->status_penggunaan_tanah ?? '') == 'Sudah Terbangun' ? 'selected' : '' }}>Sudah Terbangun</option>
                         <option value="Proses Pembangunan" {{ old('status_penggunaan_tanah', $model->status_penggunaan_tanah ?? '') == 'Proses Pembangunan' ? 'selected' : '' }}>Proses Pembangunan</option>
                         <option value="Kosong" {{ old('status_penggunaan_tanah', $model->status_penggunaan_tanah ?? '') == 'Kosong' ? 'selected' : '' }}>Kosong</option>
-                        <option value="Terdapat Bangunan Lain" {{ old('status_penggunaan_tanah', $model->status_penggunaan_tanah ?? '') == 'Terdapat Bangunan Lain' ? 'selected' : '' }}>Terdapat Bangunan Lain</option>
                     </select>
                 </div>
 

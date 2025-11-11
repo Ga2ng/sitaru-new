@@ -51,7 +51,6 @@ class MemberKkprController extends Controller
         
         $req['user_id'] = $user->id;
         $req['jenis'] = 'non_umk';
-        $req['status_penggunaan_tanah'] = $request->get('status_penggunaan_tanah');
         $req['jenis_kegiatan'] = $request->get('jenis_kegiatan');
         $req['jenis_kegiatan_lainnya'] = $request->get('jenis_kegiatan_lainnya');
         $req['nib'] = $request->get('nib');
@@ -78,6 +77,21 @@ class MemberKkprController extends Controller
         // Set status_lahan ke req
         if (!empty($statusLahan)) {
             $req['status_lahan'] = $statusLahan;
+        }
+
+        // Handle status penggunaan tanah - priority: input custom > nilai select
+        $statusPenggunaanFromRequest = $request->get('status_penggunaan_tanah', '');
+        $statusPenggunaanLainnyaInput = $request->get('status_penggunaan_tanah_lainnya_input', '');
+
+        $statusPenggunaanTanah = '';
+        if (!empty(trim($statusPenggunaanLainnyaInput))) {
+            $statusPenggunaanTanah = trim($statusPenggunaanLainnyaInput);
+        } elseif (!empty($statusPenggunaanFromRequest)) {
+            $statusPenggunaanTanah = $statusPenggunaanFromRequest;
+        }
+
+        if (!empty($statusPenggunaanTanah)) {
+            $req['status_penggunaan_tanah'] = $statusPenggunaanTanah;
         }
         
         $req['status_tanah'] = $request->get('status_tanah');
@@ -447,6 +461,21 @@ class MemberKkprController extends Controller
             // Set status_lahan ke req
             if (!empty($statusLahan)) {
                 $req['status_lahan'] = $statusLahan;
+            }
+
+            // Handle status penggunaan tanah - priority: input custom > nilai select
+            $statusPenggunaanFromRequest = $request->get('status_penggunaan_tanah', '');
+            $statusPenggunaanLainnyaInput = $request->get('status_penggunaan_tanah_lainnya_input', '');
+
+            $statusPenggunaanTanah = '';
+            if (!empty(trim($statusPenggunaanLainnyaInput))) {
+                $statusPenggunaanTanah = trim($statusPenggunaanLainnyaInput);
+            } elseif (!empty($statusPenggunaanFromRequest)) {
+                $statusPenggunaanTanah = $statusPenggunaanFromRequest;
+            }
+
+            if (!empty($statusPenggunaanTanah)) {
+                $req['status_penggunaan_tanah'] = $statusPenggunaanTanah;
             }
 
             $req['user_id'] = $user->id;
