@@ -1288,19 +1288,29 @@ class AdminKkprController extends Controller
                 }
             }
 
+            $statusLsdValue = $request->status_lsd;
+            if ($statusLsdValue === 'Berada') {
+                $statusLsdLuasanRaw = $request->input('status_lsd_luasan');
+                $statusLsdLuasanRaw = is_null($statusLsdLuasanRaw) ? '' : trim((string) $statusLsdLuasanRaw);
+                if ($statusLsdLuasanRaw !== '') {
+                    $statusLsdLuasanSanitized = preg_replace('/\s*m2$/i', '', $statusLsdLuasanRaw);
+                    $statusLsdValue = 'Berada = ' . $statusLsdLuasanSanitized . 'm2';
+                }
+            }
+
             // Update data analisa
             $model->update([
                 'status_rencana' => $request->status_rencana,
                 'rencana_manfaat' => $request->rencana_manfaat,
-                'status_lsd' => $request->status_lsd,
+                'status_lsd' => $statusLsdValue,
                 'kdb' => $request->kdb,
                 'klb' => $request->klb,
                 'kdh' => $request->kdh,
-                'ktb' => $request->ktb,
-                'lokasi_rencana' => $request->lokasi_rencana,
+                'ktb' => $request->filled('ktb') ? $request->ktb : null,
+                'lokasi_rencana' => $request->filled('lokasi_rencana') ? $request->lokasi_rencana : null,
                 'luas_disetujui' => $request->luas_disetujui,
                 'gsb' => $request->gsb,
-                'tinggi_bangunan' => $request->tinggi_bangunan,
+                'tinggi_bangunan' => $request->filled('tinggi_bangunan') ? $request->tinggi_bangunan : null,
                 'pertimbangan' => json_encode($pertimbangan),
                 'ketentuan_lain' => json_encode($ketentuan_lain),
                 'keterangan_lain' => json_encode($keterangan_lain),
@@ -1530,19 +1540,29 @@ class AdminKkprController extends Controller
                 }
             }
 
+            $statusLsdValue = $request->status_lsd;
+            if ($statusLsdValue === 'Berada') {
+                $statusLsdLuasanRaw = $request->input('status_lsd_luasan');
+                $statusLsdLuasanRaw = is_null($statusLsdLuasanRaw) ? '' : trim((string) $statusLsdLuasanRaw);
+                if ($statusLsdLuasanRaw !== '') {
+                    $statusLsdLuasanSanitized = preg_replace('/\s*m2$/i', '', $statusLsdLuasanRaw);
+                    $statusLsdValue = 'Berada = ' . $statusLsdLuasanSanitized . 'm2';
+                }
+            }
+
             // Update data analisa
             $model->update([
                 'status_rencana' => $request->status_rencana,
                 'rencana_manfaat' => $request->rencana_manfaat,
-                'status_lsd' => $request->status_lsd,
+                'status_lsd' => $statusLsdValue,
                 'kdb' => $request->kdb,
                 'klb' => $request->klb,
                 'kdh' => $request->kdh,
-                'ktb' => $request->ktb,
-                'lokasi_rencana' => $request->lokasi_rencana,
+                'ktb' => $request->filled('ktb') ? $request->ktb : null,
+                'lokasi_rencana' => $request->filled('lokasi_rencana') ? $request->lokasi_rencana : null,
                 'luas_disetujui' => $request->luas_disetujui,
                 'gsb' => $request->gsb,
-                'tinggi_bangunan' => $request->tinggi_bangunan,
+                'tinggi_bangunan' => $request->filled('tinggi_bangunan') ? $request->tinggi_bangunan : null,
                 'pertimbangan' => json_encode($pertimbangan),
                 'ketentuan_lain' => json_encode($ketentuan_lain),
                 'pemeriksa_teknis' => json_encode($pemeriksa_teknis),

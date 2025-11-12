@@ -328,75 +328,75 @@
             <span class="bold-underline">Disetujui Seluruhnya</span>
         @endif
         dengan ketentuan:</div>
-    
-    @if($model->status_rencana == 'disetujui_sebagian' && $model->luas_disetujui)
-    <div style="margin-bottom: 10px; font-size: 12px;">
-        <strong>Luas Lahan yang Disetujui:</strong> {{ $model->luas_disetujui }} m²
-    </div>
-    @endif
-    
     <table style="width: 100%; page-break-inside: avoid;">
         <tr>
             <td style="width: 60%; vertical-align: top;">
                 <table class="info-table">
+                    @php $letter = 'a'; @endphp
+                    @if(!empty($model->lokasi_rencana))
                     <tr>
-                        <td class="label-col">a.</td>
+                        <td class="label-col">{{ $letter++ }}.</td>
                         <td class="field-col">Lokasi Rencana Tata Ruang</td>
                         <td class="colon-col">:</td>
-                        <td class="value-col">{{ $model->lokasi_rencana ?? '-' }}</td>
+                        <td class="value-col">{{ $model->lokasi_rencana }}</td>
                     </tr>
+                    @endif
                     <tr>
-                        <td class="label-col">b.</td>
+                        <td class="label-col">{{ $letter++ }}.</td>
                         <td class="field-col">Rencana Pemanfataan Ruang</td>
                         <td class="colon-col">:</td>
                         <td class="value-col">{{ $model->rencana_manfaat ?? '-' }}</td>
                     </tr>
                     <tr>
-                        <td class="label-col">c.</td>
+                        <td class="label-col">{{ $letter++ }}.</td>
                         <td class="field-col">Status Lahan Sawah Dilindungi</td>
                         <td class="colon-col">:</td>
+                        <td class="value-col"><strong>{{ $model->status_lsd ? $model->status_lsd : '-' }}</strong></td>
+                    </tr>
+                    <tr>
+                        <td class="label-col">{{ $letter++ }}.</td>
+                        <td class="field-col">Luas Lahan yang Disetujui</td>
+                        <td class="colon-col">:</td>
                         <td class="value-col">
-                            @if($model->status_lsd == 'Berada')
-                                <span class="bold-underline">Berada</span> / <span class="strikethrough">Tidak Berada</span>
-                            @elseif($model->status_lsd == 'Tidak Berada')
-                                <span class="strikethrough">Berada</span> / <span class="bold-underline">Tidak Berada</span>
+                            @if($model->status_rencana == 'disetujui_sebagian' && $model->luas_disetujui)
+                                {{ $model->luas_disetujui }} m²
                             @else
-                                <span class="bold-underline">Berada</span> / <span class="strikethrough">Tidak Berada</span>
+                                -
                             @endif
                         </td>
                     </tr>
                     <tr>
-                        <td class="label-col">d.</td>
+                        <td class="label-col">{{ $letter++ }}.</td>
                         <td class="field-col">KDB (maks)</td>
                         <td class="colon-col">:</td>
                         <td class="value-col">{{ $model->kdb ?? '-' }}%</td>
                     </tr>
                     <tr>
-                        <td class="label-col">e.</td>
+                        <td class="label-col">{{ $letter++ }}.</td>
                         <td class="field-col">KLB (maks)</td>
                         <td class="colon-col">:</td>
                         <td class="value-col">{{ $model->klb ?? '-' }}</td>
                     </tr>
                     <tr>
-                        <td class="label-col">f.</td>
+                        <td class="label-col">{{ $letter++ }}.</td>
                         <td class="field-col">KDH (min)</td>
                         <td class="colon-col">:</td>
                         <td class="value-col">{{ $model->kdh ?? '-' }}%</td>
                     </tr>
                     <tr>
-                        <td class="label-col">g.</td>
+                        <td class="label-col">{{ $letter++ }}.</td>
                         <td class="field-col">KTB (maks)</td>
                         <td class="colon-col">:</td>
                         <td class="value-col">{{ $model->ktb ?? '-' }}%</td>
                     </tr>
                     <tr>
-                        <td class="label-col">h.</td>
+                        <td class="label-col">{{ $letter++ }}.</td>
                         <td class="field-col">Garis Sempadan Bangunan (min)</td>
                         <td class="colon-col">:</td>
                         <td class="value-col">{{ $model->gsb ?? '-' }} meter (jalan kolektor primer)</td>
                     </tr>
                     <tr>
-                        <td class="label-col">i.</td>
+                        <td class="label-col">{{ $letter++ }}.</td>
                         <td class="field-col">Tinggi Bangunan (maks)</td>
                         <td class="colon-col">:</td>
                         <td class="value-col">{{ $model->tinggi_bangunan ?? '-' }} meter</td>

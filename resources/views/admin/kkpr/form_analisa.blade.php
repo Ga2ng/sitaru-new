@@ -248,6 +248,17 @@
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                @php
+                    $statusLsdStored = isset($model) ? (string) ($model->status_lsd ?? '') : '';
+                    $parsedStatusLsdOption = $statusLsdStored;
+                    $parsedStatusLsdLuasan = '';
+                    if (strpos($statusLsdStored, '=') !== false) {
+                        [$parsedStatusLsdOption, $statusLsdLuasanPart] = array_map('trim', explode('=', $statusLsdStored, 2));
+                        $parsedStatusLsdLuasan = preg_replace('/\s*m2$/i', '', $statusLsdLuasanPart);
+                    }
+                    $statusLsdCurrent = old('status_lsd', $parsedStatusLsdOption);
+                    $statusLsdLuasanCurrent = old('status_lsd_luasan', $parsedStatusLsdLuasan);
+                @endphp
                 <div class="space-y-2">
                     <label for="status_lsd" class="block text-sm font-semibold text-gray-700">
                         <i class="fas fa-seedling mr-2 text-purple-600"></i>
@@ -257,9 +268,26 @@
                             class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm" 
                             required>
                         <option value="">Pilih Status</option>
-                        <option value="Berada" {{ old('status_lsd', $model->status_lsd ?? '') == 'Berada' ? 'selected' : '' }}>Berada</option>
-                        <option value="Tidak Berada" {{ old('status_lsd', $model->status_lsd ?? '') == 'Tidak Berada' ? 'selected' : '' }}>Tidak Berada</option>
+                        <option value="Berada" {{ $statusLsdCurrent == 'Berada' ? 'selected' : '' }}>Berada</option>
+                        <option value="Tidak Berada" {{ $statusLsdCurrent == 'Tidak Berada' ? 'selected' : '' }}>Tidak Berada</option>
                     </select>
+                    <div id="status_lsd_luasan_wrapper" class="mt-3" style="{{ $statusLsdCurrent === 'Berada' ? '' : 'display: none;' }}">
+                        <div class="flex items-center space-x-2">
+                            <span class="text-sm font-semibold text-gray-600">Berada =</span>
+                            <input type="number" id="status_lsd_luasan" name="status_lsd_luasan"
+                                   value="{{ $statusLsdLuasanCurrent }}"
+                                   min="0" step="0.01"
+                                   class="flex-1 px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm"
+                                   placeholder="Masukkan luasan lahan (m²)">
+                            <span class="text-sm font-semibold text-gray-600">m²</span>
+                        </div>
+                        @error('status_lsd_luasan')
+                            <div class="flex items-center space-x-2 text-red-600 text-sm mt-1">
+                                <i class="fas fa-exclamation-circle text-xs"></i>
+                                <span>{{ $message }}</span>
+                            </div>
+                        @enderror
+                    </div>
                 </div>
 
                 <div class="space-y-2">
@@ -276,12 +304,12 @@
                 <div class="space-y-2">
                     <label for="lokasi_rencana" class="block text-sm font-semibold text-gray-700">
                         <i class="fas fa-map-marker-alt mr-2 text-purple-600"></i>
-                        Lokasi Rencana Tata Ruang <span class="text-red-500">*</span>
+                        Lokasi Rencana Tata Ruang
                     </label>
                     <input type="text" id="lokasi_rencana" name="lokasi_rencana" 
                            value="{{ old('lokasi_rencana', $model->lokasi_rencana ?? '') }}" 
                            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm" 
-                           placeholder="Masukkan lokasi rencana tata ruang..." required>
+                           placeholder="Masukkan lokasi rencana tata ruang...">
                 </div>
 
                 <div class="space-y-2">
@@ -345,12 +373,12 @@
                 <div class="space-y-2">
                     <label for="ktb" class="block text-sm font-semibold text-gray-700">
                         <i class="fas fa-percentage mr-2 text-purple-600"></i>
-                        KTB - Koefisien Tapak Basement (maks %) <span class="text-red-500">*</span>
+                        KTB - Koefisien Tapak Basement (maks %)
                     </label>
                     <input type="number" id="ktb" name="ktb" 
                            value="{{ old('ktb', $model->ktb ?? '') }}" 
                            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm" 
-                           step="0.01" required>
+                           step="0.01">
                 </div>
 
                 <div class="space-y-2">
@@ -367,12 +395,12 @@
                 <div class="md:col-span-2 space-y-2">
                     <label for="tinggi_bangunan" class="block text-sm font-semibold text-gray-700">
                         <i class="fas fa-ruler-vertical mr-2 text-purple-600"></i>
-                        Ketinggian Bangunan Maksimum (m) <span class="text-red-500">*</span>
+                        Ketinggian Bangunan Maksimum (m)
                     </label>
                     <input type="number" id="tinggi_bangunan" name="tinggi_bangunan" 
                            value="{{ old('tinggi_bangunan', $model->tinggi_bangunan ?? '') }}" 
                            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white/80 backdrop-blur-sm" 
-                           step="0.01" required>
+                           step="0.01">
                 </div>
             </div>
         </div>
@@ -628,6 +656,7 @@
         
     // Initialize new features
     toggleLuasField(); // Set initial state for luas field
+    initStatusLsdField();
     });
 
     // Toggle Luas Field berdasarkan Status Rencana
@@ -644,6 +673,33 @@
             luasInput.required = false;
             luasInput.value = '';
         }
+    }
+
+    function initStatusLsdField() {
+        const statusSelect = document.getElementById('status_lsd');
+        const wrapper = document.getElementById('status_lsd_luasan_wrapper');
+        const luasInput = document.getElementById('status_lsd_luasan');
+
+        if (!statusSelect || !wrapper || !luasInput) {
+            return;
+        }
+
+        const toggleLuasanField = (value) => {
+            if (value === 'Berada') {
+                wrapper.style.display = 'block';
+                luasInput.required = true;
+            } else {
+                wrapper.style.display = 'none';
+                luasInput.required = false;
+                luasInput.value = '';
+            }
+        };
+
+        toggleLuasanField(statusSelect.value);
+
+        statusSelect.addEventListener('change', function() {
+            toggleLuasanField(this.value);
+        });
     }
 
     // Dynamic Pemeriksa Teknis
