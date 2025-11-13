@@ -23,6 +23,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 
 class AdminKkprNonController extends Controller
 {
@@ -1384,15 +1385,73 @@ class AdminKkprNonController extends Controller
         }
     }
 
-    public function survey($id)
+    public function viewSurvey($id)
     {
         try {
             $model = Kkpr::where('jenis', 'umk')->findOrFail($id);
 
+            if (!$model->f_survey) {
+                abort(404, 'Berkas survey tidak ditemukan');
+            }
+
+            $possiblePaths = [
+                public_path('uploads/berkas/umk/' . $model->id . '/survey/' . $model->f_survey),
+                public_path('uploads/berkas/umk/' . $model->id . '/' . $model->f_survey),
+            ];
+
+            foreach ($possiblePaths as $path) {
+                if ($path && file_exists($path)) {
+                    return response()->file($path);
+                }
+            }
+
+            abort(404, 'File survey tidak ditemukan');
+        } catch (\Exception $e) {
+            abort(404, 'Terjadi kesalahan: ' . $e->getMessage());
+        }
+    }
+
+    public function survey(Request $request, $id)
+    {
+        try {
+            $request->validate([
+                'jadwal_survey' => 'required|date',
+                'f_survey' => 'required|file|mimes:pdf,jpg,jpeg,png|max:10240'
+            ]);
+
+            $model = Kkpr::where('jenis', 'umk')->findOrFail($id);
+
+            $folder = 'uploads/berkas/umk/' . $model->id . '/survey';
+            if (!file_exists($folder)) {
+                mkdir($folder, 0755, true);
+            }
+
+            if ($model->f_survey) {
+                $oldPaths = [
+                    $folder . '/' . $model->f_survey,
+                    'uploads/berkas/umk/' . $model->id . '/' . $model->f_survey,
+                ];
+                foreach ($oldPaths as $oldPath) {
+                    if (file_exists($oldPath)) {
+                        unlink($oldPath);
+                    }
+                }
+            }
+
+            $file = $request->file('f_survey');
+            $filename = 'survey.' . $file->getClientOriginalExtension();
+            $file->move($folder, $filename);
+
+            $jadwalSurvey = $request->jadwal_survey
+                ? Carbon::parse($request->jadwal_survey, 'Asia/Jakarta')->format('Y-m-d H:i:s')
+                : null;
+
             // Update status analisa dan proses
             $model->update([
                 'status_analisa' => 'survey',
-                'proses' => 6
+                'proses' => 6,
+                'jadwal_survey' => $jadwalSurvey,
+                'f_survey' => $filename
             ]);
 
             // Tambah riwayat
@@ -1402,15 +1461,21 @@ class AdminKkprNonController extends Controller
                     'kkpr_id' => $model->id,
                     'status_id' => '6',
                     'status' => 'Survey',
-                    'keterangan' => 'Survey lapangan telah dilakukan'
+                    'keterangan' => 'Survey lapangan telah dijadwalkan'
                 ]);
             } else {
                 Kkpr_riwayat::where('id', $riwayat->id)->update([
-                    'keterangan' => 'Survey lapangan telah dilakukan'
+                    'keterangan' => 'Survey lapangan telah dijadwalkan'
                 ]);
             }
 
-            return response()->json(['success' => true, 'message' => 'Status survey berhasil diupdate']);
+            return response()->json(['success' => true, 'message' => 'Survey berhasil dijadwalkan']);
+        } catch (ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validasi gagal',
+                'errors' => $e->errors()
+            ], 422);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => $e->getMessage()]);
         }

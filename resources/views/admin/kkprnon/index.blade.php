@@ -388,7 +388,7 @@
                                     ];
                                     // dd(auth()->user()->can('Kepala Dinas' ) ? 'true' : 'false');
                                 @endphp
-                            <button id="btn-aksi-{{ $kkpr->id }}" onclick="toggleDropdown({{ $kkpr->id }}, {{ $kkpr->proses }}, {{ $kkpr->revisi }}, {{ $can['verifikator'] ? 'true' : 'false' }}, {{ $can['analis'] ? 'true' : 'false' }}, {{ $can['pimpinan'] ? 'true' : 'false' }}, {{ $can['kabid'] ? 'true' : 'false' }}, {{ $can['kepala_dinas'] ? 'true' : 'false' }}, {{ $can['upload_draft'] ? 'true' : 'false' }}, {{ $can['opd_eksternal'] ? 'true' : 'false' }}, {{ $can['tim_fpr'] ? 'true' : 'false' }}, {{ $kkpr->deleted ?? 0 }})" class="inline-flex items-center space-x-1.5 px-3 py-1.5 text-xs font-medium text-gray-700 bg-white hover:bg-[#185B3C]/10 hover:text-[#185B3C] border border-gray-300 rounded-lg transition-all duration-200 hover:scale-105" title="Aksi">
+                            <button id="btn-aksi-{{ $kkpr->id }}" onclick="toggleDropdown(event, {{ $kkpr->id }}, {{ $kkpr->proses }}, {{ $kkpr->revisi }}, {{ $can['verifikator'] ? 'true' : 'false' }}, {{ $can['analis'] ? 'true' : 'false' }}, {{ $can['pimpinan'] ? 'true' : 'false' }}, {{ $can['kabid'] ? 'true' : 'false' }}, {{ $can['kepala_dinas'] ? 'true' : 'false' }}, {{ $can['upload_draft'] ? 'true' : 'false' }}, {{ $can['opd_eksternal'] ? 'true' : 'false' }}, {{ $can['tim_fpr'] ? 'true' : 'false' }}, {{ $kkpr->deleted ?? 0 }}, {{ $kkpr->f_survey ? '\'' . route('admin.kkprnon.view.survey', $kkpr->id) . '\'' : 'null' }})" class="inline-flex items-center space-x-1.5 px-3 py-1.5 text-xs font-medium text-gray-700 bg-white hover:bg-[#185B3C]/10 hover:text-[#185B3C] border border-gray-300 rounded-lg transition-all duration-200 hover:scale-105" title="Aksi">
                                 <i class="fas fa-cog"></i>
                                 <span>Aksi</span>
                                 <i class="fas fa-chevron-down text-xs"></i>
@@ -452,8 +452,11 @@
         alert('Fitur export akan segera tersedia');
     }
 
-    function toggleDropdown(id, status, revisi, canValidate, canSurvey, canPimpinan, canKabid, canKepalaDinas, canUploadDraft, isExternal, canTimFpr, deleted) {
-        const button = event.currentTarget;
+    let currentSurveyId = null;
+    let surveySubmitting = false;
+
+    function toggleDropdown(evt, id, status, revisi, canValidate, canSurvey, canPimpinan, canKabid, canKepalaDinas, canUploadDraft, isExternal, canTimFpr, deleted, surveyFileUrl) {
+        const button = evt.currentTarget;
         const chevron = button.querySelector('.fa-chevron-down');
         const modal = document.getElementById('dropdown-menu-modal');
         const content = document.getElementById('dropdown-menu-content');
@@ -528,6 +531,13 @@
                     <i class="fas fa-file-contract w-4 mr-3"></i>
                     Lihat Dokumen Final
                 </a>`;
+            if (surveyFileUrl) {
+                menuItems += `
+                    <a href="${surveyFileUrl}" target="_blank" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-colors">
+                        <i class="fas fa-folder-open w-4 mr-3"></i>
+                        Lihat Berkas Survey
+                    </a>`;
+            }
             
             // Hanya tampilkan menu tambahan jika bukan OPD Eksternal
             if (isExternal != true) {
@@ -544,6 +554,13 @@
         }
         // Jika user eksternal, hanya tampilkan menu view-only
         else if (isExternal == true) {
+            if (surveyFileUrl) {
+                menuItems += `
+                    <a href="${surveyFileUrl}" target="_blank" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-colors">
+                        <i class="fas fa-folder-open w-4 mr-3"></i>
+                        Lihat Berkas Survey
+                    </a>`;
+            }
             // Untuk OPD Eksternal, hanya tampilkan Lihat Detail saja (Lihat Dokumen Final sudah ditangani di kondisi status == 10)
         } else {
             // Menu normal untuk user non-eksternal - URUT BERDASARKAN PROSES
@@ -641,6 +658,13 @@
             }
             
             // MENU SEKUNDER: Lihat Peta & Cetak Berkas
+            if (surveyFileUrl) {
+                menuItems += `
+                <a href="${surveyFileUrl}" target="_blank" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-colors">
+                    <i class="fas fa-folder-open w-4 mr-3"></i>
+                    Lihat Berkas Survey
+                </a>`;
+            }
             menuItems += `
                 <a href="/admin/kkprnon/${id}/peta" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-600 transition-colors">
                     <i class="fas fa-map w-4 mr-3"></i>
@@ -777,10 +801,139 @@
         });
     }
 
+    function setSurvey(id) {
+        currentSurveyId = id;
+        const backdrop = document.getElementById('survey-backdrop');
+        const modal = document.getElementById('survey-modal');
+        const form = document.getElementById('survey-form');
+        const errorBox = document.getElementById('survey-error');
+
+        if (form) {
+            form.reset();
+        }
+
+        if (errorBox) {
+            errorBox.textContent = '';
+        }
+
+        if (backdrop) {
+            backdrop.style.display = 'block';
+        }
+
+        if (modal) {
+            modal.style.display = 'flex';
+        }
+    }
+
+    function closeSurveyModal(force = false) {
+        if (typeof force !== 'boolean') {
+            force = false;
+        }
+        if (surveySubmitting && !force) {
+            return;
+        }
+        surveySubmitting = false;
+        currentSurveyId = null;
+        const backdrop = document.getElementById('survey-backdrop');
+        const modal = document.getElementById('survey-modal');
+        if (modal) {
+            modal.style.display = 'none';
+        }
+        if (backdrop) {
+            backdrop.style.display = 'none';
+        }
+        const form = document.getElementById('survey-form');
+        if (form) {
+            form.reset();
+        }
+        const errorBox = document.getElementById('survey-error');
+        if (errorBox) {
+            errorBox.textContent = '';
+        }
+    }
+
     // Close dropdown when clicking outside
     document.addEventListener('click', function(event) {
         if (!event.target.closest('[onclick^="toggleDropdown"]') && !event.target.closest('#dropdown-menu-modal')) {
             closeDropdownModal();
+        }
+        const surveyForm = document.getElementById('survey-form');
+        const surveyBackdrop = document.getElementById('survey-backdrop');
+        if (surveyBackdrop) {
+            surveyBackdrop.addEventListener('click', () => closeSurveyModal());
+        }
+        if (surveyForm) {
+            surveyForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+                if (!currentSurveyId || surveySubmitting) {
+                    return;
+                }
+
+                const errorBox = document.getElementById('survey-error');
+                if (errorBox) {
+                    errorBox.textContent = '';
+                }
+
+                const submitButton = surveyForm.querySelector('button[type="submit"]');
+                if (submitButton) {
+                    submitButton.disabled = true;
+                }
+                surveySubmitting = true;
+
+                const formData = new FormData(surveyForm);
+
+                fetch(`/admin/kkprnon/survey/${currentSurveyId}`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: formData
+                })
+                .then(async (response) => {
+                    const data = await response.json().catch(() => ({}));
+                    if (response.ok && data.success) {
+                        closeSurveyModal(true);
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: data.message || 'Survey berhasil dijadwalkan',
+                            timer: 2000,
+                            showConfirmButton: false
+                        }).then(() => {
+                            window.location.reload();
+                        });
+                    } else {
+                        const errors = data.errors ? Object.values(data.errors).flat().join(', ') : null;
+                        const message = data.message || errors || 'Terjadi kesalahan saat menyimpan jadwal survey';
+                        if (errorBox) {
+                            errorBox.textContent = message;
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Gagal!',
+                                text: message
+                            });
+                        }
+                    }
+                })
+                .catch((error) => {
+                    if (errorBox) {
+                        errorBox.textContent = error.message || 'Terjadi kesalahan saat menyimpan jadwal survey';
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!',
+                            text: 'Terjadi kesalahan saat menyimpan jadwal survey'
+                        });
+                    }
+                })
+                .finally(() => {
+                    surveySubmitting = false;
+                    if (submitButton) {
+                        submitButton.disabled = false;
+                    }
+                });
+            });
         }
     });
 
@@ -1202,58 +1355,6 @@
         console.log('Status buttons found:', statusButtons.length);
     });
 
-    // Set Survey Status
-    function setSurvey(id) {
-        Swal.fire({
-            title: 'Survey Lapangan?',
-            text: "Apakah survey lapangan sudah dilakukan?",
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonColor: '#F97316',
-            cancelButtonColor: '#6B7280',
-            confirmButtonText: 'Ya, Sudah Survey',
-            cancelButtonText: 'Batal'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                fetch(`/admin/kkprnon/survey/${id}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Berhasil!',
-                            text: 'Status survey berhasil diupdate',
-                            timer: 2000,
-                            showConfirmButton: false
-                        }).then(() => {
-                            location.reload();
-                        });
-                    } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Gagal!',
-                            text: data.message || 'Terjadi kesalahan saat update status survey'
-                        });
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error!',
-                        text: 'Terjadi kesalahan saat update status survey'
-                    });
-                });
-            }
-        });
-    }
-
     // Kirim ke Kabid
     function kirimKabid(id) {
         Swal.fire({
@@ -1401,6 +1502,33 @@
 </div>
 
 <!-- Upload Draft Modal - Inline CSS Version -->
+<div id="survey-backdrop" style="display: none; position: fixed; inset: 0; background-color: rgba(0,0,0,0.4); z-index: 9998;"></div>
+<div id="survey-modal" style="display: none; position: fixed; inset: 0; z-index: 9999; align-items: center; justify-content: center; padding: 1.5rem;">
+    <div style="background-color: #ffffff; border-radius: 0.75rem; padding: 1.5rem; width: 100%; max-width: 420px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); border: 1px solid #e5e7eb;">
+        <div style="margin-bottom: 1.25rem;">
+            <h3 style="margin: 0; font-size: 1.25rem; font-weight: 700; color: #111827;">Penjadwalan Survey</h3>
+            <p style="margin: 0.25rem 0 0 0; font-size: 0.875rem; color: #4b5563;">Isi jadwal dan unggah berkas survey lapangan.</p>
+        </div>
+        <form id="survey-form" enctype="multipart/form-data" style="display: flex; flex-direction: column; gap: 1rem;">
+            @csrf
+            <div>
+                <label for="jadwal_survey" style="display: block; font-size: 0.875rem; font-weight: 600; color: #374151; margin-bottom: 0.5rem;">Jadwal Survey</label>
+                <input type="datetime-local" id="jadwal_survey" name="jadwal_survey" required style="width: 100%; border: 1px solid #d1d5db; border-radius: 0.5rem; padding: 0.625rem 0.75rem; font-size: 0.9375rem; color: #111827; outline: none;">
+            </div>
+            <div>
+                <label for="f_survey" style="display: block; font-size: 0.875rem; font-weight: 600; color: #374151; margin-bottom: 0.5rem;">Berkas Survey</label>
+                <input type="file" id="f_survey" name="f_survey" accept=".pdf,.jpg,.jpeg,.png" required style="width: 100%; border: 1px solid #d1d5db; border-radius: 0.5rem; padding: 0.5rem; font-size: 0.9375rem; color: #111827; outline: none; background-color: #f9fafb;">
+                <p style="margin-top: 0.375rem; font-size: 0.75rem; color: #6b7280;">Format: PDF/JPG/PNG, maks 10 MB.</p>
+            </div>
+            <p id="survey-error" style="min-height: 1.25rem; font-size: 0.8125rem; color: #dc2626; margin: 0;"></p>
+            <div style="display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 0.5rem;">
+                <button type="button" onclick="closeSurveyModal()" style="padding: 0.625rem 1.25rem; border-radius: 0.5rem; border: 1px solid #d1d5db; background-color: #f9fafb; color: #374151; font-weight: 600; cursor: pointer;">Batal</button>
+                <button type="submit" style="padding: 0.625rem 1.25rem; border-radius: 0.5rem; border: none; background-color: #f97316; color: #ffffff; font-weight: 600; cursor: pointer;">Simpan</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <div id="upload-draft-backdrop" style="display: none; position: fixed; top: 0; right: 0; bottom: 0; left: 0; background-color: rgba(0, 0, 0, 0.5); backdrop-filter: blur(4px); z-index: 9998; transition: opacity 0.15s;" onclick="closeUploadDraftModal()"></div>
 <div id="upload-draft-modal" style="display: none; position: fixed; top: 0; right: 0; bottom: 0; left: 0; z-index: 9999; overflow-y: auto;">
     <div style="display: flex; min-height: 100%; align-items: center; justify-content: center; padding: 1rem;">

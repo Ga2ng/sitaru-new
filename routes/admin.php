@@ -64,6 +64,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
             Route::post('kkpr/persetujuan/setuju', [AdminKkprController::class, 'persetujuanSetuju'])->name('kkpr.persetujuan.setuju');
             Route::post('kkpr/upload-draft', [AdminKkprController::class, 'uploadDraft'])->name('kkpr.upload.draft');
             Route::get('kkpr/{kkpr}/view-draft', [AdminKkprController::class, 'viewDraft'])->name('kkpr.view.draft');
+            Route::get('kkpr/{kkpr}/view-survey', [AdminKkprController::class, 'viewSurvey'])->name('kkpr.view.survey');
             Route::get('kkpr/{kkpr}/cetak-berkas', [AdminKkprController::class, 'cetakBerkasKkpr'])->name('kkpr.cetak.berkas');
             Route::post('kkpr/tugaskan-tim-fpr/{id}', [AdminKkprController::class, 'tugaskanTimFpr'])->name('kkpr.tugaskan.tim.fpr');
             Route::post('kkpr/{id}/confirm-pencabutan', [AdminKkprController::class, 'confirmPencabutan'])->name('kkpr.confirm.pencabutan');
@@ -91,6 +92,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
             Route::post('kkprnon/persetujuan/setuju', [AdminKkprNonController::class, 'persetujuanSetuju'])->name('kkprnon.persetujuan.setuju');
             Route::post('kkprnon/upload-draft', [AdminKkprNonController::class, 'uploadDraft'])->name('kkprnon.upload.draft');
             Route::get('kkprnon/{kkprnon}/view-draft', [AdminKkprNonController::class, 'viewDraft'])->name('kkprnon.view.draft');
+            Route::get('kkprnon/{kkprnon}/view-survey', [AdminKkprNonController::class, 'viewSurvey'])->name('kkprnon.view.survey');
             Route::delete('kkprnon/{id}/delete-file/{fieldName}', [AdminKkprNonController::class, 'deleteFile'])->name('kkprnon.delete.file');
             Route::get('kkprnon/{kkprnon}/cetak-berkas', [AdminKkprNonController::class, 'cetakBerkasUmk'])->name('kkprnon.cetak.berkas');
             Route::post('kkprnon/{id}/confirm-pencabutan', [AdminKkprNonController::class, 'confirmPencabutan'])->name('kkprnon.confirm.pencabutan');

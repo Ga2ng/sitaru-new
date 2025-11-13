@@ -62,6 +62,8 @@ class Kkpr extends Model
     'risiko_kegiatan',
     'kategori_umk',
     'keterangan_lain',
+    'f_survey',
+    'jadwal_survey',
 ];
 
     protected $casts = [
