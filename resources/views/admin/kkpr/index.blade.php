@@ -558,7 +558,7 @@
                 menuItems += `
                     <a href="${surveyFileUrl}" target="_blank" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-colors">
                         <i class="fas fa-folder-open w-4 mr-3"></i>
-                        Lihat Berkas Survey
+                        Lihat Surat Survey
                     </a>`;
             }
             // Untuk OPD Eksternal, hanya tampilkan Lihat Detail saja (Lihat Dokumen Final sudah ditangani di kondisi status == 10)
@@ -671,7 +671,7 @@
                 menuItems += `
                 <a href="${surveyFileUrl}" target="_blank" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-colors">
                     <i class="fas fa-folder-open w-4 mr-3"></i>
-                    Lihat Berkas Survey
+                    Lihat Surat Survey
                 </a>`;
             }
             menuItems += `
@@ -1573,7 +1573,7 @@
     <div style="background-color: #ffffff; border-radius: 0.75rem; padding: 1.5rem; width: 100%; max-width: 420px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); border: 1px solid #e5e7eb;">
         <div style="margin-bottom: 1.25rem;">
             <h3 style="margin: 0; font-size: 1.25rem; font-weight: 700; color: #111827;">Penjadwalan Survey</h3>
-            <p style="margin: 0.25rem 0 0 0; font-size: 0.875rem; color: #4b5563;">Isi jadwal dan unggah berkas survey lapangan.</p>
+            <p style="margin: 0.25rem 0 0 0; font-size: 0.875rem; color: #4b5563;">Isi jadwal dan unggah surat survey lapangan.</p>
         </div>
         <form id="survey-form" enctype="multipart/form-data" style="display: flex; flex-direction: column; gap: 1rem;">
             @csrf
@@ -1582,7 +1582,7 @@
                 <input type="datetime-local" id="jadwal_survey" name="jadwal_survey" required style="width: 100%; border: 1px solid #d1d5db; border-radius: 0.5rem; padding: 0.625rem 0.75rem; font-size: 0.9375rem; color: #111827; outline: none;">
             </div>
             <div>
-                <label for="f_survey" style="display: block; font-size: 0.875rem; font-weight: 600; color: #374151; margin-bottom: 0.5rem;">Berkas Survey</label>
+                <label for="f_survey" style="display: block; font-size: 0.875rem; font-weight: 600; color: #374151; margin-bottom: 0.5rem;">Surat Survey</label>
                 <input type="file" id="f_survey" name="f_survey" accept=".pdf,.jpg,.jpeg,.png" required style="width: 100%; border: 1px solid #d1d5db; border-radius: 0.5rem; padding: 0.5rem; font-size: 0.9375rem; color: #111827; outline: none; background-color: #f9fafb;">
                 <p style="margin-top: 0.375rem; font-size: 0.75rem; color: #6b7280;">Format: PDF/JPG/PNG, maks 10 MB.</p>
             </div>
